@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Глава 07: Optionals | iOS Book</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'media',
+            theme: { extend: { colors: { primary: '#007AFF' } } }
+        }
+    </script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
+</head>
+<body class="bg-white dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100">
+    <button id="menuBtn" class="lg:hidden fixed top-4 left-4 z-50 p-3 bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-xl shadow-lg">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+        </svg>
+    </button>
+
+    <div class="flex min-h-screen">
+        <aside id="sidebar" class="fixed inset-y-0 left-0 w-72 bg-zinc-50 dark:bg-zinc-900 border-r border-zinc-200 dark:border-zinc-800 flex flex-col z-40 transform -translate-x-full lg:translate-x-0 transition-transform duration-300">
+            <div class="p-5 border-b border-zinc-200 dark:border-zinc-800">
+                <a href="../index.html" class="flex items-center gap-3 text-lg font-semibold hover:text-primary transition-colors">
+                    <div class="w-9 h-9 bg-primary rounded-lg flex items-center justify-center">
+                        <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/>
+                        </svg>
+                    </div>
+                    iOS Book
+                </a>
+            </div>
+            <nav class="flex-1 overflow-y-auto p-4">
+                <div class="space-y-6">
+                    <div>
+                        <h3 class="px-3 mb-2 text-xs font-semibold uppercase tracking-wider text-zinc-400">Введение</h3>
+                        <a href="00-introduction.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">Введение</a>
+                    </div>
+                    <div>
+                        <h3 class="px-3 mb-2 text-xs font-semibold uppercase tracking-wider text-zinc-400">Основы Swift</h3>
+                        <div class="space-y-1">
+                            <a href="01-xcode.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">1. Xcode</a>
+                            <a href="02-swift-basics.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">2. Основы Swift</a>
+                            <a href="03-control-flow.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">3. Control Flow</a>
+                            <a href="04-functions.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">4. Функции</a>
+                            <a href="05-oop.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">5. ООП</a>
+                            <a href="06-protocols.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">6. Протоколы</a>
+                            <a href="07-optionals.html" class="block px-3 py-2 text-sm text-white bg-primary rounded-lg">7. Optionals</a>
+                            <a href="08-memory.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">8. Память</a>
+                            <a href="09-generics.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">9. Generics</a>
+                            <a href="10-concurrency.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">10. Concurrency</a>
+                        </div>
+                    </div>
+                    <div>
+                        <h3 class="px-3 mb-2 text-xs font-semibold uppercase tracking-wider text-zinc-400">UIKit</h3>
+                        <div class="space-y-1">
+                            <a href="11-uikit-basics.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">11. UIKit</a>
+                            <a href="12-programmatic-ui.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">12. Programmatic UI</a>
+                        </div>
+                    </div>
+                    <div>
+                        <h3 class="px-3 mb-2 text-xs font-semibold uppercase tracking-wider text-zinc-400">Архитектура</h3>
+                        <div class="space-y-1">
+                            <a href="13-viper.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">13. VIPER</a>
+                            <a href="14-project-setup.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">14. Project Setup</a>
+                        </div>
+                    </div>
+                    <div>
+                        <h3 class="px-3 mb-2 text-xs font-semibold uppercase tracking-wider text-zinc-400">Практика</h3>
+                        <div class="space-y-1">
+                            <a href="15-authentication.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">15. Auth</a>
+                            <a href="16-products.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">16. Products</a>
+                            <a href="17-cart.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">17. Cart</a>
+                            <a href="18-favorites.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">18. Favorites</a>
+                            <a href="19-orders.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">19. Orders</a>
+                            <a href="20-profile.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">20. Profile</a>
+                        </div>
+                    </div>
+                    <div>
+                        <h3 class="px-3 mb-2 text-xs font-semibold uppercase tracking-wider text-zinc-400">Дополнительно</h3>
+                        <a href="21-reusable-views.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">21. Reusable Views</a>
+                    </div>
+                </div>
+            </nav>
+        </aside>
+
+        <div id="overlay" class="fixed inset-0 bg-black/50 z-30 lg:hidden hidden" onclick="closeSidebar()"></div>
+
+        <main class="flex-1 lg:ml-72">
+            <article class="max-w-3xl mx-auto px-6 sm:px-8 lg:px-12 py-12 lg:py-16">
+                <header class="mb-12 pb-8 border-b border-zinc-200 dark:border-zinc-800">
+                    <span class="text-sm font-semibold uppercase tracking-wider text-primary">Глава 07</span>
+                    <h1 class="text-3xl sm:text-4xl font-bold mt-2 mb-4">Optionals</h1>
+                    <p class="text-lg text-zinc-600 dark:text-zinc-400">Optional, unwrapping, nil coalescing</p>
+                </header>
+
+                <div class="prose prose-zinc dark:prose-invert max-w-none">
+
+                    <!-- Введение -->
+                    <section class="mb-12">
+                        <h2 class="text-2xl font-bold mb-4">Что такое Optional?</h2>
+                        <p class="text-zinc-600 dark:text-zinc-400 mb-4">
+                            <strong>Optional</strong> — это тип, который может содержать значение или быть пустым (<code>nil</code>). Это одна из главных особенностей Swift, обеспечивающая безопасность работы с отсутствующими данными.
+                        </p>
+
+                        <div class="bg-zinc-900 rounded-xl p-4 mb-6">
+                            <div class="flex items-center gap-2 mb-3">
+                                <div class="w-3 h-3 rounded-full bg-red-500"></div>
+                                <div class="w-3 h-3 rounded-full bg-yellow-500"></div>
+                                <div class="w-3 h-3 rounded-full bg-green-500"></div>
+                                <span class="text-zinc-400 text-sm ml-2">Swift</span>
+                            </div>
+                            <pre class="text-sm overflow-x-auto"><code class="language-swift"><span class="text-zinc-500">// Обычный тип — ВСЕГДА должен иметь значение</span>
+<span class="text-pink-400">let</span> <span class="text-blue-300">name</span>: <span class="text-cyan-400">String</span> = <span class="text-green-400">"Анна"</span>
+<span class="text-zinc-500">// let name: String = nil  // ❌ Ошибка!</span>
+
+<span class="text-zinc-500">// Optional — МОЖЕТ быть nil</span>
+<span class="text-pink-400">var</span> <span class="text-blue-300">nickname</span>: <span class="text-cyan-400">String</span>? = <span class="text-green-400">"anna_dev"</span>
+nickname = <span class="text-pink-400">nil</span>  <span class="text-zinc-500">// ✅ OK</span>
+
+<span class="text-zinc-500">// Два способа записи (эквивалентны)</span>
+<span class="text-pink-400">var</span> <span class="text-blue-300">age</span>: <span class="text-cyan-400">Int</span>? = <span class="text-orange-400">25</span>
+<span class="text-pink-400">var</span> <span class="text-blue-300">age2</span>: <span class="text-cyan-400">Optional</span>&lt;<span class="text-cyan-400">Int</span>&gt; = <span class="text-orange-400">25</span></code></pre>
+                        </div>
+
+                        <div class="p-4 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-xl">
+                            <p class="text-blue-800 dark:text-blue-200">
+                                <strong>💡 Зачем?</strong> В других языках null вызывает NullPointerException. В Swift компилятор заставляет явно обрабатывать nil, предотвращая краши.
+                            </p>
+                        </div>
+                    </section>
+
+                    <!-- Unwrapping -->
+                    <section class="mb-12">
+                        <h2 class="text-2xl font-bold mb-4">Распаковка (Unwrapping)</h2>
+                        <p class="text-zinc-600 dark:text-zinc-400 mb-4">
+                            Чтобы получить значение из Optional, его нужно "распаковать". Есть несколько способов:
+                        </p>
+
+                        <h3 class="text-xl font-semibold mb-3">1. if let (Optional Binding)</h3>
+                        <div class="bg-zinc-900 rounded-xl p-4 mb-6">
+                            <pre class="text-sm overflow-x-auto"><code class="language-swift"><span class="text-pink-400">let</span> <span class="text-blue-300">email</span>: <span class="text-cyan-400">String</span>? = <span class="text-green-400">"user@mail.ru"</span>
+
+<span class="text-pink-400">if let</span> unwrappedEmail = email {
+    <span class="text-zinc-500">// unwrappedEmail — обычный String</span>
+    <span class="text-yellow-400">print</span>(<span class="text-green-400">"Email: \(</span>unwrappedEmail<span class="text-green-400">)"</span>)
+} <span class="text-pink-400">else</span> {
+    <span class="text-yellow-400">print</span>(<span class="text-green-400">"Email не указан"</span>)
+}
+
+<span class="text-zinc-500">// Сокращённая форма (Swift 5.7+)</span>
+<span class="text-pink-400">if let</span> email {
+    <span class="text-yellow-400">print</span>(<span class="text-green-400">"Email: \(</span>email<span class="text-green-400">)"</span>)
+}
+
+<span class="text-zinc-500">// Несколько optionals</span>
+<span class="text-pink-400">let</span> <span class="text-blue-300">name</span>: <span class="text-cyan-400">String</span>? = <span class="text-green-400">"Анна"</span>
+<span class="text-pink-400">let</span> <span class="text-blue-300">age</span>: <span class="text-cyan-400">Int</span>? = <span class="text-orange-400">25</span>
+
+<span class="text-pink-400">if let</span> name, <span class="text-pink-400">let</span> age {
+    <span class="text-yellow-400">print</span>(<span class="text-green-400">"\(</span>name<span class="text-green-400">), \(</span>age<span class="text-green-400">) лет"</span>)
+}</code></pre>
+                        </div>
+
+                        <h3 class="text-xl font-semibold mb-3">2. guard let</h3>
+                        <p class="text-zinc-600 dark:text-zinc-400 mb-4">Ранний выход если значение nil. Переменная доступна после guard.</p>
+                        <div class="bg-zinc-900 rounded-xl p-4 mb-6">
+                            <pre class="text-sm overflow-x-auto"><code class="language-swift"><span class="text-pink-400">func</span> <span class="text-blue-300">greetUser</span>(name: <span class="text-cyan-400">String</span>?) {
+    <span class="text-pink-400">guard let</span> name <span class="text-pink-400">else</span> {
+        <span class="text-yellow-400">print</span>(<span class="text-green-400">"Имя не указано"</span>)
+        <span class="text-pink-400">return</span>
+    }
+
+    <span class="text-zinc-500">// name доступен здесь как обычный String</span>
+    <span class="text-yellow-400">print</span>(<span class="text-green-400">"Привет, \(</span>name<span class="text-green-400">)!"</span>)
+}
+
+greetUser(name: <span class="text-green-400">"Иван"</span>)   <span class="text-zinc-500">// "Привет, Иван!"</span>
+greetUser(name: <span class="text-pink-400">nil</span>)      <span class="text-zinc-500">// "Имя не указано"</span></code></pre>
+                        </div>
+
+                        <h3 class="text-xl font-semibold mb-3">3. Force Unwrap (!)</h3>
+                        <div class="bg-zinc-900 rounded-xl p-4 mb-6">
+                            <pre class="text-sm overflow-x-auto"><code class="language-swift"><span class="text-pink-400">let</span> <span class="text-blue-300">value</span>: <span class="text-cyan-400">Int</span>? = <span class="text-orange-400">42</span>
+<span class="text-pink-400">let</span> <span class="text-blue-300">unwrapped</span> = value!  <span class="text-zinc-500">// 42</span>
+
+<span class="text-pink-400">let</span> <span class="text-blue-300">nilValue</span>: <span class="text-cyan-400">Int</span>? = <span class="text-pink-400">nil</span>
+<span class="text-zinc-500">// let crash = nilValue!  // 💥 CRASH! Fatal error</span></code></pre>
+                        </div>
+
+                        <div class="p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-xl">
+                            <p class="text-red-800 dark:text-red-200">
+                                <strong>⚠️ Избегайте force unwrap!</strong> Используйте <code>!</code> только когда на 100% уверены, что значение не nil (например, после проверки).
+                            </p>
+                        </div>
+                    </section>
+
+                    <!-- Nil Coalescing -->
+                    <section class="mb-12">
+                        <h2 class="text-2xl font-bold mb-4">Nil Coalescing Operator (??)</h2>
+                        <p class="text-zinc-600 dark:text-zinc-400 mb-4">
+                            Оператор <code>??</code> возвращает значение слева, если оно не nil, иначе — значение по умолчанию справа.
+                        </p>
+
+                        <div class="bg-zinc-900 rounded-xl p-4 mb-6">
+                            <pre class="text-sm overflow-x-auto"><code class="language-swift"><span class="text-pink-400">let</span> <span class="text-blue-300">nickname</span>: <span class="text-cyan-400">String</span>? = <span class="text-pink-400">nil</span>
+<span class="text-pink-400">let</span> <span class="text-blue-300">displayName</span> = nickname ?? <span class="text-green-400">"Гость"</span>
+<span class="text-zinc-500">// displayName = "Гость"</span>
+
+<span class="text-pink-400">let</span> <span class="text-blue-300">username</span>: <span class="text-cyan-400">String</span>? = <span class="text-green-400">"anna"</span>
+<span class="text-pink-400">let</span> <span class="text-blue-300">name</span> = username ?? <span class="text-green-400">"Гость"</span>
+<span class="text-zinc-500">// name = "anna"</span>
+
+<span class="text-zinc-500">// Цепочка</span>
+<span class="text-pink-400">let</span> <span class="text-blue-300">first</span>: <span class="text-cyan-400">String</span>? = <span class="text-pink-400">nil</span>
+<span class="text-pink-400">let</span> <span class="text-blue-300">second</span>: <span class="text-cyan-400">String</span>? = <span class="text-pink-400">nil</span>
+<span class="text-pink-400">let</span> <span class="text-blue-300">third</span>: <span class="text-cyan-400">String</span>? = <span class="text-green-400">"Значение"</span>
+
+<span class="text-pink-400">let</span> <span class="text-blue-300">result</span> = first ?? second ?? third ?? <span class="text-green-400">"По умолчанию"</span>
+<span class="text-zinc-500">// result = "Значение"</span></code></pre>
+                        </div>
+                    </section>
+
+                    <!-- Optional Chaining -->
+                    <section class="mb-12">
+                        <h2 class="text-2xl font-bold mb-4">Optional Chaining (?.) </h2>
+                        <p class="text-zinc-600 dark:text-zinc-400 mb-4">
+                            Безопасный доступ к свойствам и методам optional значений.
+                        </p>
+
+                        <div class="bg-zinc-900 rounded-xl p-4 mb-6">
+                            <pre class="text-sm overflow-x-auto"><code class="language-swift"><span class="text-pink-400">struct</span> <span class="text-cyan-400">Address</span> {
+    <span class="text-pink-400">var</span> city: <span class="text-cyan-400">String</span>
+    <span class="text-pink-400">var</span> street: <span class="text-cyan-400">String</span>?
+}
+
+<span class="text-pink-400">struct</span> <span class="text-cyan-400">User</span> {
+    <span class="text-pink-400">var</span> name: <span class="text-cyan-400">String</span>
+    <span class="text-pink-400">var</span> address: <span class="text-cyan-400">Address</span>?
+}
+
+<span class="text-pink-400">let</span> <span class="text-blue-300">user</span>: <span class="text-cyan-400">User</span>? = User(
+    name: <span class="text-green-400">"Анна"</span>,
+    address: Address(city: <span class="text-green-400">"Москва"</span>, street: <span class="text-green-400">"Тверская"</span>)
+)
+
+<span class="text-zinc-500">// Optional chaining — безопасно возвращает nil если что-то в цепочке nil</span>
+<span class="text-pink-400">let</span> <span class="text-blue-300">street</span> = user?.address?.street  <span class="text-zinc-500">// Optional("Тверская")</span>
+<span class="text-pink-400">let</span> <span class="text-blue-300">city</span> = user?.address?.city      <span class="text-zinc-500">// Optional("Москва")</span>
+
+<span class="text-zinc-500">// С методами</span>
+<span class="text-pink-400">let</span> <span class="text-blue-300">uppercased</span> = user?.name.<span class="text-yellow-400">uppercased</span>()  <span class="text-zinc-500">// Optional("АННА")</span>
+
+<span class="text-zinc-500">// С массивами</span>
+<span class="text-pink-400">let</span> <span class="text-blue-300">numbers</span>: [<span class="text-cyan-400">Int</span>]? = [<span class="text-orange-400">1</span>, <span class="text-orange-400">2</span>, <span class="text-orange-400">3</span>]
+<span class="text-pink-400">let</span> <span class="text-blue-300">first</span> = numbers?.<span class="text-yellow-400">first</span>  <span class="text-zinc-500">// Optional(1)</span></code></pre>
+                        </div>
+                    </section>
+
+                    <!-- map и flatMap -->
+                    <section class="mb-12">
+                        <h2 class="text-2xl font-bold mb-4">map и flatMap для Optional</h2>
+
+                        <div class="bg-zinc-900 rounded-xl p-4 mb-6">
+                            <pre class="text-sm overflow-x-auto"><code class="language-swift"><span class="text-pink-400">let</span> <span class="text-blue-300">number</span>: <span class="text-cyan-400">Int</span>? = <span class="text-orange-400">5</span>
+
+<span class="text-zinc-500">// map — трансформирует значение внутри Optional</span>
+<span class="text-pink-400">let</span> <span class="text-blue-300">doubled</span> = number.<span class="text-yellow-400">map</span> { $0 * <span class="text-orange-400">2</span> }  <span class="text-zinc-500">// Optional(10)</span>
+
+<span class="text-pink-400">let</span> <span class="text-blue-300">nilNumber</span>: <span class="text-cyan-400">Int</span>? = <span class="text-pink-400">nil</span>
+<span class="text-pink-400">let</span> <span class="text-blue-300">result</span> = nilNumber.<span class="text-yellow-400">map</span> { $0 * <span class="text-orange-400">2</span> }  <span class="text-zinc-500">// nil</span>
+
+<span class="text-zinc-500">// flatMap — когда трансформация возвращает Optional</span>
+<span class="text-pink-400">let</span> <span class="text-blue-300">string</span>: <span class="text-cyan-400">String</span>? = <span class="text-green-400">"42"</span>
+<span class="text-pink-400">let</span> <span class="text-blue-300">parsed</span> = string.<span class="text-yellow-400">flatMap</span> { <span class="text-cyan-400">Int</span>($0) }  <span class="text-zinc-500">// Optional(42)</span>
+
+<span class="text-pink-400">let</span> <span class="text-blue-300">invalid</span>: <span class="text-cyan-400">String</span>? = <span class="text-green-400">"abc"</span>
+<span class="text-pink-400">let</span> <span class="text-blue-300">parsed2</span> = invalid.<span class="text-yellow-400">flatMap</span> { <span class="text-cyan-400">Int</span>($0) }  <span class="text-zinc-500">// nil</span></code></pre>
+                        </div>
+                    </section>
+
+                    <!-- Implicitly Unwrapped -->
+                    <section class="mb-12">
+                        <h2 class="text-2xl font-bold mb-4">Implicitly Unwrapped Optionals</h2>
+                        <p class="text-zinc-600 dark:text-zinc-400 mb-4">
+                            Optional, который автоматически распаковывается при использовании. Обозначается <code>!</code> после типа.
+                        </p>
+
+                        <div class="bg-zinc-900 rounded-xl p-4 mb-6">
+                            <pre class="text-sm overflow-x-auto"><code class="language-swift"><span class="text-zinc-500">// Обычный Optional</span>
+<span class="text-pink-400">var</span> <span class="text-blue-300">optional</span>: <span class="text-cyan-400">String</span>? = <span class="text-green-400">"Hello"</span>
+<span class="text-zinc-500">// print(optional.count)  // ❌ Ошибка — нужно распаковать</span>
+
+<span class="text-zinc-500">// Implicitly Unwrapped Optional</span>
+<span class="text-pink-400">var</span> <span class="text-blue-300">implicitOptional</span>: <span class="text-cyan-400">String</span>! = <span class="text-green-400">"Hello"</span>
+<span class="text-yellow-400">print</span>(implicitOptional.count)  <span class="text-zinc-500">// ✅ Работает — 5</span>
+
+<span class="text-zinc-500">// Но если nil — краш!</span>
+implicitOptional = <span class="text-pink-400">nil</span>
+<span class="text-zinc-500">// print(implicitOptional.count)  // 💥 CRASH!</span></code></pre>
+                        </div>
+
+                        <div class="p-4 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-xl">
+                            <p class="text-amber-800 dark:text-amber-200">
+                                <strong>📌 Когда использовать:</strong> Только когда значение гарантированно появится после инициализации (например, @IBOutlet в UIKit).
+                            </p>
+                        </div>
+                    </section>
+
+                    <!-- Практический пример -->
+                    <section class="mb-12">
+                        <h2 class="text-2xl font-bold mb-4">Практический пример</h2>
+                        <p class="text-zinc-600 dark:text-zinc-400 mb-4">
+                            Обработка JSON ответа от API:
+                        </p>
+
+                        <div class="bg-zinc-900 rounded-xl p-4">
+                            <pre class="text-sm overflow-x-auto"><code class="language-swift"><span class="text-pink-400">struct</span> <span class="text-cyan-400">APIResponse</span> {
+    <span class="text-pink-400">let</span> user: <span class="text-cyan-400">User</span>?
+    <span class="text-pink-400">let</span> error: <span class="text-cyan-400">String</span>?
+}
+
+<span class="text-pink-400">struct</span> <span class="text-cyan-400">User</span> {
+    <span class="text-pink-400">let</span> name: <span class="text-cyan-400">String</span>
+    <span class="text-pink-400">let</span> email: <span class="text-cyan-400">String</span>?
+    <span class="text-pink-400">let</span> avatar: <span class="text-cyan-400">URL</span>?
+}
+
+<span class="text-pink-400">func</span> <span class="text-blue-300">handleResponse</span>(_ response: <span class="text-cyan-400">APIResponse</span>) {
+    <span class="text-zinc-500">// Проверяем ошибку</span>
+    <span class="text-pink-400">if let</span> error = response.error {
+        <span class="text-yellow-400">print</span>(<span class="text-green-400">"Ошибка: \(</span>error<span class="text-green-400">)"</span>)
+        <span class="text-pink-400">return</span>
+    }
+
+    <span class="text-zinc-500">// Получаем пользователя</span>
+    <span class="text-pink-400">guard let</span> user = response.user <span class="text-pink-400">else</span> {
+        <span class="text-yellow-400">print</span>(<span class="text-green-400">"Пользователь не найден"</span>)
+        <span class="text-pink-400">return</span>
+    }
+
+    <span class="text-zinc-500">// Работаем с данными</span>
+    <span class="text-pink-400">let</span> <span class="text-blue-300">email</span> = user.email ?? <span class="text-green-400">"Не указан"</span>
+    <span class="text-pink-400">let</span> <span class="text-blue-300">avatarURL</span> = user.avatar?.absoluteString ?? <span class="text-green-400">"Нет аватара"</span>
+
+    <span class="text-yellow-400">print</span>(<span class="text-green-400">"""
+    Пользователь: \(</span>user.name<span class="text-green-400">)
+    Email: \(</span>email<span class="text-green-400">)
+    Аватар: \(</span>avatarURL<span class="text-green-400">)
+    """</span>)
+}</code></pre>
+                        </div>
+                    </section>
+
+                    <!-- Итоги -->
+                    <section class="mb-8">
+                        <div class="p-6 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-2xl">
+                            <h3 class="font-semibold text-green-800 dark:text-green-200 mb-3">✅ Что вы узнали</h3>
+                            <ul class="space-y-2 text-green-700 dark:text-green-300">
+                                <li>• Что такое Optional и зачем он нужен</li>
+                                <li>• Способы распаковки: if let, guard let, force unwrap</li>
+                                <li>• Nil coalescing operator (??) для значений по умолчанию</li>
+                                <li>• Optional chaining (?.) для безопасного доступа</li>
+                                <li>• map и flatMap для трансформации</li>
+                                <li>• Implicitly Unwrapped Optionals (!)</li>
+                            </ul>
+                        </div>
+                    </section>
+
+                    <section>
+                        <div class="p-6 bg-primary/10 border border-primary/20 rounded-2xl">
+                            <h3 class="font-semibold text-primary mb-3">📚 Следующий шаг</h3>
+                            <p class="text-zinc-600 dark:text-zinc-400">
+                                В следующей главе мы изучим управление памятью в Swift — ARC, strong/weak/unowned ссылки и как избежать утечек памяти.
+                            </p>
+                        </div>
+                    </section>
+
+                </div>
+
+                <nav class="flex justify-between gap-4 mt-16 pt-8 border-t border-zinc-200 dark:border-zinc-800">
+                    <a href="06-protocols.html" class="flex items-center gap-3 px-5 py-3 bg-zinc-100 dark:bg-zinc-800 hover:bg-primary hover:text-white rounded-xl transition-colors">
+                        <span class="text-xl">←</span>
+                        <span class="font-medium">Предыдущая</span>
+                    </a>
+                    <a href="08-memory.html" class="flex items-center gap-3 px-5 py-3 bg-zinc-100 dark:bg-zinc-800 hover:bg-primary hover:text-white rounded-xl transition-colors ml-auto">
+                        <span class="font-medium">Следующая</span>
+                        <span class="text-xl">→</span>
+                    </a>
+                </nav>
+            </article>
+        </main>
+    </div>
+
+    <script>
+        const menuBtn = document.getElementById('menuBtn');
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('overlay');
+        menuBtn.addEventListener('click', () => {
+            sidebar.classList.toggle('-translate-x-full');
+            overlay.classList.toggle('hidden');
+        });
+        function closeSidebar() {
+            sidebar.classList.add('-translate-x-full');
+            overlay.classList.add('hidden');
+        }
+    </script>
+</body>
+</html>

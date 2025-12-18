@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Глава 11: UIKit основы | iOS Book</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'media',
+            theme: { extend: { colors: { primary: '#007AFF' } } }
+        }
+    </script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
+</head>
+<body class="bg-white dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100">
+    <button id="menuBtn" class="lg:hidden fixed top-4 left-4 z-50 p-3 bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-xl shadow-lg">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+        </svg>
+    </button>
+
+    <div class="flex min-h-screen">
+        <aside id="sidebar" class="fixed inset-y-0 left-0 w-72 bg-zinc-50 dark:bg-zinc-900 border-r border-zinc-200 dark:border-zinc-800 flex flex-col z-40 transform -translate-x-full lg:translate-x-0 transition-transform duration-300">
+            <div class="p-5 border-b border-zinc-200 dark:border-zinc-800">
+                <a href="../index.html" class="flex items-center gap-3 text-lg font-semibold hover:text-primary transition-colors">
+                    <div class="w-9 h-9 bg-primary rounded-lg flex items-center justify-center">
+                        <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/>
+                        </svg>
+                    </div>
+                    iOS Book
+                </a>
+            </div>
+            <nav class="flex-1 overflow-y-auto p-4">
+                <div class="space-y-6">
+                    <div>
+                        <h3 class="px-3 mb-2 text-xs font-semibold uppercase tracking-wider text-zinc-400">Введение</h3>
+                        <a href="00-introduction.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">Введение</a>
+                    </div>
+                    <div>
+                        <h3 class="px-3 mb-2 text-xs font-semibold uppercase tracking-wider text-zinc-400">Основы Swift</h3>
+                        <div class="space-y-1">
+                            <a href="01-xcode.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">1. Xcode</a>
+                            <a href="02-swift-basics.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">2. Основы Swift</a>
+                            <a href="03-control-flow.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">3. Control Flow</a>
+                            <a href="04-functions.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">4. Функции</a>
+                            <a href="05-oop.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">5. ООП</a>
+                            <a href="06-protocols.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">6. Протоколы</a>
+                            <a href="07-optionals.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">7. Optionals</a>
+                            <a href="08-memory.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">8. Память</a>
+                            <a href="09-generics.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">9. Generics</a>
+                            <a href="10-concurrency.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">10. Concurrency</a>
+                        </div>
+                    </div>
+                    <div>
+                        <h3 class="px-3 mb-2 text-xs font-semibold uppercase tracking-wider text-zinc-400">UIKit</h3>
+                        <div class="space-y-1">
+                            <a href="11-uikit-basics.html" class="block px-3 py-2 text-sm text-white bg-primary rounded-lg">11. UIKit</a>
+                            <a href="12-programmatic-ui.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">12. Programmatic UI</a>
+                        </div>
+                    </div>
+                    <div>
+                        <h3 class="px-3 mb-2 text-xs font-semibold uppercase tracking-wider text-zinc-400">Архитектура</h3>
+                        <div class="space-y-1">
+                            <a href="13-viper.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">13. VIPER</a>
+                            <a href="14-project-setup.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">14. Project Setup</a>
+                        </div>
+                    </div>
+                    <div>
+                        <h3 class="px-3 mb-2 text-xs font-semibold uppercase tracking-wider text-zinc-400">Практика</h3>
+                        <div class="space-y-1">
+                            <a href="15-authentication.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">15. Auth</a>
+                            <a href="16-products.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">16. Products</a>
+                            <a href="17-cart.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">17. Cart</a>
+                            <a href="18-favorites.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">18. Favorites</a>
+                            <a href="19-orders.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">19. Orders</a>
+                            <a href="20-profile.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">20. Profile</a>
+                        </div>
+                    </div>
+                    <div>
+                        <h3 class="px-3 mb-2 text-xs font-semibold uppercase tracking-wider text-zinc-400">Дополнительно</h3>
+                        <a href="21-reusable-views.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">21. Reusable Views</a>
+                    </div>
+                </div>
+            </nav>
+        </aside>
+
+        <div id="overlay" class="fixed inset-0 bg-black/50 z-30 lg:hidden hidden" onclick="closeSidebar()"></div>
+
+        <main class="flex-1 lg:ml-72">
+            <article class="max-w-3xl mx-auto px-6 sm:px-8 lg:px-12 py-12 lg:py-16">
+                <header class="mb-12 pb-8 border-b border-zinc-200 dark:border-zinc-800">
+                    <span class="text-sm font-semibold uppercase tracking-wider text-primary">Глава 11</span>
+                    <h1 class="text-3xl sm:text-4xl font-bold mt-2 mb-4">UIKit основы</h1>
+                    <p class="text-lg text-zinc-600 dark:text-zinc-400">UIView, UIViewController, Auto Layout</p>
+                </header>
+
+                <div class="prose prose-zinc dark:prose-invert max-w-none">
+
+                    <!-- Введение -->
+                    <section class="mb-12">
+                        <h2 class="text-2xl font-bold mb-4">Что такое UIKit?</h2>
+                        <p class="text-zinc-600 dark:text-zinc-400 mb-4">
+                            UIKit — основной фреймворк Apple для создания интерфейсов iOS-приложений. Он предоставляет
+                            все компоненты UI: кнопки, текстовые поля, таблицы, навигацию и многое другое.
+                        </p>
+
+                        <div class="p-5 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-xl mb-6">
+                            <div class="flex items-start gap-3">
+                                <span class="text-2xl">💡</span>
+                                <div>
+                                    <h4 class="font-semibold text-blue-800 dark:text-blue-200 mb-1">UIKit vs SwiftUI</h4>
+                                    <p class="text-blue-700 dark:text-blue-300 text-sm">
+                                        SwiftUI — новый декларативный фреймворк от Apple. Но UIKit по-прежнему используется
+                                        в большинстве проектов и важен для понимания iOS-разработки.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="grid md:grid-cols-3 gap-4 mb-6">
+                            <div class="p-4 bg-zinc-100 dark:bg-zinc-800/50 rounded-xl text-center">
+                                <div class="text-3xl mb-2">📱</div>
+                                <div class="font-semibold mb-1">UIView</div>
+                                <div class="text-sm text-zinc-500">Базовый элемент UI</div>
+                            </div>
+                            <div class="p-4 bg-zinc-100 dark:bg-zinc-800/50 rounded-xl text-center">
+                                <div class="text-3xl mb-2">🎛️</div>
+                                <div class="font-semibold mb-1">UIViewController</div>
+                                <div class="text-sm text-zinc-500">Управление экраном</div>
+                            </div>
+                            <div class="p-4 bg-zinc-100 dark:bg-zinc-800/50 rounded-xl text-center">
+                                <div class="text-3xl mb-2">📐</div>
+                                <div class="font-semibold mb-1">Auto Layout</div>
+                                <div class="text-sm text-zinc-500">Адаптивная вёрстка</div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- UIView -->
+                    <section class="mb-12">
+                        <h2 class="text-2xl font-bold mb-4">UIView — основа всего</h2>
+                        <p class="text-zinc-600 dark:text-zinc-400 mb-4">
+                            Каждый видимый элемент интерфейса — это UIView или его наследник. Кнопки, лейблы,
+                            изображения — все они наследуются от UIView.
+                        </p>
+
+                        <div class="bg-zinc-900 rounded-xl p-4 mb-6">
+                            <div class="text-xs text-zinc-500 mb-2 font-mono">Создание UIView</div>
+                            <pre class="text-sm overflow-x-auto"><code><span class="text-zinc-500">// Создаём view с размерами</span>
+<span class="text-pink-400">let</span> redBox = <span class="text-cyan-400">UIView</span>(frame: <span class="text-cyan-400">CGRect</span>(x: <span class="text-purple-400">20</span>, y: <span class="text-purple-400">100</span>, width: <span class="text-purple-400">100</span>, height: <span class="text-purple-400">100</span>))
+redBox.backgroundColor = .<span class="text-cyan-400">systemRed</span>
+redBox.layer.cornerRadius = <span class="text-purple-400">12</span>
+
+<span class="text-zinc-500">// Добавляем на экран</span>
+view.<span class="text-cyan-400">addSubview</span>(redBox)
+
+<span class="text-zinc-500">// Основные свойства UIView</span>
+redBox.backgroundColor = .<span class="text-cyan-400">blue</span>      <span class="text-zinc-500">// Цвет фона</span>
+redBox.alpha = <span class="text-purple-400">0.8</span>                   <span class="text-zinc-500">// Прозрачность (0-1)</span>
+redBox.isHidden = <span class="text-purple-400">false</span>              <span class="text-zinc-500">// Скрыть/показать</span>
+redBox.isUserInteractionEnabled = <span class="text-purple-400">true</span>  <span class="text-zinc-500">// Разрешить касания</span>
+redBox.clipsToBounds = <span class="text-purple-400">true</span>          <span class="text-zinc-500">// Обрезать содержимое</span>
+
+<span class="text-zinc-500">// Layer для эффектов</span>
+redBox.layer.cornerRadius = <span class="text-purple-400">16</span>
+redBox.layer.borderWidth = <span class="text-purple-400">2</span>
+redBox.layer.borderColor = <span class="text-cyan-400">UIColor</span>.white.cgColor
+redBox.layer.shadowColor = <span class="text-cyan-400">UIColor</span>.black.cgColor
+redBox.layer.shadowOffset = <span class="text-cyan-400">CGSize</span>(width: <span class="text-purple-400">0</span>, height: <span class="text-purple-400">4</span>)
+redBox.layer.shadowRadius = <span class="text-purple-400">8</span>
+redBox.layer.shadowOpacity = <span class="text-purple-400">0.2</span></code></pre>
+                        </div>
+
+                        <h3 class="text-xl font-semibold mb-3">Иерархия View</h3>
+                        <p class="text-zinc-600 dark:text-zinc-400 mb-4">
+                            Views образуют дерево: у каждого view есть superview (родитель) и subviews (дочерние элементы).
+                        </p>
+
+                        <div class="bg-zinc-900 rounded-xl p-4 mb-6">
+                            <div class="text-xs text-zinc-500 mb-2 font-mono">Иерархия views</div>
+                            <pre class="text-sm overflow-x-auto"><code><span class="text-zinc-500">// Родительский view</span>
+<span class="text-pink-400">let</span> container = <span class="text-cyan-400">UIView</span>()
+
+<span class="text-zinc-500">// Дочерние views</span>
+<span class="text-pink-400">let</span> header = <span class="text-cyan-400">UIView</span>()
+<span class="text-pink-400">let</span> content = <span class="text-cyan-400">UIView</span>()
+
+container.<span class="text-cyan-400">addSubview</span>(header)    <span class="text-zinc-500">// Добавить</span>
+container.<span class="text-cyan-400">addSubview</span>(content)
+
+header.<span class="text-cyan-400">removeFromSuperview</span>()    <span class="text-zinc-500">// Удалить</span>
+
+<span class="text-zinc-500">// Управление порядком</span>
+container.<span class="text-cyan-400">bringSubviewToFront</span>(content)  <span class="text-zinc-500">// На передний план</span>
+container.<span class="text-cyan-400">sendSubviewToBack</span>(header)     <span class="text-zinc-500">// На задний план</span>
+
+<span class="text-zinc-500">// Навигация по иерархии</span>
+header.superview       <span class="text-zinc-500">// → container</span>
+container.subviews     <span class="text-zinc-500">// → [header, content]</span></code></pre>
+                        </div>
+                    </section>
+
+                    <!-- Basic Components -->
+                    <section class="mb-12">
+                        <h2 class="text-2xl font-bold mb-4">Основные компоненты</h2>
+
+                        <div class="bg-zinc-900 rounded-xl p-4 mb-6">
+                            <div class="text-xs text-zinc-500 mb-2 font-mono">UILabel — текст</div>
+                            <pre class="text-sm overflow-x-auto"><code><span class="text-pink-400">let</span> label = <span class="text-cyan-400">UILabel</span>()
+label.text = <span class="text-green-400">"Привет, мир!"</span>
+label.textColor = .<span class="text-cyan-400">label</span>
+label.font = .<span class="text-cyan-400">systemFont</span>(ofSize: <span class="text-purple-400">18</span>, weight: .<span class="text-cyan-400">semibold</span>)
+label.textAlignment = .<span class="text-cyan-400">center</span>
+label.numberOfLines = <span class="text-purple-400">0</span>  <span class="text-zinc-500">// Многострочный текст</span></code></pre>
+                        </div>
+
+                        <div class="bg-zinc-900 rounded-xl p-4 mb-6">
+                            <div class="text-xs text-zinc-500 mb-2 font-mono">UIButton — кнопка</div>
+                            <pre class="text-sm overflow-x-auto"><code><span class="text-pink-400">let</span> button = <span class="text-cyan-400">UIButton</span>(type: .<span class="text-cyan-400">system</span>)
+button.<span class="text-cyan-400">setTitle</span>(<span class="text-green-400">"Купить"</span>, for: .<span class="text-cyan-400">normal</span>)
+button.<span class="text-cyan-400">setTitleColor</span>(.<span class="text-cyan-400">white</span>, for: .<span class="text-cyan-400">normal</span>)
+button.backgroundColor = .<span class="text-cyan-400">systemBlue</span>
+button.layer.cornerRadius = <span class="text-purple-400">12</span>
+
+<span class="text-zinc-500">// Обработка нажатия</span>
+button.<span class="text-cyan-400">addTarget</span>(<span class="text-pink-400">self</span>, action: <span class="text-yellow-300">#selector</span>(buyTapped), for: .<span class="text-cyan-400">touchUpInside</span>)
+
+@<span class="text-yellow-300">objc</span> <span class="text-pink-400">func</span> <span class="text-cyan-400">buyTapped</span>() {
+    <span class="text-cyan-400">print</span>(<span class="text-green-400">"Кнопка нажата!"</span>)
+}</code></pre>
+                        </div>
+
+                        <div class="bg-zinc-900 rounded-xl p-4 mb-6">
+                            <div class="text-xs text-zinc-500 mb-2 font-mono">UIImageView — изображение</div>
+                            <pre class="text-sm overflow-x-auto"><code><span class="text-pink-400">let</span> imageView = <span class="text-cyan-400">UIImageView</span>()
+imageView.image = <span class="text-cyan-400">UIImage</span>(named: <span class="text-green-400">"product"</span>)
+imageView.contentMode = .<span class="text-cyan-400">scaleAspectFill</span>  <span class="text-zinc-500">// Заполнить с обрезкой</span>
+imageView.clipsToBounds = <span class="text-purple-400">true</span>
+imageView.layer.cornerRadius = <span class="text-purple-400">8</span>
+
+<span class="text-zinc-500">// SF Symbols</span>
+imageView.image = <span class="text-cyan-400">UIImage</span>(systemName: <span class="text-green-400">"cart.fill"</span>)
+imageView.tintColor = .<span class="text-cyan-400">systemBlue</span></code></pre>
+                        </div>
+
+                        <div class="bg-zinc-900 rounded-xl p-4 mb-6">
+                            <div class="text-xs text-zinc-500 mb-2 font-mono">UITextField — поле ввода</div>
+                            <pre class="text-sm overflow-x-auto"><code><span class="text-pink-400">let</span> textField = <span class="text-cyan-400">UITextField</span>()
+textField.placeholder = <span class="text-green-400">"Введите email"</span>
+textField.borderStyle = .<span class="text-cyan-400">roundedRect</span>
+textField.keyboardType = .<span class="text-cyan-400">emailAddress</span>
+textField.autocapitalizationType = .<span class="text-cyan-400">none</span>
+textField.returnKeyType = .<span class="text-cyan-400">done</span>
+
+<span class="text-zinc-500">// Делегат для обработки событий</span>
+textField.delegate = <span class="text-pink-400">self</span></code></pre>
+                        </div>
+                    </section>
+
+                    <!-- UIViewController -->
+                    <section class="mb-12">
+                        <h2 class="text-2xl font-bold mb-4">UIViewController</h2>
+                        <p class="text-zinc-600 dark:text-zinc-400 mb-4">
+                            UIViewController управляет одним экраном приложения. Он содержит view и обрабатывает
+                            его жизненный цикл.
+                        </p>
+
+                        <div class="bg-zinc-900 rounded-xl p-4 mb-6">
+                            <div class="text-xs text-zinc-500 mb-2 font-mono">Структура ViewController</div>
+                            <pre class="text-sm overflow-x-auto"><code><span class="text-pink-400">class</span> <span class="text-yellow-300">ProductsViewController</span>: <span class="text-cyan-400">UIViewController</span> {
+
+    <span class="text-zinc-500">// UI элементы</span>
+    <span class="text-pink-400">private let</span> titleLabel = <span class="text-cyan-400">UILabel</span>()
+    <span class="text-pink-400">private let</span> tableView = <span class="text-cyan-400">UITableView</span>()
+
+    <span class="text-pink-400">override func</span> <span class="text-cyan-400">viewDidLoad</span>() {
+        <span class="text-pink-400">super</span>.<span class="text-cyan-400">viewDidLoad</span>()
+        <span class="text-cyan-400">setupUI</span>()
+    }
+
+    <span class="text-pink-400">private func</span> <span class="text-cyan-400">setupUI</span>() {
+        view.backgroundColor = .<span class="text-cyan-400">systemBackground</span>
+        title = <span class="text-green-400">"Товары"</span>
+
+        view.<span class="text-cyan-400">addSubview</span>(titleLabel)
+        view.<span class="text-cyan-400">addSubview</span>(tableView)
+        <span class="text-zinc-500">// ... настройка constraints</span>
+    }
+}</code></pre>
+                        </div>
+
+                        <h3 class="text-xl font-semibold mb-3">Жизненный цикл</h3>
+                        <p class="text-zinc-600 dark:text-zinc-400 mb-4">
+                            ViewController проходит через несколько этапов жизненного цикла:
+                        </p>
+
+                        <div class="bg-zinc-900 rounded-xl p-4 mb-6">
+                            <div class="text-xs text-zinc-500 mb-2 font-mono">Lifecycle методы</div>
+                            <pre class="text-sm overflow-x-auto"><code><span class="text-pink-400">override func</span> <span class="text-cyan-400">viewDidLoad</span>() {
+    <span class="text-pink-400">super</span>.<span class="text-cyan-400">viewDidLoad</span>()
+    <span class="text-zinc-500">// View загружена. Настройка UI</span>
+}
+
+<span class="text-pink-400">override func</span> <span class="text-cyan-400">viewWillAppear</span>(_ animated: <span class="text-cyan-400">Bool</span>) {
+    <span class="text-pink-400">super</span>.<span class="text-cyan-400">viewWillAppear</span>(animated)
+    <span class="text-zinc-500">// Экран скоро появится. Обновить данные</span>
+}
+
+<span class="text-pink-400">override func</span> <span class="text-cyan-400">viewDidAppear</span>(_ animated: <span class="text-cyan-400">Bool</span>) {
+    <span class="text-pink-400">super</span>.<span class="text-cyan-400">viewDidAppear</span>(animated)
+    <span class="text-zinc-500">// Экран появился. Запустить анимации</span>
+}
+
+<span class="text-pink-400">override func</span> <span class="text-cyan-400">viewWillDisappear</span>(_ animated: <span class="text-cyan-400">Bool</span>) {
+    <span class="text-pink-400">super</span>.<span class="text-cyan-400">viewWillDisappear</span>(animated)
+    <span class="text-zinc-500">// Экран скоро исчезнет. Сохранить состояние</span>
+}
+
+<span class="text-pink-400">override func</span> <span class="text-cyan-400">viewDidDisappear</span>(_ animated: <span class="text-cyan-400">Bool</span>) {
+    <span class="text-pink-400">super</span>.<span class="text-cyan-400">viewDidDisappear</span>(animated)
+    <span class="text-zinc-500">// Экран исчез. Очистить ресурсы</span>
+}</code></pre>
+                        </div>
+
+                        <div class="flex justify-center mb-6">
+                            <div class="inline-flex flex-col gap-2 p-4 bg-zinc-100 dark:bg-zinc-800 rounded-xl text-sm">
+                                <div class="px-3 py-1 bg-blue-100 dark:bg-blue-900 rounded text-center">viewDidLoad</div>
+                                <div class="text-center text-zinc-400">↓</div>
+                                <div class="px-3 py-1 bg-green-100 dark:bg-green-900 rounded text-center">viewWillAppear</div>
+                                <div class="text-center text-zinc-400">↓</div>
+                                <div class="px-3 py-1 bg-green-100 dark:bg-green-900 rounded text-center">viewDidAppear</div>
+                                <div class="text-center text-zinc-400">↓</div>
+                                <div class="px-3 py-1 bg-amber-100 dark:bg-amber-900 rounded text-center">viewWillDisappear</div>
+                                <div class="text-center text-zinc-400">↓</div>
+                                <div class="px-3 py-1 bg-amber-100 dark:bg-amber-900 rounded text-center">viewDidDisappear</div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Navigation -->
+                    <section class="mb-12">
+                        <h2 class="text-2xl font-bold mb-4">Навигация</h2>
+
+                        <div class="bg-zinc-900 rounded-xl p-4 mb-6">
+                            <div class="text-xs text-zinc-500 mb-2 font-mono">UINavigationController</div>
+                            <pre class="text-sm overflow-x-auto"><code><span class="text-zinc-500">// Создание navigation controller</span>
+<span class="text-pink-400">let</span> productsVC = <span class="text-yellow-300">ProductsViewController</span>()
+<span class="text-pink-400">let</span> navController = <span class="text-cyan-400">UINavigationController</span>(rootViewController: productsVC)
+
+<span class="text-zinc-500">// Переход на новый экран (push)</span>
+<span class="text-pink-400">let</span> detailVC = <span class="text-yellow-300">ProductDetailViewController</span>()
+navigationController?.<span class="text-cyan-400">pushViewController</span>(detailVC, animated: <span class="text-purple-400">true</span>)
+
+<span class="text-zinc-500">// Вернуться назад (pop)</span>
+navigationController?.<span class="text-cyan-400">popViewController</span>(animated: <span class="text-purple-400">true</span>)
+
+<span class="text-zinc-500">// Вернуться в начало</span>
+navigationController?.<span class="text-cyan-400">popToRootViewController</span>(animated: <span class="text-purple-400">true</span>)</code></pre>
+                        </div>
+
+                        <div class="bg-zinc-900 rounded-xl p-4 mb-6">
+                            <div class="text-xs text-zinc-500 mb-2 font-mono">Модальное окно (present)</div>
+                            <pre class="text-sm overflow-x-auto"><code><span class="text-zinc-500">// Показать модальное окно</span>
+<span class="text-pink-400">let</span> cartVC = <span class="text-yellow-300">CartViewController</span>()
+cartVC.modalPresentationStyle = .<span class="text-cyan-400">pageSheet</span>  <span class="text-zinc-500">// или .fullScreen</span>
+<span class="text-cyan-400">present</span>(cartVC, animated: <span class="text-purple-400">true</span>)
+
+<span class="text-zinc-500">// Закрыть модальное окно</span>
+<span class="text-cyan-400">dismiss</span>(animated: <span class="text-purple-400">true</span>)</code></pre>
+                        </div>
+
+                        <div class="bg-zinc-900 rounded-xl p-4 mb-6">
+                            <div class="text-xs text-zinc-500 mb-2 font-mono">UITabBarController</div>
+                            <pre class="text-sm overflow-x-auto"><code><span class="text-pink-400">let</span> tabBarController = <span class="text-cyan-400">UITabBarController</span>()
+
+<span class="text-pink-400">let</span> productsVC = <span class="text-yellow-300">ProductsViewController</span>()
+productsVC.tabBarItem = <span class="text-cyan-400">UITabBarItem</span>(
+    title: <span class="text-green-400">"Товары"</span>,
+    image: <span class="text-cyan-400">UIImage</span>(systemName: <span class="text-green-400">"square.grid.2x2"</span>),
+    tag: <span class="text-purple-400">0</span>
+)
+
+<span class="text-pink-400">let</span> cartVC = <span class="text-yellow-300">CartViewController</span>()
+cartVC.tabBarItem = <span class="text-cyan-400">UITabBarItem</span>(
+    title: <span class="text-green-400">"Корзина"</span>,
+    image: <span class="text-cyan-400">UIImage</span>(systemName: <span class="text-green-400">"cart"</span>),
+    tag: <span class="text-purple-400">1</span>
+)
+
+<span class="text-pink-400">let</span> profileVC = <span class="text-yellow-300">ProfileViewController</span>()
+profileVC.tabBarItem = <span class="text-cyan-400">UITabBarItem</span>(
+    title: <span class="text-green-400">"Профиль"</span>,
+    image: <span class="text-cyan-400">UIImage</span>(systemName: <span class="text-green-400">"person"</span>),
+    tag: <span class="text-purple-400">2</span>
+)
+
+tabBarController.viewControllers = [
+    <span class="text-cyan-400">UINavigationController</span>(rootViewController: productsVC),
+    <span class="text-cyan-400">UINavigationController</span>(rootViewController: cartVC),
+    <span class="text-cyan-400">UINavigationController</span>(rootViewController: profileVC)
+]</code></pre>
+                        </div>
+                    </section>
+
+                    <!-- Auto Layout Basics -->
+                    <section class="mb-12">
+                        <h2 class="text-2xl font-bold mb-4">Auto Layout — основы</h2>
+                        <p class="text-zinc-600 dark:text-zinc-400 mb-4">
+                            Auto Layout позволяет создавать адаптивные интерфейсы, которые правильно отображаются
+                            на любых размерах экрана. Он использует constraints (ограничения) для описания позиции и размера views.
+                        </p>
+
+                        <div class="p-5 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-xl mb-6">
+                            <div class="flex items-start gap-3">
+                                <span class="text-2xl">⚠️</span>
+                                <div>
+                                    <h4 class="font-semibold text-amber-800 dark:text-amber-200 mb-1">Важно!</h4>
+                                    <p class="text-amber-700 dark:text-amber-300 text-sm">
+                                        Для программного Auto Layout установите
+                                        <code>translatesAutoresizingMaskIntoConstraints = false</code>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-zinc-900 rounded-xl p-4 mb-6">
+                            <div class="text-xs text-zinc-500 mb-2 font-mono">Базовые constraints</div>
+                            <pre class="text-sm overflow-x-auto"><code><span class="text-pink-400">let</span> button = <span class="text-cyan-400">UIButton</span>()
+view.<span class="text-cyan-400">addSubview</span>(button)
+button.translatesAutoresizingMaskIntoConstraints = <span class="text-purple-400">false</span>
+
+<span class="text-cyan-400">NSLayoutConstraint</span>.<span class="text-cyan-400">activate</span>([
+    <span class="text-zinc-500">// Центрировать по горизонтали</span>
+    button.centerXAnchor.<span class="text-cyan-400">constraint</span>(equalTo: view.centerXAnchor),
+    <span class="text-zinc-500">// 200 от верха</span>
+    button.topAnchor.<span class="text-cyan-400">constraint</span>(equalTo: view.topAnchor, constant: <span class="text-purple-400">200</span>),
+    <span class="text-zinc-500">// Ширина 200</span>
+    button.widthAnchor.<span class="text-cyan-400">constraint</span>(equalToConstant: <span class="text-purple-400">200</span>),
+    <span class="text-zinc-500">// Высота 50</span>
+    button.heightAnchor.<span class="text-cyan-400">constraint</span>(equalToConstant: <span class="text-purple-400">50</span>)
+])</code></pre>
+                        </div>
+
+                        <div class="bg-zinc-900 rounded-xl p-4 mb-6">
+                            <div class="text-xs text-zinc-500 mb-2 font-mono">Привязка к краям (edges)</div>
+                            <pre class="text-sm overflow-x-auto"><code><span class="text-pink-400">let</span> tableView = <span class="text-cyan-400">UITableView</span>()
+view.<span class="text-cyan-400">addSubview</span>(tableView)
+tableView.translatesAutoresizingMaskIntoConstraints = <span class="text-purple-400">false</span>
+
+<span class="text-cyan-400">NSLayoutConstraint</span>.<span class="text-cyan-400">activate</span>([
+    <span class="text-zinc-500">// Растянуть на весь экран</span>
+    tableView.topAnchor.<span class="text-cyan-400">constraint</span>(equalTo: view.safeAreaLayoutGuide.topAnchor),
+    tableView.leadingAnchor.<span class="text-cyan-400">constraint</span>(equalTo: view.leadingAnchor),
+    tableView.trailingAnchor.<span class="text-cyan-400">constraint</span>(equalTo: view.trailingAnchor),
+    tableView.bottomAnchor.<span class="text-cyan-400">constraint</span>(equalTo: view.bottomAnchor)
+])</code></pre>
+                        </div>
+                    </section>
+
+                    <!-- Summary -->
+                    <section class="mb-12">
+                        <h2 class="text-2xl font-bold mb-4">Что вы узнали</h2>
+                        <div class="grid md:grid-cols-2 gap-4">
+                            <div class="p-4 bg-zinc-100 dark:bg-zinc-800/50 rounded-xl">
+                                <div class="flex items-center gap-2 mb-2">
+                                    <span class="text-green-500">✓</span>
+                                    <span class="font-medium">UIView</span>
+                                </div>
+                                <p class="text-sm text-zinc-600 dark:text-zinc-400">Базовый компонент интерфейса</p>
+                            </div>
+                            <div class="p-4 bg-zinc-100 dark:bg-zinc-800/50 rounded-xl">
+                                <div class="flex items-center gap-2 mb-2">
+                                    <span class="text-green-500">✓</span>
+                                    <span class="font-medium">UIViewController</span>
+                                </div>
+                                <p class="text-sm text-zinc-600 dark:text-zinc-400">Жизненный цикл экрана</p>
+                            </div>
+                            <div class="p-4 bg-zinc-100 dark:bg-zinc-800/50 rounded-xl">
+                                <div class="flex items-center gap-2 mb-2">
+                                    <span class="text-green-500">✓</span>
+                                    <span class="font-medium">Навигация</span>
+                                </div>
+                                <p class="text-sm text-zinc-600 dark:text-zinc-400">Push, present, tab bar</p>
+                            </div>
+                            <div class="p-4 bg-zinc-100 dark:bg-zinc-800/50 rounded-xl">
+                                <div class="flex items-center gap-2 mb-2">
+                                    <span class="text-green-500">✓</span>
+                                    <span class="font-medium">Auto Layout</span>
+                                </div>
+                                <p class="text-sm text-zinc-600 dark:text-zinc-400">Constraints для адаптивности</p>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Next Chapter -->
+                    <section class="p-6 bg-gradient-to-r from-primary/10 to-purple-500/10 rounded-2xl">
+                        <h3 class="font-semibold mb-2">Следующая глава</h3>
+                        <p class="text-zinc-600 dark:text-zinc-400 mb-4">
+                            В следующей главе подробно разберём создание UI программно — UITableView, UICollectionView и Auto Layout на практике.
+                        </p>
+                        <a href="12-programmatic-ui.html" class="inline-flex items-center gap-2 text-primary font-medium hover:underline">
+                            Глава 12: Programmatic UI
+                            <span>→</span>
+                        </a>
+                    </section>
+
+                </div>
+
+                <nav class="flex justify-between gap-4 mt-16 pt-8 border-t border-zinc-200 dark:border-zinc-800">
+                    <a href="10-concurrency.html" class="flex items-center gap-3 px-5 py-3 bg-zinc-100 dark:bg-zinc-800 hover:bg-primary hover:text-white rounded-xl transition-colors">
+                        <span class="text-xl">←</span>
+                        <span class="font-medium">Предыдущая</span>
+                    </a>
+                    <a href="12-programmatic-ui.html" class="flex items-center gap-3 px-5 py-3 bg-zinc-100 dark:bg-zinc-800 hover:bg-primary hover:text-white rounded-xl transition-colors ml-auto">
+                        <span class="font-medium">Следующая</span>
+                        <span class="text-xl">→</span>
+                    </a>
+                </nav>
+            </article>
+        </main>
+    </div>
+
+    <script>
+        const menuBtn = document.getElementById('menuBtn');
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('overlay');
+        menuBtn.addEventListener('click', () => {
+            sidebar.classList.toggle('-translate-x-full');
+            overlay.classList.toggle('hidden');
+        });
+        function closeSidebar() {
+            sidebar.classList.add('-translate-x-full');
+            overlay.classList.add('hidden');
+        }
+    </script>
+</body>
+</html>

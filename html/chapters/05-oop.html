@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Глава 05: ООП в Swift | iOS Book</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'media',
+            theme: { extend: { colors: { primary: '#007AFF' } } }
+        }
+    </script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
+</head>
+<body class="bg-white dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100">
+    <button id="menuBtn" class="lg:hidden fixed top-4 left-4 z-50 p-3 bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-xl shadow-lg">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+        </svg>
+    </button>
+
+    <div class="flex min-h-screen">
+        <aside id="sidebar" class="fixed inset-y-0 left-0 w-72 bg-zinc-50 dark:bg-zinc-900 border-r border-zinc-200 dark:border-zinc-800 flex flex-col z-40 transform -translate-x-full lg:translate-x-0 transition-transform duration-300">
+            <div class="p-5 border-b border-zinc-200 dark:border-zinc-800">
+                <a href="../index.html" class="flex items-center gap-3 text-lg font-semibold hover:text-primary transition-colors">
+                    <div class="w-9 h-9 bg-primary rounded-lg flex items-center justify-center">
+                        <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/>
+                        </svg>
+                    </div>
+                    iOS Book
+                </a>
+            </div>
+            <nav class="flex-1 overflow-y-auto p-4">
+                <div class="space-y-6">
+                    <div>
+                        <h3 class="px-3 mb-2 text-xs font-semibold uppercase tracking-wider text-zinc-400">Введение</h3>
+                        <a href="00-introduction.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">Введение</a>
+                    </div>
+                    <div>
+                        <h3 class="px-3 mb-2 text-xs font-semibold uppercase tracking-wider text-zinc-400">Основы Swift</h3>
+                        <div class="space-y-1">
+                            <a href="01-xcode.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">1. Xcode</a>
+                            <a href="02-swift-basics.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">2. Основы Swift</a>
+                            <a href="03-control-flow.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">3. Control Flow</a>
+                            <a href="04-functions.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">4. Функции</a>
+                            <a href="05-oop.html" class="block px-3 py-2 text-sm text-white bg-primary rounded-lg">5. ООП</a>
+                            <a href="06-protocols.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">6. Протоколы</a>
+                            <a href="07-optionals.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">7. Optionals</a>
+                            <a href="08-memory.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">8. Память</a>
+                            <a href="09-generics.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">9. Generics</a>
+                            <a href="10-concurrency.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">10. Concurrency</a>
+                        </div>
+                    </div>
+                    <div>
+                        <h3 class="px-3 mb-2 text-xs font-semibold uppercase tracking-wider text-zinc-400">UIKit</h3>
+                        <div class="space-y-1">
+                            <a href="11-uikit-basics.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">11. UIKit</a>
+                            <a href="12-programmatic-ui.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">12. Programmatic UI</a>
+                        </div>
+                    </div>
+                    <div>
+                        <h3 class="px-3 mb-2 text-xs font-semibold uppercase tracking-wider text-zinc-400">Архитектура</h3>
+                        <div class="space-y-1">
+                            <a href="13-viper.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">13. VIPER</a>
+                            <a href="14-project-setup.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">14. Project Setup</a>
+                        </div>
+                    </div>
+                    <div>
+                        <h3 class="px-3 mb-2 text-xs font-semibold uppercase tracking-wider text-zinc-400">Практика</h3>
+                        <div class="space-y-1">
+                            <a href="15-authentication.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">15. Auth</a>
+                            <a href="16-products.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">16. Products</a>
+                            <a href="17-cart.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">17. Cart</a>
+                            <a href="18-favorites.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">18. Favorites</a>
+                            <a href="19-orders.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">19. Orders</a>
+                            <a href="20-profile.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">20. Profile</a>
+                        </div>
+                    </div>
+                    <div>
+                        <h3 class="px-3 mb-2 text-xs font-semibold uppercase tracking-wider text-zinc-400">Дополнительно</h3>
+                        <a href="21-reusable-views.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">21. Reusable Views</a>
+                    </div>
+                </div>
+            </nav>
+        </aside>
+
+        <div id="overlay" class="fixed inset-0 bg-black/50 z-30 lg:hidden hidden" onclick="closeSidebar()"></div>
+
+        <main class="flex-1 lg:ml-72">
+            <article class="max-w-3xl mx-auto px-6 sm:px-8 lg:px-12 py-12 lg:py-16">
+                <header class="mb-12 pb-8 border-b border-zinc-200 dark:border-zinc-800">
+                    <span class="text-sm font-semibold uppercase tracking-wider text-primary">Глава 05</span>
+                    <h1 class="text-3xl sm:text-4xl font-bold mt-2 mb-4">ООП в Swift</h1>
+                    <p class="text-lg text-zinc-600 dark:text-zinc-400">Классы, структуры, наследование</p>
+                </header>
+
+                <div class="prose prose-zinc dark:prose-invert max-w-none">
+
+                    <!-- Struct vs Class -->
+                    <section class="mb-12">
+                        <h2 class="text-2xl font-bold mb-4">Struct vs Class</h2>
+                        <p class="text-zinc-600 dark:text-zinc-400 mb-4">
+                            В Swift есть два основных типа для создания собственных типов данных: <strong>структуры</strong> и <strong>классы</strong>.
+                        </p>
+
+                        <div class="overflow-x-auto mb-6">
+                            <table class="w-full text-left">
+                                <thead>
+                                    <tr class="border-b border-zinc-200 dark:border-zinc-700">
+                                        <th class="py-3 pr-4 font-semibold">Особенность</th>
+                                        <th class="py-3 pr-4 font-semibold text-orange-500">Struct</th>
+                                        <th class="py-3 font-semibold text-blue-500">Class</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="text-zinc-600 dark:text-zinc-400">
+                                    <tr class="border-b border-zinc-100 dark:border-zinc-800">
+                                        <td class="py-3 pr-4">Тип</td>
+                                        <td class="py-3 pr-4">Value type (копия)</td>
+                                        <td>Reference type (ссылка)</td>
+                                    </tr>
+                                    <tr class="border-b border-zinc-100 dark:border-zinc-800">
+                                        <td class="py-3 pr-4">Наследование</td>
+                                        <td class="py-3 pr-4">❌ Нет</td>
+                                        <td>✅ Да</td>
+                                    </tr>
+                                    <tr class="border-b border-zinc-100 dark:border-zinc-800">
+                                        <td class="py-3 pr-4">Deinitializer</td>
+                                        <td class="py-3 pr-4">❌ Нет</td>
+                                        <td>✅ deinit</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="py-3 pr-4">Memberwise init</td>
+                                        <td class="py-3 pr-4">✅ Автоматически</td>
+                                        <td>❌ Нужен вручную</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="p-4 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-xl">
+                            <p class="text-blue-800 dark:text-blue-200">
+                                <strong>💡 Правило Apple:</strong> Используйте <code>struct</code> по умолчанию. Используйте <code>class</code> когда нужно наследование или identity (одна сущность в разных местах).
+                            </p>
+                        </div>
+                    </section>
+
+                    <!-- Structures -->
+                    <section class="mb-12">
+                        <h2 class="text-2xl font-bold mb-4">Структуры (Struct)</h2>
+
+                        <div class="bg-zinc-900 rounded-xl p-4 mb-6">
+                            <div class="flex items-center gap-2 mb-3">
+                                <div class="w-3 h-3 rounded-full bg-red-500"></div>
+                                <div class="w-3 h-3 rounded-full bg-yellow-500"></div>
+                                <div class="w-3 h-3 rounded-full bg-green-500"></div>
+                                <span class="text-zinc-400 text-sm ml-2">Swift</span>
+                            </div>
+                            <pre class="text-sm overflow-x-auto"><code class="language-swift"><span class="text-pink-400">struct</span> <span class="text-cyan-400">Product</span> {
+    <span class="text-pink-400">var</span> name: <span class="text-cyan-400">String</span>
+    <span class="text-pink-400">var</span> price: <span class="text-cyan-400">Double</span>
+    <span class="text-pink-400">var</span> inStock: <span class="text-cyan-400">Bool</span>
+
+    <span class="text-zinc-500">// Computed property</span>
+    <span class="text-pink-400">var</span> displayPrice: <span class="text-cyan-400">String</span> {
+        <span class="text-green-400">"$\(</span>price<span class="text-green-400">)"</span>
+    }
+
+    <span class="text-zinc-500">// Method</span>
+    <span class="text-pink-400">func</span> <span class="text-blue-300">description</span>() -> <span class="text-cyan-400">String</span> {
+        <span class="text-green-400">"\(</span>name<span class="text-green-400">) - \(</span>displayPrice<span class="text-green-400">)"</span>
+    }
+
+    <span class="text-zinc-500">// Mutating method (изменяет struct)</span>
+    <span class="text-pink-400">mutating func</span> <span class="text-blue-300">applyDiscount</span>(_ percent: <span class="text-cyan-400">Double</span>) {
+        price *= (<span class="text-orange-400">1</span> - percent / <span class="text-orange-400">100</span>)
+    }
+}
+
+<span class="text-zinc-500">// Автоматический memberwise initializer</span>
+<span class="text-pink-400">var</span> <span class="text-blue-300">iphone</span> = Product(name: <span class="text-green-400">"iPhone"</span>, price: <span class="text-orange-400">999</span>, inStock: <span class="text-orange-400">true</span>)
+iphone.applyDiscount(<span class="text-orange-400">10</span>)
+<span class="text-yellow-400">print</span>(iphone.displayPrice)  <span class="text-zinc-500">// "$899.1"</span></code></pre>
+                        </div>
+
+                        <h3 class="text-xl font-semibold mb-3">Value Type — копирование</h3>
+                        <div class="bg-zinc-900 rounded-xl p-4">
+                            <pre class="text-sm overflow-x-auto"><code class="language-swift"><span class="text-pink-400">var</span> <span class="text-blue-300">product1</span> = Product(name: <span class="text-green-400">"MacBook"</span>, price: <span class="text-orange-400">1999</span>, inStock: <span class="text-orange-400">true</span>)
+<span class="text-pink-400">var</span> <span class="text-blue-300">product2</span> = product1  <span class="text-zinc-500">// Создаётся КОПИЯ</span>
+
+product2.price = <span class="text-orange-400">1499</span>
+
+<span class="text-yellow-400">print</span>(product1.price)  <span class="text-zinc-500">// 1999 — оригинал не изменился</span>
+<span class="text-yellow-400">print</span>(product2.price)  <span class="text-zinc-500">// 1499</span></code></pre>
+                        </div>
+                    </section>
+
+                    <!-- Classes -->
+                    <section class="mb-12">
+                        <h2 class="text-2xl font-bold mb-4">Классы (Class)</h2>
+
+                        <div class="bg-zinc-900 rounded-xl p-4 mb-6">
+                            <pre class="text-sm overflow-x-auto"><code class="language-swift"><span class="text-pink-400">class</span> <span class="text-cyan-400">User</span> {
+    <span class="text-pink-400">var</span> name: <span class="text-cyan-400">String</span>
+    <span class="text-pink-400">var</span> email: <span class="text-cyan-400">String</span>
+    <span class="text-pink-400">private(set) var</span> id: <span class="text-cyan-400">String</span>
+
+    <span class="text-zinc-500">// Обязательный initializer</span>
+    <span class="text-pink-400">init</span>(name: <span class="text-cyan-400">String</span>, email: <span class="text-cyan-400">String</span>) {
+        <span class="text-pink-400">self</span>.name = name
+        <span class="text-pink-400">self</span>.email = email
+        <span class="text-pink-400">self</span>.id = <span class="text-cyan-400">UUID</span>().<span class="text-yellow-400">uuidString</span>
+    }
+
+    <span class="text-pink-400">func</span> <span class="text-blue-300">displayInfo</span>() {
+        <span class="text-yellow-400">print</span>(<span class="text-green-400">"User: \(</span>name<span class="text-green-400">) (\(</span>email<span class="text-green-400">))"</span>)
+    }
+
+    <span class="text-zinc-500">// Deinitializer — вызывается при удалении объекта</span>
+    <span class="text-pink-400">deinit</span> {
+        <span class="text-yellow-400">print</span>(<span class="text-green-400">"User \(</span>name<span class="text-green-400">) удалён"</span>)
+    }
+}
+
+<span class="text-pink-400">let</span> <span class="text-blue-300">user</span> = User(name: <span class="text-green-400">"Анна"</span>, email: <span class="text-green-400">"anna@mail.ru"</span>)
+user.displayInfo()</code></pre>
+                        </div>
+
+                        <h3 class="text-xl font-semibold mb-3">Reference Type — ссылка</h3>
+                        <div class="bg-zinc-900 rounded-xl p-4">
+                            <pre class="text-sm overflow-x-auto"><code class="language-swift"><span class="text-pink-400">let</span> <span class="text-blue-300">user1</span> = User(name: <span class="text-green-400">"Иван"</span>, email: <span class="text-green-400">"ivan@mail.ru"</span>)
+<span class="text-pink-400">let</span> <span class="text-blue-300">user2</span> = user1  <span class="text-zinc-500">// Копируется ССЫЛКА, не объект</span>
+
+user2.name = <span class="text-green-400">"Пётр"</span>
+
+<span class="text-yellow-400">print</span>(user1.name)  <span class="text-zinc-500">// "Пётр" — оба указывают на один объект!</span>
+<span class="text-yellow-400">print</span>(user2.name)  <span class="text-zinc-500">// "Пётр"</span>
+
+<span class="text-zinc-500">// Проверка идентичности</span>
+user1 === user2  <span class="text-zinc-500">// true — один и тот же объект</span></code></pre>
+                        </div>
+                    </section>
+
+                    <!-- Наследование -->
+                    <section class="mb-12">
+                        <h2 class="text-2xl font-bold mb-4">Наследование</h2>
+                        <p class="text-zinc-600 dark:text-zinc-400 mb-4">
+                            Только классы поддерживают наследование. Дочерний класс получает все свойства и методы родительского.
+                        </p>
+
+                        <div class="bg-zinc-900 rounded-xl p-4 mb-6">
+                            <pre class="text-sm overflow-x-auto"><code class="language-swift"><span class="text-zinc-500">// Базовый класс</span>
+<span class="text-pink-400">class</span> <span class="text-cyan-400">Vehicle</span> {
+    <span class="text-pink-400">var</span> brand: <span class="text-cyan-400">String</span>
+    <span class="text-pink-400">var</span> speed: <span class="text-cyan-400">Int</span> = <span class="text-orange-400">0</span>
+
+    <span class="text-pink-400">init</span>(brand: <span class="text-cyan-400">String</span>) {
+        <span class="text-pink-400">self</span>.brand = brand
+    }
+
+    <span class="text-pink-400">func</span> <span class="text-blue-300">accelerate</span>() {
+        speed += <span class="text-orange-400">10</span>
+    }
+
+    <span class="text-pink-400">func</span> <span class="text-blue-300">description</span>() -> <span class="text-cyan-400">String</span> {
+        <span class="text-green-400">"\(</span>brand<span class="text-green-400">): \(</span>speed<span class="text-green-400">) км/ч"</span>
+    }
+}
+
+<span class="text-zinc-500">// Дочерний класс</span>
+<span class="text-pink-400">class</span> <span class="text-cyan-400">Car</span>: <span class="text-cyan-400">Vehicle</span> {
+    <span class="text-pink-400">var</span> doors: <span class="text-cyan-400">Int</span>
+
+    <span class="text-pink-400">init</span>(brand: <span class="text-cyan-400">String</span>, doors: <span class="text-cyan-400">Int</span>) {
+        <span class="text-pink-400">self</span>.doors = doors
+        <span class="text-pink-400">super</span>.<span class="text-yellow-400">init</span>(brand: brand)  <span class="text-zinc-500">// Вызов родительского init</span>
+    }
+
+    <span class="text-zinc-500">// Переопределение метода</span>
+    <span class="text-pink-400">override func</span> <span class="text-blue-300">accelerate</span>() {
+        speed += <span class="text-orange-400">20</span>  <span class="text-zinc-500">// Машина быстрее разгоняется</span>
+    }
+
+    <span class="text-pink-400">override func</span> <span class="text-blue-300">description</span>() -> <span class="text-cyan-400">String</span> {
+        <span class="text-pink-400">super</span>.<span class="text-yellow-400">description</span>() + <span class="text-green-400">", \(</span>doors<span class="text-green-400">) двери"</span>
+    }
+}
+
+<span class="text-pink-400">let</span> <span class="text-blue-300">car</span> = Car(brand: <span class="text-green-400">"BMW"</span>, doors: <span class="text-orange-400">4</span>)
+car.accelerate()
+<span class="text-yellow-400">print</span>(car.description())  <span class="text-zinc-500">// "BMW: 20 км/ч, 4 двери"</span></code></pre>
+                        </div>
+
+                        <div class="p-4 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-xl">
+                            <p class="text-amber-800 dark:text-amber-200">
+                                <strong>⚠️ final:</strong> Добавьте <code>final</code> перед <code>class</code> или методом, чтобы запретить наследование/переопределение.
+                            </p>
+                        </div>
+                    </section>
+
+                    <!-- Enums -->
+                    <section class="mb-12">
+                        <h2 class="text-2xl font-bold mb-4">Перечисления (Enum)</h2>
+                        <p class="text-zinc-600 dark:text-zinc-400 mb-4">
+                            Мощный инструмент для определения группы связанных значений.
+                        </p>
+
+                        <div class="bg-zinc-900 rounded-xl p-4 mb-6">
+                            <pre class="text-sm overflow-x-auto"><code class="language-swift"><span class="text-zinc-500">// Простой enum</span>
+<span class="text-pink-400">enum</span> <span class="text-cyan-400">OrderStatus</span> {
+    <span class="text-pink-400">case</span> pending
+    <span class="text-pink-400">case</span> processing
+    <span class="text-pink-400">case</span> shipped
+    <span class="text-pink-400">case</span> delivered
+    <span class="text-pink-400">case</span> cancelled
+}
+
+<span class="text-pink-400">var</span> <span class="text-blue-300">status</span> = OrderStatus.pending
+status = .shipped  <span class="text-zinc-500">// Краткая форма</span>
+
+<span class="text-zinc-500">// Использование со switch</span>
+<span class="text-pink-400">switch</span> status {
+<span class="text-pink-400">case</span> .pending:
+    <span class="text-yellow-400">print</span>(<span class="text-green-400">"Ожидает обработки"</span>)
+<span class="text-pink-400">case</span> .processing:
+    <span class="text-yellow-400">print</span>(<span class="text-green-400">"Обрабатывается"</span>)
+<span class="text-pink-400">case</span> .shipped:
+    <span class="text-yellow-400">print</span>(<span class="text-green-400">"В пути"</span>)
+<span class="text-pink-400">case</span> .delivered:
+    <span class="text-yellow-400">print</span>(<span class="text-green-400">"Доставлен"</span>)
+<span class="text-pink-400">case</span> .cancelled:
+    <span class="text-yellow-400">print</span>(<span class="text-green-400">"Отменён"</span>)
+}</code></pre>
+                        </div>
+
+                        <h3 class="text-xl font-semibold mb-3">Enum с Raw Values</h3>
+                        <div class="bg-zinc-900 rounded-xl p-4 mb-6">
+                            <pre class="text-sm overflow-x-auto"><code class="language-swift"><span class="text-pink-400">enum</span> <span class="text-cyan-400">HTTPStatus</span>: <span class="text-cyan-400">Int</span> {
+    <span class="text-pink-400">case</span> ok = <span class="text-orange-400">200</span>
+    <span class="text-pink-400">case</span> notFound = <span class="text-orange-400">404</span>
+    <span class="text-pink-400">case</span> serverError = <span class="text-orange-400">500</span>
+}
+
+<span class="text-pink-400">let</span> <span class="text-blue-300">status</span> = HTTPStatus.ok
+status.rawValue  <span class="text-zinc-500">// 200</span>
+
+<span class="text-zinc-500">// Создание из raw value</span>
+<span class="text-pink-400">let</span> <span class="text-blue-300">fromCode</span> = HTTPStatus(rawValue: <span class="text-orange-400">404</span>)  <span class="text-zinc-500">// .notFound</span></code></pre>
+                        </div>
+
+                        <h3 class="text-xl font-semibold mb-3">Enum с Associated Values</h3>
+                        <div class="bg-zinc-900 rounded-xl p-4">
+                            <pre class="text-sm overflow-x-auto"><code class="language-swift"><span class="text-pink-400">enum</span> <span class="text-cyan-400">PaymentMethod</span> {
+    <span class="text-pink-400">case</span> cash
+    <span class="text-pink-400">case</span> card(lastDigits: <span class="text-cyan-400">String</span>)
+    <span class="text-pink-400">case</span> applePay(deviceId: <span class="text-cyan-400">String</span>)
+}
+
+<span class="text-pink-400">let</span> <span class="text-blue-300">payment</span> = PaymentMethod.card(lastDigits: <span class="text-green-400">"4242"</span>)
+
+<span class="text-pink-400">switch</span> payment {
+<span class="text-pink-400">case</span> .cash:
+    <span class="text-yellow-400">print</span>(<span class="text-green-400">"Оплата наличными"</span>)
+<span class="text-pink-400">case</span> .card(<span class="text-pink-400">let</span> digits):
+    <span class="text-yellow-400">print</span>(<span class="text-green-400">"Карта **** \(</span>digits<span class="text-green-400">)"</span>)
+<span class="text-pink-400">case</span> .applePay(<span class="text-pink-400">let</span> id):
+    <span class="text-yellow-400">print</span>(<span class="text-green-400">"Apple Pay: \(</span>id<span class="text-green-400">)"</span>)
+}</code></pre>
+                        </div>
+                    </section>
+
+                    <!-- Access Control -->
+                    <section class="mb-12">
+                        <h2 class="text-2xl font-bold mb-4">Модификаторы доступа</h2>
+
+                        <div class="grid md:grid-cols-2 gap-4 mb-6">
+                            <div class="p-4 bg-zinc-50 dark:bg-zinc-800/50 rounded-xl">
+                                <h4 class="font-semibold text-primary mb-2">open / public</h4>
+                                <p class="text-sm text-zinc-500">Доступен везде (open позволяет наследование из других модулей)</p>
+                            </div>
+                            <div class="p-4 bg-zinc-50 dark:bg-zinc-800/50 rounded-xl">
+                                <h4 class="font-semibold text-primary mb-2">internal</h4>
+                                <p class="text-sm text-zinc-500">По умолчанию. Доступен в рамках модуля</p>
+                            </div>
+                            <div class="p-4 bg-zinc-50 dark:bg-zinc-800/50 rounded-xl">
+                                <h4 class="font-semibold text-primary mb-2">fileprivate</h4>
+                                <p class="text-sm text-zinc-500">Доступен только в текущем файле</p>
+                            </div>
+                            <div class="p-4 bg-zinc-50 dark:bg-zinc-800/50 rounded-xl">
+                                <h4 class="font-semibold text-primary mb-2">private</h4>
+                                <p class="text-sm text-zinc-500">Доступен только внутри типа</p>
+                            </div>
+                        </div>
+
+                        <div class="bg-zinc-900 rounded-xl p-4">
+                            <pre class="text-sm overflow-x-auto"><code class="language-swift"><span class="text-pink-400">class</span> <span class="text-cyan-400">BankAccount</span> {
+    <span class="text-pink-400">private var</span> balance: <span class="text-cyan-400">Double</span> = <span class="text-orange-400">0</span>
+    <span class="text-pink-400">private(set) var</span> transactions: [<span class="text-cyan-400">String</span>] = []
+
+    <span class="text-pink-400">func</span> <span class="text-blue-300">deposit</span>(_ amount: <span class="text-cyan-400">Double</span>) {
+        balance += amount
+        transactions.<span class="text-yellow-400">append</span>(<span class="text-green-400">"Пополнение: +$\(</span>amount<span class="text-green-400">)"</span>)
+    }
+
+    <span class="text-pink-400">func</span> <span class="text-blue-300">getBalance</span>() -> <span class="text-cyan-400">Double</span> {
+        balance
+    }
+}
+
+<span class="text-pink-400">let</span> <span class="text-blue-300">account</span> = BankAccount()
+account.deposit(<span class="text-orange-400">100</span>)
+<span class="text-zinc-500">// account.balance = 0        // ❌ Ошибка — private</span>
+<span class="text-zinc-500">// account.transactions = []   // ❌ Ошибка — private(set)</span>
+<span class="text-yellow-400">print</span>(account.transactions)   <span class="text-zinc-500">// ✅ Чтение разрешено</span></code></pre>
+                        </div>
+                    </section>
+
+                    <!-- Итоги -->
+                    <section class="mb-8">
+                        <div class="p-6 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-2xl">
+                            <h3 class="font-semibold text-green-800 dark:text-green-200 mb-3">✅ Что вы узнали</h3>
+                            <ul class="space-y-2 text-green-700 dark:text-green-300">
+                                <li>• Разницу между struct (value type) и class (reference type)</li>
+                                <li>• Когда использовать struct, а когда class</li>
+                                <li>• Наследование и переопределение методов</li>
+                                <li>• Мощные возможности enum с raw/associated values</li>
+                                <li>• Модификаторы доступа: public, internal, private</li>
+                            </ul>
+                        </div>
+                    </section>
+
+                    <section>
+                        <div class="p-6 bg-primary/10 border border-primary/20 rounded-2xl">
+                            <h3 class="font-semibold text-primary mb-3">📚 Следующий шаг</h3>
+                            <p class="text-zinc-600 dark:text-zinc-400">
+                                В следующей главе мы изучим протоколы — мощный инструмент для определения контрактов и достижения полиморфизма без наследования.
+                            </p>
+                        </div>
+                    </section>
+
+                </div>
+
+                <nav class="flex justify-between gap-4 mt-16 pt-8 border-t border-zinc-200 dark:border-zinc-800">
+                    <a href="04-functions.html" class="flex items-center gap-3 px-5 py-3 bg-zinc-100 dark:bg-zinc-800 hover:bg-primary hover:text-white rounded-xl transition-colors">
+                        <span class="text-xl">←</span>
+                        <span class="font-medium">Предыдущая</span>
+                    </a>
+                    <a href="06-protocols.html" class="flex items-center gap-3 px-5 py-3 bg-zinc-100 dark:bg-zinc-800 hover:bg-primary hover:text-white rounded-xl transition-colors ml-auto">
+                        <span class="font-medium">Следующая</span>
+                        <span class="text-xl">→</span>
+                    </a>
+                </nav>
+            </article>
+        </main>
+    </div>
+
+    <script>
+        const menuBtn = document.getElementById('menuBtn');
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('overlay');
+        menuBtn.addEventListener('click', () => {
+            sidebar.classList.toggle('-translate-x-full');
+            overlay.classList.toggle('hidden');
+        });
+        function closeSidebar() {
+            sidebar.classList.add('-translate-x-full');
+            overlay.classList.add('hidden');
+        }
+    </script>
+</body>
+</html>

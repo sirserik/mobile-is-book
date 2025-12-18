@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Глава 03: Управление потоком | iOS Book</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'media',
+            theme: { extend: { colors: { primary: '#007AFF' } } }
+        }
+    </script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
+</head>
+<body class="bg-white dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100">
+    <button id="menuBtn" class="lg:hidden fixed top-4 left-4 z-50 p-3 bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-xl shadow-lg">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+        </svg>
+    </button>
+
+    <div class="flex min-h-screen">
+        <aside id="sidebar" class="fixed inset-y-0 left-0 w-72 bg-zinc-50 dark:bg-zinc-900 border-r border-zinc-200 dark:border-zinc-800 flex flex-col z-40 transform -translate-x-full lg:translate-x-0 transition-transform duration-300">
+            <div class="p-5 border-b border-zinc-200 dark:border-zinc-800">
+                <a href="../index.html" class="flex items-center gap-3 text-lg font-semibold hover:text-primary transition-colors">
+                    <div class="w-9 h-9 bg-primary rounded-lg flex items-center justify-center">
+                        <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/>
+                        </svg>
+                    </div>
+                    iOS Book
+                </a>
+            </div>
+            <nav class="flex-1 overflow-y-auto p-4">
+                <div class="space-y-6">
+                    <div>
+                        <h3 class="px-3 mb-2 text-xs font-semibold uppercase tracking-wider text-zinc-400">Введение</h3>
+                        <a href="00-introduction.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">Введение</a>
+                    </div>
+                    <div>
+                        <h3 class="px-3 mb-2 text-xs font-semibold uppercase tracking-wider text-zinc-400">Основы Swift</h3>
+                        <div class="space-y-1">
+                            <a href="01-xcode.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">1. Xcode</a>
+                            <a href="02-swift-basics.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">2. Основы Swift</a>
+                            <a href="03-control-flow.html" class="block px-3 py-2 text-sm text-white bg-primary rounded-lg">3. Control Flow</a>
+                            <a href="04-functions.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">4. Функции</a>
+                            <a href="05-oop.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">5. ООП</a>
+                            <a href="06-protocols.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">6. Протоколы</a>
+                            <a href="07-optionals.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">7. Optionals</a>
+                            <a href="08-memory.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">8. Память</a>
+                            <a href="09-generics.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">9. Generics</a>
+                            <a href="10-concurrency.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">10. Concurrency</a>
+                        </div>
+                    </div>
+                    <div>
+                        <h3 class="px-3 mb-2 text-xs font-semibold uppercase tracking-wider text-zinc-400">UIKit</h3>
+                        <div class="space-y-1">
+                            <a href="11-uikit-basics.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">11. UIKit</a>
+                            <a href="12-programmatic-ui.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">12. Programmatic UI</a>
+                        </div>
+                    </div>
+                    <div>
+                        <h3 class="px-3 mb-2 text-xs font-semibold uppercase tracking-wider text-zinc-400">Архитектура</h3>
+                        <div class="space-y-1">
+                            <a href="13-viper.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">13. VIPER</a>
+                            <a href="14-project-setup.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">14. Project Setup</a>
+                        </div>
+                    </div>
+                    <div>
+                        <h3 class="px-3 mb-2 text-xs font-semibold uppercase tracking-wider text-zinc-400">Практика</h3>
+                        <div class="space-y-1">
+                            <a href="15-authentication.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">15. Auth</a>
+                            <a href="16-products.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">16. Products</a>
+                            <a href="17-cart.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">17. Cart</a>
+                            <a href="18-favorites.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">18. Favorites</a>
+                            <a href="19-orders.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">19. Orders</a>
+                            <a href="20-profile.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">20. Profile</a>
+                        </div>
+                    </div>
+                    <div>
+                        <h3 class="px-3 mb-2 text-xs font-semibold uppercase tracking-wider text-zinc-400">Дополнительно</h3>
+                        <a href="21-reusable-views.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">21. Reusable Views</a>
+                    </div>
+                </div>
+            </nav>
+        </aside>
+
+        <div id="overlay" class="fixed inset-0 bg-black/50 z-30 lg:hidden hidden" onclick="closeSidebar()"></div>
+
+        <main class="flex-1 lg:ml-72">
+            <article class="max-w-3xl mx-auto px-6 sm:px-8 lg:px-12 py-12 lg:py-16">
+                <header class="mb-12 pb-8 border-b border-zinc-200 dark:border-zinc-800">
+                    <span class="text-sm font-semibold uppercase tracking-wider text-primary">Глава 03</span>
+                    <h1 class="text-3xl sm:text-4xl font-bold mt-2 mb-4">Управление потоком</h1>
+                    <p class="text-lg text-zinc-600 dark:text-zinc-400">Условия, циклы и коллекции</p>
+                </header>
+
+                <div class="prose prose-zinc dark:prose-invert max-w-none">
+
+                    <!-- Условные операторы -->
+                    <section class="mb-12">
+                        <h2 class="text-2xl font-bold mb-4">Условные операторы</h2>
+
+                        <h3 class="text-xl font-semibold mb-3">if / else</h3>
+                        <p class="text-zinc-600 dark:text-zinc-400 mb-4">
+                            Основной способ принятия решений в коде. В Swift условие должно быть типа <code>Bool</code>.
+                        </p>
+
+                        <div class="bg-zinc-900 rounded-xl p-4 mb-6">
+                            <div class="flex items-center gap-2 mb-3">
+                                <div class="w-3 h-3 rounded-full bg-red-500"></div>
+                                <div class="w-3 h-3 rounded-full bg-yellow-500"></div>
+                                <div class="w-3 h-3 rounded-full bg-green-500"></div>
+                                <span class="text-zinc-400 text-sm ml-2">Swift</span>
+                            </div>
+                            <pre class="text-sm overflow-x-auto"><code class="language-swift"><span class="text-pink-400">let</span> <span class="text-blue-300">age</span> = <span class="text-orange-400">18</span>
+
+<span class="text-pink-400">if</span> age >= <span class="text-orange-400">18</span> {
+    <span class="text-yellow-400">print</span>(<span class="text-green-400">"Вы совершеннолетний"</span>)
+} <span class="text-pink-400">else</span> {
+    <span class="text-yellow-400">print</span>(<span class="text-green-400">"Вы несовершеннолетний"</span>)
+}
+
+<span class="text-zinc-500">// Несколько условий</span>
+<span class="text-pink-400">let</span> <span class="text-blue-300">score</span> = <span class="text-orange-400">85</span>
+
+<span class="text-pink-400">if</span> score >= <span class="text-orange-400">90</span> {
+    <span class="text-yellow-400">print</span>(<span class="text-green-400">"Отлично!"</span>)
+} <span class="text-pink-400">else if</span> score >= <span class="text-orange-400">70</span> {
+    <span class="text-yellow-400">print</span>(<span class="text-green-400">"Хорошо"</span>)
+} <span class="text-pink-400">else if</span> score >= <span class="text-orange-400">50</span> {
+    <span class="text-yellow-400">print</span>(<span class="text-green-400">"Удовлетворительно"</span>)
+} <span class="text-pink-400">else</span> {
+    <span class="text-yellow-400">print</span>(<span class="text-green-400">"Неудовлетворительно"</span>)
+}</code></pre>
+                        </div>
+
+                        <div class="p-4 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-xl mb-6">
+                            <p class="text-amber-800 dark:text-amber-200">
+                                <strong>⚠️ Важно:</strong> В Swift нельзя использовать числа вместо Bool. Код <code>if 1 { }</code> вызовет ошибку компиляции.
+                            </p>
+                        </div>
+                    </section>
+
+                    <!-- Тернарный оператор -->
+                    <section class="mb-12">
+                        <h2 class="text-2xl font-bold mb-4">Тернарный оператор</h2>
+                        <p class="text-zinc-600 dark:text-zinc-400 mb-4">
+                            Краткая форма if/else для простых условий.
+                        </p>
+
+                        <div class="bg-zinc-900 rounded-xl p-4 mb-6">
+                            <pre class="text-sm overflow-x-auto"><code class="language-swift"><span class="text-pink-400">let</span> <span class="text-blue-300">age</span> = <span class="text-orange-400">20</span>
+<span class="text-pink-400">let</span> <span class="text-blue-300">status</span> = age >= <span class="text-orange-400">18</span> ? <span class="text-green-400">"взрослый"</span> : <span class="text-green-400">"ребёнок"</span>
+<span class="text-zinc-500">// status = "взрослый"</span>
+
+<span class="text-zinc-500">// Эквивалентно:</span>
+<span class="text-pink-400">let</span> <span class="text-blue-300">status2</span>: <span class="text-cyan-400">String</span>
+<span class="text-pink-400">if</span> age >= <span class="text-orange-400">18</span> {
+    status2 = <span class="text-green-400">"взрослый"</span>
+} <span class="text-pink-400">else</span> {
+    status2 = <span class="text-green-400">"ребёнок"</span>
+}</code></pre>
+                        </div>
+                    </section>
+
+                    <!-- Switch -->
+                    <section class="mb-12">
+                        <h2 class="text-2xl font-bold mb-4">Switch</h2>
+                        <p class="text-zinc-600 dark:text-zinc-400 mb-4">
+                            Мощный оператор выбора. В Swift switch должен быть исчерпывающим (exhaustive).
+                        </p>
+
+                        <div class="bg-zinc-900 rounded-xl p-4 mb-6">
+                            <pre class="text-sm overflow-x-auto"><code class="language-swift"><span class="text-pink-400">let</span> <span class="text-blue-300">day</span> = <span class="text-orange-400">3</span>
+
+<span class="text-pink-400">switch</span> day {
+<span class="text-pink-400">case</span> <span class="text-orange-400">1</span>:
+    <span class="text-yellow-400">print</span>(<span class="text-green-400">"Понедельник"</span>)
+<span class="text-pink-400">case</span> <span class="text-orange-400">2</span>:
+    <span class="text-yellow-400">print</span>(<span class="text-green-400">"Вторник"</span>)
+<span class="text-pink-400">case</span> <span class="text-orange-400">3</span>:
+    <span class="text-yellow-400">print</span>(<span class="text-green-400">"Среда"</span>)
+<span class="text-pink-400">case</span> <span class="text-orange-400">4</span>, <span class="text-orange-400">5</span>:
+    <span class="text-yellow-400">print</span>(<span class="text-green-400">"Четверг или Пятница"</span>)
+<span class="text-pink-400">case</span> <span class="text-orange-400">6</span>...<span class="text-orange-400">7</span>:
+    <span class="text-yellow-400">print</span>(<span class="text-green-400">"Выходные"</span>)
+<span class="text-pink-400">default</span>:
+    <span class="text-yellow-400">print</span>(<span class="text-green-400">"Неизвестный день"</span>)
+}</code></pre>
+                        </div>
+
+                        <h3 class="text-xl font-semibold mb-3">Switch со строками</h3>
+                        <div class="bg-zinc-900 rounded-xl p-4 mb-6">
+                            <pre class="text-sm overflow-x-auto"><code class="language-swift"><span class="text-pink-400">let</span> <span class="text-blue-300">fruit</span> = <span class="text-green-400">"яблоко"</span>
+
+<span class="text-pink-400">switch</span> fruit {
+<span class="text-pink-400">case</span> <span class="text-green-400">"яблоко"</span>:
+    <span class="text-yellow-400">print</span>(<span class="text-green-400">"Это яблоко 🍎"</span>)
+<span class="text-pink-400">case</span> <span class="text-green-400">"банан"</span>, <span class="text-green-400">"апельсин"</span>:
+    <span class="text-yellow-400">print</span>(<span class="text-green-400">"Тропический фрукт"</span>)
+<span class="text-pink-400">default</span>:
+    <span class="text-yellow-400">print</span>(<span class="text-green-400">"Неизвестный фрукт"</span>)
+}</code></pre>
+                        </div>
+
+                        <h3 class="text-xl font-semibold mb-3">Switch с кортежами</h3>
+                        <div class="bg-zinc-900 rounded-xl p-4">
+                            <pre class="text-sm overflow-x-auto"><code class="language-swift"><span class="text-pink-400">let</span> <span class="text-blue-300">point</span> = (<span class="text-orange-400">2</span>, <span class="text-orange-400">0</span>)
+
+<span class="text-pink-400">switch</span> point {
+<span class="text-pink-400">case</span> (<span class="text-orange-400">0</span>, <span class="text-orange-400">0</span>):
+    <span class="text-yellow-400">print</span>(<span class="text-green-400">"Начало координат"</span>)
+<span class="text-pink-400">case</span> (_, <span class="text-orange-400">0</span>):
+    <span class="text-yellow-400">print</span>(<span class="text-green-400">"На оси X"</span>)
+<span class="text-pink-400">case</span> (<span class="text-orange-400">0</span>, _):
+    <span class="text-yellow-400">print</span>(<span class="text-green-400">"На оси Y"</span>)
+<span class="text-pink-400">case</span> (<span class="text-orange-400">-2</span>...<span class="text-orange-400">2</span>, <span class="text-orange-400">-2</span>...<span class="text-orange-400">2</span>):
+    <span class="text-yellow-400">print</span>(<span class="text-green-400">"Внутри квадрата"</span>)
+<span class="text-pink-400">default</span>:
+    <span class="text-yellow-400">print</span>(<span class="text-green-400">"Снаружи квадрата"</span>)
+}</code></pre>
+                        </div>
+                    </section>
+
+                    <!-- Циклы -->
+                    <section class="mb-12">
+                        <h2 class="text-2xl font-bold mb-4">Циклы</h2>
+
+                        <h3 class="text-xl font-semibold mb-3">for-in</h3>
+                        <p class="text-zinc-600 dark:text-zinc-400 mb-4">Основной цикл для итерации по коллекциям и диапазонам.</p>
+
+                        <div class="bg-zinc-900 rounded-xl p-4 mb-6">
+                            <pre class="text-sm overflow-x-auto"><code class="language-swift"><span class="text-zinc-500">// Диапазон (включая конец)</span>
+<span class="text-pink-400">for</span> i <span class="text-pink-400">in</span> <span class="text-orange-400">1</span>...<span class="text-orange-400">5</span> {
+    <span class="text-yellow-400">print</span>(i)  <span class="text-zinc-500">// 1, 2, 3, 4, 5</span>
+}
+
+<span class="text-zinc-500">// Диапазон (не включая конец)</span>
+<span class="text-pink-400">for</span> i <span class="text-pink-400">in</span> <span class="text-orange-400">1</span>..<<span class="text-orange-400">5</span> {
+    <span class="text-yellow-400">print</span>(i)  <span class="text-zinc-500">// 1, 2, 3, 4</span>
+}
+
+<span class="text-zinc-500">// Массив</span>
+<span class="text-pink-400">let</span> <span class="text-blue-300">fruits</span> = [<span class="text-green-400">"🍎"</span>, <span class="text-green-400">"🍌"</span>, <span class="text-green-400">"🍊"</span>]
+<span class="text-pink-400">for</span> fruit <span class="text-pink-400">in</span> fruits {
+    <span class="text-yellow-400">print</span>(fruit)
+}
+
+<span class="text-zinc-500">// С индексом</span>
+<span class="text-pink-400">for</span> (index, fruit) <span class="text-pink-400">in</span> fruits.<span class="text-yellow-400">enumerated</span>() {
+    <span class="text-yellow-400">print</span>(<span class="text-green-400">"\(</span>index<span class="text-green-400">): \(</span>fruit<span class="text-green-400">)"</span>)
+}
+
+<span class="text-zinc-500">// Словарь</span>
+<span class="text-pink-400">let</span> <span class="text-blue-300">ages</span> = [<span class="text-green-400">"Алексей"</span>: <span class="text-orange-400">25</span>, <span class="text-green-400">"Мария"</span>: <span class="text-orange-400">30</span>]
+<span class="text-pink-400">for</span> (name, age) <span class="text-pink-400">in</span> ages {
+    <span class="text-yellow-400">print</span>(<span class="text-green-400">"\(</span>name<span class="text-green-400">): \(</span>age<span class="text-green-400">) лет"</span>)
+}</code></pre>
+                        </div>
+
+                        <h3 class="text-xl font-semibold mb-3">while</h3>
+                        <p class="text-zinc-600 dark:text-zinc-400 mb-4">Выполняется пока условие истинно.</p>
+
+                        <div class="bg-zinc-900 rounded-xl p-4 mb-6">
+                            <pre class="text-sm overflow-x-auto"><code class="language-swift"><span class="text-pink-400">var</span> <span class="text-blue-300">count</span> = <span class="text-orange-400">5</span>
+
+<span class="text-pink-400">while</span> count > <span class="text-orange-400">0</span> {
+    <span class="text-yellow-400">print</span>(<span class="text-green-400">"Отсчёт: \(</span>count<span class="text-green-400">)"</span>)
+    count -= <span class="text-orange-400">1</span>
+}
+<span class="text-yellow-400">print</span>(<span class="text-green-400">"Пуск! 🚀"</span>)</code></pre>
+                        </div>
+
+                        <h3 class="text-xl font-semibold mb-3">repeat-while</h3>
+                        <p class="text-zinc-600 dark:text-zinc-400 mb-4">Гарантированно выполняется хотя бы один раз (аналог do-while).</p>
+
+                        <div class="bg-zinc-900 rounded-xl p-4">
+                            <pre class="text-sm overflow-x-auto"><code class="language-swift"><span class="text-pink-400">var</span> <span class="text-blue-300">number</span> = <span class="text-orange-400">1</span>
+
+<span class="text-pink-400">repeat</span> {
+    <span class="text-yellow-400">print</span>(<span class="text-green-400">"Число: \(</span>number<span class="text-green-400">)"</span>)
+    number *= <span class="text-orange-400">2</span>
+} <span class="text-pink-400">while</span> number < <span class="text-orange-400">100</span>
+<span class="text-zinc-500">// Выведет: 1, 2, 4, 8, 16, 32, 64</span></code></pre>
+                        </div>
+                    </section>
+
+                    <!-- Управление циклом -->
+                    <section class="mb-12">
+                        <h2 class="text-2xl font-bold mb-4">Управление циклами</h2>
+
+                        <div class="grid md:grid-cols-2 gap-4 mb-6">
+                            <div class="p-4 bg-zinc-50 dark:bg-zinc-800/50 rounded-xl">
+                                <h4 class="font-semibold text-primary mb-2">break</h4>
+                                <p class="text-sm text-zinc-500">Немедленно выходит из цикла</p>
+                            </div>
+                            <div class="p-4 bg-zinc-50 dark:bg-zinc-800/50 rounded-xl">
+                                <h4 class="font-semibold text-primary mb-2">continue</h4>
+                                <p class="text-sm text-zinc-500">Переходит к следующей итерации</p>
+                            </div>
+                        </div>
+
+                        <div class="bg-zinc-900 rounded-xl p-4 mb-6">
+                            <pre class="text-sm overflow-x-auto"><code class="language-swift"><span class="text-zinc-500">// break — найти первое чётное</span>
+<span class="text-pink-400">for</span> i <span class="text-pink-400">in</span> <span class="text-orange-400">1</span>...<span class="text-orange-400">10</span> {
+    <span class="text-pink-400">if</span> i % <span class="text-orange-400">2</span> == <span class="text-orange-400">0</span> {
+        <span class="text-yellow-400">print</span>(<span class="text-green-400">"Первое чётное: \(</span>i<span class="text-green-400">)"</span>)
+        <span class="text-pink-400">break</span>
+    }
+}
+
+<span class="text-zinc-500">// continue — пропустить нечётные</span>
+<span class="text-pink-400">for</span> i <span class="text-pink-400">in</span> <span class="text-orange-400">1</span>...<span class="text-orange-400">10</span> {
+    <span class="text-pink-400">if</span> i % <span class="text-orange-400">2</span> != <span class="text-orange-400">0</span> {
+        <span class="text-pink-400">continue</span>
+    }
+    <span class="text-yellow-400">print</span>(i)  <span class="text-zinc-500">// 2, 4, 6, 8, 10</span>
+}</code></pre>
+                        </div>
+
+                        <h3 class="text-xl font-semibold mb-3">Метки циклов</h3>
+                        <p class="text-zinc-600 dark:text-zinc-400 mb-4">Для выхода из вложенных циклов.</p>
+
+                        <div class="bg-zinc-900 rounded-xl p-4">
+                            <pre class="text-sm overflow-x-auto"><code class="language-swift"><span class="text-cyan-400">outerLoop</span>: <span class="text-pink-400">for</span> i <span class="text-pink-400">in</span> <span class="text-orange-400">1</span>...<span class="text-orange-400">3</span> {
+    <span class="text-pink-400">for</span> j <span class="text-pink-400">in</span> <span class="text-orange-400">1</span>...<span class="text-orange-400">3</span> {
+        <span class="text-pink-400">if</span> i == <span class="text-orange-400">2</span> && j == <span class="text-orange-400">2</span> {
+            <span class="text-pink-400">break</span> <span class="text-cyan-400">outerLoop</span>  <span class="text-zinc-500">// Выйти из обоих циклов</span>
+        }
+        <span class="text-yellow-400">print</span>(<span class="text-green-400">"(\(</span>i<span class="text-green-400">), \(</span>j<span class="text-green-400">))"</span>)
+    }
+}
+<span class="text-zinc-500">// (1, 1), (1, 2), (1, 3), (2, 1)</span></code></pre>
+                        </div>
+                    </section>
+
+                    <!-- Guard -->
+                    <section class="mb-12">
+                        <h2 class="text-2xl font-bold mb-4">Guard</h2>
+                        <p class="text-zinc-600 dark:text-zinc-400 mb-4">
+                            Ранний выход из функции если условие не выполнено. Улучшает читаемость кода.
+                        </p>
+
+                        <div class="bg-zinc-900 rounded-xl p-4 mb-6">
+                            <pre class="text-sm overflow-x-auto"><code class="language-swift"><span class="text-pink-400">func</span> <span class="text-blue-300">processUser</span>(name: <span class="text-cyan-400">String</span>?, age: <span class="text-cyan-400">Int</span>?) {
+    <span class="text-pink-400">guard let</span> name = name <span class="text-pink-400">else</span> {
+        <span class="text-yellow-400">print</span>(<span class="text-green-400">"Имя не указано"</span>)
+        <span class="text-pink-400">return</span>
+    }
+
+    <span class="text-pink-400">guard let</span> age = age, age >= <span class="text-orange-400">18</span> <span class="text-pink-400">else</span> {
+        <span class="text-yellow-400">print</span>(<span class="text-green-400">"Возраст не указан или меньше 18"</span>)
+        <span class="text-pink-400">return</span>
+    }
+
+    <span class="text-zinc-500">// Здесь name и age гарантированно существуют</span>
+    <span class="text-yellow-400">print</span>(<span class="text-green-400">"Пользователь \(</span>name<span class="text-green-400">), возраст \(</span>age<span class="text-green-400">)"</span>)
+}
+
+processUser(name: <span class="text-green-400">"Анна"</span>, age: <span class="text-orange-400">25</span>)
+<span class="text-zinc-500">// "Пользователь Анна, возраст 25"</span></code></pre>
+                        </div>
+
+                        <div class="p-4 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-xl">
+                            <p class="text-blue-800 dark:text-blue-200">
+                                <strong>💡 Guard vs If:</strong> Используйте <code>guard</code> для проверки обязательных условий в начале функции. Это делает код более плоским и читаемым.
+                            </p>
+                        </div>
+                    </section>
+
+                    <!-- Практический пример -->
+                    <section class="mb-12">
+                        <h2 class="text-2xl font-bold mb-4">Практический пример</h2>
+                        <p class="text-zinc-600 dark:text-zinc-400 mb-4">
+                            Простая игра "Угадай число":
+                        </p>
+
+                        <div class="bg-zinc-900 rounded-xl p-4">
+                            <pre class="text-sm overflow-x-auto"><code class="language-swift"><span class="text-pink-400">let</span> <span class="text-blue-300">secretNumber</span> = <span class="text-orange-400">7</span>
+<span class="text-pink-400">var</span> <span class="text-blue-300">attempts</span> = <span class="text-orange-400">0</span>
+<span class="text-pink-400">let</span> <span class="text-blue-300">guesses</span> = [<span class="text-orange-400">3</span>, <span class="text-orange-400">9</span>, <span class="text-orange-400">5</span>, <span class="text-orange-400">7</span>]
+
+<span class="text-pink-400">for</span> guess <span class="text-pink-400">in</span> guesses {
+    attempts += <span class="text-orange-400">1</span>
+
+    <span class="text-pink-400">switch</span> guess {
+    <span class="text-pink-400">case</span> secretNumber:
+        <span class="text-yellow-400">print</span>(<span class="text-green-400">"🎉 Угадали за \(</span>attempts<span class="text-green-400">) попыток!"</span>)
+        <span class="text-pink-400">break</span>
+    <span class="text-pink-400">case</span> ..<secretNumber:
+        <span class="text-yellow-400">print</span>(<span class="text-green-400">"📈 Больше!"</span>)
+    <span class="text-pink-400">default</span>:
+        <span class="text-yellow-400">print</span>(<span class="text-green-400">"📉 Меньше!"</span>)
+    }
+
+    <span class="text-pink-400">if</span> guess == secretNumber {
+        <span class="text-pink-400">break</span>
+    }
+}</code></pre>
+                        </div>
+                    </section>
+
+                    <!-- Итоги -->
+                    <section class="mb-8">
+                        <div class="p-6 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-2xl">
+                            <h3 class="font-semibold text-green-800 dark:text-green-200 mb-3">✅ Что вы узнали</h3>
+                            <ul class="space-y-2 text-green-700 dark:text-green-300">
+                                <li>• Условные операторы <code>if</code>, <code>else if</code>, <code>else</code></li>
+                                <li>• Тернарный оператор <code>? :</code></li>
+                                <li>• Мощный <code>switch</code> с диапазонами и кортежами</li>
+                                <li>• Циклы <code>for-in</code>, <code>while</code>, <code>repeat-while</code></li>
+                                <li>• Управление циклами: <code>break</code>, <code>continue</code>, метки</li>
+                                <li>• Оператор <code>guard</code> для раннего выхода</li>
+                            </ul>
+                        </div>
+                    </section>
+
+                    <section>
+                        <div class="p-6 bg-primary/10 border border-primary/20 rounded-2xl">
+                            <h3 class="font-semibold text-primary mb-3">📚 Следующий шаг</h3>
+                            <p class="text-zinc-600 dark:text-zinc-400">
+                                В следующей главе мы изучим функции — объявление, параметры, возвращаемые значения и замыкания (closures).
+                            </p>
+                        </div>
+                    </section>
+
+                </div>
+
+                <nav class="flex justify-between gap-4 mt-16 pt-8 border-t border-zinc-200 dark:border-zinc-800">
+                    <a href="02-swift-basics.html" class="flex items-center gap-3 px-5 py-3 bg-zinc-100 dark:bg-zinc-800 hover:bg-primary hover:text-white rounded-xl transition-colors">
+                        <span class="text-xl">←</span>
+                        <span class="font-medium">Предыдущая</span>
+                    </a>
+                    <a href="04-functions.html" class="flex items-center gap-3 px-5 py-3 bg-zinc-100 dark:bg-zinc-800 hover:bg-primary hover:text-white rounded-xl transition-colors ml-auto">
+                        <span class="font-medium">Следующая</span>
+                        <span class="text-xl">→</span>
+                    </a>
+                </nav>
+            </article>
+        </main>
+    </div>
+
+    <script>
+        const menuBtn = document.getElementById('menuBtn');
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('overlay');
+        menuBtn.addEventListener('click', () => {
+            sidebar.classList.toggle('-translate-x-full');
+            overlay.classList.toggle('hidden');
+        });
+        function closeSidebar() {
+            sidebar.classList.add('-translate-x-full');
+            overlay.classList.add('hidden');
+        }
+    </script>
+</body>
+</html>
