@@ -1,0 +1,842 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Глава 21: Reusable Views | iOS Book</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'media',
+            theme: { extend: { colors: { primary: '#007AFF' } } }
+        }
+    </script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
+</head>
+<body class="bg-white dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100">
+    <button id="menuBtn" class="lg:hidden fixed top-4 left-4 z-50 p-3 bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-xl shadow-lg">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+        </svg>
+    </button>
+
+    <div class="flex min-h-screen">
+        <aside id="sidebar" class="fixed inset-y-0 left-0 w-72 bg-zinc-50 dark:bg-zinc-900 border-r border-zinc-200 dark:border-zinc-800 flex flex-col z-40 transform -translate-x-full lg:translate-x-0 transition-transform duration-300">
+            <div class="p-5 border-b border-zinc-200 dark:border-zinc-800">
+                <a href="../index.html" class="flex items-center gap-3 text-lg font-semibold hover:text-primary transition-colors">
+                    <div class="w-9 h-9 bg-primary rounded-lg flex items-center justify-center">
+                        <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/>
+                        </svg>
+                    </div>
+                    iOS Book
+                </a>
+            </div>
+            <nav class="flex-1 overflow-y-auto p-4">
+                <div class="space-y-6">
+                    <div>
+                        <h3 class="px-3 mb-2 text-xs font-semibold uppercase tracking-wider text-zinc-400">Введение</h3>
+                        <a href="00-introduction.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">Введение</a>
+                    </div>
+                    <div>
+                        <h3 class="px-3 mb-2 text-xs font-semibold uppercase tracking-wider text-zinc-400">Основы Swift</h3>
+                        <div class="space-y-1">
+                            <a href="01-xcode.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">1. Xcode</a>
+                            <a href="02-swift-basics.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">2. Основы Swift</a>
+                            <a href="03-control-flow.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">3. Control Flow</a>
+                            <a href="04-functions.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">4. Функции</a>
+                            <a href="05-oop.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">5. ООП</a>
+                            <a href="06-protocols.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">6. Протоколы</a>
+                            <a href="07-optionals.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">7. Optionals</a>
+                            <a href="08-memory.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">8. Память</a>
+                            <a href="09-generics.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">9. Generics</a>
+                            <a href="10-concurrency.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">10. Concurrency</a>
+                        </div>
+                    </div>
+                    <div>
+                        <h3 class="px-3 mb-2 text-xs font-semibold uppercase tracking-wider text-zinc-400">UIKit</h3>
+                        <div class="space-y-1">
+                            <a href="11-uikit-basics.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">11. UIKit</a>
+                            <a href="12-programmatic-ui.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">12. Programmatic UI</a>
+                        </div>
+                    </div>
+                    <div>
+                        <h3 class="px-3 mb-2 text-xs font-semibold uppercase tracking-wider text-zinc-400">Архитектура</h3>
+                        <div class="space-y-1">
+                            <a href="13-viper.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">13. VIPER</a>
+                            <a href="14-project-setup.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">14. Project Setup</a>
+                        </div>
+                    </div>
+                    <div>
+                        <h3 class="px-3 mb-2 text-xs font-semibold uppercase tracking-wider text-zinc-400">Практика</h3>
+                        <div class="space-y-1">
+                            <a href="15-authentication.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">15. Auth</a>
+                            <a href="16-products.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">16. Products</a>
+                            <a href="17-cart.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">17. Cart</a>
+                            <a href="18-favorites.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">18. Favorites</a>
+                            <a href="19-orders.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">19. Orders</a>
+                            <a href="20-profile.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">20. Profile</a>
+                        </div>
+                    </div>
+                    <div>
+                        <h3 class="px-3 mb-2 text-xs font-semibold uppercase tracking-wider text-zinc-400">Дополнительно</h3>
+                        <a href="21-reusable-views.html" class="block px-3 py-2 text-sm text-white bg-primary rounded-lg">21. Reusable Views</a>
+                    </div>
+                </div>
+            </nav>
+        </aside>
+
+        <div id="overlay" class="fixed inset-0 bg-black/50 z-30 lg:hidden hidden" onclick="closeSidebar()"></div>
+
+        <main class="flex-1 lg:ml-72">
+            <article class="max-w-3xl mx-auto px-6 sm:px-8 lg:px-12 py-12 lg:py-16">
+                <header class="mb-12 pb-8 border-b border-zinc-200 dark:border-zinc-800">
+                    <span class="text-sm font-semibold uppercase tracking-wider text-primary">Глава 21</span>
+                    <h1 class="text-3xl sm:text-4xl font-bold mt-2 mb-4">Reusable Views</h1>
+                    <p class="text-lg text-zinc-600 dark:text-zinc-400">DSKit, компоненты, темизация</p>
+                </header>
+
+                <div class="prose prose-zinc dark:prose-invert max-w-none">
+                    <p class="text-lg leading-relaxed mb-8">Design System Kit (DSKit) — библиотека переиспользуемых UI-компонентов для единообразного дизайна приложения. В этой главе мы создадим основные элементы: кнопки, текстовые поля, карточки и систему цветов.</p>
+
+                    <h2 class="text-2xl font-bold mt-12 mb-6">Система цветов и темизация</h2>
+                    <p class="mb-6">Централизованное управление цветами для поддержки светлой и тёмной темы.</p>
+
+                    <div class="bg-zinc-950 rounded-2xl p-6 mb-8 overflow-x-auto">
+                        <pre class="text-sm leading-relaxed"><code><span class="text-pink-400">import</span> <span class="text-cyan-400">UIKit</span>
+
+<span class="text-pink-400">enum</span> <span class="text-cyan-400">DSColors</span> {
+    <span class="text-gray-500">// MARK: - Brand Colors</span>
+    <span class="text-pink-400">static let</span> primary = <span class="text-cyan-400">UIColor</span>(hex: <span class="text-green-400">"007AFF"</span>)
+    <span class="text-pink-400">static let</span> secondary = <span class="text-cyan-400">UIColor</span>(hex: <span class="text-green-400">"5856D6"</span>)
+    <span class="text-pink-400">static let</span> accent = <span class="text-cyan-400">UIColor</span>(hex: <span class="text-green-400">"FF9500"</span>)
+
+    <span class="text-gray-500">// MARK: - Semantic Colors</span>
+    <span class="text-pink-400">static let</span> success = <span class="text-cyan-400">UIColor</span>(hex: <span class="text-green-400">"34C759"</span>)
+    <span class="text-pink-400">static let</span> warning = <span class="text-cyan-400">UIColor</span>(hex: <span class="text-green-400">"FF9500"</span>)
+    <span class="text-pink-400">static let</span> error = <span class="text-cyan-400">UIColor</span>(hex: <span class="text-green-400">"FF3B30"</span>)
+
+    <span class="text-gray-500">// MARK: - Background Colors</span>
+    <span class="text-pink-400">static let</span> background = <span class="text-cyan-400">UIColor</span> { traitCollection <span class="text-pink-400">in</span>
+        traitCollection.userInterfaceStyle == .dark
+            ? <span class="text-cyan-400">UIColor</span>(hex: <span class="text-green-400">"000000"</span>)
+            : <span class="text-cyan-400">UIColor</span>(hex: <span class="text-green-400">"FFFFFF"</span>)
+    }
+
+    <span class="text-pink-400">static let</span> backgroundSecondary = <span class="text-cyan-400">UIColor</span> { traitCollection <span class="text-pink-400">in</span>
+        traitCollection.userInterfaceStyle == .dark
+            ? <span class="text-cyan-400">UIColor</span>(hex: <span class="text-green-400">"1C1C1E"</span>)
+            : <span class="text-cyan-400">UIColor</span>(hex: <span class="text-green-400">"F2F2F7"</span>)
+    }
+
+    <span class="text-pink-400">static let</span> backgroundTertiary = <span class="text-cyan-400">UIColor</span> { traitCollection <span class="text-pink-400">in</span>
+        traitCollection.userInterfaceStyle == .dark
+            ? <span class="text-cyan-400">UIColor</span>(hex: <span class="text-green-400">"2C2C2E"</span>)
+            : <span class="text-cyan-400">UIColor</span>(hex: <span class="text-green-400">"FFFFFF"</span>)
+    }
+
+    <span class="text-gray-500">// MARK: - Text Colors</span>
+    <span class="text-pink-400">static let</span> textPrimary = <span class="text-cyan-400">UIColor</span> { traitCollection <span class="text-pink-400">in</span>
+        traitCollection.userInterfaceStyle == .dark
+            ? <span class="text-cyan-400">UIColor</span>(hex: <span class="text-green-400">"FFFFFF"</span>)
+            : <span class="text-cyan-400">UIColor</span>(hex: <span class="text-green-400">"000000"</span>)
+    }
+
+    <span class="text-pink-400">static let</span> textSecondary = <span class="text-cyan-400">UIColor</span> { traitCollection <span class="text-pink-400">in</span>
+        traitCollection.userInterfaceStyle == .dark
+            ? <span class="text-cyan-400">UIColor</span>(hex: <span class="text-green-400">"8E8E93"</span>)
+            : <span class="text-cyan-400">UIColor</span>(hex: <span class="text-green-400">"6C6C70"</span>)
+    }
+
+    <span class="text-pink-400">static let</span> textTertiary = <span class="text-cyan-400">UIColor</span> { traitCollection <span class="text-pink-400">in</span>
+        traitCollection.userInterfaceStyle == .dark
+            ? <span class="text-cyan-400">UIColor</span>(hex: <span class="text-green-400">"48484A"</span>)
+            : <span class="text-cyan-400">UIColor</span>(hex: <span class="text-green-400">"AEAEB2"</span>)
+    }
+
+    <span class="text-gray-500">// MARK: - Border & Separator</span>
+    <span class="text-pink-400">static let</span> border = <span class="text-cyan-400">UIColor</span> { traitCollection <span class="text-pink-400">in</span>
+        traitCollection.userInterfaceStyle == .dark
+            ? <span class="text-cyan-400">UIColor</span>(hex: <span class="text-green-400">"38383A"</span>)
+            : <span class="text-cyan-400">UIColor</span>(hex: <span class="text-green-400">"E5E5EA"</span>)
+    }
+}
+
+<span class="text-gray-500">// MARK: - UIColor Extension</span>
+<span class="text-pink-400">extension</span> <span class="text-cyan-400">UIColor</span> {
+    <span class="text-pink-400">convenience init</span>(hex: <span class="text-cyan-400">String</span>) {
+        <span class="text-pink-400">var</span> hexSanitized = hex.trimmingCharacters(<span class="text-pink-400">in</span>: .whitespacesAndNewlines)
+        hexSanitized = hexSanitized.replacingOccurrences(of: <span class="text-green-400">"#"</span>, with: <span class="text-green-400">""</span>)
+
+        <span class="text-pink-400">var</span> rgb: <span class="text-cyan-400">UInt64</span> = <span class="text-purple-400">0</span>
+        <span class="text-cyan-400">Scanner</span>(string: hexSanitized).scanHexInt64(&rgb)
+
+        <span class="text-pink-400">let</span> r = <span class="text-cyan-400">CGFloat</span>((rgb & <span class="text-purple-400">0xFF0000</span>) >> <span class="text-purple-400">16</span>) / <span class="text-purple-400">255.0</span>
+        <span class="text-pink-400">let</span> g = <span class="text-cyan-400">CGFloat</span>((rgb & <span class="text-purple-400">0x00FF00</span>) >> <span class="text-purple-400">8</span>) / <span class="text-purple-400">255.0</span>
+        <span class="text-pink-400">let</span> b = <span class="text-cyan-400">CGFloat</span>(rgb & <span class="text-purple-400">0x0000FF</span>) / <span class="text-purple-400">255.0</span>
+
+        <span class="text-pink-400">self</span>.init(red: r, green: g, blue: b, alpha: <span class="text-purple-400">1.0</span>)
+    }
+}</code></pre>
+                    </div>
+
+                    <h2 class="text-2xl font-bold mt-12 mb-6">Типографика</h2>
+                    <p class="mb-6">Система шрифтов для единообразия текстовых стилей.</p>
+
+                    <div class="bg-zinc-950 rounded-2xl p-6 mb-8 overflow-x-auto">
+                        <pre class="text-sm leading-relaxed"><code><span class="text-pink-400">enum</span> <span class="text-cyan-400">DSTypography</span> {
+    <span class="text-gray-500">// MARK: - Headings</span>
+    <span class="text-pink-400">static let</span> largeTitle = <span class="text-cyan-400">UIFont</span>.systemFont(ofSize: <span class="text-purple-400">34</span>, weight: .bold)
+    <span class="text-pink-400">static let</span> title1 = <span class="text-cyan-400">UIFont</span>.systemFont(ofSize: <span class="text-purple-400">28</span>, weight: .bold)
+    <span class="text-pink-400">static let</span> title2 = <span class="text-cyan-400">UIFont</span>.systemFont(ofSize: <span class="text-purple-400">22</span>, weight: .bold)
+    <span class="text-pink-400">static let</span> title3 = <span class="text-cyan-400">UIFont</span>.systemFont(ofSize: <span class="text-purple-400">20</span>, weight: .semibold)
+
+    <span class="text-gray-500">// MARK: - Body</span>
+    <span class="text-pink-400">static let</span> bodyLarge = <span class="text-cyan-400">UIFont</span>.systemFont(ofSize: <span class="text-purple-400">17</span>, weight: .regular)
+    <span class="text-pink-400">static let</span> bodyMedium = <span class="text-cyan-400">UIFont</span>.systemFont(ofSize: <span class="text-purple-400">15</span>, weight: .regular)
+    <span class="text-pink-400">static let</span> bodySmall = <span class="text-cyan-400">UIFont</span>.systemFont(ofSize: <span class="text-purple-400">13</span>, weight: .regular)
+
+    <span class="text-gray-500">// MARK: - Labels</span>
+    <span class="text-pink-400">static let</span> labelLarge = <span class="text-cyan-400">UIFont</span>.systemFont(ofSize: <span class="text-purple-400">17</span>, weight: .semibold)
+    <span class="text-pink-400">static let</span> labelMedium = <span class="text-cyan-400">UIFont</span>.systemFont(ofSize: <span class="text-purple-400">15</span>, weight: .medium)
+    <span class="text-pink-400">static let</span> labelSmall = <span class="text-cyan-400">UIFont</span>.systemFont(ofSize: <span class="text-purple-400">13</span>, weight: .medium)
+
+    <span class="text-gray-500">// MARK: - Caption</span>
+    <span class="text-pink-400">static let</span> caption1 = <span class="text-cyan-400">UIFont</span>.systemFont(ofSize: <span class="text-purple-400">12</span>, weight: .regular)
+    <span class="text-pink-400">static let</span> caption2 = <span class="text-cyan-400">UIFont</span>.systemFont(ofSize: <span class="text-purple-400">11</span>, weight: .regular)
+}
+
+<span class="text-gray-500">// MARK: - Spacing</span>
+<span class="text-pink-400">enum</span> <span class="text-cyan-400">DSSpacing</span> {
+    <span class="text-pink-400">static let</span> xxxs: <span class="text-cyan-400">CGFloat</span> = <span class="text-purple-400">2</span>
+    <span class="text-pink-400">static let</span> xxs: <span class="text-cyan-400">CGFloat</span> = <span class="text-purple-400">4</span>
+    <span class="text-pink-400">static let</span> xs: <span class="text-cyan-400">CGFloat</span> = <span class="text-purple-400">8</span>
+    <span class="text-pink-400">static let</span> sm: <span class="text-cyan-400">CGFloat</span> = <span class="text-purple-400">12</span>
+    <span class="text-pink-400">static let</span> md: <span class="text-cyan-400">CGFloat</span> = <span class="text-purple-400">16</span>
+    <span class="text-pink-400">static let</span> lg: <span class="text-cyan-400">CGFloat</span> = <span class="text-purple-400">24</span>
+    <span class="text-pink-400">static let</span> xl: <span class="text-cyan-400">CGFloat</span> = <span class="text-purple-400">32</span>
+    <span class="text-pink-400">static let</span> xxl: <span class="text-cyan-400">CGFloat</span> = <span class="text-purple-400">48</span>
+}
+
+<span class="text-gray-500">// MARK: - Corner Radius</span>
+<span class="text-pink-400">enum</span> <span class="text-cyan-400">DSRadius</span> {
+    <span class="text-pink-400">static let</span> small: <span class="text-cyan-400">CGFloat</span> = <span class="text-purple-400">8</span>
+    <span class="text-pink-400">static let</span> medium: <span class="text-cyan-400">CGFloat</span> = <span class="text-purple-400">12</span>
+    <span class="text-pink-400">static let</span> large: <span class="text-cyan-400">CGFloat</span> = <span class="text-purple-400">16</span>
+    <span class="text-pink-400">static let</span> xlarge: <span class="text-cyan-400">CGFloat</span> = <span class="text-purple-400">24</span>
+    <span class="text-pink-400">static let</span> full: <span class="text-cyan-400">CGFloat</span> = <span class="text-purple-400">9999</span>
+}</code></pre>
+                    </div>
+
+                    <h2 class="text-2xl font-bold mt-12 mb-6">DSButton — кнопка</h2>
+                    <p class="mb-6">Кастомная кнопка с различными стилями и состояниями.</p>
+
+                    <div class="bg-zinc-950 rounded-2xl p-6 mb-8 overflow-x-auto">
+                        <pre class="text-sm leading-relaxed"><code><span class="text-pink-400">final class</span> <span class="text-cyan-400">DSButton</span>: <span class="text-cyan-400">UIButton</span> {
+
+    <span class="text-pink-400">enum</span> <span class="text-cyan-400">Style</span> {
+        <span class="text-pink-400">case</span> primary
+        <span class="text-pink-400">case</span> secondary
+        <span class="text-pink-400">case</span> outline
+        <span class="text-pink-400">case</span> ghost
+        <span class="text-pink-400">case</span> destructive
+    }
+
+    <span class="text-pink-400">enum</span> <span class="text-cyan-400">Size</span> {
+        <span class="text-pink-400">case</span> small
+        <span class="text-pink-400">case</span> medium
+        <span class="text-pink-400">case</span> large
+
+        <span class="text-pink-400">var</span> height: <span class="text-cyan-400">CGFloat</span> {
+            <span class="text-pink-400">switch self</span> {
+            <span class="text-pink-400">case</span> .small: <span class="text-pink-400">return</span> <span class="text-purple-400">36</span>
+            <span class="text-pink-400">case</span> .medium: <span class="text-pink-400">return</span> <span class="text-purple-400">44</span>
+            <span class="text-pink-400">case</span> .large: <span class="text-pink-400">return</span> <span class="text-purple-400">52</span>
+            }
+        }
+
+        <span class="text-pink-400">var</span> font: <span class="text-cyan-400">UIFont</span> {
+            <span class="text-pink-400">switch self</span> {
+            <span class="text-pink-400">case</span> .small: <span class="text-pink-400">return</span> <span class="text-cyan-400">DSTypography</span>.labelSmall
+            <span class="text-pink-400">case</span> .medium: <span class="text-pink-400">return</span> <span class="text-cyan-400">DSTypography</span>.labelMedium
+            <span class="text-pink-400">case</span> .large: <span class="text-pink-400">return</span> <span class="text-cyan-400">DSTypography</span>.labelLarge
+            }
+        }
+
+        <span class="text-pink-400">var</span> padding: <span class="text-cyan-400">CGFloat</span> {
+            <span class="text-pink-400">switch self</span> {
+            <span class="text-pink-400">case</span> .small: <span class="text-pink-400">return</span> <span class="text-purple-400">12</span>
+            <span class="text-pink-400">case</span> .medium: <span class="text-pink-400">return</span> <span class="text-purple-400">16</span>
+            <span class="text-pink-400">case</span> .large: <span class="text-pink-400">return</span> <span class="text-purple-400">20</span>
+            }
+        }
+    }
+
+    <span class="text-pink-400">private let</span> style: <span class="text-cyan-400">Style</span>
+    <span class="text-pink-400">private let</span> size: <span class="text-cyan-400">Size</span>
+    <span class="text-pink-400">private let</span> activityIndicator = <span class="text-cyan-400">UIActivityIndicatorView</span>()
+
+    <span class="text-pink-400">var</span> isLoading: <span class="text-cyan-400">Bool</span> = <span class="text-pink-400">false</span> {
+        <span class="text-pink-400">didSet</span> {
+            updateLoadingState()
+        }
+    }
+
+    <span class="text-pink-400">init</span>(title: <span class="text-cyan-400">String</span>, style: <span class="text-cyan-400">Style</span> = .primary, size: <span class="text-cyan-400">Size</span> = .medium) {
+        <span class="text-pink-400">self</span>.style = style
+        <span class="text-pink-400">self</span>.size = size
+        <span class="text-pink-400">super</span>.init(frame: .zero)
+        setTitle(title, for: .normal)
+        setupButton()
+    }
+
+    <span class="text-pink-400">required init</span>?(coder: <span class="text-cyan-400">NSCoder</span>) {
+        <span class="text-pink-400">fatalError</span>(<span class="text-green-400">"init(coder:) has not been implemented"</span>)
+    }
+
+    <span class="text-pink-400">private func</span> setupButton() {
+        titleLabel?.font = size.font
+        layer.cornerRadius = <span class="text-cyan-400">DSRadius</span>.medium
+        contentEdgeInsets = <span class="text-cyan-400">UIEdgeInsets</span>(
+            top: <span class="text-purple-400">0</span>,
+            left: size.padding,
+            bottom: <span class="text-purple-400">0</span>,
+            right: size.padding
+        )
+
+        applyStyle()
+        setupActivityIndicator()
+
+        snp.makeConstraints { make <span class="text-pink-400">in</span>
+            make.height.equalTo(size.height)
+        }
+    }
+
+    <span class="text-pink-400">private func</span> applyStyle() {
+        <span class="text-pink-400">switch</span> style {
+        <span class="text-pink-400">case</span> .primary:
+            backgroundColor = <span class="text-cyan-400">DSColors</span>.primary
+            setTitleColor(.white, for: .normal)
+            setTitleColor(.white.withAlphaComponent(<span class="text-purple-400">0.7</span>), for: .highlighted)
+
+        <span class="text-pink-400">case</span> .secondary:
+            backgroundColor = <span class="text-cyan-400">DSColors</span>.backgroundSecondary
+            setTitleColor(<span class="text-cyan-400">DSColors</span>.primary, for: .normal)
+
+        <span class="text-pink-400">case</span> .outline:
+            backgroundColor = .clear
+            layer.borderWidth = <span class="text-purple-400">1</span>
+            layer.borderColor = <span class="text-cyan-400">DSColors</span>.primary.cgColor
+            setTitleColor(<span class="text-cyan-400">DSColors</span>.primary, for: .normal)
+
+        <span class="text-pink-400">case</span> .ghost:
+            backgroundColor = .clear
+            setTitleColor(<span class="text-cyan-400">DSColors</span>.primary, for: .normal)
+
+        <span class="text-pink-400">case</span> .destructive:
+            backgroundColor = <span class="text-cyan-400">DSColors</span>.error
+            setTitleColor(.white, for: .normal)
+        }
+    }
+
+    <span class="text-pink-400">private func</span> setupActivityIndicator() {
+        activityIndicator.hidesWhenStopped = <span class="text-pink-400">true</span>
+        activityIndicator.color = style == .primary || style == .destructive ? .white : <span class="text-cyan-400">DSColors</span>.primary
+        addSubview(activityIndicator)
+        activityIndicator.snp.makeConstraints { make <span class="text-pink-400">in</span>
+            make.center.equalToSuperview()
+        }
+    }
+
+    <span class="text-pink-400">private func</span> updateLoadingState() {
+        isUserInteractionEnabled = !isLoading
+
+        <span class="text-pink-400">if</span> isLoading {
+            setTitle(<span class="text-green-400">""</span>, for: .normal)
+            activityIndicator.startAnimating()
+        } <span class="text-pink-400">else</span> {
+            activityIndicator.stopAnimating()
+        }
+    }
+
+    <span class="text-pink-400">override var</span> isHighlighted: <span class="text-cyan-400">Bool</span> {
+        <span class="text-pink-400">didSet</span> {
+            <span class="text-cyan-400">UIView</span>.animate(withDuration: <span class="text-purple-400">0.1</span>) {
+                <span class="text-pink-400">self</span>.alpha = <span class="text-pink-400">self</span>.isHighlighted ? <span class="text-purple-400">0.8</span> : <span class="text-purple-400">1.0</span>
+                <span class="text-pink-400">self</span>.transform = <span class="text-pink-400">self</span>.isHighlighted
+                    ? <span class="text-cyan-400">CGAffineTransform</span>(scaleX: <span class="text-purple-400">0.98</span>, y: <span class="text-purple-400">0.98</span>)
+                    : .identity
+            }
+        }
+    }
+
+    <span class="text-pink-400">override var</span> isEnabled: <span class="text-cyan-400">Bool</span> {
+        <span class="text-pink-400">didSet</span> {
+            alpha = isEnabled ? <span class="text-purple-400">1.0</span> : <span class="text-purple-400">0.5</span>
+        }
+    }
+}</code></pre>
+                    </div>
+
+                    <h2 class="text-2xl font-bold mt-12 mb-6">DSTextField — текстовое поле</h2>
+                    <p class="mb-6">Текстовое поле с плавающим placeholder и валидацией.</p>
+
+                    <div class="bg-zinc-950 rounded-2xl p-6 mb-8 overflow-x-auto">
+                        <pre class="text-sm leading-relaxed"><code><span class="text-pink-400">final class</span> <span class="text-cyan-400">DSTextField</span>: <span class="text-cyan-400">UIView</span> {
+    <span class="text-pink-400">private let</span> textField = <span class="text-cyan-400">UITextField</span>()
+    <span class="text-pink-400">private let</span> placeholderLabel = <span class="text-cyan-400">UILabel</span>()
+    <span class="text-pink-400">private let</span> errorLabel = <span class="text-cyan-400">UILabel</span>()
+    <span class="text-pink-400">private let</span> containerView = <span class="text-cyan-400">UIView</span>()
+
+    <span class="text-pink-400">var</span> text: <span class="text-cyan-400">String</span>? {
+        <span class="text-pink-400">get</span> { textField.text }
+        <span class="text-pink-400">set</span> { textField.text = newValue; updatePlaceholder() }
+    }
+
+    <span class="text-pink-400">var</span> placeholder: <span class="text-cyan-400">String</span>? {
+        <span class="text-pink-400">didSet</span> { placeholderLabel.text = placeholder }
+    }
+
+    <span class="text-pink-400">var</span> errorMessage: <span class="text-cyan-400">String</span>? {
+        <span class="text-pink-400">didSet</span> { updateErrorState() }
+    }
+
+    <span class="text-pink-400">var</span> isSecure: <span class="text-cyan-400">Bool</span> = <span class="text-pink-400">false</span> {
+        <span class="text-pink-400">didSet</span> { textField.isSecureTextEntry = isSecure }
+    }
+
+    <span class="text-pink-400">var</span> keyboardType: <span class="text-cyan-400">UIKeyboardType</span> = .default {
+        <span class="text-pink-400">didSet</span> { textField.keyboardType = keyboardType }
+    }
+
+    <span class="text-pink-400">override init</span>(frame: <span class="text-cyan-400">CGRect</span>) {
+        <span class="text-pink-400">super</span>.init(frame: frame)
+        setupUI()
+    }
+
+    <span class="text-pink-400">required init</span>?(coder: <span class="text-cyan-400">NSCoder</span>) {
+        <span class="text-pink-400">fatalError</span>(<span class="text-green-400">"init(coder:) has not been implemented"</span>)
+    }
+
+    <span class="text-pink-400">private func</span> setupUI() {
+        <span class="text-gray-500">// Container</span>
+        containerView.backgroundColor = <span class="text-cyan-400">DSColors</span>.backgroundSecondary
+        containerView.layer.cornerRadius = <span class="text-cyan-400">DSRadius</span>.medium
+        containerView.layer.borderWidth = <span class="text-purple-400">1</span>
+        containerView.layer.borderColor = <span class="text-cyan-400">UIColor</span>.clear.cgColor
+        addSubview(containerView)
+
+        <span class="text-gray-500">// TextField</span>
+        textField.font = <span class="text-cyan-400">DSTypography</span>.bodyLarge
+        textField.textColor = <span class="text-cyan-400">DSColors</span>.textPrimary
+        textField.delegate = <span class="text-pink-400">self</span>
+        textField.addTarget(<span class="text-pink-400">self</span>, action: <span class="text-pink-400">#selector</span>(textDidChange), for: .editingChanged)
+        containerView.addSubview(textField)
+
+        <span class="text-gray-500">// Floating placeholder</span>
+        placeholderLabel.font = <span class="text-cyan-400">DSTypography</span>.bodyLarge
+        placeholderLabel.textColor = <span class="text-cyan-400">DSColors</span>.textSecondary
+        containerView.addSubview(placeholderLabel)
+
+        <span class="text-gray-500">// Error label</span>
+        errorLabel.font = <span class="text-cyan-400">DSTypography</span>.caption1
+        errorLabel.textColor = <span class="text-cyan-400">DSColors</span>.error
+        errorLabel.isHidden = <span class="text-pink-400">true</span>
+        addSubview(errorLabel)
+
+        setupConstraints()
+    }
+
+    <span class="text-pink-400">private func</span> setupConstraints() {
+        containerView.snp.makeConstraints { make <span class="text-pink-400">in</span>
+            make.top.leading.trailing.equalToSuperview()
+            make.height.equalTo(<span class="text-purple-400">56</span>)
+        }
+
+        textField.snp.makeConstraints { make <span class="text-pink-400">in</span>
+            make.leading.trailing.equalToSuperview().inset(<span class="text-cyan-400">DSSpacing</span>.md)
+            make.centerY.equalToSuperview().offset(<span class="text-purple-400">4</span>)
+        }
+
+        placeholderLabel.snp.makeConstraints { make <span class="text-pink-400">in</span>
+            make.leading.equalToSuperview().offset(<span class="text-cyan-400">DSSpacing</span>.md)
+            make.centerY.equalToSuperview()
+        }
+
+        errorLabel.snp.makeConstraints { make <span class="text-pink-400">in</span>
+            make.top.equalTo(containerView.snp.bottom).offset(<span class="text-cyan-400">DSSpacing</span>.xxs)
+            make.leading.trailing.bottom.equalToSuperview()
+        }
+    }
+
+    <span class="text-purple-400">@objc</span> <span class="text-pink-400">private func</span> textDidChange() {
+        updatePlaceholder()
+    }
+
+    <span class="text-pink-400">private func</span> updatePlaceholder() {
+        <span class="text-pink-400">let</span> hasText = !(textField.text ?? <span class="text-green-400">""</span>).isEmpty || textField.isFirstResponder
+
+        <span class="text-cyan-400">UIView</span>.animate(withDuration: <span class="text-purple-400">0.2</span>) {
+            <span class="text-pink-400">if</span> hasText {
+                <span class="text-pink-400">self</span>.placeholderLabel.transform = <span class="text-cyan-400">CGAffineTransform</span>(translationX: <span class="text-purple-400">0</span>, y: -<span class="text-purple-400">16</span>)
+                    .scaledBy(x: <span class="text-purple-400">0.85</span>, y: <span class="text-purple-400">0.85</span>)
+                <span class="text-pink-400">self</span>.placeholderLabel.textColor = <span class="text-cyan-400">DSColors</span>.primary
+            } <span class="text-pink-400">else</span> {
+                <span class="text-pink-400">self</span>.placeholderLabel.transform = .identity
+                <span class="text-pink-400">self</span>.placeholderLabel.textColor = <span class="text-cyan-400">DSColors</span>.textSecondary
+            }
+        }
+    }
+
+    <span class="text-pink-400">private func</span> updateErrorState() {
+        <span class="text-pink-400">let</span> hasError = errorMessage != <span class="text-pink-400">nil</span>
+        errorLabel.text = errorMessage
+        errorLabel.isHidden = !hasError
+        containerView.layer.borderColor = hasError ? <span class="text-cyan-400">DSColors</span>.error.cgColor : <span class="text-cyan-400">UIColor</span>.clear.cgColor
+    }
+}
+
+<span class="text-pink-400">extension</span> <span class="text-cyan-400">DSTextField</span>: <span class="text-cyan-400">UITextFieldDelegate</span> {
+    <span class="text-pink-400">func</span> textFieldDidBeginEditing(_ textField: <span class="text-cyan-400">UITextField</span>) {
+        containerView.layer.borderColor = <span class="text-cyan-400">DSColors</span>.primary.cgColor
+        updatePlaceholder()
+    }
+
+    <span class="text-pink-400">func</span> textFieldDidEndEditing(_ textField: <span class="text-cyan-400">UITextField</span>) {
+        containerView.layer.borderColor = <span class="text-cyan-400">UIColor</span>.clear.cgColor
+        updatePlaceholder()
+    }
+}</code></pre>
+                    </div>
+
+                    <h2 class="text-2xl font-bold mt-12 mb-6">DSCard — карточка</h2>
+                    <p class="mb-6">Универсальный контейнер с тенью и скруглёнными углами.</p>
+
+                    <div class="bg-zinc-950 rounded-2xl p-6 mb-8 overflow-x-auto">
+                        <pre class="text-sm leading-relaxed"><code><span class="text-pink-400">final class</span> <span class="text-cyan-400">DSCard</span>: <span class="text-cyan-400">UIView</span> {
+    <span class="text-pink-400">enum</span> <span class="text-cyan-400">Style</span> {
+        <span class="text-pink-400">case</span> elevated
+        <span class="text-pink-400">case</span> outlined
+        <span class="text-pink-400">case</span> filled
+    }
+
+    <span class="text-pink-400">let</span> contentView = <span class="text-cyan-400">UIView</span>()
+    <span class="text-pink-400">private let</span> style: <span class="text-cyan-400">Style</span>
+
+    <span class="text-pink-400">init</span>(style: <span class="text-cyan-400">Style</span> = .elevated) {
+        <span class="text-pink-400">self</span>.style = style
+        <span class="text-pink-400">super</span>.init(frame: .zero)
+        setupUI()
+    }
+
+    <span class="text-pink-400">required init</span>?(coder: <span class="text-cyan-400">NSCoder</span>) {
+        <span class="text-pink-400">fatalError</span>(<span class="text-green-400">"init(coder:) has not been implemented"</span>)
+    }
+
+    <span class="text-pink-400">private func</span> setupUI() {
+        layer.cornerRadius = <span class="text-cyan-400">DSRadius</span>.large
+
+        <span class="text-pink-400">switch</span> style {
+        <span class="text-pink-400">case</span> .elevated:
+            backgroundColor = <span class="text-cyan-400">DSColors</span>.backgroundTertiary
+            applyShadow()
+
+        <span class="text-pink-400">case</span> .outlined:
+            backgroundColor = .clear
+            layer.borderWidth = <span class="text-purple-400">1</span>
+            layer.borderColor = <span class="text-cyan-400">DSColors</span>.border.cgColor
+
+        <span class="text-pink-400">case</span> .filled:
+            backgroundColor = <span class="text-cyan-400">DSColors</span>.backgroundSecondary
+        }
+
+        addSubview(contentView)
+        contentView.snp.makeConstraints { make <span class="text-pink-400">in</span>
+            make.edges.equalToSuperview().inset(<span class="text-cyan-400">DSSpacing</span>.md)
+        }
+    }
+
+    <span class="text-pink-400">private func</span> applyShadow() {
+        layer.shadowColor = <span class="text-cyan-400">UIColor</span>.black.cgColor
+        layer.shadowOpacity = <span class="text-purple-400">0.08</span>
+        layer.shadowRadius = <span class="text-purple-400">12</span>
+        layer.shadowOffset = <span class="text-cyan-400">CGSize</span>(width: <span class="text-purple-400">0</span>, height: <span class="text-purple-400">4</span>)
+    }
+}</code></pre>
+                    </div>
+
+                    <h2 class="text-2xl font-bold mt-12 mb-6">DSBadge — бейдж</h2>
+                    <p class="mb-6">Компактный индикатор для статусов и счётчиков.</p>
+
+                    <div class="bg-zinc-950 rounded-2xl p-6 mb-8 overflow-x-auto">
+                        <pre class="text-sm leading-relaxed"><code><span class="text-pink-400">final class</span> <span class="text-cyan-400">DSBadge</span>: <span class="text-cyan-400">UIView</span> {
+    <span class="text-pink-400">enum</span> <span class="text-cyan-400">Style</span> {
+        <span class="text-pink-400">case</span> primary
+        <span class="text-pink-400">case</span> success
+        <span class="text-pink-400">case</span> warning
+        <span class="text-pink-400">case</span> error
+        <span class="text-pink-400">case</span> neutral
+    }
+
+    <span class="text-pink-400">private let</span> label = <span class="text-cyan-400">UILabel</span>()
+    <span class="text-pink-400">private let</span> style: <span class="text-cyan-400">Style</span>
+
+    <span class="text-pink-400">var</span> text: <span class="text-cyan-400">String</span>? {
+        <span class="text-pink-400">get</span> { label.text }
+        <span class="text-pink-400">set</span> { label.text = newValue }
+    }
+
+    <span class="text-pink-400">init</span>(text: <span class="text-cyan-400">String</span>, style: <span class="text-cyan-400">Style</span> = .primary) {
+        <span class="text-pink-400">self</span>.style = style
+        <span class="text-pink-400">super</span>.init(frame: .zero)
+        label.text = text
+        setupUI()
+    }
+
+    <span class="text-pink-400">required init</span>?(coder: <span class="text-cyan-400">NSCoder</span>) {
+        <span class="text-pink-400">fatalError</span>(<span class="text-green-400">"init(coder:) has not been implemented"</span>)
+    }
+
+    <span class="text-pink-400">private func</span> setupUI() {
+        layer.cornerRadius = <span class="text-cyan-400">DSRadius</span>.small
+        clipsToBounds = <span class="text-pink-400">true</span>
+
+        label.font = <span class="text-cyan-400">DSTypography</span>.caption1
+        label.textAlignment = .center
+        addSubview(label)
+
+        label.snp.makeConstraints { make <span class="text-pink-400">in</span>
+            make.edges.equalToSuperview().inset(<span class="text-cyan-400">UIEdgeInsets</span>(
+                top: <span class="text-cyan-400">DSSpacing</span>.xxs,
+                left: <span class="text-cyan-400">DSSpacing</span>.xs,
+                bottom: <span class="text-cyan-400">DSSpacing</span>.xxs,
+                right: <span class="text-cyan-400">DSSpacing</span>.xs
+            ))
+        }
+
+        applyStyle()
+    }
+
+    <span class="text-pink-400">private func</span> applyStyle() {
+        <span class="text-pink-400">switch</span> style {
+        <span class="text-pink-400">case</span> .primary:
+            backgroundColor = <span class="text-cyan-400">DSColors</span>.primary.withAlphaComponent(<span class="text-purple-400">0.15</span>)
+            label.textColor = <span class="text-cyan-400">DSColors</span>.primary
+        <span class="text-pink-400">case</span> .success:
+            backgroundColor = <span class="text-cyan-400">DSColors</span>.success.withAlphaComponent(<span class="text-purple-400">0.15</span>)
+            label.textColor = <span class="text-cyan-400">DSColors</span>.success
+        <span class="text-pink-400">case</span> .warning:
+            backgroundColor = <span class="text-cyan-400">DSColors</span>.warning.withAlphaComponent(<span class="text-purple-400">0.15</span>)
+            label.textColor = <span class="text-cyan-400">DSColors</span>.warning
+        <span class="text-pink-400">case</span> .error:
+            backgroundColor = <span class="text-cyan-400">DSColors</span>.error.withAlphaComponent(<span class="text-purple-400">0.15</span>)
+            label.textColor = <span class="text-cyan-400">DSColors</span>.error
+        <span class="text-pink-400">case</span> .neutral:
+            backgroundColor = <span class="text-cyan-400">DSColors</span>.backgroundSecondary
+            label.textColor = <span class="text-cyan-400">DSColors</span>.textSecondary
+        }
+    }
+}</code></pre>
+                    </div>
+
+                    <h2 class="text-2xl font-bold mt-12 mb-6">DSLoadingView — индикатор загрузки</h2>
+                    <p class="mb-6">Полноэкранный индикатор загрузки с затемнением.</p>
+
+                    <div class="bg-zinc-950 rounded-2xl p-6 mb-8 overflow-x-auto">
+                        <pre class="text-sm leading-relaxed"><code><span class="text-pink-400">final class</span> <span class="text-cyan-400">DSLoadingView</span>: <span class="text-cyan-400">UIView</span> {
+    <span class="text-pink-400">private let</span> containerView = <span class="text-cyan-400">UIView</span>()
+    <span class="text-pink-400">private let</span> activityIndicator = <span class="text-cyan-400">UIActivityIndicatorView</span>(style: .large)
+    <span class="text-pink-400">private let</span> messageLabel = <span class="text-cyan-400">UILabel</span>()
+
+    <span class="text-pink-400">init</span>(message: <span class="text-cyan-400">String</span>? = <span class="text-pink-400">nil</span>) {
+        <span class="text-pink-400">super</span>.init(frame: .zero)
+        messageLabel.text = message
+        setupUI()
+    }
+
+    <span class="text-pink-400">required init</span>?(coder: <span class="text-cyan-400">NSCoder</span>) {
+        <span class="text-pink-400">fatalError</span>(<span class="text-green-400">"init(coder:) has not been implemented"</span>)
+    }
+
+    <span class="text-pink-400">private func</span> setupUI() {
+        backgroundColor = <span class="text-cyan-400">UIColor</span>.black.withAlphaComponent(<span class="text-purple-400">0.4</span>)
+
+        containerView.backgroundColor = <span class="text-cyan-400">DSColors</span>.backgroundTertiary
+        containerView.layer.cornerRadius = <span class="text-cyan-400">DSRadius</span>.large
+        addSubview(containerView)
+
+        activityIndicator.color = <span class="text-cyan-400">DSColors</span>.primary
+        activityIndicator.startAnimating()
+        containerView.addSubview(activityIndicator)
+
+        messageLabel.font = <span class="text-cyan-400">DSTypography</span>.bodyMedium
+        messageLabel.textColor = <span class="text-cyan-400">DSColors</span>.textSecondary
+        messageLabel.textAlignment = .center
+        messageLabel.isHidden = messageLabel.text == <span class="text-pink-400">nil</span>
+        containerView.addSubview(messageLabel)
+
+        containerView.snp.makeConstraints { make <span class="text-pink-400">in</span>
+            make.center.equalToSuperview()
+            make.width.greaterThanOrEqualTo(<span class="text-purple-400">120</span>)
+        }
+
+        activityIndicator.snp.makeConstraints { make <span class="text-pink-400">in</span>
+            make.top.equalToSuperview().offset(<span class="text-cyan-400">DSSpacing</span>.lg)
+            make.centerX.equalToSuperview()
+        }
+
+        messageLabel.snp.makeConstraints { make <span class="text-pink-400">in</span>
+            make.top.equalTo(activityIndicator.snp.bottom).offset(<span class="text-cyan-400">DSSpacing</span>.sm)
+            make.leading.trailing.equalToSuperview().inset(<span class="text-cyan-400">DSSpacing</span>.md)
+            make.bottom.equalToSuperview().offset(-<span class="text-cyan-400">DSSpacing</span>.lg)
+        }
+    }
+
+    <span class="text-pink-400">func</span> show(<span class="text-pink-400">in</span> view: <span class="text-cyan-400">UIView</span>) {
+        alpha = <span class="text-purple-400">0</span>
+        view.addSubview(<span class="text-pink-400">self</span>)
+        snp.makeConstraints { make <span class="text-pink-400">in</span>
+            make.edges.equalToSuperview()
+        }
+
+        <span class="text-cyan-400">UIView</span>.animate(withDuration: <span class="text-purple-400">0.2</span>) {
+            <span class="text-pink-400">self</span>.alpha = <span class="text-purple-400">1</span>
+        }
+    }
+
+    <span class="text-pink-400">func</span> hide() {
+        <span class="text-cyan-400">UIView</span>.animate(withDuration: <span class="text-purple-400">0.2</span>, animations: {
+            <span class="text-pink-400">self</span>.alpha = <span class="text-purple-400">0</span>
+        }) { _ <span class="text-pink-400">in</span>
+            <span class="text-pink-400">self</span>.removeFromSuperview()
+        }
+    }
+}</code></pre>
+                    </div>
+
+                    <h2 class="text-2xl font-bold mt-12 mb-6">Использование DSKit</h2>
+                    <p class="mb-6">Пример использования компонентов в приложении.</p>
+
+                    <div class="bg-zinc-950 rounded-2xl p-6 mb-8 overflow-x-auto">
+                        <pre class="text-sm leading-relaxed"><code><span class="text-pink-400">class</span> <span class="text-cyan-400">ExampleViewController</span>: <span class="text-cyan-400">UIViewController</span> {
+
+    <span class="text-pink-400">private let</span> emailField = <span class="text-cyan-400">DSTextField</span>()
+    <span class="text-pink-400">private let</span> passwordField = <span class="text-cyan-400">DSTextField</span>()
+    <span class="text-pink-400">private let</span> loginButton = <span class="text-cyan-400">DSButton</span>(title: <span class="text-green-400">"Войти"</span>, style: .primary, size: .large)
+    <span class="text-pink-400">private let</span> registerButton = <span class="text-cyan-400">DSButton</span>(title: <span class="text-green-400">"Регистрация"</span>, style: .outline, size: .large)
+    <span class="text-pink-400">private var</span> loadingView: <span class="text-cyan-400">DSLoadingView</span>?
+
+    <span class="text-pink-400">override func</span> viewDidLoad() {
+        <span class="text-pink-400">super</span>.viewDidLoad()
+        setupUI()
+    }
+
+    <span class="text-pink-400">private func</span> setupUI() {
+        view.backgroundColor = <span class="text-cyan-400">DSColors</span>.background
+
+        emailField.placeholder = <span class="text-green-400">"Email"</span>
+        emailField.keyboardType = .emailAddress
+
+        passwordField.placeholder = <span class="text-green-400">"Пароль"</span>
+        passwordField.isSecure = <span class="text-pink-400">true</span>
+
+        loginButton.addTarget(<span class="text-pink-400">self</span>, action: <span class="text-pink-400">#selector</span>(loginTapped), for: .touchUpInside)
+        registerButton.addTarget(<span class="text-pink-400">self</span>, action: <span class="text-pink-400">#selector</span>(registerTapped), for: .touchUpInside)
+
+        <span class="text-pink-400">let</span> stack = <span class="text-cyan-400">UIStackView</span>(arrangedSubviews: [
+            emailField, passwordField, loginButton, registerButton
+        ])
+        stack.axis = .vertical
+        stack.spacing = <span class="text-cyan-400">DSSpacing</span>.md
+
+        view.addSubview(stack)
+        stack.snp.makeConstraints { make <span class="text-pink-400">in</span>
+            make.center.equalToSuperview()
+            make.leading.trailing.equalToSuperview().inset(<span class="text-cyan-400">DSSpacing</span>.lg)
+        }
+    }
+
+    <span class="text-purple-400">@objc</span> <span class="text-pink-400">private func</span> loginTapped() {
+        <span class="text-gray-500">// Валидация</span>
+        <span class="text-pink-400">guard let</span> email = emailField.text, !email.isEmpty <span class="text-pink-400">else</span> {
+            emailField.errorMessage = <span class="text-green-400">"Введите email"</span>
+            <span class="text-pink-400">return</span>
+        }
+        emailField.errorMessage = <span class="text-pink-400">nil</span>
+
+        <span class="text-gray-500">// Показать загрузку</span>
+        loginButton.isLoading = <span class="text-pink-400">true</span>
+        loadingView = <span class="text-cyan-400">DSLoadingView</span>(message: <span class="text-green-400">"Входим..."</span>)
+        loadingView?.show(<span class="text-pink-400">in</span>: view)
+
+        <span class="text-gray-500">// Имитация запроса</span>
+        <span class="text-cyan-400">DispatchQueue</span>.main.asyncAfter(deadline: .now() + <span class="text-purple-400">2</span>) {
+            <span class="text-pink-400">self</span>.loginButton.isLoading = <span class="text-pink-400">false</span>
+            <span class="text-pink-400">self</span>.loadingView?.hide()
+        }
+    }
+
+    <span class="text-purple-400">@objc</span> <span class="text-pink-400">private func</span> registerTapped() {
+        <span class="text-gray-500">// Переход на регистрацию</span>
+    }
+}</code></pre>
+                    </div>
+
+                    <div class="mt-12 p-6 bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-200 dark:border-emerald-800 rounded-2xl">
+                        <h3 class="text-lg font-semibold text-emerald-800 dark:text-emerald-200 mb-3">Что мы изучили</h3>
+                        <ul class="space-y-2 text-emerald-700 dark:text-emerald-300">
+                            <li class="flex items-start gap-2">
+                                <span class="text-emerald-500 mt-1">•</span>
+                                <span>Система цветов с поддержкой тёмной темы</span>
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <span class="text-emerald-500 mt-1">•</span>
+                                <span>Типографика и отступы (Design Tokens)</span>
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <span class="text-emerald-500 mt-1">•</span>
+                                <span>DSButton с разными стилями и размерами</span>
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <span class="text-emerald-500 mt-1">•</span>
+                                <span>DSTextField с плавающим placeholder</span>
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <span class="text-emerald-500 mt-1">•</span>
+                                <span>DSCard, DSBadge и DSLoadingView</span>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="mt-8 p-6 bg-primary/10 border border-primary/20 rounded-2xl">
+                        <h3 class="text-lg font-semibold text-primary mb-3">Поздравляем!</h3>
+                        <p class="text-zinc-600 dark:text-zinc-400">Вы завершили изучение книги по iOS разработке. Теперь у вас есть все необходимые знания для создания полноценного e-commerce приложения с архитектурой VIPER, Firebase и собственной дизайн-системой.</p>
+                    </div>
+                </div>
+
+                <nav class="flex justify-between gap-4 mt-16 pt-8 border-t border-zinc-200 dark:border-zinc-800">
+                    <a href="20-profile.html" class="flex items-center gap-3 px-5 py-3 bg-zinc-100 dark:bg-zinc-800 hover:bg-primary hover:text-white rounded-xl transition-colors">
+                        <span class="text-xl">←</span>
+                        <span class="font-medium">Предыдущая</span>
+                    </a>
+                    
+                </nav>
+            </article>
+        </main>
+    </div>
+
+    <script>
+        const menuBtn = document.getElementById('menuBtn');
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('overlay');
+        menuBtn.addEventListener('click', () => {
+            sidebar.classList.toggle('-translate-x-full');
+            overlay.classList.toggle('hidden');
+        });
+        function closeSidebar() {
+            sidebar.classList.add('-translate-x-full');
+            overlay.classList.add('hidden');
+        }
+    </script>
+</body>
+</html>

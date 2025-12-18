@@ -1,0 +1,1167 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Глава 19: Orders | iOS Book</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'media',
+            theme: { extend: { colors: { primary: '#007AFF' } } }
+        }
+    </script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
+</head>
+<body class="bg-white dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100">
+    <button id="menuBtn" class="lg:hidden fixed top-4 left-4 z-50 p-3 bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-xl shadow-lg">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+        </svg>
+    </button>
+
+    <div class="flex min-h-screen">
+        <aside id="sidebar" class="fixed inset-y-0 left-0 w-72 bg-zinc-50 dark:bg-zinc-900 border-r border-zinc-200 dark:border-zinc-800 flex flex-col z-40 transform -translate-x-full lg:translate-x-0 transition-transform duration-300">
+            <div class="p-5 border-b border-zinc-200 dark:border-zinc-800">
+                <a href="../index.html" class="flex items-center gap-3 text-lg font-semibold hover:text-primary transition-colors">
+                    <div class="w-9 h-9 bg-primary rounded-lg flex items-center justify-center">
+                        <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/>
+                        </svg>
+                    </div>
+                    iOS Book
+                </a>
+            </div>
+            <nav class="flex-1 overflow-y-auto p-4">
+                <div class="space-y-6">
+                    <div>
+                        <h3 class="px-3 mb-2 text-xs font-semibold uppercase tracking-wider text-zinc-400">Введение</h3>
+                        <a href="00-introduction.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">Введение</a>
+                    </div>
+                    <div>
+                        <h3 class="px-3 mb-2 text-xs font-semibold uppercase tracking-wider text-zinc-400">Основы Swift</h3>
+                        <div class="space-y-1">
+                            <a href="01-xcode.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">1. Xcode</a>
+                            <a href="02-swift-basics.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">2. Основы Swift</a>
+                            <a href="03-control-flow.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">3. Control Flow</a>
+                            <a href="04-functions.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">4. Функции</a>
+                            <a href="05-oop.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">5. ООП</a>
+                            <a href="06-protocols.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">6. Протоколы</a>
+                            <a href="07-optionals.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">7. Optionals</a>
+                            <a href="08-memory.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">8. Память</a>
+                            <a href="09-generics.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">9. Generics</a>
+                            <a href="10-concurrency.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">10. Concurrency</a>
+                        </div>
+                    </div>
+                    <div>
+                        <h3 class="px-3 mb-2 text-xs font-semibold uppercase tracking-wider text-zinc-400">UIKit</h3>
+                        <div class="space-y-1">
+                            <a href="11-uikit-basics.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">11. UIKit</a>
+                            <a href="12-programmatic-ui.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">12. Programmatic UI</a>
+                        </div>
+                    </div>
+                    <div>
+                        <h3 class="px-3 mb-2 text-xs font-semibold uppercase tracking-wider text-zinc-400">Архитектура</h3>
+                        <div class="space-y-1">
+                            <a href="13-viper.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">13. VIPER</a>
+                            <a href="14-project-setup.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">14. Project Setup</a>
+                        </div>
+                    </div>
+                    <div>
+                        <h3 class="px-3 mb-2 text-xs font-semibold uppercase tracking-wider text-zinc-400">Практика</h3>
+                        <div class="space-y-1">
+                            <a href="15-authentication.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">15. Auth</a>
+                            <a href="16-products.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">16. Products</a>
+                            <a href="17-cart.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">17. Cart</a>
+                            <a href="18-favorites.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">18. Favorites</a>
+                            <a href="19-orders.html" class="block px-3 py-2 text-sm text-white bg-primary rounded-lg">19. Orders</a>
+                            <a href="20-profile.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">20. Profile</a>
+                        </div>
+                    </div>
+                    <div>
+                        <h3 class="px-3 mb-2 text-xs font-semibold uppercase tracking-wider text-zinc-400">Дополнительно</h3>
+                        <a href="21-reusable-views.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">21. Reusable Views</a>
+                    </div>
+                </div>
+            </nav>
+        </aside>
+
+        <div id="overlay" class="fixed inset-0 bg-black/50 z-30 lg:hidden hidden" onclick="closeSidebar()"></div>
+
+        <main class="flex-1 lg:ml-72">
+            <article class="max-w-3xl mx-auto px-6 sm:px-8 lg:px-12 py-12 lg:py-16">
+                <header class="mb-12 pb-8 border-b border-zinc-200 dark:border-zinc-800">
+                    <span class="text-sm font-semibold uppercase tracking-wider text-primary">Глава 19</span>
+                    <h1 class="text-3xl sm:text-4xl font-bold mt-2 mb-4">Orders</h1>
+                    <p class="text-lg text-zinc-600 dark:text-zinc-400">Оформление заказов</p>
+                </header>
+
+                <div class="prose prose-zinc dark:prose-invert max-w-none">
+                    <p class="text-lg leading-relaxed mb-8">В этой главе мы реализуем систему заказов — от оформления до отслеживания истории покупок. Это ключевой модуль любого e-commerce приложения.</p>
+
+                    <h2 class="text-2xl font-bold mt-12 mb-6">Модель заказа</h2>
+                    <p class="mb-6">Заказ содержит информацию о товарах, адресе доставки, статусе и общей сумме.</p>
+
+                    <div class="bg-zinc-950 rounded-2xl p-6 mb-8 overflow-x-auto">
+                        <pre class="text-sm leading-relaxed"><code><span class="text-pink-400">import</span> <span class="text-cyan-400">FirebaseFirestore</span>
+
+<span class="text-pink-400">enum</span> <span class="text-cyan-400">OrderStatus</span>: <span class="text-cyan-400">String</span>, <span class="text-cyan-400">Codable</span>, <span class="text-cyan-400">CaseIterable</span> {
+    <span class="text-pink-400">case</span> pending = <span class="text-green-400">"pending"</span>
+    <span class="text-pink-400">case</span> confirmed = <span class="text-green-400">"confirmed"</span>
+    <span class="text-pink-400">case</span> processing = <span class="text-green-400">"processing"</span>
+    <span class="text-pink-400">case</span> shipped = <span class="text-green-400">"shipped"</span>
+    <span class="text-pink-400">case</span> delivered = <span class="text-green-400">"delivered"</span>
+    <span class="text-pink-400">case</span> cancelled = <span class="text-green-400">"cancelled"</span>
+
+    <span class="text-pink-400">var</span> displayName: <span class="text-cyan-400">String</span> {
+        <span class="text-pink-400">switch self</span> {
+        <span class="text-pink-400">case</span> .pending: <span class="text-pink-400">return</span> <span class="text-green-400">"Ожидает подтверждения"</span>
+        <span class="text-pink-400">case</span> .confirmed: <span class="text-pink-400">return</span> <span class="text-green-400">"Подтверждён"</span>
+        <span class="text-pink-400">case</span> .processing: <span class="text-pink-400">return</span> <span class="text-green-400">"Собирается"</span>
+        <span class="text-pink-400">case</span> .shipped: <span class="text-pink-400">return</span> <span class="text-green-400">"В пути"</span>
+        <span class="text-pink-400">case</span> .delivered: <span class="text-pink-400">return</span> <span class="text-green-400">"Доставлен"</span>
+        <span class="text-pink-400">case</span> .cancelled: <span class="text-pink-400">return</span> <span class="text-green-400">"Отменён"</span>
+        }
+    }
+
+    <span class="text-pink-400">var</span> color: <span class="text-cyan-400">UIColor</span> {
+        <span class="text-pink-400">switch self</span> {
+        <span class="text-pink-400">case</span> .pending: <span class="text-pink-400">return</span> .systemOrange
+        <span class="text-pink-400">case</span> .confirmed, .processing: <span class="text-pink-400">return</span> .systemBlue
+        <span class="text-pink-400">case</span> .shipped: <span class="text-pink-400">return</span> .systemPurple
+        <span class="text-pink-400">case</span> .delivered: <span class="text-pink-400">return</span> .systemGreen
+        <span class="text-pink-400">case</span> .cancelled: <span class="text-pink-400">return</span> .systemRed
+        }
+    }
+}
+
+<span class="text-pink-400">struct</span> <span class="text-cyan-400">OrderItem</span>: <span class="text-cyan-400">Codable</span> {
+    <span class="text-pink-400">let</span> productId: <span class="text-cyan-400">String</span>
+    <span class="text-pink-400">let</span> productName: <span class="text-cyan-400">String</span>
+    <span class="text-pink-400">let</span> productImage: <span class="text-cyan-400">String</span>
+    <span class="text-pink-400">let</span> price: <span class="text-cyan-400">Double</span>
+    <span class="text-pink-400">let</span> quantity: <span class="text-cyan-400">Int</span>
+
+    <span class="text-pink-400">var</span> totalPrice: <span class="text-cyan-400">Double</span> {
+        price * <span class="text-cyan-400">Double</span>(quantity)
+    }
+}
+
+<span class="text-pink-400">struct</span> <span class="text-cyan-400">ShippingAddress</span>: <span class="text-cyan-400">Codable</span> {
+    <span class="text-pink-400">let</span> fullName: <span class="text-cyan-400">String</span>
+    <span class="text-pink-400">let</span> phone: <span class="text-cyan-400">String</span>
+    <span class="text-pink-400">let</span> city: <span class="text-cyan-400">String</span>
+    <span class="text-pink-400">let</span> street: <span class="text-cyan-400">String</span>
+    <span class="text-pink-400">let</span> building: <span class="text-cyan-400">String</span>
+    <span class="text-pink-400">let</span> apartment: <span class="text-cyan-400">String</span>?
+    <span class="text-pink-400">let</span> postalCode: <span class="text-cyan-400">String</span>
+
+    <span class="text-pink-400">var</span> formatted: <span class="text-cyan-400">String</span> {
+        <span class="text-pink-400">var</span> parts = [city, street, building]
+        <span class="text-pink-400">if let</span> apt = apartment { parts.append(<span class="text-green-400">"кв. \(apt)"</span>) }
+        <span class="text-pink-400">return</span> parts.joined(separator: <span class="text-green-400">", "</span>)
+    }
+}
+
+<span class="text-pink-400">struct</span> <span class="text-cyan-400">Order</span>: <span class="text-cyan-400">Codable</span>, <span class="text-cyan-400">Identifiable</span> {
+    <span class="text-purple-400">@DocumentID</span> <span class="text-pink-400">var</span> id: <span class="text-cyan-400">String</span>?
+    <span class="text-pink-400">let</span> userId: <span class="text-cyan-400">String</span>
+    <span class="text-pink-400">let</span> items: [<span class="text-cyan-400">OrderItem</span>]
+    <span class="text-pink-400">let</span> shippingAddress: <span class="text-cyan-400">ShippingAddress</span>
+    <span class="text-pink-400">let</span> subtotal: <span class="text-cyan-400">Double</span>
+    <span class="text-pink-400">let</span> shippingCost: <span class="text-cyan-400">Double</span>
+    <span class="text-pink-400">let</span> total: <span class="text-cyan-400">Double</span>
+    <span class="text-pink-400">var</span> status: <span class="text-cyan-400">OrderStatus</span>
+    <span class="text-pink-400">let</span> createdAt: <span class="text-cyan-400">Date</span>
+    <span class="text-pink-400">var</span> updatedAt: <span class="text-cyan-400">Date</span>
+
+    <span class="text-pink-400">var</span> formattedTotal: <span class="text-cyan-400">String</span> {
+        <span class="text-cyan-400">String</span>(format: <span class="text-green-400">"%.0f ₸"</span>, total)
+    }
+
+    <span class="text-pink-400">var</span> formattedDate: <span class="text-cyan-400">String</span> {
+        <span class="text-pink-400">let</span> formatter = <span class="text-cyan-400">DateFormatter</span>()
+        formatter.dateStyle = .medium
+        formatter.timeStyle = .short
+        formatter.locale = <span class="text-cyan-400">Locale</span>(identifier: <span class="text-green-400">"ru_RU"</span>)
+        <span class="text-pink-400">return</span> formatter.string(from: createdAt)
+    }
+
+    <span class="text-pink-400">var</span> orderNumber: <span class="text-cyan-400">String</span> {
+        <span class="text-pink-400">guard let</span> id = id <span class="text-pink-400">else</span> { <span class="text-pink-400">return</span> <span class="text-green-400">"—"</span> }
+        <span class="text-pink-400">return</span> <span class="text-green-400">"#\(id.prefix(8).uppercased())"</span>
+    }
+}</code></pre>
+                    </div>
+
+                    <h2 class="text-2xl font-bold mt-12 mb-6">OrderService</h2>
+                    <p class="mb-6">Сервис управляет созданием заказов, получением истории и отменой.</p>
+
+                    <div class="bg-zinc-950 rounded-2xl p-6 mb-8 overflow-x-auto">
+                        <pre class="text-sm leading-relaxed"><code><span class="text-pink-400">import</span> <span class="text-cyan-400">FirebaseFirestore</span>
+<span class="text-pink-400">import</span> <span class="text-cyan-400">FirebaseAuth</span>
+<span class="text-pink-400">import</span> <span class="text-cyan-400">Combine</span>
+
+<span class="text-pink-400">final class</span> <span class="text-cyan-400">OrderService</span> {
+    <span class="text-pink-400">static let</span> shared = <span class="text-cyan-400">OrderService</span>()
+    <span class="text-pink-400">private let</span> db = <span class="text-cyan-400">Firestore</span>.firestore()
+    <span class="text-pink-400">private var</span> listener: <span class="text-cyan-400">ListenerRegistration</span>?
+
+    <span class="text-pink-400">private let</span> ordersSubject = <span class="text-cyan-400">CurrentValueSubject</span>&lt;[<span class="text-cyan-400">Order</span>], <span class="text-cyan-400">Never</span>&gt;([])
+    <span class="text-pink-400">var</span> ordersPublisher: <span class="text-cyan-400">AnyPublisher</span>&lt;[<span class="text-cyan-400">Order</span>], <span class="text-cyan-400">Never</span>&gt; {
+        ordersSubject.eraseToAnyPublisher()
+    }
+
+    <span class="text-pink-400">private var</span> userId: <span class="text-cyan-400">String</span>? {
+        <span class="text-cyan-400">Auth</span>.auth().currentUser?.uid
+    }
+
+    <span class="text-gray-500">// MARK: - Create Order</span>
+    <span class="text-pink-400">func</span> createOrder(
+        items: [<span class="text-cyan-400">CartItem</span>],
+        shippingAddress: <span class="text-cyan-400">ShippingAddress</span>,
+        completion: <span class="text-purple-400">@escaping</span> (<span class="text-cyan-400">Result</span>&lt;<span class="text-cyan-400">Order</span>, <span class="text-cyan-400">Error</span>&gt;) -> <span class="text-cyan-400">Void</span>
+    ) {
+        <span class="text-pink-400">guard let</span> userId = userId <span class="text-pink-400">else</span> {
+            completion(.failure(<span class="text-cyan-400">AuthError</span>.notAuthenticated))
+            <span class="text-pink-400">return</span>
+        }
+
+        <span class="text-gray-500">// Конвертируем CartItem в OrderItem</span>
+        <span class="text-pink-400">let</span> orderItems = items.map { item <span class="text-pink-400">in</span>
+            <span class="text-cyan-400">OrderItem</span>(
+                productId: item.productId,
+                productName: item.productName,
+                productImage: item.productImage,
+                price: item.price,
+                quantity: item.quantity
+            )
+        }
+
+        <span class="text-pink-400">let</span> subtotal = orderItems.reduce(<span class="text-purple-400">0</span>) { $0 + $1.totalPrice }
+        <span class="text-pink-400">let</span> shippingCost: <span class="text-cyan-400">Double</span> = subtotal >= <span class="text-purple-400">10000</span> ? <span class="text-purple-400">0</span> : <span class="text-purple-400">1500</span>
+        <span class="text-pink-400">let</span> total = subtotal + shippingCost
+
+        <span class="text-pink-400">let</span> now = <span class="text-cyan-400">Date</span>()
+        <span class="text-pink-400">var</span> order = <span class="text-cyan-400">Order</span>(
+            userId: userId,
+            items: orderItems,
+            shippingAddress: shippingAddress,
+            subtotal: subtotal,
+            shippingCost: shippingCost,
+            total: total,
+            status: .pending,
+            createdAt: now,
+            updatedAt: now
+        )
+
+        <span class="text-pink-400">do</span> {
+            <span class="text-pink-400">let</span> ref = <span class="text-pink-400">try</span> db.collection(<span class="text-green-400">"orders"</span>).addDocument(from: order)
+            order.id = ref.documentID
+
+            <span class="text-gray-500">// Очищаем корзину после создания заказа</span>
+            <span class="text-cyan-400">CartService</span>.shared.clearCart { _ <span class="text-pink-400">in</span> }
+
+            completion(.success(order))
+        } <span class="text-pink-400">catch</span> {
+            completion(.failure(error))
+        }
+    }
+
+    <span class="text-gray-500">// MARK: - Fetch Orders</span>
+    <span class="text-pink-400">func</span> startListening() {
+        <span class="text-pink-400">guard let</span> userId = userId <span class="text-pink-400">else</span> { <span class="text-pink-400">return</span> }
+
+        listener?.remove()
+        listener = db.collection(<span class="text-green-400">"orders"</span>)
+            .whereField(<span class="text-green-400">"userId"</span>, isEqualTo: userId)
+            .order(by: <span class="text-green-400">"createdAt"</span>, descending: <span class="text-pink-400">true</span>)
+            .addSnapshotListener { [<span class="text-pink-400">weak self</span>] snapshot, error <span class="text-pink-400">in</span>
+                <span class="text-pink-400">guard let</span> documents = snapshot?.documents <span class="text-pink-400">else</span> { <span class="text-pink-400">return</span> }
+
+                <span class="text-pink-400">let</span> orders = documents.compactMap { doc <span class="text-pink-400">in</span>
+                    <span class="text-pink-400">try</span>? doc.data(as: <span class="text-cyan-400">Order</span>.<span class="text-pink-400">self</span>)
+                }
+                <span class="text-pink-400">self</span>?.ordersSubject.send(orders)
+            }
+    }
+
+    <span class="text-pink-400">func</span> stopListening() {
+        listener?.remove()
+        listener = <span class="text-pink-400">nil</span>
+    }
+
+    <span class="text-gray-500">// MARK: - Cancel Order</span>
+    <span class="text-pink-400">func</span> cancelOrder(
+        _ orderId: <span class="text-cyan-400">String</span>,
+        completion: <span class="text-purple-400">@escaping</span> (<span class="text-cyan-400">Result</span>&lt;<span class="text-cyan-400">Void</span>, <span class="text-cyan-400">Error</span>&gt;) -> <span class="text-cyan-400">Void</span>
+    ) {
+        db.collection(<span class="text-green-400">"orders"</span>).document(orderId).updateData([
+            <span class="text-green-400">"status"</span>: <span class="text-cyan-400">OrderStatus</span>.cancelled.rawValue,
+            <span class="text-green-400">"updatedAt"</span>: <span class="text-cyan-400">FieldValue</span>.serverTimestamp()
+        ]) { error <span class="text-pink-400">in</span>
+            <span class="text-pink-400">if let</span> error = error {
+                completion(.failure(error))
+            } <span class="text-pink-400">else</span> {
+                completion(.success(()))
+            }
+        }
+    }
+
+    <span class="text-gray-500">// MARK: - Get Single Order</span>
+    <span class="text-pink-400">func</span> getOrder(
+        _ orderId: <span class="text-cyan-400">String</span>,
+        completion: <span class="text-purple-400">@escaping</span> (<span class="text-cyan-400">Result</span>&lt;<span class="text-cyan-400">Order</span>, <span class="text-cyan-400">Error</span>&gt;) -> <span class="text-cyan-400">Void</span>
+    ) {
+        db.collection(<span class="text-green-400">"orders"</span>).document(orderId).getDocument { snapshot, error <span class="text-pink-400">in</span>
+            <span class="text-pink-400">if let</span> error = error {
+                completion(.failure(error))
+                <span class="text-pink-400">return</span>
+            }
+
+            <span class="text-pink-400">guard let</span> snapshot = snapshot,
+                  <span class="text-pink-400">let</span> order = <span class="text-pink-400">try</span>? snapshot.data(as: <span class="text-cyan-400">Order</span>.<span class="text-pink-400">self</span>) <span class="text-pink-400">else</span> {
+                completion(.failure(<span class="text-cyan-400">NSError</span>(domain: <span class="text-green-400">""</span>, code: <span class="text-purple-400">404</span>)))
+                <span class="text-pink-400">return</span>
+            }
+
+            completion(.success(order))
+        }
+    }
+}</code></pre>
+                    </div>
+
+                    <h2 class="text-2xl font-bold mt-12 mb-6">Checkout — оформление заказа</h2>
+                    <p class="mb-6">Экран оформления заказа собирает адрес доставки и создаёт заказ.</p>
+
+                    <h3 class="text-xl font-semibold mt-8 mb-4">CheckoutProtocols</h3>
+                    <div class="bg-zinc-950 rounded-2xl p-6 mb-8 overflow-x-auto">
+                        <pre class="text-sm leading-relaxed"><code><span class="text-pink-400">protocol</span> <span class="text-cyan-400">CheckoutViewProtocol</span>: <span class="text-cyan-400">AnyObject</span> {
+    <span class="text-pink-400">func</span> showLoading()
+    <span class="text-pink-400">func</span> hideLoading()
+    <span class="text-pink-400">func</span> showError(_ message: <span class="text-cyan-400">String</span>)
+    <span class="text-pink-400">func</span> displayOrderSummary(items: [<span class="text-cyan-400">CartItem</span>], subtotal: <span class="text-cyan-400">String</span>, shipping: <span class="text-cyan-400">String</span>, total: <span class="text-cyan-400">String</span>)
+}
+
+<span class="text-pink-400">protocol</span> <span class="text-cyan-400">CheckoutPresenterProtocol</span>: <span class="text-cyan-400">AnyObject</span> {
+    <span class="text-pink-400">func</span> viewDidLoad()
+    <span class="text-pink-400">func</span> placeOrder(address: <span class="text-cyan-400">ShippingAddress</span>)
+}
+
+<span class="text-pink-400">protocol</span> <span class="text-cyan-400">CheckoutInteractorProtocol</span>: <span class="text-cyan-400">AnyObject</span> {
+    <span class="text-pink-400">func</span> getCartItems() -> [<span class="text-cyan-400">CartItem</span>]
+    <span class="text-pink-400">func</span> createOrder(items: [<span class="text-cyan-400">CartItem</span>], address: <span class="text-cyan-400">ShippingAddress</span>, completion: <span class="text-purple-400">@escaping</span> (<span class="text-cyan-400">Result</span>&lt;<span class="text-cyan-400">Order</span>, <span class="text-cyan-400">Error</span>&gt;) -> <span class="text-cyan-400">Void</span>)
+}
+
+<span class="text-pink-400">protocol</span> <span class="text-cyan-400">CheckoutRouterProtocol</span>: <span class="text-cyan-400">AnyObject</span> {
+    <span class="text-pink-400">func</span> showOrderSuccess(order: <span class="text-cyan-400">Order</span>)
+    <span class="text-pink-400">func</span> dismiss()
+}</code></pre>
+                    </div>
+
+                    <h3 class="text-xl font-semibold mt-8 mb-4">CheckoutViewController</h3>
+                    <div class="bg-zinc-950 rounded-2xl p-6 mb-8 overflow-x-auto">
+                        <pre class="text-sm leading-relaxed"><code><span class="text-pink-400">final class</span> <span class="text-cyan-400">CheckoutViewController</span>: <span class="text-cyan-400">UIViewController</span> {
+    <span class="text-pink-400">var</span> presenter: <span class="text-cyan-400">CheckoutPresenterProtocol</span>!
+
+    <span class="text-pink-400">private let</span> scrollView = <span class="text-cyan-400">UIScrollView</span>()
+    <span class="text-pink-400">private let</span> contentView = <span class="text-cyan-400">UIView</span>()
+
+    <span class="text-gray-500">// Форма адреса</span>
+    <span class="text-pink-400">private let</span> nameField = <span class="text-cyan-400">UITextField</span>()
+    <span class="text-pink-400">private let</span> phoneField = <span class="text-cyan-400">UITextField</span>()
+    <span class="text-pink-400">private let</span> cityField = <span class="text-cyan-400">UITextField</span>()
+    <span class="text-pink-400">private let</span> streetField = <span class="text-cyan-400">UITextField</span>()
+    <span class="text-pink-400">private let</span> buildingField = <span class="text-cyan-400">UITextField</span>()
+    <span class="text-pink-400">private let</span> apartmentField = <span class="text-cyan-400">UITextField</span>()
+    <span class="text-pink-400">private let</span> postalCodeField = <span class="text-cyan-400">UITextField</span>()
+
+    <span class="text-gray-500">// Сводка заказа</span>
+    <span class="text-pink-400">private let</span> summaryView = <span class="text-cyan-400">UIView</span>()
+    <span class="text-pink-400">private let</span> subtotalLabel = <span class="text-cyan-400">UILabel</span>()
+    <span class="text-pink-400">private let</span> shippingLabel = <span class="text-cyan-400">UILabel</span>()
+    <span class="text-pink-400">private let</span> totalLabel = <span class="text-cyan-400">UILabel</span>()
+
+    <span class="text-pink-400">private let</span> placeOrderButton = <span class="text-cyan-400">UIButton</span>(type: .system)
+    <span class="text-pink-400">private let</span> activityIndicator = <span class="text-cyan-400">UIActivityIndicatorView</span>(style: .medium)
+
+    <span class="text-pink-400">override func</span> viewDidLoad() {
+        <span class="text-pink-400">super</span>.viewDidLoad()
+        setupUI()
+        presenter.viewDidLoad()
+    }
+
+    <span class="text-pink-400">private func</span> setupUI() {
+        title = <span class="text-green-400">"Оформление заказа"</span>
+        view.backgroundColor = .systemBackground
+
+        <span class="text-gray-500">// ScrollView setup</span>
+        view.addSubview(scrollView)
+        scrollView.addSubview(contentView)
+
+        scrollView.snp.makeConstraints { make <span class="text-pink-400">in</span>
+            make.edges.equalToSuperview()
+        }
+
+        contentView.snp.makeConstraints { make <span class="text-pink-400">in</span>
+            make.edges.equalToSuperview()
+            make.width.equalTo(view)
+        }
+
+        <span class="text-gray-500">// Address section</span>
+        <span class="text-pink-400">let</span> addressSection = createSectionView(title: <span class="text-green-400">"Адрес доставки"</span>)
+        contentView.addSubview(addressSection)
+
+        <span class="text-pink-400">let</span> fields = [
+            (<span class="text-green-400">"ФИО получателя"</span>, nameField),
+            (<span class="text-green-400">"Телефон"</span>, phoneField),
+            (<span class="text-green-400">"Город"</span>, cityField),
+            (<span class="text-green-400">"Улица"</span>, streetField),
+            (<span class="text-green-400">"Дом"</span>, buildingField),
+            (<span class="text-green-400">"Квартира (необязательно)"</span>, apartmentField),
+            (<span class="text-green-400">"Почтовый индекс"</span>, postalCodeField)
+        ]
+
+        <span class="text-pink-400">let</span> formStack = <span class="text-cyan-400">UIStackView</span>()
+        formStack.axis = .vertical
+        formStack.spacing = <span class="text-purple-400">16</span>
+        addressSection.addSubview(formStack)
+
+        fields.forEach { placeholder, field <span class="text-pink-400">in</span>
+            configureTextField(field, placeholder: placeholder)
+            formStack.addArrangedSubview(field)
+        }
+
+        phoneField.keyboardType = .phonePad
+        postalCodeField.keyboardType = .numberPad
+
+        addressSection.snp.makeConstraints { make <span class="text-pink-400">in</span>
+            make.top.equalToSuperview().offset(<span class="text-purple-400">16</span>)
+            make.leading.trailing.equalToSuperview().inset(<span class="text-purple-400">16</span>)
+        }
+
+        formStack.snp.makeConstraints { make <span class="text-pink-400">in</span>
+            make.top.equalToSuperview().offset(<span class="text-purple-400">48</span>)
+            make.leading.trailing.bottom.equalToSuperview().inset(<span class="text-purple-400">16</span>)
+        }
+
+        <span class="text-gray-500">// Summary section</span>
+        setupSummaryView()
+        contentView.addSubview(summaryView)
+
+        summaryView.snp.makeConstraints { make <span class="text-pink-400">in</span>
+            make.top.equalTo(addressSection.snp.bottom).offset(<span class="text-purple-400">24</span>)
+            make.leading.trailing.equalToSuperview().inset(<span class="text-purple-400">16</span>)
+        }
+
+        <span class="text-gray-500">// Place order button</span>
+        placeOrderButton.setTitle(<span class="text-green-400">"Оформить заказ"</span>, for: .normal)
+        placeOrderButton.titleLabel?.font = .systemFont(ofSize: <span class="text-purple-400">17</span>, weight: .semibold)
+        placeOrderButton.backgroundColor = .systemBlue
+        placeOrderButton.setTitleColor(.white, for: .normal)
+        placeOrderButton.layer.cornerRadius = <span class="text-purple-400">12</span>
+        placeOrderButton.addTarget(<span class="text-pink-400">self</span>, action: <span class="text-pink-400">#selector</span>(placeOrderTapped), for: .touchUpInside)
+        contentView.addSubview(placeOrderButton)
+
+        placeOrderButton.snp.makeConstraints { make <span class="text-pink-400">in</span>
+            make.top.equalTo(summaryView.snp.bottom).offset(<span class="text-purple-400">24</span>)
+            make.leading.trailing.equalToSuperview().inset(<span class="text-purple-400">16</span>)
+            make.height.equalTo(<span class="text-purple-400">50</span>)
+            make.bottom.equalToSuperview().offset(-<span class="text-purple-400">32</span>)
+        }
+
+        placeOrderButton.addSubview(activityIndicator)
+        activityIndicator.snp.makeConstraints { make <span class="text-pink-400">in</span>
+            make.center.equalToSuperview()
+        }
+        activityIndicator.color = .white
+        activityIndicator.hidesWhenStopped = <span class="text-pink-400">true</span>
+    }
+
+    <span class="text-pink-400">private func</span> configureTextField(_ field: <span class="text-cyan-400">UITextField</span>, placeholder: <span class="text-cyan-400">String</span>) {
+        field.placeholder = placeholder
+        field.borderStyle = .roundedRect
+        field.font = .systemFont(ofSize: <span class="text-purple-400">16</span>)
+        field.snp.makeConstraints { make <span class="text-pink-400">in</span>
+            make.height.equalTo(<span class="text-purple-400">44</span>)
+        }
+    }
+
+    <span class="text-pink-400">private func</span> createSectionView(title: <span class="text-cyan-400">String</span>) -> <span class="text-cyan-400">UIView</span> {
+        <span class="text-pink-400">let</span> view = <span class="text-cyan-400">UIView</span>()
+        view.backgroundColor = .secondarySystemBackground
+        view.layer.cornerRadius = <span class="text-purple-400">16</span>
+
+        <span class="text-pink-400">let</span> titleLabel = <span class="text-cyan-400">UILabel</span>()
+        titleLabel.text = title
+        titleLabel.font = .systemFont(ofSize: <span class="text-purple-400">18</span>, weight: .semibold)
+        view.addSubview(titleLabel)
+
+        titleLabel.snp.makeConstraints { make <span class="text-pink-400">in</span>
+            make.top.leading.equalToSuperview().offset(<span class="text-purple-400">16</span>)
+        }
+
+        <span class="text-pink-400">return</span> view
+    }
+
+    <span class="text-pink-400">private func</span> setupSummaryView() {
+        summaryView.backgroundColor = .secondarySystemBackground
+        summaryView.layer.cornerRadius = <span class="text-purple-400">16</span>
+
+        <span class="text-pink-400">let</span> titleLabel = <span class="text-cyan-400">UILabel</span>()
+        titleLabel.text = <span class="text-green-400">"Итого"</span>
+        titleLabel.font = .systemFont(ofSize: <span class="text-purple-400">18</span>, weight: .semibold)
+
+        <span class="text-pink-400">let</span> stack = <span class="text-cyan-400">UIStackView</span>(arrangedSubviews: [
+            createSummaryRow(left: <span class="text-green-400">"Товары:"</span>, rightLabel: subtotalLabel),
+            createSummaryRow(left: <span class="text-green-400">"Доставка:"</span>, rightLabel: shippingLabel),
+            createSummaryRow(left: <span class="text-green-400">"Итого:"</span>, rightLabel: totalLabel, isBold: <span class="text-pink-400">true</span>)
+        ])
+        stack.axis = .vertical
+        stack.spacing = <span class="text-purple-400">8</span>
+
+        summaryView.addSubview(titleLabel)
+        summaryView.addSubview(stack)
+
+        titleLabel.snp.makeConstraints { make <span class="text-pink-400">in</span>
+            make.top.leading.equalToSuperview().offset(<span class="text-purple-400">16</span>)
+        }
+
+        stack.snp.makeConstraints { make <span class="text-pink-400">in</span>
+            make.top.equalTo(titleLabel.snp.bottom).offset(<span class="text-purple-400">12</span>)
+            make.leading.trailing.bottom.equalToSuperview().inset(<span class="text-purple-400">16</span>)
+        }
+    }
+
+    <span class="text-pink-400">private func</span> createSummaryRow(left: <span class="text-cyan-400">String</span>, rightLabel: <span class="text-cyan-400">UILabel</span>, isBold: <span class="text-cyan-400">Bool</span> = <span class="text-pink-400">false</span>) -> <span class="text-cyan-400">UIView</span> {
+        <span class="text-pink-400">let</span> row = <span class="text-cyan-400">UIView</span>()
+
+        <span class="text-pink-400">let</span> leftLabel = <span class="text-cyan-400">UILabel</span>()
+        leftLabel.text = left
+        leftLabel.font = isBold ? .systemFont(ofSize: <span class="text-purple-400">16</span>, weight: .semibold) : .systemFont(ofSize: <span class="text-purple-400">15</span>)
+        leftLabel.textColor = isBold ? .label : .secondaryLabel
+
+        rightLabel.font = isBold ? .systemFont(ofSize: <span class="text-purple-400">16</span>, weight: .semibold) : .systemFont(ofSize: <span class="text-purple-400">15</span>)
+        rightLabel.textColor = .label
+
+        row.addSubview(leftLabel)
+        row.addSubview(rightLabel)
+
+        leftLabel.snp.makeConstraints { make <span class="text-pink-400">in</span>
+            make.leading.top.bottom.equalToSuperview()
+        }
+
+        rightLabel.snp.makeConstraints { make <span class="text-pink-400">in</span>
+            make.trailing.top.bottom.equalToSuperview()
+        }
+
+        <span class="text-pink-400">return</span> row
+    }
+
+    <span class="text-purple-400">@objc</span> <span class="text-pink-400">private func</span> placeOrderTapped() {
+        <span class="text-pink-400">guard</span> validateForm() <span class="text-pink-400">else</span> { <span class="text-pink-400">return</span> }
+
+        <span class="text-pink-400">let</span> address = <span class="text-cyan-400">ShippingAddress</span>(
+            fullName: nameField.text ?? <span class="text-green-400">""</span>,
+            phone: phoneField.text ?? <span class="text-green-400">""</span>,
+            city: cityField.text ?? <span class="text-green-400">""</span>,
+            street: streetField.text ?? <span class="text-green-400">""</span>,
+            building: buildingField.text ?? <span class="text-green-400">""</span>,
+            apartment: apartmentField.text?.isEmpty == <span class="text-pink-400">false</span> ? apartmentField.text : <span class="text-pink-400">nil</span>,
+            postalCode: postalCodeField.text ?? <span class="text-green-400">""</span>
+        )
+
+        presenter.placeOrder(address: address)
+    }
+
+    <span class="text-pink-400">private func</span> validateForm() -> <span class="text-cyan-400">Bool</span> {
+        <span class="text-pink-400">let</span> requiredFields = [nameField, phoneField, cityField, streetField, buildingField, postalCodeField]
+
+        <span class="text-pink-400">for</span> field <span class="text-pink-400">in</span> requiredFields {
+            <span class="text-pink-400">if</span> field.text?.trimmingCharacters(<span class="text-pink-400">in</span>: .whitespaces).isEmpty ?? <span class="text-pink-400">true</span> {
+                showError(<span class="text-green-400">"Заполните все обязательные поля"</span>)
+                field.becomeFirstResponder()
+                <span class="text-pink-400">return false</span>
+            }
+        }
+        <span class="text-pink-400">return true</span>
+    }
+}
+
+<span class="text-pink-400">extension</span> <span class="text-cyan-400">CheckoutViewController</span>: <span class="text-cyan-400">CheckoutViewProtocol</span> {
+    <span class="text-pink-400">func</span> showLoading() {
+        placeOrderButton.setTitle(<span class="text-green-400">""</span>, for: .normal)
+        placeOrderButton.isEnabled = <span class="text-pink-400">false</span>
+        activityIndicator.startAnimating()
+    }
+
+    <span class="text-pink-400">func</span> hideLoading() {
+        placeOrderButton.setTitle(<span class="text-green-400">"Оформить заказ"</span>, for: .normal)
+        placeOrderButton.isEnabled = <span class="text-pink-400">true</span>
+        activityIndicator.stopAnimating()
+    }
+
+    <span class="text-pink-400">func</span> showError(_ message: <span class="text-cyan-400">String</span>) {
+        <span class="text-pink-400">let</span> alert = <span class="text-cyan-400">UIAlertController</span>(title: <span class="text-green-400">"Ошибка"</span>, message: message, preferredStyle: .alert)
+        alert.addAction(<span class="text-cyan-400">UIAlertAction</span>(title: <span class="text-green-400">"OK"</span>, style: .default))
+        present(alert, animated: <span class="text-pink-400">true</span>)
+    }
+
+    <span class="text-pink-400">func</span> displayOrderSummary(items: [<span class="text-cyan-400">CartItem</span>], subtotal: <span class="text-cyan-400">String</span>, shipping: <span class="text-cyan-400">String</span>, total: <span class="text-cyan-400">String</span>) {
+        subtotalLabel.text = subtotal
+        shippingLabel.text = shipping
+        totalLabel.text = total
+    }
+}</code></pre>
+                    </div>
+
+                    <h2 class="text-2xl font-bold mt-12 mb-6">История заказов</h2>
+                    <p class="mb-6">Список всех заказов пользователя с возможностью просмотра деталей.</p>
+
+                    <h3 class="text-xl font-semibold mt-8 mb-4">OrdersViewController</h3>
+                    <div class="bg-zinc-950 rounded-2xl p-6 mb-8 overflow-x-auto">
+                        <pre class="text-sm leading-relaxed"><code><span class="text-pink-400">final class</span> <span class="text-cyan-400">OrdersViewController</span>: <span class="text-cyan-400">UIViewController</span> {
+    <span class="text-pink-400">var</span> presenter: <span class="text-cyan-400">OrdersPresenterProtocol</span>!
+
+    <span class="text-pink-400">private let</span> tableView = <span class="text-cyan-400">UITableView</span>(frame: .zero, style: .insetGrouped)
+    <span class="text-pink-400">private let</span> emptyLabel = <span class="text-cyan-400">UILabel</span>()
+    <span class="text-pink-400">private var</span> orders: [<span class="text-cyan-400">Order</span>] = []
+
+    <span class="text-pink-400">override func</span> viewDidLoad() {
+        <span class="text-pink-400">super</span>.viewDidLoad()
+        setupUI()
+        presenter.viewDidLoad()
+    }
+
+    <span class="text-pink-400">private func</span> setupUI() {
+        title = <span class="text-green-400">"Мои заказы"</span>
+        view.backgroundColor = .systemBackground
+
+        tableView.delegate = <span class="text-pink-400">self</span>
+        tableView.dataSource = <span class="text-pink-400">self</span>
+        tableView.register(<span class="text-cyan-400">OrderCell</span>.<span class="text-pink-400">self</span>, forCellReuseIdentifier: <span class="text-cyan-400">OrderCell</span>.reuseId)
+        view.addSubview(tableView)
+
+        tableView.snp.makeConstraints { make <span class="text-pink-400">in</span>
+            make.edges.equalToSuperview()
+        }
+
+        emptyLabel.text = <span class="text-green-400">"У вас пока нет заказов"</span>
+        emptyLabel.textColor = .secondaryLabel
+        emptyLabel.textAlignment = .center
+        emptyLabel.font = .systemFont(ofSize: <span class="text-purple-400">17</span>)
+        emptyLabel.isHidden = <span class="text-pink-400">true</span>
+        view.addSubview(emptyLabel)
+
+        emptyLabel.snp.makeConstraints { make <span class="text-pink-400">in</span>
+            make.center.equalToSuperview()
+            make.leading.trailing.equalToSuperview().inset(<span class="text-purple-400">32</span>)
+        }
+    }
+}
+
+<span class="text-pink-400">extension</span> <span class="text-cyan-400">OrdersViewController</span>: <span class="text-cyan-400">OrdersViewProtocol</span> {
+    <span class="text-pink-400">func</span> displayOrders(_ orders: [<span class="text-cyan-400">Order</span>]) {
+        <span class="text-pink-400">self</span>.orders = orders
+        tableView.reloadData()
+        emptyLabel.isHidden = !orders.isEmpty
+        tableView.isHidden = orders.isEmpty
+    }
+}
+
+<span class="text-pink-400">extension</span> <span class="text-cyan-400">OrdersViewController</span>: <span class="text-cyan-400">UITableViewDataSource</span>, <span class="text-cyan-400">UITableViewDelegate</span> {
+    <span class="text-pink-400">func</span> tableView(_ tableView: <span class="text-cyan-400">UITableView</span>, numberOfRowsInSection section: <span class="text-cyan-400">Int</span>) -> <span class="text-cyan-400">Int</span> {
+        orders.count
+    }
+
+    <span class="text-pink-400">func</span> tableView(_ tableView: <span class="text-cyan-400">UITableView</span>, cellForRowAt indexPath: <span class="text-cyan-400">IndexPath</span>) -> <span class="text-cyan-400">UITableViewCell</span> {
+        <span class="text-pink-400">let</span> cell = tableView.dequeueReusableCell(withIdentifier: <span class="text-cyan-400">OrderCell</span>.reuseId, for: indexPath) <span class="text-pink-400">as!</span> <span class="text-cyan-400">OrderCell</span>
+        cell.configure(with: orders[indexPath.row])
+        <span class="text-pink-400">return</span> cell
+    }
+
+    <span class="text-pink-400">func</span> tableView(_ tableView: <span class="text-cyan-400">UITableView</span>, didSelectRowAt indexPath: <span class="text-cyan-400">IndexPath</span>) {
+        tableView.deselectRow(at: indexPath, animated: <span class="text-pink-400">true</span>)
+        presenter.didSelectOrder(orders[indexPath.row])
+    }
+}</code></pre>
+                    </div>
+
+                    <h3 class="text-xl font-semibold mt-8 mb-4">OrderCell</h3>
+                    <div class="bg-zinc-950 rounded-2xl p-6 mb-8 overflow-x-auto">
+                        <pre class="text-sm leading-relaxed"><code><span class="text-pink-400">final class</span> <span class="text-cyan-400">OrderCell</span>: <span class="text-cyan-400">UITableViewCell</span> {
+    <span class="text-pink-400">static let</span> reuseId = <span class="text-green-400">"OrderCell"</span>
+
+    <span class="text-pink-400">private let</span> orderNumberLabel = <span class="text-cyan-400">UILabel</span>()
+    <span class="text-pink-400">private let</span> dateLabel = <span class="text-cyan-400">UILabel</span>()
+    <span class="text-pink-400">private let</span> statusBadge = <span class="text-cyan-400">PaddedLabel</span>()
+    <span class="text-pink-400">private let</span> totalLabel = <span class="text-cyan-400">UILabel</span>()
+    <span class="text-pink-400">private let</span> itemsCountLabel = <span class="text-cyan-400">UILabel</span>()
+
+    <span class="text-pink-400">override init</span>(style: <span class="text-cyan-400">UITableViewCell</span>.<span class="text-cyan-400">CellStyle</span>, reuseIdentifier: <span class="text-cyan-400">String</span>?) {
+        <span class="text-pink-400">super</span>.init(style: style, reuseIdentifier: reuseIdentifier)
+        setupUI()
+    }
+
+    <span class="text-pink-400">required init</span>?(coder: <span class="text-cyan-400">NSCoder</span>) {
+        <span class="text-pink-400">fatalError</span>(<span class="text-green-400">"init(coder:) has not been implemented"</span>)
+    }
+
+    <span class="text-pink-400">private func</span> setupUI() {
+        accessoryType = .disclosureIndicator
+
+        orderNumberLabel.font = .systemFont(ofSize: <span class="text-purple-400">17</span>, weight: .semibold)
+        dateLabel.font = .systemFont(ofSize: <span class="text-purple-400">14</span>)
+        dateLabel.textColor = .secondaryLabel
+
+        statusBadge.font = .systemFont(ofSize: <span class="text-purple-400">12</span>, weight: .medium)
+        statusBadge.textColor = .white
+        statusBadge.layer.cornerRadius = <span class="text-purple-400">6</span>
+        statusBadge.clipsToBounds = <span class="text-pink-400">true</span>
+
+        totalLabel.font = .systemFont(ofSize: <span class="text-purple-400">16</span>, weight: .semibold)
+        itemsCountLabel.font = .systemFont(ofSize: <span class="text-purple-400">14</span>)
+        itemsCountLabel.textColor = .secondaryLabel
+
+        <span class="text-pink-400">let</span> topStack = <span class="text-cyan-400">UIStackView</span>(arrangedSubviews: [orderNumberLabel, statusBadge])
+        topStack.spacing = <span class="text-purple-400">8</span>
+        topStack.alignment = .center
+
+        <span class="text-pink-400">let</span> bottomStack = <span class="text-cyan-400">UIStackView</span>(arrangedSubviews: [itemsCountLabel, <span class="text-cyan-400">UIView</span>(), totalLabel])
+        bottomStack.spacing = <span class="text-purple-400">8</span>
+
+        <span class="text-pink-400">let</span> mainStack = <span class="text-cyan-400">UIStackView</span>(arrangedSubviews: [topStack, dateLabel, bottomStack])
+        mainStack.axis = .vertical
+        mainStack.spacing = <span class="text-purple-400">4</span>
+
+        contentView.addSubview(mainStack)
+        mainStack.snp.makeConstraints { make <span class="text-pink-400">in</span>
+            make.edges.equalToSuperview().inset(<span class="text-purple-400">16</span>)
+        }
+    }
+
+    <span class="text-pink-400">func</span> configure(with order: <span class="text-cyan-400">Order</span>) {
+        orderNumberLabel.text = order.orderNumber
+        dateLabel.text = order.formattedDate
+        totalLabel.text = order.formattedTotal
+
+        statusBadge.text = <span class="text-green-400">" \(order.status.displayName) "</span>
+        statusBadge.backgroundColor = order.status.color
+
+        <span class="text-pink-400">let</span> count = order.items.reduce(<span class="text-purple-400">0</span>) { $0 + $1.quantity }
+        itemsCountLabel.text = <span class="text-green-400">"\(count) товар(ов)"</span>
+    }
+}
+
+<span class="text-gray-500">// Вспомогательный класс для badge с padding</span>
+<span class="text-pink-400">final class</span> <span class="text-cyan-400">PaddedLabel</span>: <span class="text-cyan-400">UILabel</span> {
+    <span class="text-pink-400">var</span> padding = <span class="text-cyan-400">UIEdgeInsets</span>(top: <span class="text-purple-400">4</span>, left: <span class="text-purple-400">8</span>, bottom: <span class="text-purple-400">4</span>, right: <span class="text-purple-400">8</span>)
+
+    <span class="text-pink-400">override func</span> drawText(in rect: <span class="text-cyan-400">CGRect</span>) {
+        <span class="text-pink-400">super</span>.drawText(in: rect.inset(by: padding))
+    }
+
+    <span class="text-pink-400">override var</span> intrinsicContentSize: <span class="text-cyan-400">CGSize</span> {
+        <span class="text-pink-400">let</span> size = <span class="text-pink-400">super</span>.intrinsicContentSize
+        <span class="text-pink-400">return</span> <span class="text-cyan-400">CGSize</span>(
+            width: size.width + padding.left + padding.right,
+            height: size.height + padding.top + padding.bottom
+        )
+    }
+}</code></pre>
+                    </div>
+
+                    <h2 class="text-2xl font-bold mt-12 mb-6">Детали заказа</h2>
+                    <p class="mb-6">Подробная информация о заказе с возможностью отмены.</p>
+
+                    <div class="bg-zinc-950 rounded-2xl p-6 mb-8 overflow-x-auto">
+                        <pre class="text-sm leading-relaxed"><code><span class="text-pink-400">final class</span> <span class="text-cyan-400">OrderDetailViewController</span>: <span class="text-cyan-400">UIViewController</span> {
+    <span class="text-pink-400">private let</span> order: <span class="text-cyan-400">Order</span>
+
+    <span class="text-pink-400">private let</span> scrollView = <span class="text-cyan-400">UIScrollView</span>()
+    <span class="text-pink-400">private let</span> contentView = <span class="text-cyan-400">UIView</span>()
+    <span class="text-pink-400">private let</span> cancelButton = <span class="text-cyan-400">UIButton</span>(type: .system)
+
+    <span class="text-pink-400">init</span>(order: <span class="text-cyan-400">Order</span>) {
+        <span class="text-pink-400">self</span>.order = order
+        <span class="text-pink-400">super</span>.init(nibName: <span class="text-pink-400">nil</span>, bundle: <span class="text-pink-400">nil</span>)
+    }
+
+    <span class="text-pink-400">required init</span>?(coder: <span class="text-cyan-400">NSCoder</span>) {
+        <span class="text-pink-400">fatalError</span>(<span class="text-green-400">"init(coder:) has not been implemented"</span>)
+    }
+
+    <span class="text-pink-400">override func</span> viewDidLoad() {
+        <span class="text-pink-400">super</span>.viewDidLoad()
+        setupUI()
+    }
+
+    <span class="text-pink-400">private func</span> setupUI() {
+        title = order.orderNumber
+        view.backgroundColor = .systemBackground
+
+        view.addSubview(scrollView)
+        scrollView.addSubview(contentView)
+
+        scrollView.snp.makeConstraints { make <span class="text-pink-400">in</span>
+            make.edges.equalToSuperview()
+        }
+
+        contentView.snp.makeConstraints { make <span class="text-pink-400">in</span>
+            make.edges.equalToSuperview()
+            make.width.equalTo(view)
+        }
+
+        <span class="text-gray-500">// Статус</span>
+        <span class="text-pink-400">let</span> statusSection = createSection(title: <span class="text-green-400">"Статус заказа"</span>)
+        <span class="text-pink-400">let</span> statusLabel = <span class="text-cyan-400">UILabel</span>()
+        statusLabel.text = order.status.displayName
+        statusLabel.font = .systemFont(ofSize: <span class="text-purple-400">18</span>, weight: .semibold)
+        statusLabel.textColor = order.status.color
+        statusSection.addSubview(statusLabel)
+        statusLabel.snp.makeConstraints { make <span class="text-pink-400">in</span>
+            make.top.equalToSuperview().offset(<span class="text-purple-400">48</span>)
+            make.leading.trailing.bottom.equalToSuperview().inset(<span class="text-purple-400">16</span>)
+        }
+
+        contentView.addSubview(statusSection)
+        statusSection.snp.makeConstraints { make <span class="text-pink-400">in</span>
+            make.top.leading.trailing.equalToSuperview().inset(<span class="text-purple-400">16</span>)
+        }
+
+        <span class="text-gray-500">// Товары</span>
+        <span class="text-pink-400">let</span> itemsSection = createSection(title: <span class="text-green-400">"Товары"</span>)
+        <span class="text-pink-400">let</span> itemsStack = <span class="text-cyan-400">UIStackView</span>()
+        itemsStack.axis = .vertical
+        itemsStack.spacing = <span class="text-purple-400">12</span>
+
+        <span class="text-pink-400">for</span> item <span class="text-pink-400">in</span> order.items {
+            <span class="text-pink-400">let</span> itemView = createItemView(item)
+            itemsStack.addArrangedSubview(itemView)
+        }
+
+        itemsSection.addSubview(itemsStack)
+        itemsStack.snp.makeConstraints { make <span class="text-pink-400">in</span>
+            make.top.equalToSuperview().offset(<span class="text-purple-400">48</span>)
+            make.leading.trailing.bottom.equalToSuperview().inset(<span class="text-purple-400">16</span>)
+        }
+
+        contentView.addSubview(itemsSection)
+        itemsSection.snp.makeConstraints { make <span class="text-pink-400">in</span>
+            make.top.equalTo(statusSection.snp.bottom).offset(<span class="text-purple-400">16</span>)
+            make.leading.trailing.equalToSuperview().inset(<span class="text-purple-400">16</span>)
+        }
+
+        <span class="text-gray-500">// Адрес доставки</span>
+        <span class="text-pink-400">let</span> addressSection = createSection(title: <span class="text-green-400">"Адрес доставки"</span>)
+        <span class="text-pink-400">let</span> addressLabel = <span class="text-cyan-400">UILabel</span>()
+        addressLabel.text = <span class="text-green-400">"""
+        \(order.shippingAddress.fullName)
+        \(order.shippingAddress.phone)
+        \(order.shippingAddress.formatted)
+        \(order.shippingAddress.postalCode)
+        """</span>
+        addressLabel.numberOfLines = <span class="text-purple-400">0</span>
+        addressLabel.font = .systemFont(ofSize: <span class="text-purple-400">15</span>)
+        addressSection.addSubview(addressLabel)
+        addressLabel.snp.makeConstraints { make <span class="text-pink-400">in</span>
+            make.top.equalToSuperview().offset(<span class="text-purple-400">48</span>)
+            make.leading.trailing.bottom.equalToSuperview().inset(<span class="text-purple-400">16</span>)
+        }
+
+        contentView.addSubview(addressSection)
+        addressSection.snp.makeConstraints { make <span class="text-pink-400">in</span>
+            make.top.equalTo(itemsSection.snp.bottom).offset(<span class="text-purple-400">16</span>)
+            make.leading.trailing.equalToSuperview().inset(<span class="text-purple-400">16</span>)
+        }
+
+        <span class="text-gray-500">// Итого</span>
+        <span class="text-pink-400">let</span> totalSection = createSection(title: <span class="text-green-400">"Оплата"</span>)
+        <span class="text-pink-400">let</span> totalStack = <span class="text-cyan-400">UIStackView</span>()
+        totalStack.axis = .vertical
+        totalStack.spacing = <span class="text-purple-400">8</span>
+
+        totalStack.addArrangedSubview(createPriceRow(<span class="text-green-400">"Товары:"</span>, <span class="text-cyan-400">String</span>(format: <span class="text-green-400">"%.0f ₸"</span>, order.subtotal)))
+        totalStack.addArrangedSubview(createPriceRow(<span class="text-green-400">"Доставка:"</span>, <span class="text-cyan-400">String</span>(format: <span class="text-green-400">"%.0f ₸"</span>, order.shippingCost)))
+        totalStack.addArrangedSubview(createPriceRow(<span class="text-green-400">"Итого:"</span>, order.formattedTotal, isBold: <span class="text-pink-400">true</span>))
+
+        totalSection.addSubview(totalStack)
+        totalStack.snp.makeConstraints { make <span class="text-pink-400">in</span>
+            make.top.equalToSuperview().offset(<span class="text-purple-400">48</span>)
+            make.leading.trailing.bottom.equalToSuperview().inset(<span class="text-purple-400">16</span>)
+        }
+
+        contentView.addSubview(totalSection)
+        totalSection.snp.makeConstraints { make <span class="text-pink-400">in</span>
+            make.top.equalTo(addressSection.snp.bottom).offset(<span class="text-purple-400">16</span>)
+            make.leading.trailing.equalToSuperview().inset(<span class="text-purple-400">16</span>)
+        }
+
+        <span class="text-gray-500">// Кнопка отмены (если заказ можно отменить)</span>
+        <span class="text-pink-400">if</span> order.status == .pending || order.status == .confirmed {
+            cancelButton.setTitle(<span class="text-green-400">"Отменить заказ"</span>, for: .normal)
+            cancelButton.setTitleColor(.systemRed, for: .normal)
+            cancelButton.titleLabel?.font = .systemFont(ofSize: <span class="text-purple-400">17</span>, weight: .medium)
+            cancelButton.addTarget(<span class="text-pink-400">self</span>, action: <span class="text-pink-400">#selector</span>(cancelOrderTapped), for: .touchUpInside)
+            contentView.addSubview(cancelButton)
+
+            cancelButton.snp.makeConstraints { make <span class="text-pink-400">in</span>
+                make.top.equalTo(totalSection.snp.bottom).offset(<span class="text-purple-400">24</span>)
+                make.centerX.equalToSuperview()
+                make.bottom.equalToSuperview().offset(-<span class="text-purple-400">32</span>)
+            }
+        } <span class="text-pink-400">else</span> {
+            totalSection.snp.makeConstraints { make <span class="text-pink-400">in</span>
+                make.bottom.equalToSuperview().offset(-<span class="text-purple-400">32</span>)
+            }
+        }
+    }
+
+    <span class="text-pink-400">private func</span> createSection(title: <span class="text-cyan-400">String</span>) -> <span class="text-cyan-400">UIView</span> {
+        <span class="text-pink-400">let</span> view = <span class="text-cyan-400">UIView</span>()
+        view.backgroundColor = .secondarySystemBackground
+        view.layer.cornerRadius = <span class="text-purple-400">16</span>
+
+        <span class="text-pink-400">let</span> titleLabel = <span class="text-cyan-400">UILabel</span>()
+        titleLabel.text = title
+        titleLabel.font = .systemFont(ofSize: <span class="text-purple-400">14</span>, weight: .semibold)
+        titleLabel.textColor = .secondaryLabel
+        view.addSubview(titleLabel)
+
+        titleLabel.snp.makeConstraints { make <span class="text-pink-400">in</span>
+            make.top.leading.equalToSuperview().offset(<span class="text-purple-400">16</span>)
+        }
+
+        <span class="text-pink-400">return</span> view
+    }
+
+    <span class="text-pink-400">private func</span> createItemView(_ item: <span class="text-cyan-400">OrderItem</span>) -> <span class="text-cyan-400">UIView</span> {
+        <span class="text-pink-400">let</span> view = <span class="text-cyan-400">UIView</span>()
+
+        <span class="text-pink-400">let</span> imageView = <span class="text-cyan-400">UIImageView</span>()
+        imageView.contentMode = .scaleAspectFill
+        imageView.clipsToBounds = <span class="text-pink-400">true</span>
+        imageView.layer.cornerRadius = <span class="text-purple-400">8</span>
+        imageView.backgroundColor = .tertiarySystemBackground
+        imageView.kf.setImage(with: <span class="text-cyan-400">URL</span>(string: item.productImage))
+
+        <span class="text-pink-400">let</span> nameLabel = <span class="text-cyan-400">UILabel</span>()
+        nameLabel.text = item.productName
+        nameLabel.font = .systemFont(ofSize: <span class="text-purple-400">15</span>, weight: .medium)
+        nameLabel.numberOfLines = <span class="text-purple-400">2</span>
+
+        <span class="text-pink-400">let</span> detailLabel = <span class="text-cyan-400">UILabel</span>()
+        detailLabel.text = <span class="text-green-400">"\(item.quantity) × \(String(format: "%.0f ₸", item.price))"</span>
+        detailLabel.font = .systemFont(ofSize: <span class="text-purple-400">14</span>)
+        detailLabel.textColor = .secondaryLabel
+
+        view.addSubview(imageView)
+        view.addSubview(nameLabel)
+        view.addSubview(detailLabel)
+
+        imageView.snp.makeConstraints { make <span class="text-pink-400">in</span>
+            make.leading.top.bottom.equalToSuperview()
+            make.width.height.equalTo(<span class="text-purple-400">56</span>)
+        }
+
+        nameLabel.snp.makeConstraints { make <span class="text-pink-400">in</span>
+            make.top.equalToSuperview()
+            make.leading.equalTo(imageView.snp.trailing).offset(<span class="text-purple-400">12</span>)
+            make.trailing.equalToSuperview()
+        }
+
+        detailLabel.snp.makeConstraints { make <span class="text-pink-400">in</span>
+            make.top.equalTo(nameLabel.snp.bottom).offset(<span class="text-purple-400">4</span>)
+            make.leading.equalTo(nameLabel)
+        }
+
+        <span class="text-pink-400">return</span> view
+    }
+
+    <span class="text-pink-400">private func</span> createPriceRow(_ title: <span class="text-cyan-400">String</span>, _ value: <span class="text-cyan-400">String</span>, isBold: <span class="text-cyan-400">Bool</span> = <span class="text-pink-400">false</span>) -> <span class="text-cyan-400">UIView</span> {
+        <span class="text-pink-400">let</span> view = <span class="text-cyan-400">UIView</span>()
+
+        <span class="text-pink-400">let</span> titleLabel = <span class="text-cyan-400">UILabel</span>()
+        titleLabel.text = title
+        titleLabel.font = isBold ? .systemFont(ofSize: <span class="text-purple-400">16</span>, weight: .semibold) : .systemFont(ofSize: <span class="text-purple-400">15</span>)
+        titleLabel.textColor = isBold ? .label : .secondaryLabel
+
+        <span class="text-pink-400">let</span> valueLabel = <span class="text-cyan-400">UILabel</span>()
+        valueLabel.text = value
+        valueLabel.font = isBold ? .systemFont(ofSize: <span class="text-purple-400">16</span>, weight: .semibold) : .systemFont(ofSize: <span class="text-purple-400">15</span>)
+
+        view.addSubview(titleLabel)
+        view.addSubview(valueLabel)
+
+        titleLabel.snp.makeConstraints { make <span class="text-pink-400">in</span>
+            make.leading.top.bottom.equalToSuperview()
+        }
+
+        valueLabel.snp.makeConstraints { make <span class="text-pink-400">in</span>
+            make.trailing.top.bottom.equalToSuperview()
+        }
+
+        <span class="text-pink-400">return</span> view
+    }
+
+    <span class="text-purple-400">@objc</span> <span class="text-pink-400">private func</span> cancelOrderTapped() {
+        <span class="text-pink-400">let</span> alert = <span class="text-cyan-400">UIAlertController</span>(
+            title: <span class="text-green-400">"Отменить заказ?"</span>,
+            message: <span class="text-green-400">"Вы уверены, что хотите отменить заказ \(order.orderNumber)?"</span>,
+            preferredStyle: .alert
+        )
+
+        alert.addAction(<span class="text-cyan-400">UIAlertAction</span>(title: <span class="text-green-400">"Нет"</span>, style: .cancel))
+        alert.addAction(<span class="text-cyan-400">UIAlertAction</span>(title: <span class="text-green-400">"Да, отменить"</span>, style: .destructive) { [<span class="text-pink-400">weak self</span>] _ <span class="text-pink-400">in</span>
+            <span class="text-pink-400">self</span>?.cancelOrder()
+        })
+
+        present(alert, animated: <span class="text-pink-400">true</span>)
+    }
+
+    <span class="text-pink-400">private func</span> cancelOrder() {
+        <span class="text-pink-400">guard let</span> orderId = order.id <span class="text-pink-400">else</span> { <span class="text-pink-400">return</span> }
+
+        <span class="text-cyan-400">OrderService</span>.shared.cancelOrder(orderId) { [<span class="text-pink-400">weak self</span>] result <span class="text-pink-400">in</span>
+            <span class="text-pink-400">switch</span> result {
+            <span class="text-pink-400">case</span> .success:
+                <span class="text-pink-400">self</span>?.navigationController?.popViewController(animated: <span class="text-pink-400">true</span>)
+            <span class="text-pink-400">case</span> .failure(<span class="text-pink-400">let</span> error):
+                <span class="text-pink-400">let</span> alert = <span class="text-cyan-400">UIAlertController</span>(title: <span class="text-green-400">"Ошибка"</span>, message: error.localizedDescription, preferredStyle: .alert)
+                alert.addAction(<span class="text-cyan-400">UIAlertAction</span>(title: <span class="text-green-400">"OK"</span>, style: .default))
+                <span class="text-pink-400">self</span>?.present(alert, animated: <span class="text-pink-400">true</span>)
+            }
+        }
+    }
+}</code></pre>
+                    </div>
+
+                    <h2 class="text-2xl font-bold mt-12 mb-6">OrdersPresenter</h2>
+                    <p class="mb-6">Presenter подписывается на обновления заказов через Combine.</p>
+
+                    <div class="bg-zinc-950 rounded-2xl p-6 mb-8 overflow-x-auto">
+                        <pre class="text-sm leading-relaxed"><code><span class="text-pink-400">import</span> <span class="text-cyan-400">Combine</span>
+
+<span class="text-pink-400">final class</span> <span class="text-cyan-400">OrdersPresenter</span>: <span class="text-cyan-400">OrdersPresenterProtocol</span> {
+    <span class="text-pink-400">weak var</span> view: <span class="text-cyan-400">OrdersViewProtocol</span>?
+    <span class="text-pink-400">var</span> interactor: <span class="text-cyan-400">OrdersInteractorProtocol</span>!
+    <span class="text-pink-400">var</span> router: <span class="text-cyan-400">OrdersRouterProtocol</span>!
+
+    <span class="text-pink-400">private var</span> cancellables = <span class="text-cyan-400">Set</span>&lt;<span class="text-cyan-400">AnyCancellable</span>&gt;()
+
+    <span class="text-pink-400">func</span> viewDidLoad() {
+        interactor.startListening()
+
+        interactor.ordersPublisher
+            .receive(on: <span class="text-cyan-400">DispatchQueue</span>.main)
+            .sink { [<span class="text-pink-400">weak self</span>] orders <span class="text-pink-400">in</span>
+                <span class="text-pink-400">self</span>?.view?.displayOrders(orders)
+            }
+            .store(in: &cancellables)
+    }
+
+    <span class="text-pink-400">func</span> didSelectOrder(_ order: <span class="text-cyan-400">Order</span>) {
+        router.showOrderDetail(order)
+    }
+}
+
+<span class="text-pink-400">final class</span> <span class="text-cyan-400">OrdersInteractor</span>: <span class="text-cyan-400">OrdersInteractorProtocol</span> {
+    <span class="text-pink-400">var</span> ordersPublisher: <span class="text-cyan-400">AnyPublisher</span>&lt;[<span class="text-cyan-400">Order</span>], <span class="text-cyan-400">Never</span>&gt; {
+        <span class="text-cyan-400">OrderService</span>.shared.ordersPublisher
+    }
+
+    <span class="text-pink-400">func</span> startListening() {
+        <span class="text-cyan-400">OrderService</span>.shared.startListening()
+    }
+
+    <span class="text-pink-400">func</span> stopListening() {
+        <span class="text-cyan-400">OrderService</span>.shared.stopListening()
+    }
+}
+
+<span class="text-pink-400">final class</span> <span class="text-cyan-400">OrdersRouter</span>: <span class="text-cyan-400">OrdersRouterProtocol</span> {
+    <span class="text-pink-400">weak var</span> viewController: <span class="text-cyan-400">UIViewController</span>?
+
+    <span class="text-pink-400">static func</span> createModule() -> <span class="text-cyan-400">UIViewController</span> {
+        <span class="text-pink-400">let</span> view = <span class="text-cyan-400">OrdersViewController</span>()
+        <span class="text-pink-400">let</span> presenter = <span class="text-cyan-400">OrdersPresenter</span>()
+        <span class="text-pink-400">let</span> interactor = <span class="text-cyan-400">OrdersInteractor</span>()
+        <span class="text-pink-400">let</span> router = <span class="text-cyan-400">OrdersRouter</span>()
+
+        view.presenter = presenter
+        presenter.view = view
+        presenter.interactor = interactor
+        presenter.router = router
+        router.viewController = view
+
+        <span class="text-pink-400">return</span> view
+    }
+
+    <span class="text-pink-400">func</span> showOrderDetail(_ order: <span class="text-cyan-400">Order</span>) {
+        <span class="text-pink-400">let</span> detailVC = <span class="text-cyan-400">OrderDetailViewController</span>(order: order)
+        viewController?.navigationController?.pushViewController(detailVC, animated: <span class="text-pink-400">true</span>)
+    }
+}</code></pre>
+                    </div>
+
+                    <div class="mt-12 p-6 bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-200 dark:border-emerald-800 rounded-2xl">
+                        <h3 class="text-lg font-semibold text-emerald-800 dark:text-emerald-200 mb-3">Что мы изучили</h3>
+                        <ul class="space-y-2 text-emerald-700 dark:text-emerald-300">
+                            <li class="flex items-start gap-2">
+                                <span class="text-emerald-500 mt-1">•</span>
+                                <span>Модели Order, OrderItem, ShippingAddress с Firestore</span>
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <span class="text-emerald-500 mt-1">•</span>
+                                <span>Enum OrderStatus с вычисляемыми свойствами</span>
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <span class="text-emerald-500 mt-1">•</span>
+                                <span>OrderService с realtime подпиской на заказы</span>
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <span class="text-emerald-500 mt-1">•</span>
+                                <span>Checkout flow с валидацией формы</span>
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <span class="text-emerald-500 mt-1">•</span>
+                                <span>История заказов с отменой</span>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="mt-8 p-6 bg-zinc-100 dark:bg-zinc-800 rounded-2xl">
+                        <h3 class="text-lg font-semibold mb-3">Следующий шаг</h3>
+                        <p class="text-zinc-600 dark:text-zinc-400">В следующей главе мы создадим экран профиля пользователя с настройками и управлением аккаунтом.</p>
+                    </div>
+                </div>
+
+                <nav class="flex justify-between gap-4 mt-16 pt-8 border-t border-zinc-200 dark:border-zinc-800">
+                    <a href="18-favorites.html" class="flex items-center gap-3 px-5 py-3 bg-zinc-100 dark:bg-zinc-800 hover:bg-primary hover:text-white rounded-xl transition-colors">
+                        <span class="text-xl">←</span>
+                        <span class="font-medium">Предыдущая</span>
+                    </a>
+                    <a href="20-profile.html" class="flex items-center gap-3 px-5 py-3 bg-zinc-100 dark:bg-zinc-800 hover:bg-primary hover:text-white rounded-xl transition-colors ml-auto">
+                        <span class="font-medium">Следующая</span>
+                        <span class="text-xl">→</span>
+                    </a>
+                </nav>
+            </article>
+        </main>
+    </div>
+
+    <script>
+        const menuBtn = document.getElementById('menuBtn');
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('overlay');
+        menuBtn.addEventListener('click', () => {
+            sidebar.classList.toggle('-translate-x-full');
+            overlay.classList.toggle('hidden');
+        });
+        function closeSidebar() {
+            sidebar.classList.add('-translate-x-full');
+            overlay.classList.add('hidden');
+        }
+    </script>
+</body>
+</html>

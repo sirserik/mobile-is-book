@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>iOS Разработка с нуля | ECommerce VIPER</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'media',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#007AFF',
+                        surface: '#f5f5f7',
+                    }
+                }
+            }
+        }
+    </script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/vs2015.min.css">
+    <style>
+        /* Custom scrollbar */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: #9ca3af; }
+    </style>
+</head>
+<body class="bg-white dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100">
+
+    <!-- Mobile Menu Button -->
+    <button id="menuBtn" class="lg:hidden fixed top-4 left-4 z-50 p-3 bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-xl shadow-lg">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+        </svg>
+    </button>
+
+    <div class="flex min-h-screen">
+        <!-- Sidebar -->
+        <aside id="sidebar" class="fixed inset-y-0 left-0 w-72 bg-zinc-50 dark:bg-zinc-900 border-r border-zinc-200 dark:border-zinc-800 flex flex-col z-40 transform -translate-x-full lg:translate-x-0 transition-transform duration-300">
+
+            <!-- Logo -->
+            <div class="p-5 border-b border-zinc-200 dark:border-zinc-800">
+                <a href="index.html" class="flex items-center gap-3 text-lg font-semibold hover:text-primary transition-colors">
+                    <div class="w-9 h-9 bg-primary rounded-lg flex items-center justify-center">
+                        <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/>
+                        </svg>
+                    </div>
+                    iOS Book
+                </a>
+            </div>
+
+            <!-- Search -->
+            <div class="p-4 border-b border-zinc-200 dark:border-zinc-800">
+                <button onclick="openSearch()" class="w-full flex items-center gap-3 px-3 py-2 text-sm text-zinc-500 bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-lg hover:border-primary transition-colors">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <circle cx="11" cy="11" r="8"/>
+                        <path d="m21 21-4.35-4.35"/>
+                    </svg>
+                    <span class="flex-1 text-left">Поиск...</span>
+                    <kbd class="px-1.5 py-0.5 text-xs bg-zinc-100 dark:bg-zinc-700 rounded">⌘K</kbd>
+                </button>
+            </div>
+
+            <!-- Navigation -->
+            <nav class="flex-1 overflow-y-auto p-4">
+                <div class="space-y-6">
+                    <!-- Введение -->
+                    <div>
+                        <h3 class="px-3 mb-2 text-xs font-semibold uppercase tracking-wider text-zinc-400">Введение</h3>
+                        <a href="chapters/00-introduction.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg transition-colors">Введение</a>
+                    </div>
+
+                    <!-- Основы Swift -->
+                    <div>
+                        <h3 class="px-3 mb-2 text-xs font-semibold uppercase tracking-wider text-zinc-400">Основы Swift</h3>
+                        <div class="space-y-1">
+                            <a href="chapters/01-xcode.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg transition-colors">1. Xcode</a>
+                            <a href="chapters/02-swift-basics.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg transition-colors">2. Основы Swift</a>
+                            <a href="chapters/03-control-flow.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg transition-colors">3. Управление потоком</a>
+                            <a href="chapters/04-functions.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg transition-colors">4. Функции</a>
+                            <a href="chapters/05-oop.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg transition-colors">5. ООП</a>
+                            <a href="chapters/06-protocols.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg transition-colors">6. Протоколы</a>
+                            <a href="chapters/07-optionals.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg transition-colors">7. Optionals</a>
+                            <a href="chapters/08-memory.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg transition-colors">8. Память (ARC)</a>
+                            <a href="chapters/09-generics.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg transition-colors">9. Generics</a>
+                            <a href="chapters/10-concurrency.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg transition-colors">10. Concurrency</a>
+                        </div>
+                    </div>
+
+                    <!-- UIKit -->
+                    <div>
+                        <h3 class="px-3 mb-2 text-xs font-semibold uppercase tracking-wider text-zinc-400">UIKit</h3>
+                        <div class="space-y-1">
+                            <a href="chapters/11-uikit-basics.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg transition-colors">11. UIKit основы</a>
+                            <a href="chapters/12-programmatic-ui.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg transition-colors">12. Программный UI</a>
+                        </div>
+                    </div>
+
+                    <!-- Архитектура -->
+                    <div>
+                        <h3 class="px-3 mb-2 text-xs font-semibold uppercase tracking-wider text-zinc-400">Архитектура</h3>
+                        <div class="space-y-1">
+                            <a href="chapters/13-viper.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg transition-colors">13. VIPER</a>
+                            <a href="chapters/14-project-setup.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg transition-colors">14. Project Setup</a>
+                        </div>
+                    </div>
+
+                    <!-- Практика -->
+                    <div>
+                        <h3 class="px-3 mb-2 text-xs font-semibold uppercase tracking-wider text-zinc-400">Практика</h3>
+                        <div class="space-y-1">
+                            <a href="chapters/15-authentication.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg transition-colors">15. Authentication</a>
+                            <a href="chapters/16-products.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg transition-colors">16. Products</a>
+                            <a href="chapters/17-cart.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg transition-colors">17. Cart</a>
+                            <a href="chapters/18-favorites.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg transition-colors">18. Favorites</a>
+                            <a href="chapters/19-orders.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg transition-colors">19. Orders</a>
+                            <a href="chapters/20-profile.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg transition-colors">20. Profile</a>
+                        </div>
+                    </div>
+
+                    <!-- Дополнительно -->
+                    <div>
+                        <h3 class="px-3 mb-2 text-xs font-semibold uppercase tracking-wider text-zinc-400">Дополнительно</h3>
+                        <div class="space-y-1">
+                            <a href="chapters/21-reusable-views.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg transition-colors">21. Reusable Views</a>
+                            <a href="chapters/22-exercises.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg transition-colors">22. Упражнения</a>
+                        </div>
+                    </div>
+                </div>
+            </nav>
+        </aside>
+
+        <!-- Overlay -->
+        <div id="overlay" class="fixed inset-0 bg-black/50 z-30 lg:hidden hidden" onclick="closeSidebar()"></div>
+
+        <!-- Main Content -->
+        <main class="flex-1 lg:ml-72">
+            <div class="max-w-4xl mx-auto px-6 sm:px-8 lg:px-16 py-12 lg:py-16">
+
+                <!-- Hero -->
+                <section class="text-center mb-16">
+                    <span class="inline-block px-4 py-1.5 mb-6 text-xs font-semibold uppercase tracking-wider text-primary bg-blue-50 dark:bg-blue-900/30 rounded-full">
+                        Полный курс
+                    </span>
+                    <h1 class="text-4xl sm:text-5xl font-bold mb-6 bg-gradient-to-r from-primary to-purple-500 bg-clip-text text-transparent">
+                        iOS Разработка с нуля
+                    </h1>
+                    <p class="text-lg sm:text-xl text-zinc-600 dark:text-zinc-400 max-w-2xl mx-auto leading-relaxed">
+                        Практическое руководство по созданию iOS-приложения интернет-магазина с использованием Swift, UIKit и архитектуры VIPER
+                    </p>
+                </section>
+
+                <!-- Features -->
+                <section class="grid sm:grid-cols-3 gap-6 mb-16">
+                    <div class="p-6 bg-zinc-50 dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-zinc-800">
+                        <div class="text-3xl mb-3">📱</div>
+                        <h3 class="font-semibold mb-1">Swift 5.9</h3>
+                        <p class="text-sm text-zinc-500">Современный язык от Apple</p>
+                    </div>
+                    <div class="p-6 bg-zinc-50 dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-zinc-800">
+                        <div class="text-3xl mb-3">🏗️</div>
+                        <h3 class="font-semibold mb-1">VIPER</h3>
+                        <p class="text-sm text-zinc-500">Профессиональная архитектура</p>
+                    </div>
+                    <div class="p-6 bg-zinc-50 dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-zinc-800">
+                        <div class="text-3xl mb-3">🔥</div>
+                        <h3 class="font-semibold mb-1">Firebase</h3>
+                        <p class="text-sm text-zinc-500">Auth и база данных</p>
+                    </div>
+                </section>
+
+                <!-- Chapters -->
+                <section>
+                    <h2 class="text-2xl font-bold mb-8">Содержание</h2>
+
+                    <!-- Введение -->
+                    <h3 class="text-lg font-semibold text-primary mb-4 mt-10">Введение</h3>
+                    <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                        <a href="chapters/00-introduction.html" class="group p-5 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl hover:border-primary hover:shadow-lg transition-all">
+                            <span class="text-xs font-semibold uppercase tracking-wider text-primary">Введение</span>
+                            <h4 class="font-semibold mt-2 mb-1 group-hover:text-primary transition-colors">О книге</h4>
+                            <p class="text-sm text-zinc-500">Для кого, что создадите, структура</p>
+                        </a>
+                    </div>
+
+                    <!-- Часть 1 -->
+                    <h3 class="text-lg font-semibold text-primary mb-4 mt-10">Часть 1: Основы Swift</h3>
+                    <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                        <a href="chapters/01-xcode.html" class="group p-5 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl hover:border-primary hover:shadow-lg transition-all">
+                            <span class="text-xs font-semibold uppercase tracking-wider text-primary">Глава 1</span>
+                            <h4 class="font-semibold mt-2 mb-1 group-hover:text-primary transition-colors">Знакомство с Xcode</h4>
+                            <p class="text-sm text-zinc-500">Установка, интерфейс, симулятор</p>
+                        </a>
+                        <a href="chapters/02-swift-basics.html" class="group p-5 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl hover:border-primary hover:shadow-lg transition-all">
+                            <span class="text-xs font-semibold uppercase tracking-wider text-primary">Глава 2</span>
+                            <h4 class="font-semibold mt-2 mb-1 group-hover:text-primary transition-colors">Основы Swift</h4>
+                            <p class="text-sm text-zinc-500">var, let, типы, интерполяция</p>
+                        </a>
+                        <a href="chapters/03-control-flow.html" class="group p-5 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl hover:border-primary hover:shadow-lg transition-all">
+                            <span class="text-xs font-semibold uppercase tracking-wider text-primary">Глава 3</span>
+                            <h4 class="font-semibold mt-2 mb-1 group-hover:text-primary transition-colors">Управление потоком</h4>
+                            <p class="text-sm text-zinc-500">if/else, switch, for, while</p>
+                        </a>
+                        <a href="chapters/04-functions.html" class="group p-5 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl hover:border-primary hover:shadow-lg transition-all">
+                            <span class="text-xs font-semibold uppercase tracking-wider text-primary">Глава 4</span>
+                            <h4 class="font-semibold mt-2 mb-1 group-hover:text-primary transition-colors">Функции и Closures</h4>
+                            <p class="text-sm text-zinc-500">Параметры, замыкания</p>
+                        </a>
+                        <a href="chapters/05-oop.html" class="group p-5 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl hover:border-primary hover:shadow-lg transition-all">
+                            <span class="text-xs font-semibold uppercase tracking-wider text-primary">Глава 5</span>
+                            <h4 class="font-semibold mt-2 mb-1 group-hover:text-primary transition-colors">ООП в Swift</h4>
+                            <p class="text-sm text-zinc-500">Классы, структуры, наследование</p>
+                        </a>
+                        <a href="chapters/06-protocols.html" class="group p-5 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl hover:border-primary hover:shadow-lg transition-all">
+                            <span class="text-xs font-semibold uppercase tracking-wider text-primary">Глава 6</span>
+                            <h4 class="font-semibold mt-2 mb-1 group-hover:text-primary transition-colors">Протоколы</h4>
+                            <p class="text-sm text-zinc-500">Protocol-oriented programming</p>
+                        </a>
+                        <a href="chapters/07-optionals.html" class="group p-5 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl hover:border-primary hover:shadow-lg transition-all">
+                            <span class="text-xs font-semibold uppercase tracking-wider text-primary">Глава 7</span>
+                            <h4 class="font-semibold mt-2 mb-1 group-hover:text-primary transition-colors">Optionals</h4>
+                            <p class="text-sm text-zinc-500">Optional, unwrapping, nil</p>
+                        </a>
+                        <a href="chapters/08-memory.html" class="group p-5 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl hover:border-primary hover:shadow-lg transition-all">
+                            <span class="text-xs font-semibold uppercase tracking-wider text-primary">Глава 8</span>
+                            <h4 class="font-semibold mt-2 mb-1 group-hover:text-primary transition-colors">Управление памятью</h4>
+                            <p class="text-sm text-zinc-500">ARC, strong, weak, unowned</p>
+                        </a>
+                        <a href="chapters/09-generics.html" class="group p-5 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl hover:border-primary hover:shadow-lg transition-all">
+                            <span class="text-xs font-semibold uppercase tracking-wider text-primary">Глава 9</span>
+                            <h4 class="font-semibold mt-2 mb-1 group-hover:text-primary transition-colors">Generics</h4>
+                            <p class="text-sm text-zinc-500">Generic functions и types</p>
+                        </a>
+                        <a href="chapters/10-concurrency.html" class="group p-5 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl hover:border-primary hover:shadow-lg transition-all">
+                            <span class="text-xs font-semibold uppercase tracking-wider text-primary">Глава 10</span>
+                            <h4 class="font-semibold mt-2 mb-1 group-hover:text-primary transition-colors">Concurrency</h4>
+                            <p class="text-sm text-zinc-500">GCD, async/await, Task</p>
+                        </a>
+                    </div>
+
+                    <!-- Часть 2 -->
+                    <h3 class="text-lg font-semibold text-primary mb-4 mt-10">Часть 2: UIKit</h3>
+                    <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                        <a href="chapters/11-uikit-basics.html" class="group p-5 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl hover:border-primary hover:shadow-lg transition-all">
+                            <span class="text-xs font-semibold uppercase tracking-wider text-primary">Глава 11</span>
+                            <h4 class="font-semibold mt-2 mb-1 group-hover:text-primary transition-colors">UIKit основы</h4>
+                            <p class="text-sm text-zinc-500">UIView, UIViewController, Auto Layout</p>
+                        </a>
+                        <a href="chapters/12-programmatic-ui.html" class="group p-5 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl hover:border-primary hover:shadow-lg transition-all">
+                            <span class="text-xs font-semibold uppercase tracking-wider text-primary">Глава 12</span>
+                            <h4 class="font-semibold mt-2 mb-1 group-hover:text-primary transition-colors">Программный UI</h4>
+                            <p class="text-sm text-zinc-500">Без Storyboard, SnapKit</p>
+                        </a>
+                    </div>
+
+                    <!-- Часть 3 -->
+                    <h3 class="text-lg font-semibold text-primary mb-4 mt-10">Часть 3: Архитектура</h3>
+                    <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                        <a href="chapters/13-viper.html" class="group p-5 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl hover:border-primary hover:shadow-lg transition-all">
+                            <span class="text-xs font-semibold uppercase tracking-wider text-primary">Глава 13</span>
+                            <h4 class="font-semibold mt-2 mb-1 group-hover:text-primary transition-colors">VIPER архитектура</h4>
+                            <p class="text-sm text-zinc-500">View, Interactor, Presenter, Entity, Router</p>
+                        </a>
+                        <a href="chapters/14-project-setup.html" class="group p-5 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl hover:border-primary hover:shadow-lg transition-all">
+                            <span class="text-xs font-semibold uppercase tracking-wider text-primary">Глава 14</span>
+                            <h4 class="font-semibold mt-2 mb-1 group-hover:text-primary transition-colors">Настройка проекта</h4>
+                            <p class="text-sm text-zinc-500">SPM, Firebase, структура</p>
+                        </a>
+                    </div>
+
+                    <!-- Часть 4 -->
+                    <h3 class="text-lg font-semibold text-primary mb-4 mt-10">Часть 4: ECommerce App</h3>
+                    <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                        <a href="chapters/15-authentication.html" class="group p-5 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl hover:border-primary hover:shadow-lg transition-all">
+                            <span class="text-xs font-semibold uppercase tracking-wider text-primary">Глава 15</span>
+                            <h4 class="font-semibold mt-2 mb-1 group-hover:text-primary transition-colors">Authentication</h4>
+                            <p class="text-sm text-zinc-500">Firebase Auth, Google Sign-In</p>
+                        </a>
+                        <a href="chapters/16-products.html" class="group p-5 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl hover:border-primary hover:shadow-lg transition-all">
+                            <span class="text-xs font-semibold uppercase tracking-wider text-primary">Глава 16</span>
+                            <h4 class="font-semibold mt-2 mb-1 group-hover:text-primary transition-colors">Products</h4>
+                            <p class="text-sm text-zinc-500">Каталог, категории, поиск</p>
+                        </a>
+                        <a href="chapters/17-cart.html" class="group p-5 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl hover:border-primary hover:shadow-lg transition-all">
+                            <span class="text-xs font-semibold uppercase tracking-wider text-primary">Глава 17</span>
+                            <h4 class="font-semibold mt-2 mb-1 group-hover:text-primary transition-colors">Cart</h4>
+                            <p class="text-sm text-zinc-500">Корзина покупок, Firestore</p>
+                        </a>
+                        <a href="chapters/18-favorites.html" class="group p-5 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl hover:border-primary hover:shadow-lg transition-all">
+                            <span class="text-xs font-semibold uppercase tracking-wider text-primary">Глава 18</span>
+                            <h4 class="font-semibold mt-2 mb-1 group-hover:text-primary transition-colors">Favorites</h4>
+                            <p class="text-sm text-zinc-500">Избранное, Realm Database</p>
+                        </a>
+                        <a href="chapters/19-orders.html" class="group p-5 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl hover:border-primary hover:shadow-lg transition-all">
+                            <span class="text-xs font-semibold uppercase tracking-wider text-primary">Глава 19</span>
+                            <h4 class="font-semibold mt-2 mb-1 group-hover:text-primary transition-colors">Orders</h4>
+                            <p class="text-sm text-zinc-500">Оформление заказов</p>
+                        </a>
+                        <a href="chapters/20-profile.html" class="group p-5 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl hover:border-primary hover:shadow-lg transition-all">
+                            <span class="text-xs font-semibold uppercase tracking-wider text-primary">Глава 20</span>
+                            <h4 class="font-semibold mt-2 mb-1 group-hover:text-primary transition-colors">Profile</h4>
+                            <p class="text-sm text-zinc-500">Профиль пользователя</p>
+                        </a>
+                    </div>
+
+                    <!-- Часть 5 -->
+                    <h3 class="text-lg font-semibold text-primary mb-4 mt-10">Часть 5: Дополнительно</h3>
+                    <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                        <a href="chapters/21-reusable-views.html" class="group p-5 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl hover:border-primary hover:shadow-lg transition-all">
+                            <span class="text-xs font-semibold uppercase tracking-wider text-primary">Глава 21</span>
+                            <h4 class="font-semibold mt-2 mb-1 group-hover:text-primary transition-colors">Reusable Views</h4>
+                            <p class="text-sm text-zinc-500">DSKit, компоненты, темизация</p>
+                        </a>
+                        <a href="chapters/22-exercises.html" class="group p-5 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl hover:border-primary hover:shadow-lg transition-all">
+                            <span class="text-xs font-semibold uppercase tracking-wider text-primary">Глава 22</span>
+                            <h4 class="font-semibold mt-2 mb-1 group-hover:text-primary transition-colors">Упражнения</h4>
+                            <p class="text-sm text-zinc-500">22 задания с ответами</p>
+                        </a>
+                    </div>
+                </section>
+
+                <!-- Tech Stack -->
+                <section class="mt-16">
+                    <h2 class="text-2xl font-bold mb-6">Технологии</h2>
+                    <div class="overflow-hidden border border-zinc-200 dark:border-zinc-800 rounded-xl">
+                        <table class="w-full text-sm">
+                            <thead class="bg-zinc-50 dark:bg-zinc-900">
+                                <tr>
+                                    <th class="px-4 py-3 text-left font-semibold text-zinc-500 uppercase tracking-wider text-xs">Категория</th>
+                                    <th class="px-4 py-3 text-left font-semibold text-zinc-500 uppercase tracking-wider text-xs">Технология</th>
+                                    <th class="px-4 py-3 text-left font-semibold text-zinc-500 uppercase tracking-wider text-xs">Описание</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-zinc-200 dark:divide-zinc-800">
+                                <tr class="hover:bg-zinc-50 dark:hover:bg-zinc-900/50">
+                                    <td class="px-4 py-3 font-medium">Язык</td>
+                                    <td class="px-4 py-3 text-zinc-600 dark:text-zinc-400">Swift 5.9</td>
+                                    <td class="px-4 py-3 text-zinc-500">Современный язык от Apple</td>
+                                </tr>
+                                <tr class="hover:bg-zinc-50 dark:hover:bg-zinc-900/50">
+                                    <td class="px-4 py-3 font-medium">UI</td>
+                                    <td class="px-4 py-3 text-zinc-600 dark:text-zinc-400">UIKit</td>
+                                    <td class="px-4 py-3 text-zinc-500">Программный интерфейс</td>
+                                </tr>
+                                <tr class="hover:bg-zinc-50 dark:hover:bg-zinc-900/50">
+                                    <td class="px-4 py-3 font-medium">Архитектура</td>
+                                    <td class="px-4 py-3 text-zinc-600 dark:text-zinc-400">VIPER</td>
+                                    <td class="px-4 py-3 text-zinc-500">Модульная архитектура</td>
+                                </tr>
+                                <tr class="hover:bg-zinc-50 dark:hover:bg-zinc-900/50">
+                                    <td class="px-4 py-3 font-medium">Layout</td>
+                                    <td class="px-4 py-3 text-zinc-600 dark:text-zinc-400">SnapKit</td>
+                                    <td class="px-4 py-3 text-zinc-500">Auto Layout DSL</td>
+                                </tr>
+                                <tr class="hover:bg-zinc-50 dark:hover:bg-zinc-900/50">
+                                    <td class="px-4 py-3 font-medium">Auth</td>
+                                    <td class="px-4 py-3 text-zinc-600 dark:text-zinc-400">Firebase Auth</td>
+                                    <td class="px-4 py-3 text-zinc-500">Аутентификация</td>
+                                </tr>
+                                <tr class="hover:bg-zinc-50 dark:hover:bg-zinc-900/50">
+                                    <td class="px-4 py-3 font-medium">Cloud DB</td>
+                                    <td class="px-4 py-3 text-zinc-600 dark:text-zinc-400">Firestore</td>
+                                    <td class="px-4 py-3 text-zinc-500">Облачная база данных</td>
+                                </tr>
+                                <tr class="hover:bg-zinc-50 dark:hover:bg-zinc-900/50">
+                                    <td class="px-4 py-3 font-medium">Local DB</td>
+                                    <td class="px-4 py-3 text-zinc-600 dark:text-zinc-400">Realm</td>
+                                    <td class="px-4 py-3 text-zinc-500">Локальная база данных</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <!-- Footer -->
+                <footer class="mt-16 pt-8 border-t border-zinc-200 dark:border-zinc-800 text-center text-sm text-zinc-500">
+                    <p>Основано на проекте <a href="https://github.com/BerkaySancar/ECommerce-VIPER" target="_blank" class="text-primary hover:underline">ECommerce-VIPER</a></p>
+                    <p class="mt-2">© 2024 iOS Development Book</p>
+                </footer>
+            </div>
+        </main>
+    </div>
+
+    <!-- Search Modal -->
+    <div id="searchOverlay" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hidden items-start justify-center pt-[15vh]" onclick="closeSearch(event)">
+        <div class="w-full max-w-xl mx-4 bg-white dark:bg-zinc-900 rounded-2xl shadow-2xl overflow-hidden" onclick="event.stopPropagation()">
+            <div class="flex items-center gap-3 p-4 border-b border-zinc-200 dark:border-zinc-800">
+                <svg class="w-5 h-5 text-zinc-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <circle cx="11" cy="11" r="8"/>
+                    <path d="m21 21-4.35-4.35"/>
+                </svg>
+                <input type="text" id="searchInput" class="flex-1 bg-transparent outline-none text-lg" placeholder="Поиск по книге..." oninput="performSearch(this.value)">
+                <button onclick="closeSearch(event)" class="px-2 py-1 text-xs text-zinc-400 bg-zinc-100 dark:bg-zinc-800 rounded">Esc</button>
+            </div>
+            <div id="searchResults" class="max-h-96 overflow-y-auto">
+                <div class="p-8 text-center text-zinc-400">
+                    <p>Введите запрос для поиска</p>
+                    <p class="text-sm mt-1">Минимум 2 символа</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/search.js"></script>
+    <script>
+        // Mobile menu
+        const menuBtn = document.getElementById('menuBtn');
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('overlay');
+
+        menuBtn.addEventListener('click', () => {
+            sidebar.classList.toggle('-translate-x-full');
+            overlay.classList.toggle('hidden');
+        });
+
+        function closeSidebar() {
+            sidebar.classList.add('-translate-x-full');
+            overlay.classList.add('hidden');
+        }
+
+        // Search
+        function openSearch() {
+            document.getElementById('searchOverlay').classList.remove('hidden');
+            document.getElementById('searchOverlay').classList.add('flex');
+            document.getElementById('searchInput').focus();
+        }
+
+        function closeSearch(e) {
+            if (e) e.preventDefault();
+            document.getElementById('searchOverlay').classList.add('hidden');
+            document.getElementById('searchOverlay').classList.remove('flex');
+            document.getElementById('searchInput').value = '';
+        }
+
+        // Keyboard shortcut
+        document.addEventListener('keydown', (e) => {
+            if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+                e.preventDefault();
+                openSearch();
+            }
+            if (e.key === 'Escape') closeSearch();
+        });
+    </script>
+</body>
+</html>

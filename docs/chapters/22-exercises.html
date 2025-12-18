@@ -1,0 +1,1193 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Упражнения с ответами | iOS Book</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'media',
+            theme: { extend: { colors: { primary: '#007AFF' } } }
+        }
+    </script>
+</head>
+<body class="bg-white dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100">
+    <button id="menuBtn" class="lg:hidden fixed top-4 left-4 z-50 p-3 bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-xl shadow-lg">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+        </svg>
+    </button>
+
+    <div class="flex min-h-screen">
+        <aside id="sidebar" class="fixed inset-y-0 left-0 w-72 bg-zinc-50 dark:bg-zinc-900 border-r border-zinc-200 dark:border-zinc-800 flex flex-col z-40 transform -translate-x-full lg:translate-x-0 transition-transform duration-300">
+            <div class="p-5 border-b border-zinc-200 dark:border-zinc-800">
+                <a href="../index.html" class="flex items-center gap-3 text-lg font-semibold hover:text-primary transition-colors">
+                    <div class="w-9 h-9 bg-primary rounded-lg flex items-center justify-center">
+                        <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/>
+                        </svg>
+                    </div>
+                    iOS Book
+                </a>
+            </div>
+            <nav class="flex-1 overflow-y-auto p-4">
+                <div class="space-y-6">
+                    <div>
+                        <h3 class="px-3 mb-2 text-xs font-semibold uppercase tracking-wider text-zinc-400">Введение</h3>
+                        <a href="00-introduction.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">Введение</a>
+                    </div>
+                    <div>
+                        <h3 class="px-3 mb-2 text-xs font-semibold uppercase tracking-wider text-zinc-400">Основы Swift</h3>
+                        <div class="space-y-1">
+                            <a href="01-xcode.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">1. Xcode</a>
+                            <a href="02-swift-basics.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">2. Основы Swift</a>
+                            <a href="03-control-flow.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">3. Control Flow</a>
+                            <a href="04-functions.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">4. Функции</a>
+                            <a href="05-oop.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">5. ООП</a>
+                            <a href="06-protocols.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">6. Протоколы</a>
+                            <a href="07-optionals.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">7. Optionals</a>
+                            <a href="08-memory.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">8. Память</a>
+                            <a href="09-generics.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">9. Generics</a>
+                            <a href="10-concurrency.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">10. Concurrency</a>
+                        </div>
+                    </div>
+                    <div>
+                        <h3 class="px-3 mb-2 text-xs font-semibold uppercase tracking-wider text-zinc-400">UIKit</h3>
+                        <div class="space-y-1">
+                            <a href="11-uikit-basics.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">11. UIKit</a>
+                            <a href="12-programmatic-ui.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">12. Programmatic UI</a>
+                        </div>
+                    </div>
+                    <div>
+                        <h3 class="px-3 mb-2 text-xs font-semibold uppercase tracking-wider text-zinc-400">Архитектура</h3>
+                        <div class="space-y-1">
+                            <a href="13-viper.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">13. VIPER</a>
+                            <a href="14-project-setup.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">14. Project Setup</a>
+                        </div>
+                    </div>
+                    <div>
+                        <h3 class="px-3 mb-2 text-xs font-semibold uppercase tracking-wider text-zinc-400">Практика</h3>
+                        <div class="space-y-1">
+                            <a href="15-authentication.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">15. Auth</a>
+                            <a href="16-products.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">16. Products</a>
+                            <a href="17-cart.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">17. Cart</a>
+                            <a href="18-favorites.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">18. Favorites</a>
+                            <a href="19-orders.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">19. Orders</a>
+                            <a href="20-profile.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">20. Profile</a>
+                        </div>
+                    </div>
+                    <div>
+                        <h3 class="px-3 mb-2 text-xs font-semibold uppercase tracking-wider text-zinc-400">Дополнительно</h3>
+                        <a href="21-reusable-views.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">21. Reusable Views</a>
+                        <a href="22-exercises.html" class="block px-3 py-2 text-sm text-white bg-primary rounded-lg">22. Упражнения</a>
+                    </div>
+                </div>
+            </nav>
+        </aside>
+
+        <div id="overlay" class="fixed inset-0 bg-black/50 z-30 lg:hidden hidden" onclick="closeSidebar()"></div>
+
+        <main class="flex-1 lg:ml-72">
+            <article class="max-w-4xl mx-auto px-6 sm:px-8 lg:px-12 py-12 lg:py-16">
+                <header class="mb-12 pb-8 border-b border-zinc-200 dark:border-zinc-800">
+                    <span class="text-sm font-semibold uppercase tracking-wider text-primary">Глава 22</span>
+                    <h1 class="text-3xl sm:text-4xl font-bold mt-2 mb-4">Упражнения с ответами</h1>
+                    <p class="text-lg text-zinc-600 dark:text-zinc-400">Практические задания для закрепления материала</p>
+                </header>
+
+                <div class="prose prose-zinc dark:prose-invert max-w-none">
+
+                    <!-- Инструкция -->
+                    <div class="p-5 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-xl mb-10">
+                        <h3 class="font-semibold text-blue-800 dark:text-blue-200 mb-2">Как работать с упражнениями</h3>
+                        <ul class="text-blue-700 dark:text-blue-300 space-y-1 text-sm">
+                            <li>1. Прочитайте задание и попробуйте решить его самостоятельно</li>
+                            <li>2. Напишите код в Xcode Playground</li>
+                            <li>3. Только после попытки решения нажмите "Показать ответ"</li>
+                            <li>4. Сравните своё решение с ответом</li>
+                        </ul>
+                    </div>
+
+                    <!-- ======================= -->
+                    <!-- РАЗДЕЛ 1: ОСНОВЫ SWIFT -->
+                    <!-- ======================= -->
+                    <section class="mb-16">
+                        <h2 class="text-2xl font-bold mb-6 pb-3 border-b border-zinc-200 dark:border-zinc-700">
+                            Раздел 1: Основы Swift
+                            <span class="text-sm font-normal text-zinc-500 ml-2">(Глава 2)</span>
+                        </h2>
+
+                        <!-- Упражнение 1 -->
+                        <div class="mb-8 p-6 bg-zinc-50 dark:bg-zinc-800/50 rounded-2xl">
+                            <div class="flex items-center gap-3 mb-4">
+                                <span class="flex items-center justify-center w-8 h-8 bg-primary text-white text-sm font-bold rounded-full">1</span>
+                                <h3 class="text-lg font-semibold">Переменные и константы</h3>
+                                <span class="px-2 py-1 text-xs bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300 rounded-full">Легко</span>
+                            </div>
+
+                            <p class="text-zinc-600 dark:text-zinc-400 mb-4">
+                                Объявите константу <code>pi</code> со значением 3.14159 и переменную <code>radius</code> со значением 5.0.
+                                Вычислите площадь круга по формуле <code>S = pi * r * r</code> и выведите результат.
+                            </p>
+
+                            <details class="group">
+                                <summary class="cursor-pointer text-primary font-medium hover:underline">Показать ответ</summary>
+                                <div class="mt-4 bg-zinc-900 rounded-xl p-4">
+                                    <pre class="text-sm overflow-x-auto"><code class="language-swift"><span class="text-pink-400">let</span> <span class="text-blue-300">pi</span> = <span class="text-orange-400">3.14159</span>
+<span class="text-pink-400">var</span> <span class="text-blue-300">radius</span> = <span class="text-orange-400">5.0</span>
+
+<span class="text-pink-400">let</span> <span class="text-blue-300">area</span> = pi * radius * radius
+<span class="text-yellow-400">print</span>(<span class="text-green-400">"Площадь круга: \(area)"</span>)
+<span class="text-zinc-500">// Площадь круга: 78.53975</span></code></pre>
+                                </div>
+                                <div class="mt-3 p-3 bg-amber-50 dark:bg-amber-900/20 rounded-lg">
+                                    <p class="text-sm text-amber-800 dark:text-amber-200">
+                                        <strong>Объяснение:</strong> <code>pi</code> — константа (<code>let</code>), потому что число Пи не меняется.
+                                        <code>radius</code> — переменная (<code>var</code>), потому что радиус может измениться для разных кругов.
+                                    </p>
+                                </div>
+                            </details>
+                        </div>
+
+                        <!-- Упражнение 2 -->
+                        <div class="mb-8 p-6 bg-zinc-50 dark:bg-zinc-800/50 rounded-2xl">
+                            <div class="flex items-center gap-3 mb-4">
+                                <span class="flex items-center justify-center w-8 h-8 bg-primary text-white text-sm font-bold rounded-full">2</span>
+                                <h3 class="text-lg font-semibold">Выбор типов данных</h3>
+                                <span class="px-2 py-1 text-xs bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300 rounded-full">Легко</span>
+                            </div>
+
+                            <p class="text-zinc-600 dark:text-zinc-400 mb-4">
+                                Для интернет-магазина нужно объявить следующие переменные. Выберите правильные типы данных:
+                            </p>
+                            <ul class="list-disc list-inside text-zinc-600 dark:text-zinc-400 mb-4 space-y-1">
+                                <li>Название товара</li>
+                                <li>Цена товара</li>
+                                <li>Количество на складе</li>
+                                <li>Товар в наличии (да/нет)</li>
+                                <li>Рейтинг товара (от 0 до 5)</li>
+                            </ul>
+
+                            <details class="group">
+                                <summary class="cursor-pointer text-primary font-medium hover:underline">Показать ответ</summary>
+                                <div class="mt-4 bg-zinc-900 rounded-xl p-4">
+                                    <pre class="text-sm overflow-x-auto"><code class="language-swift"><span class="text-pink-400">let</span> <span class="text-blue-300">productName</span>: <span class="text-cyan-400">String</span> = <span class="text-green-400">"iPhone 15 Pro"</span>
+<span class="text-pink-400">let</span> <span class="text-blue-300">price</span>: <span class="text-cyan-400">Double</span> = <span class="text-orange-400">999.99</span>
+<span class="text-pink-400">var</span> <span class="text-blue-300">stockQuantity</span>: <span class="text-cyan-400">Int</span> = <span class="text-orange-400">50</span>
+<span class="text-pink-400">var</span> <span class="text-blue-300">isInStock</span>: <span class="text-cyan-400">Bool</span> = <span class="text-orange-400">true</span>
+<span class="text-pink-400">var</span> <span class="text-blue-300">rating</span>: <span class="text-cyan-400">Double</span> = <span class="text-orange-400">4.8</span></code></pre>
+                                </div>
+                                <div class="mt-3 p-3 bg-amber-50 dark:bg-amber-900/20 rounded-lg">
+                                    <p class="text-sm text-amber-800 dark:text-amber-200">
+                                        <strong>Объяснение:</strong><br>
+                                        • <code>String</code> — для текста (название)<br>
+                                        • <code>Double</code> — для дробных чисел (цена, рейтинг)<br>
+                                        • <code>Int</code> — для целых чисел (количество)<br>
+                                        • <code>Bool</code> — для да/нет (в наличии)
+                                    </p>
+                                </div>
+                            </details>
+                        </div>
+
+                        <!-- Упражнение 3 -->
+                        <div class="mb-8 p-6 bg-zinc-50 dark:bg-zinc-800/50 rounded-2xl">
+                            <div class="flex items-center gap-3 mb-4">
+                                <span class="flex items-center justify-center w-8 h-8 bg-primary text-white text-sm font-bold rounded-full">3</span>
+                                <h3 class="text-lg font-semibold">Работа со строками</h3>
+                                <span class="px-2 py-1 text-xs bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-300 rounded-full">Средне</span>
+                            </div>
+
+                            <p class="text-zinc-600 dark:text-zinc-400 mb-4">
+                                Дано: имя пользователя "ivan", email "ivan@mail.ru", возраст 25.
+                                Создайте строку приветствия в формате: <code>"Добро пожаловать, Ivan! Ваш email: ivan@mail.ru. Вам 25 лет."</code>
+                                (имя должно быть с заглавной буквы)
+                            </p>
+
+                            <details class="group">
+                                <summary class="cursor-pointer text-primary font-medium hover:underline">Показать ответ</summary>
+                                <div class="mt-4 bg-zinc-900 rounded-xl p-4">
+                                    <pre class="text-sm overflow-x-auto"><code class="language-swift"><span class="text-pink-400">let</span> <span class="text-blue-300">name</span> = <span class="text-green-400">"ivan"</span>
+<span class="text-pink-400">let</span> <span class="text-blue-300">email</span> = <span class="text-green-400">"ivan@mail.ru"</span>
+<span class="text-pink-400">let</span> <span class="text-blue-300">age</span> = <span class="text-orange-400">25</span>
+
+<span class="text-pink-400">let</span> <span class="text-blue-300">capitalizedName</span> = name.<span class="text-yellow-400">capitalized</span>
+<span class="text-pink-400">let</span> <span class="text-blue-300">greeting</span> = <span class="text-green-400">"Добро пожаловать, \(capitalizedName)! Ваш email: \(email). Вам \(age) лет."</span>
+
+<span class="text-yellow-400">print</span>(greeting)
+<span class="text-zinc-500">// Добро пожаловать, Ivan! Ваш email: ivan@mail.ru. Вам 25 лет.</span></code></pre>
+                                </div>
+                                <div class="mt-3 p-3 bg-amber-50 dark:bg-amber-900/20 rounded-lg">
+                                    <p class="text-sm text-amber-800 dark:text-amber-200">
+                                        <strong>Объяснение:</strong> Используем интерполяцию строк <code>\(переменная)</code> для вставки значений.
+                                        Метод <code>.capitalized</code> делает первую букву заглавной.
+                                    </p>
+                                </div>
+                            </details>
+                        </div>
+
+                        <!-- Упражнение 4 -->
+                        <div class="mb-8 p-6 bg-zinc-50 dark:bg-zinc-800/50 rounded-2xl">
+                            <div class="flex items-center gap-3 mb-4">
+                                <span class="flex items-center justify-center w-8 h-8 bg-primary text-white text-sm font-bold rounded-full">4</span>
+                                <h3 class="text-lg font-semibold">Массивы</h3>
+                                <span class="px-2 py-1 text-xs bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-300 rounded-full">Средне</span>
+                            </div>
+
+                            <p class="text-zinc-600 dark:text-zinc-400 mb-4">
+                                Создайте массив с оценками студента: 85, 92, 78, 96, 88.
+                                Выведите: количество оценок, первую оценку, последнюю оценку,
+                                и добавьте новую оценку 90 в конец массива.
+                            </p>
+
+                            <details class="group">
+                                <summary class="cursor-pointer text-primary font-medium hover:underline">Показать ответ</summary>
+                                <div class="mt-4 bg-zinc-900 rounded-xl p-4">
+                                    <pre class="text-sm overflow-x-auto"><code class="language-swift"><span class="text-pink-400">var</span> <span class="text-blue-300">grades</span> = [<span class="text-orange-400">85</span>, <span class="text-orange-400">92</span>, <span class="text-orange-400">78</span>, <span class="text-orange-400">96</span>, <span class="text-orange-400">88</span>]
+
+<span class="text-yellow-400">print</span>(<span class="text-green-400">"Количество оценок: \(grades.count)"</span>)  <span class="text-zinc-500">// 5</span>
+<span class="text-yellow-400">print</span>(<span class="text-green-400">"Первая оценка: \(grades.first!)"</span>)     <span class="text-zinc-500">// 85</span>
+<span class="text-yellow-400">print</span>(<span class="text-green-400">"Последняя оценка: \(grades.last!)"</span>)   <span class="text-zinc-500">// 88</span>
+
+grades.<span class="text-yellow-400">append</span>(<span class="text-orange-400">90</span>)
+<span class="text-yellow-400">print</span>(<span class="text-green-400">"После добавления: \(grades)"</span>)
+<span class="text-zinc-500">// [85, 92, 78, 96, 88, 90]</span></code></pre>
+                                </div>
+                                <div class="mt-3 p-3 bg-amber-50 dark:bg-amber-900/20 rounded-lg">
+                                    <p class="text-sm text-amber-800 dark:text-amber-200">
+                                        <strong>Объяснение:</strong> Массив объявлен как <code>var</code>, потому что мы будем его изменять.
+                                        <code>.first</code> и <code>.last</code> возвращают Optional, поэтому используем <code>!</code> (в реальном коде лучше использовать <code>if let</code>).
+                                    </p>
+                                </div>
+                            </details>
+                        </div>
+
+                        <!-- Упражнение 5 -->
+                        <div class="mb-8 p-6 bg-zinc-50 dark:bg-zinc-800/50 rounded-2xl">
+                            <div class="flex items-center gap-3 mb-4">
+                                <span class="flex items-center justify-center w-8 h-8 bg-primary text-white text-sm font-bold rounded-full">5</span>
+                                <h3 class="text-lg font-semibold">Словари</h3>
+                                <span class="px-2 py-1 text-xs bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-300 rounded-full">Средне</span>
+                            </div>
+
+                            <p class="text-zinc-600 dark:text-zinc-400 mb-4">
+                                Создайте словарь с информацией о товаре: название "MacBook Pro", цена 1999.99, категория "Ноутбуки".
+                                Выведите цену, добавьте новый ключ "brand" со значением "Apple", и измените цену на 1899.99.
+                            </p>
+
+                            <details class="group">
+                                <summary class="cursor-pointer text-primary font-medium hover:underline">Показать ответ</summary>
+                                <div class="mt-4 bg-zinc-900 rounded-xl p-4">
+                                    <pre class="text-sm overflow-x-auto"><code class="language-swift"><span class="text-pink-400">var</span> <span class="text-blue-300">product</span>: [<span class="text-cyan-400">String</span>: <span class="text-cyan-400">Any</span>] = [
+    <span class="text-green-400">"name"</span>: <span class="text-green-400">"MacBook Pro"</span>,
+    <span class="text-green-400">"price"</span>: <span class="text-orange-400">1999.99</span>,
+    <span class="text-green-400">"category"</span>: <span class="text-green-400">"Ноутбуки"</span>
+]
+
+<span class="text-zinc-500">// Вывести цену</span>
+<span class="text-pink-400">if let</span> price = product[<span class="text-green-400">"price"</span>] <span class="text-pink-400">as?</span> <span class="text-cyan-400">Double</span> {
+    <span class="text-yellow-400">print</span>(<span class="text-green-400">"Цена: $\(price)"</span>)  <span class="text-zinc-500">// Цена: $1999.99</span>
+}
+
+<span class="text-zinc-500">// Добавить бренд</span>
+product[<span class="text-green-400">"brand"</span>] = <span class="text-green-400">"Apple"</span>
+
+<span class="text-zinc-500">// Изменить цену</span>
+product[<span class="text-green-400">"price"</span>] = <span class="text-orange-400">1899.99</span>
+
+<span class="text-yellow-400">print</span>(product)
+<span class="text-zinc-500">// ["name": "MacBook Pro", "price": 1899.99, "category": "Ноутбуки", "brand": "Apple"]</span></code></pre>
+                                </div>
+                                <div class="mt-3 p-3 bg-amber-50 dark:bg-amber-900/20 rounded-lg">
+                                    <p class="text-sm text-amber-800 dark:text-amber-200">
+                                        <strong>Объяснение:</strong> Тип <code>[String: Any]</code> позволяет хранить значения разных типов.
+                                        Доступ по ключу возвращает Optional, поэтому используем <code>if let</code> и приведение типа <code>as?</code>.
+                                    </p>
+                                </div>
+                            </details>
+                        </div>
+
+                        <!-- Упражнение 6 -->
+                        <div class="mb-8 p-6 bg-zinc-50 dark:bg-zinc-800/50 rounded-2xl">
+                            <div class="flex items-center gap-3 mb-4">
+                                <span class="flex items-center justify-center w-8 h-8 bg-primary text-white text-sm font-bold rounded-full">6</span>
+                                <h3 class="text-lg font-semibold">Проектирование модели данных</h3>
+                                <span class="px-2 py-1 text-xs bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300 rounded-full">Сложно</span>
+                            </div>
+
+                            <p class="text-zinc-600 dark:text-zinc-400 mb-4">
+                                Спроектируйте структуру данных для <strong>пользователя</strong> приложения доставки еды.
+                                Пользователь имеет: ID, имя, email, телефон (может быть не указан), адрес доставки,
+                                баланс бонусов, дату регистрации. Определите какие свойства должны быть <code>let</code>, какие <code>var</code>,
+                                и какие типы использовать.
+                            </p>
+
+                            <details class="group">
+                                <summary class="cursor-pointer text-primary font-medium hover:underline">Показать ответ</summary>
+                                <div class="mt-4 bg-zinc-900 rounded-xl p-4">
+                                    <pre class="text-sm overflow-x-auto"><code class="language-swift"><span class="text-pink-400">struct</span> <span class="text-cyan-400">User</span> {
+    <span class="text-zinc-500">// ИДЕНТИФИКАЦИЯ — не меняется</span>
+    <span class="text-pink-400">let</span> id: <span class="text-cyan-400">String</span>                 <span class="text-zinc-500">// уникальный ID</span>
+    <span class="text-pink-400">let</span> email: <span class="text-cyan-400">String</span>              <span class="text-zinc-500">// email обычно не меняют</span>
+    <span class="text-pink-400">let</span> registeredAt: <span class="text-cyan-400">Date</span>         <span class="text-zinc-500">// дата регистрации фиксирована</span>
+
+    <span class="text-zinc-500">// ИЗМЕНЯЕМЫЕ ДАННЫЕ</span>
+    <span class="text-pink-400">var</span> name: <span class="text-cyan-400">String</span>               <span class="text-zinc-500">// имя можно изменить</span>
+    <span class="text-pink-400">var</span> phone: <span class="text-cyan-400">String</span>?             <span class="text-zinc-500">// Optional — может быть не указан</span>
+    <span class="text-pink-400">var</span> deliveryAddress: <span class="text-cyan-400">String</span>    <span class="text-zinc-500">// адрес можно менять</span>
+    <span class="text-pink-400">var</span> bonusBalance: <span class="text-cyan-400">Double</span>       <span class="text-zinc-500">// баланс постоянно меняется</span>
+
+    <span class="text-zinc-500">// ВЫЧИСЛЯЕМОЕ СВОЙСТВО</span>
+    <span class="text-pink-400">var</span> hasPhone: <span class="text-cyan-400">Bool</span> {
+        phone != <span class="text-pink-400">nil</span>
+    }
+
+    <span class="text-pink-400">var</span> formattedBonus: <span class="text-cyan-400">String</span> {
+        <span class="text-cyan-400">String</span>(format: <span class="text-green-400">"%.0f бонусов"</span>, bonusBalance)
+    }
+}
+
+<span class="text-zinc-500">// Пример использования</span>
+<span class="text-pink-400">var</span> <span class="text-blue-300">user</span> = User(
+    id: <span class="text-green-400">"usr_123"</span>,
+    email: <span class="text-green-400">"ivan@mail.ru"</span>,
+    registeredAt: Date(),
+    name: <span class="text-green-400">"Иван"</span>,
+    phone: <span class="text-pink-400">nil</span>,
+    deliveryAddress: <span class="text-green-400">"ул. Пушкина, д. 10"</span>,
+    bonusBalance: <span class="text-orange-400">150.0</span>
+)</code></pre>
+                                </div>
+                                <div class="mt-3 p-3 bg-amber-50 dark:bg-amber-900/20 rounded-lg">
+                                    <p class="text-sm text-amber-800 dark:text-amber-200">
+                                        <strong>Ключевые решения:</strong><br>
+                                        • <code>let</code> для данных, которые не меняются после регистрации<br>
+                                        • <code>var</code> для данных, которые пользователь может обновить<br>
+                                        • <code>String?</code> для телефона — не все пользователи его указывают<br>
+                                        • Вычисляемые свойства для производных данных
+                                    </p>
+                                </div>
+                            </details>
+                        </div>
+                    </section>
+
+                    <!-- ========================== -->
+                    <!-- РАЗДЕЛ 2: CONTROL FLOW -->
+                    <!-- ========================== -->
+                    <section class="mb-16">
+                        <h2 class="text-2xl font-bold mb-6 pb-3 border-b border-zinc-200 dark:border-zinc-700">
+                            Раздел 2: Управление потоком
+                            <span class="text-sm font-normal text-zinc-500 ml-2">(Глава 3)</span>
+                        </h2>
+
+                        <!-- Упражнение 7 -->
+                        <div class="mb-8 p-6 bg-zinc-50 dark:bg-zinc-800/50 rounded-2xl">
+                            <div class="flex items-center gap-3 mb-4">
+                                <span class="flex items-center justify-center w-8 h-8 bg-primary text-white text-sm font-bold rounded-full">7</span>
+                                <h3 class="text-lg font-semibold">Условный оператор if/else</h3>
+                                <span class="px-2 py-1 text-xs bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300 rounded-full">Легко</span>
+                            </div>
+
+                            <p class="text-zinc-600 dark:text-zinc-400 mb-4">
+                                Напишите код, который проверяет возраст пользователя. Если возраст меньше 18 — выведите "Доступ запрещён",
+                                если от 18 до 65 — "Добро пожаловать", если больше 65 — "Добро пожаловать, пенсионная скидка 10%".
+                            </p>
+
+                            <details class="group">
+                                <summary class="cursor-pointer text-primary font-medium hover:underline">Показать ответ</summary>
+                                <div class="mt-4 bg-zinc-900 rounded-xl p-4">
+                                    <pre class="text-sm overflow-x-auto"><code class="language-swift"><span class="text-pink-400">let</span> <span class="text-blue-300">age</span> = <span class="text-orange-400">70</span>
+
+<span class="text-pink-400">if</span> age < <span class="text-orange-400">18</span> {
+    <span class="text-yellow-400">print</span>(<span class="text-green-400">"Доступ запрещён"</span>)
+} <span class="text-pink-400">else if</span> age <= <span class="text-orange-400">65</span> {
+    <span class="text-yellow-400">print</span>(<span class="text-green-400">"Добро пожаловать"</span>)
+} <span class="text-pink-400">else</span> {
+    <span class="text-yellow-400">print</span>(<span class="text-green-400">"Добро пожаловать, пенсионная скидка 10%"</span>)
+}
+<span class="text-zinc-500">// Добро пожаловать, пенсионная скидка 10%</span></code></pre>
+                                </div>
+                                <div class="mt-3 p-3 bg-amber-50 dark:bg-amber-900/20 rounded-lg">
+                                    <p class="text-sm text-amber-800 dark:text-amber-200">
+                                        <strong>Объяснение:</strong> Условия проверяются сверху вниз. Как только одно условие истинно,
+                                        выполняется его блок и остальные проверки пропускаются.
+                                    </p>
+                                </div>
+                            </details>
+                        </div>
+
+                        <!-- Упражнение 8 -->
+                        <div class="mb-8 p-6 bg-zinc-50 dark:bg-zinc-800/50 rounded-2xl">
+                            <div class="flex items-center gap-3 mb-4">
+                                <span class="flex items-center justify-center w-8 h-8 bg-primary text-white text-sm font-bold rounded-full">8</span>
+                                <h3 class="text-lg font-semibold">Тернарный оператор</h3>
+                                <span class="px-2 py-1 text-xs bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300 rounded-full">Легко</span>
+                            </div>
+
+                            <p class="text-zinc-600 dark:text-zinc-400 mb-4">
+                                Дана переменная <code>isLoggedIn = true</code>. Используя тернарный оператор, присвойте переменной
+                                <code>buttonTitle</code> значение "Выйти" если пользователь авторизован, иначе "Войти".
+                            </p>
+
+                            <details class="group">
+                                <summary class="cursor-pointer text-primary font-medium hover:underline">Показать ответ</summary>
+                                <div class="mt-4 bg-zinc-900 rounded-xl p-4">
+                                    <pre class="text-sm overflow-x-auto"><code class="language-swift"><span class="text-pink-400">let</span> <span class="text-blue-300">isLoggedIn</span> = <span class="text-orange-400">true</span>
+
+<span class="text-pink-400">let</span> <span class="text-blue-300">buttonTitle</span> = isLoggedIn ? <span class="text-green-400">"Выйти"</span> : <span class="text-green-400">"Войти"</span>
+
+<span class="text-yellow-400">print</span>(buttonTitle)  <span class="text-zinc-500">// Выйти</span></code></pre>
+                                </div>
+                                <div class="mt-3 p-3 bg-amber-50 dark:bg-amber-900/20 rounded-lg">
+                                    <p class="text-sm text-amber-800 dark:text-amber-200">
+                                        <strong>Синтаксис:</strong> <code>условие ? значение_если_true : значение_если_false</code>
+                                        Тернарный оператор — краткая форма if/else для присваивания.
+                                    </p>
+                                </div>
+                            </details>
+                        </div>
+
+                        <!-- Упражнение 9 -->
+                        <div class="mb-8 p-6 bg-zinc-50 dark:bg-zinc-800/50 rounded-2xl">
+                            <div class="flex items-center gap-3 mb-4">
+                                <span class="flex items-center justify-center w-8 h-8 bg-primary text-white text-sm font-bold rounded-full">9</span>
+                                <h3 class="text-lg font-semibold">Switch с диапазонами</h3>
+                                <span class="px-2 py-1 text-xs bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-300 rounded-full">Средне</span>
+                            </div>
+
+                            <p class="text-zinc-600 dark:text-zinc-400 mb-4">
+                                Напишите switch, который преобразует оценку (0-100) в буквенную оценку:
+                                90-100 → "A", 80-89 → "B", 70-79 → "C", 60-69 → "D", 0-59 → "F".
+                            </p>
+
+                            <details class="group">
+                                <summary class="cursor-pointer text-primary font-medium hover:underline">Показать ответ</summary>
+                                <div class="mt-4 bg-zinc-900 rounded-xl p-4">
+                                    <pre class="text-sm overflow-x-auto"><code class="language-swift"><span class="text-pink-400">let</span> <span class="text-blue-300">score</span> = <span class="text-orange-400">85</span>
+<span class="text-pink-400">let</span> <span class="text-blue-300">grade</span>: <span class="text-cyan-400">String</span>
+
+<span class="text-pink-400">switch</span> score {
+<span class="text-pink-400">case</span> <span class="text-orange-400">90</span>...<span class="text-orange-400">100</span>:
+    grade = <span class="text-green-400">"A"</span>
+<span class="text-pink-400">case</span> <span class="text-orange-400">80</span>..<<span class="text-orange-400">90</span>:
+    grade = <span class="text-green-400">"B"</span>
+<span class="text-pink-400">case</span> <span class="text-orange-400">70</span>..<<span class="text-orange-400">80</span>:
+    grade = <span class="text-green-400">"C"</span>
+<span class="text-pink-400">case</span> <span class="text-orange-400">60</span>..<<span class="text-orange-400">70</span>:
+    grade = <span class="text-green-400">"D"</span>
+<span class="text-pink-400">case</span> <span class="text-orange-400">0</span>..<<span class="text-orange-400">60</span>:
+    grade = <span class="text-green-400">"F"</span>
+<span class="text-pink-400">default</span>:
+    grade = <span class="text-green-400">"Неверная оценка"</span>
+}
+
+<span class="text-yellow-400">print</span>(<span class="text-green-400">"Оценка \(score) = \(grade)"</span>)
+<span class="text-zinc-500">// Оценка 85 = B</span></code></pre>
+                                </div>
+                                <div class="mt-3 p-3 bg-amber-50 dark:bg-amber-900/20 rounded-lg">
+                                    <p class="text-sm text-amber-800 dark:text-amber-200">
+                                        <strong>Диапазоны:</strong><br>
+                                        • <code>90...100</code> — включает и 90, и 100<br>
+                                        • <code>80..<90</code> — включает 80, но НЕ включает 90<br>
+                                        • <code>default</code> обязателен для полноты проверки
+                                    </p>
+                                </div>
+                            </details>
+                        </div>
+
+                        <!-- Упражнение 10 -->
+                        <div class="mb-8 p-6 bg-zinc-50 dark:bg-zinc-800/50 rounded-2xl">
+                            <div class="flex items-center gap-3 mb-4">
+                                <span class="flex items-center justify-center w-8 h-8 bg-primary text-white text-sm font-bold rounded-full">10</span>
+                                <h3 class="text-lg font-semibold">Цикл for-in с массивом</h3>
+                                <span class="px-2 py-1 text-xs bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300 rounded-full">Легко</span>
+                            </div>
+
+                            <p class="text-zinc-600 dark:text-zinc-400 mb-4">
+                                Дан массив цен: [100, 250, 50, 300, 120]. Используя цикл for-in, найдите сумму всех цен.
+                            </p>
+
+                            <details class="group">
+                                <summary class="cursor-pointer text-primary font-medium hover:underline">Показать ответ</summary>
+                                <div class="mt-4 bg-zinc-900 rounded-xl p-4">
+                                    <pre class="text-sm overflow-x-auto"><code class="language-swift"><span class="text-pink-400">let</span> <span class="text-blue-300">prices</span> = [<span class="text-orange-400">100</span>, <span class="text-orange-400">250</span>, <span class="text-orange-400">50</span>, <span class="text-orange-400">300</span>, <span class="text-orange-400">120</span>]
+<span class="text-pink-400">var</span> <span class="text-blue-300">total</span> = <span class="text-orange-400">0</span>
+
+<span class="text-pink-400">for</span> price <span class="text-pink-400">in</span> prices {
+    total += price
+}
+
+<span class="text-yellow-400">print</span>(<span class="text-green-400">"Общая сумма: \(total)"</span>)
+<span class="text-zinc-500">// Общая сумма: 820</span>
+
+<span class="text-zinc-500">// Альтернатива с reduce:</span>
+<span class="text-pink-400">let</span> <span class="text-blue-300">total2</span> = prices.<span class="text-yellow-400">reduce</span>(<span class="text-orange-400">0</span>, +)
+<span class="text-yellow-400">print</span>(total2)  <span class="text-zinc-500">// 820</span></code></pre>
+                                </div>
+                                <div class="mt-3 p-3 bg-amber-50 dark:bg-amber-900/20 rounded-lg">
+                                    <p class="text-sm text-amber-800 dark:text-amber-200">
+                                        <strong>Объяснение:</strong> Цикл <code>for-in</code> перебирает каждый элемент массива.
+                                        <code>reduce</code> — функциональный способ сделать то же самое в одну строку.
+                                    </p>
+                                </div>
+                            </details>
+                        </div>
+
+                        <!-- Упражнение 11 -->
+                        <div class="mb-8 p-6 bg-zinc-50 dark:bg-zinc-800/50 rounded-2xl">
+                            <div class="flex items-center gap-3 mb-4">
+                                <span class="flex items-center justify-center w-8 h-8 bg-primary text-white text-sm font-bold rounded-full">11</span>
+                                <h3 class="text-lg font-semibold">Цикл while</h3>
+                                <span class="px-2 py-1 text-xs bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-300 rounded-full">Средне</span>
+                            </div>
+
+                            <p class="text-zinc-600 dark:text-zinc-400 mb-4">
+                                Напишите цикл while, который удваивает число, начиная с 1, пока оно не станет больше 1000.
+                                Выведите все промежуточные значения и финальное число.
+                            </p>
+
+                            <details class="group">
+                                <summary class="cursor-pointer text-primary font-medium hover:underline">Показать ответ</summary>
+                                <div class="mt-4 bg-zinc-900 rounded-xl p-4">
+                                    <pre class="text-sm overflow-x-auto"><code class="language-swift"><span class="text-pink-400">var</span> <span class="text-blue-300">number</span> = <span class="text-orange-400">1</span>
+
+<span class="text-pink-400">while</span> number <= <span class="text-orange-400">1000</span> {
+    <span class="text-yellow-400">print</span>(number)
+    number *= <span class="text-orange-400">2</span>
+}
+
+<span class="text-yellow-400">print</span>(<span class="text-green-400">"Финальное число: \(number)"</span>)
+
+<span class="text-zinc-500">// Вывод: 1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024</span>
+<span class="text-zinc-500">// Финальное число: 2048</span></code></pre>
+                                </div>
+                                <div class="mt-3 p-3 bg-amber-50 dark:bg-amber-900/20 rounded-lg">
+                                    <p class="text-sm text-amber-800 dark:text-amber-200">
+                                        <strong>Объяснение:</strong> Цикл выполняется пока условие <code>number <= 1000</code> истинно.
+                                        1024 выводится, потому что 1024 <= 1000 — ложь, но мы проверяем ПЕРЕД удвоением.
+                                    </p>
+                                </div>
+                            </details>
+                        </div>
+
+                        <!-- Упражнение 12 -->
+                        <div class="mb-8 p-6 bg-zinc-50 dark:bg-zinc-800/50 rounded-2xl">
+                            <div class="flex items-center gap-3 mb-4">
+                                <span class="flex items-center justify-center w-8 h-8 bg-primary text-white text-sm font-bold rounded-full">12</span>
+                                <h3 class="text-lg font-semibold">Guard для валидации</h3>
+                                <span class="px-2 py-1 text-xs bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300 rounded-full">Сложно</span>
+                            </div>
+
+                            <p class="text-zinc-600 dark:text-zinc-400 mb-4">
+                                Напишите функцию <code>validateRegistration</code>, которая принимает email (String?), password (String?), age (Int?).
+                                Используя guard, проверьте: email не nil, password не nil и длина >= 8, age не nil и >= 18.
+                                Если все проверки пройдены — выведите "Регистрация успешна".
+                            </p>
+
+                            <details class="group">
+                                <summary class="cursor-pointer text-primary font-medium hover:underline">Показать ответ</summary>
+                                <div class="mt-4 bg-zinc-900 rounded-xl p-4">
+                                    <pre class="text-sm overflow-x-auto"><code class="language-swift"><span class="text-pink-400">func</span> <span class="text-blue-300">validateRegistration</span>(email: <span class="text-cyan-400">String</span>?, password: <span class="text-cyan-400">String</span>?, age: <span class="text-cyan-400">Int</span>?) {
+    <span class="text-pink-400">guard let</span> email = email, !email.<span class="text-yellow-400">isEmpty</span> <span class="text-pink-400">else</span> {
+        <span class="text-yellow-400">print</span>(<span class="text-green-400">"Ошибка: email не указан"</span>)
+        <span class="text-pink-400">return</span>
+    }
+
+    <span class="text-pink-400">guard let</span> password = password, password.count >= <span class="text-orange-400">8</span> <span class="text-pink-400">else</span> {
+        <span class="text-yellow-400">print</span>(<span class="text-green-400">"Ошибка: пароль должен быть минимум 8 символов"</span>)
+        <span class="text-pink-400">return</span>
+    }
+
+    <span class="text-pink-400">guard let</span> age = age, age >= <span class="text-orange-400">18</span> <span class="text-pink-400">else</span> {
+        <span class="text-yellow-400">print</span>(<span class="text-green-400">"Ошибка: возраст должен быть 18+"</span>)
+        <span class="text-pink-400">return</span>
+    }
+
+    <span class="text-zinc-500">// Все проверки пройдены</span>
+    <span class="text-yellow-400">print</span>(<span class="text-green-400">"Регистрация успешна!"</span>)
+    <span class="text-yellow-400">print</span>(<span class="text-green-400">"Email: \(email), Возраст: \(age)"</span>)
+}
+
+<span class="text-zinc-500">// Тесты</span>
+validateRegistration(email: <span class="text-pink-400">nil</span>, password: <span class="text-green-400">"12345678"</span>, age: <span class="text-orange-400">25</span>)
+<span class="text-zinc-500">// Ошибка: email не указан</span>
+
+validateRegistration(email: <span class="text-green-400">"test@mail.ru"</span>, password: <span class="text-green-400">"123"</span>, age: <span class="text-orange-400">25</span>)
+<span class="text-zinc-500">// Ошибка: пароль должен быть минимум 8 символов</span>
+
+validateRegistration(email: <span class="text-green-400">"test@mail.ru"</span>, password: <span class="text-green-400">"12345678"</span>, age: <span class="text-orange-400">25</span>)
+<span class="text-zinc-500">// Регистрация успешна!</span></code></pre>
+                                </div>
+                                <div class="mt-3 p-3 bg-amber-50 dark:bg-amber-900/20 rounded-lg">
+                                    <p class="text-sm text-amber-800 dark:text-amber-200">
+                                        <strong>Объяснение:</strong> <code>guard let</code> распаковывает Optional и проверяет условие.
+                                        Если проверка не пройдена — выполняется <code>else</code> блок с обязательным <code>return</code>.
+                                        После guard переменные гарантированно не nil.
+                                    </p>
+                                </div>
+                            </details>
+                        </div>
+                    </section>
+
+                    <!-- ================================ -->
+                    <!-- РАЗДЕЛ 3: ФУНКЦИИ И CLOSURES -->
+                    <!-- ================================ -->
+                    <section class="mb-16">
+                        <h2 class="text-2xl font-bold mb-6 pb-3 border-b border-zinc-200 dark:border-zinc-700">
+                            Раздел 3: Функции и Closures
+                            <span class="text-sm font-normal text-zinc-500 ml-2">(Глава 4)</span>
+                        </h2>
+
+                        <!-- Упражнение 13 -->
+                        <div class="mb-8 p-6 bg-zinc-50 dark:bg-zinc-800/50 rounded-2xl">
+                            <div class="flex items-center gap-3 mb-4">
+                                <span class="flex items-center justify-center w-8 h-8 bg-primary text-white text-sm font-bold rounded-full">13</span>
+                                <h3 class="text-lg font-semibold">Функция с параметрами и возвратом</h3>
+                                <span class="px-2 py-1 text-xs bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300 rounded-full">Легко</span>
+                            </div>
+
+                            <p class="text-zinc-600 dark:text-zinc-400 mb-4">
+                                Напишите функцию <code>calculateDiscount</code>, которая принимает цену (Double) и процент скидки (Int),
+                                и возвращает цену со скидкой. Пример: цена 1000, скидка 15% → вернуть 850.
+                            </p>
+
+                            <details class="group">
+                                <summary class="cursor-pointer text-primary font-medium hover:underline">Показать ответ</summary>
+                                <div class="mt-4 bg-zinc-900 rounded-xl p-4">
+                                    <pre class="text-sm overflow-x-auto"><code class="language-swift"><span class="text-pink-400">func</span> <span class="text-blue-300">calculateDiscount</span>(price: <span class="text-cyan-400">Double</span>, discountPercent: <span class="text-cyan-400">Int</span>) -> <span class="text-cyan-400">Double</span> {
+    <span class="text-pink-400">let</span> <span class="text-blue-300">discount</span> = price * <span class="text-cyan-400">Double</span>(discountPercent) / <span class="text-orange-400">100</span>
+    <span class="text-pink-400">return</span> price - discount
+}
+
+<span class="text-pink-400">let</span> <span class="text-blue-300">finalPrice</span> = calculateDiscount(price: <span class="text-orange-400">1000</span>, discountPercent: <span class="text-orange-400">15</span>)
+<span class="text-yellow-400">print</span>(<span class="text-green-400">"Цена со скидкой: \(finalPrice)"</span>)
+<span class="text-zinc-500">// Цена со скидкой: 850.0</span></code></pre>
+                                </div>
+                                <div class="mt-3 p-3 bg-amber-50 dark:bg-amber-900/20 rounded-lg">
+                                    <p class="text-sm text-amber-800 dark:text-amber-200">
+                                        <strong>Объяснение:</strong> <code>-> Double</code> указывает тип возвращаемого значения.
+                                        <code>Double(discountPercent)</code> преобразует Int в Double для вычислений.
+                                    </p>
+                                </div>
+                            </details>
+                        </div>
+
+                        <!-- Упражнение 14 -->
+                        <div class="mb-8 p-6 bg-zinc-50 dark:bg-zinc-800/50 rounded-2xl">
+                            <div class="flex items-center gap-3 mb-4">
+                                <span class="flex items-center justify-center w-8 h-8 bg-primary text-white text-sm font-bold rounded-full">14</span>
+                                <h3 class="text-lg font-semibold">Функция со значением по умолчанию</h3>
+                                <span class="px-2 py-1 text-xs bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-300 rounded-full">Средне</span>
+                            </div>
+
+                            <p class="text-zinc-600 dark:text-zinc-400 mb-4">
+                                Напишите функцию <code>formatPrice</code>, которая принимает цену (Double) и символ валюты (String, по умолчанию "₸").
+                                Функция должна вернуть отформатированную строку, например: "1 500 ₸".
+                            </p>
+
+                            <details class="group">
+                                <summary class="cursor-pointer text-primary font-medium hover:underline">Показать ответ</summary>
+                                <div class="mt-4 bg-zinc-900 rounded-xl p-4">
+                                    <pre class="text-sm overflow-x-auto"><code class="language-swift"><span class="text-pink-400">func</span> <span class="text-blue-300">formatPrice</span>(_ price: <span class="text-cyan-400">Double</span>, currency: <span class="text-cyan-400">String</span> = <span class="text-green-400">"₸"</span>) -> <span class="text-cyan-400">String</span> {
+    <span class="text-pink-400">let</span> <span class="text-blue-300">formatter</span> = NumberFormatter()
+    formatter.numberStyle = .decimal
+    formatter.groupingSeparator = <span class="text-green-400">" "</span>
+    formatter.maximumFractionDigits = <span class="text-orange-400">0</span>
+
+    <span class="text-pink-400">let</span> <span class="text-blue-300">formattedNumber</span> = formatter.<span class="text-yellow-400">string</span>(from: NSNumber(value: price)) ?? <span class="text-green-400">"\(price)"</span>
+    <span class="text-pink-400">return</span> <span class="text-green-400">"\(formattedNumber) \(currency)"</span>
+}
+
+<span class="text-yellow-400">print</span>(formatPrice(<span class="text-orange-400">1500</span>))            <span class="text-zinc-500">// 1 500 ₸</span>
+<span class="text-yellow-400">print</span>(formatPrice(<span class="text-orange-400">1500</span>, currency: <span class="text-green-400">"$"</span>)) <span class="text-zinc-500">// 1 500 $</span>
+<span class="text-yellow-400">print</span>(formatPrice(<span class="text-orange-400">999999</span>))          <span class="text-zinc-500">// 999 999 ₸</span></code></pre>
+                                </div>
+                                <div class="mt-3 p-3 bg-amber-50 dark:bg-amber-900/20 rounded-lg">
+                                    <p class="text-sm text-amber-800 dark:text-amber-200">
+                                        <strong>Объяснение:</strong> <code>_ price</code> — параметр без внешней метки (можно вызывать без имени).
+                                        <code>currency: String = "₸"</code> — параметр со значением по умолчанию.
+                                    </p>
+                                </div>
+                            </details>
+                        </div>
+
+                        <!-- Упражнение 15 -->
+                        <div class="mb-8 p-6 bg-zinc-50 dark:bg-zinc-800/50 rounded-2xl">
+                            <div class="flex items-center gap-3 mb-4">
+                                <span class="flex items-center justify-center w-8 h-8 bg-primary text-white text-sm font-bold rounded-full">15</span>
+                                <h3 class="text-lg font-semibold">Closure: map и filter</h3>
+                                <span class="px-2 py-1 text-xs bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-300 rounded-full">Средне</span>
+                            </div>
+
+                            <p class="text-zinc-600 dark:text-zinc-400 mb-4">
+                                Дан массив чисел: [12, 5, 23, 8, 17, 3, 42].
+                                Используя <code>filter</code> и <code>map</code>: отфильтруйте числа больше 10, затем умножьте каждое на 2.
+                            </p>
+
+                            <details class="group">
+                                <summary class="cursor-pointer text-primary font-medium hover:underline">Показать ответ</summary>
+                                <div class="mt-4 bg-zinc-900 rounded-xl p-4">
+                                    <pre class="text-sm overflow-x-auto"><code class="language-swift"><span class="text-pink-400">let</span> <span class="text-blue-300">numbers</span> = [<span class="text-orange-400">12</span>, <span class="text-orange-400">5</span>, <span class="text-orange-400">23</span>, <span class="text-orange-400">8</span>, <span class="text-orange-400">17</span>, <span class="text-orange-400">3</span>, <span class="text-orange-400">42</span>]
+
+<span class="text-pink-400">let</span> <span class="text-blue-300">result</span> = numbers
+    .<span class="text-yellow-400">filter</span> { $0 > <span class="text-orange-400">10</span> }     <span class="text-zinc-500">// [12, 23, 17, 42]</span>
+    .<span class="text-yellow-400">map</span> { $0 * <span class="text-orange-400">2</span> }        <span class="text-zinc-500">// [24, 46, 34, 84]</span>
+
+<span class="text-yellow-400">print</span>(result)
+<span class="text-zinc-500">// [24, 46, 34, 84]</span>
+
+<span class="text-zinc-500">// Полный синтаксис (для понимания):</span>
+<span class="text-pink-400">let</span> <span class="text-blue-300">result2</span> = numbers
+    .<span class="text-yellow-400">filter</span>({ (number: <span class="text-cyan-400">Int</span>) -> <span class="text-cyan-400">Bool</span> <span class="text-pink-400">in</span>
+        <span class="text-pink-400">return</span> number > <span class="text-orange-400">10</span>
+    })
+    .<span class="text-yellow-400">map</span>({ (number: <span class="text-cyan-400">Int</span>) -> <span class="text-cyan-400">Int</span> <span class="text-pink-400">in</span>
+        <span class="text-pink-400">return</span> number * <span class="text-orange-400">2</span>
+    })</code></pre>
+                                </div>
+                                <div class="mt-3 p-3 bg-amber-50 dark:bg-amber-900/20 rounded-lg">
+                                    <p class="text-sm text-amber-800 dark:text-amber-200">
+                                        <strong>Объяснение:</strong><br>
+                                        • <code>$0</code> — сокращение для первого параметра closure<br>
+                                        • <code>filter</code> возвращает элементы, для которых условие true<br>
+                                        • <code>map</code> преобразует каждый элемент
+                                    </p>
+                                </div>
+                            </details>
+                        </div>
+
+                        <!-- Упражнение 16 -->
+                        <div class="mb-8 p-6 bg-zinc-50 dark:bg-zinc-800/50 rounded-2xl">
+                            <div class="flex items-center gap-3 mb-4">
+                                <span class="flex items-center justify-center w-8 h-8 bg-primary text-white text-sm font-bold rounded-full">16</span>
+                                <h3 class="text-lg font-semibold">Closure: reduce</h3>
+                                <span class="px-2 py-1 text-xs bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300 rounded-full">Сложно</span>
+                            </div>
+
+                            <p class="text-zinc-600 dark:text-zinc-400 mb-4">
+                                Дан массив товаров в корзине (кортежи с названием и ценой):<br>
+                                <code>[("iPhone", 999), ("Case", 29), ("AirPods", 199)]</code><br>
+                                Используя <code>reduce</code>, посчитайте общую сумму покупки.
+                            </p>
+
+                            <details class="group">
+                                <summary class="cursor-pointer text-primary font-medium hover:underline">Показать ответ</summary>
+                                <div class="mt-4 bg-zinc-900 rounded-xl p-4">
+                                    <pre class="text-sm overflow-x-auto"><code class="language-swift"><span class="text-pink-400">let</span> <span class="text-blue-300">cart</span> = [
+    (<span class="text-green-400">"iPhone"</span>, <span class="text-orange-400">999</span>),
+    (<span class="text-green-400">"Case"</span>, <span class="text-orange-400">29</span>),
+    (<span class="text-green-400">"AirPods"</span>, <span class="text-orange-400">199</span>)
+]
+
+<span class="text-pink-400">let</span> <span class="text-blue-300">total</span> = cart.<span class="text-yellow-400">reduce</span>(<span class="text-orange-400">0</span>) { sum, item <span class="text-pink-400">in</span>
+    sum + item.<span class="text-orange-400">1</span>  <span class="text-zinc-500">// item.1 — цена (второй элемент кортежа)</span>
+}
+
+<span class="text-yellow-400">print</span>(<span class="text-green-400">"Общая сумма: $\(total)"</span>)
+<span class="text-zinc-500">// Общая сумма: $1227</span>
+
+<span class="text-zinc-500">// Альтернатива с именованными элементами кортежа:</span>
+<span class="text-pink-400">let</span> <span class="text-blue-300">cart2</span>: [(name: <span class="text-cyan-400">String</span>, price: <span class="text-cyan-400">Int</span>)] = [
+    (name: <span class="text-green-400">"iPhone"</span>, price: <span class="text-orange-400">999</span>),
+    (name: <span class="text-green-400">"Case"</span>, price: <span class="text-orange-400">29</span>),
+    (name: <span class="text-green-400">"AirPods"</span>, price: <span class="text-orange-400">199</span>)
+]
+
+<span class="text-pink-400">let</span> <span class="text-blue-300">total2</span> = cart2.<span class="text-yellow-400">reduce</span>(<span class="text-orange-400">0</span>) { $0 + $1.price }
+<span class="text-yellow-400">print</span>(total2)  <span class="text-zinc-500">// 1227</span></code></pre>
+                                </div>
+                                <div class="mt-3 p-3 bg-amber-50 dark:bg-amber-900/20 rounded-lg">
+                                    <p class="text-sm text-amber-800 dark:text-amber-200">
+                                        <strong>Объяснение:</strong> <code>reduce(начальное_значение) { накопитель, элемент in ... }</code><br>
+                                        • Первый параметр <code>0</code> — начальное значение суммы<br>
+                                        • <code>sum</code> — накопленный результат<br>
+                                        • <code>item</code> — текущий элемент массива
+                                    </p>
+                                </div>
+                            </details>
+                        </div>
+
+                        <!-- Упражнение 17 -->
+                        <div class="mb-8 p-6 bg-zinc-50 dark:bg-zinc-800/50 rounded-2xl">
+                            <div class="flex items-center gap-3 mb-4">
+                                <span class="flex items-center justify-center w-8 h-8 bg-primary text-white text-sm font-bold rounded-full">17</span>
+                                <h3 class="text-lg font-semibold">Trailing Closure и sorted</h3>
+                                <span class="px-2 py-1 text-xs bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-300 rounded-full">Средне</span>
+                            </div>
+
+                            <p class="text-zinc-600 dark:text-zinc-400 mb-4">
+                                Дан массив имён: ["Zara", "Anna", "Mike", "Bob"]. Отсортируйте его:
+                                1) По алфавиту (A-Z), 2) По алфавиту в обратном порядке (Z-A), 3) По длине имени.
+                            </p>
+
+                            <details class="group">
+                                <summary class="cursor-pointer text-primary font-medium hover:underline">Показать ответ</summary>
+                                <div class="mt-4 bg-zinc-900 rounded-xl p-4">
+                                    <pre class="text-sm overflow-x-auto"><code class="language-swift"><span class="text-pink-400">let</span> <span class="text-blue-300">names</span> = [<span class="text-green-400">"Zara"</span>, <span class="text-green-400">"Anna"</span>, <span class="text-green-400">"Mike"</span>, <span class="text-green-400">"Bob"</span>]
+
+<span class="text-zinc-500">// 1. По алфавиту (A-Z)</span>
+<span class="text-pink-400">let</span> <span class="text-blue-300">sortedAZ</span> = names.<span class="text-yellow-400">sorted</span> { $0 < $1 }
+<span class="text-yellow-400">print</span>(sortedAZ)  <span class="text-zinc-500">// ["Anna", "Bob", "Mike", "Zara"]</span>
+
+<span class="text-zinc-500">// Короче:</span>
+<span class="text-pink-400">let</span> <span class="text-blue-300">sortedAZ2</span> = names.<span class="text-yellow-400">sorted</span>()
+<span class="text-yellow-400">print</span>(sortedAZ2) <span class="text-zinc-500">// ["Anna", "Bob", "Mike", "Zara"]</span>
+
+<span class="text-zinc-500">// 2. В обратном порядке (Z-A)</span>
+<span class="text-pink-400">let</span> <span class="text-blue-300">sortedZA</span> = names.<span class="text-yellow-400">sorted</span> { $0 > $1 }
+<span class="text-yellow-400">print</span>(sortedZA)  <span class="text-zinc-500">// ["Zara", "Mike", "Bob", "Anna"]</span>
+
+<span class="text-zinc-500">// 3. По длине имени</span>
+<span class="text-pink-400">let</span> <span class="text-blue-300">sortedByLength</span> = names.<span class="text-yellow-400">sorted</span> { $0.count < $1.count }
+<span class="text-yellow-400">print</span>(sortedByLength)  <span class="text-zinc-500">// ["Bob", "Zara", "Anna", "Mike"]</span></code></pre>
+                                </div>
+                                <div class="mt-3 p-3 bg-amber-50 dark:bg-amber-900/20 rounded-lg">
+                                    <p class="text-sm text-amber-800 dark:text-amber-200">
+                                        <strong>Trailing closure:</strong> Если closure — последний параметр, его можно вынести за скобки.
+                                        <code>sorted { ... }</code> вместо <code>sorted(by: { ... })</code>
+                                    </p>
+                                </div>
+                            </details>
+                        </div>
+                    </section>
+
+                    <!-- =================== -->
+                    <!-- РАЗДЕЛ 4: ООП -->
+                    <!-- =================== -->
+                    <section class="mb-16">
+                        <h2 class="text-2xl font-bold mb-6 pb-3 border-b border-zinc-200 dark:border-zinc-700">
+                            Раздел 4: ООП (Struct и Class)
+                            <span class="text-sm font-normal text-zinc-500 ml-2">(Глава 5)</span>
+                        </h2>
+
+                        <!-- Упражнение 18 -->
+                        <div class="mb-8 p-6 bg-zinc-50 dark:bg-zinc-800/50 rounded-2xl">
+                            <div class="flex items-center gap-3 mb-4">
+                                <span class="flex items-center justify-center w-8 h-8 bg-primary text-white text-sm font-bold rounded-full">18</span>
+                                <h3 class="text-lg font-semibold">Создание структуры</h3>
+                                <span class="px-2 py-1 text-xs bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-300 rounded-full">Средне</span>
+                            </div>
+
+                            <p class="text-zinc-600 dark:text-zinc-400 mb-4">
+                                Создайте структуру <code>Product</code> с полями: id (String), name (String), price (Double), quantity (Int).
+                                Добавьте вычисляемое свойство <code>totalValue</code> (цена × количество) и метод <code>description()</code>,
+                                возвращающий строку вида "iPhone: 5 шт. × $999 = $4995".
+                            </p>
+
+                            <details class="group">
+                                <summary class="cursor-pointer text-primary font-medium hover:underline">Показать ответ</summary>
+                                <div class="mt-4 bg-zinc-900 rounded-xl p-4">
+                                    <pre class="text-sm overflow-x-auto"><code class="language-swift"><span class="text-pink-400">struct</span> <span class="text-cyan-400">Product</span> {
+    <span class="text-pink-400">let</span> id: <span class="text-cyan-400">String</span>
+    <span class="text-pink-400">let</span> name: <span class="text-cyan-400">String</span>
+    <span class="text-pink-400">let</span> price: <span class="text-cyan-400">Double</span>
+    <span class="text-pink-400">var</span> quantity: <span class="text-cyan-400">Int</span>
+
+    <span class="text-zinc-500">// Вычисляемое свойство</span>
+    <span class="text-pink-400">var</span> totalValue: <span class="text-cyan-400">Double</span> {
+        price * <span class="text-cyan-400">Double</span>(quantity)
+    }
+
+    <span class="text-zinc-500">// Метод</span>
+    <span class="text-pink-400">func</span> <span class="text-blue-300">description</span>() -> <span class="text-cyan-400">String</span> {
+        <span class="text-pink-400">return</span> <span class="text-green-400">"\(name): \(quantity) шт. × $\(Int(price)) = $\(Int(totalValue))"</span>
+    }
+}
+
+<span class="text-pink-400">let</span> <span class="text-blue-300">product</span> = Product(
+    id: <span class="text-green-400">"prod_001"</span>,
+    name: <span class="text-green-400">"iPhone"</span>,
+    price: <span class="text-orange-400">999</span>,
+    quantity: <span class="text-orange-400">5</span>
+)
+
+<span class="text-yellow-400">print</span>(product.totalValue)     <span class="text-zinc-500">// 4995.0</span>
+<span class="text-yellow-400">print</span>(product.description())  <span class="text-zinc-500">// iPhone: 5 шт. × $999 = $4995</span></code></pre>
+                                </div>
+                                <div class="mt-3 p-3 bg-amber-50 dark:bg-amber-900/20 rounded-lg">
+                                    <p class="text-sm text-amber-800 dark:text-amber-200">
+                                        <strong>Объяснение:</strong><br>
+                                        • Структура автоматически получает memberwise инициализатор<br>
+                                        • Вычисляемое свойство не хранит значение, а вычисляет при обращении<br>
+                                        • <code>quantity</code> — var, потому что количество может меняться
+                                    </p>
+                                </div>
+                            </details>
+                        </div>
+
+                        <!-- Упражнение 19 -->
+                        <div class="mb-8 p-6 bg-zinc-50 dark:bg-zinc-800/50 rounded-2xl">
+                            <div class="flex items-center gap-3 mb-4">
+                                <span class="flex items-center justify-center w-8 h-8 bg-primary text-white text-sm font-bold rounded-full">19</span>
+                                <h3 class="text-lg font-semibold">Struct vs Class: разница в поведении</h3>
+                                <span class="px-2 py-1 text-xs bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300 rounded-full">Сложно</span>
+                            </div>
+
+                            <p class="text-zinc-600 dark:text-zinc-400 mb-4">
+                                Что выведет этот код? Объясните разницу между struct и class.
+                            </p>
+                            <div class="bg-zinc-900 rounded-xl p-4 mb-4">
+                                <pre class="text-sm overflow-x-auto"><code class="language-swift"><span class="text-pink-400">struct</span> <span class="text-cyan-400">PointStruct</span> { <span class="text-pink-400">var</span> x: <span class="text-cyan-400">Int</span> }
+<span class="text-pink-400">class</span> <span class="text-cyan-400">PointClass</span> { <span class="text-pink-400">var</span> x: <span class="text-cyan-400">Int</span>; <span class="text-pink-400">init</span>(x: <span class="text-cyan-400">Int</span>) { <span class="text-pink-400">self</span>.x = x } }
+
+<span class="text-pink-400">var</span> <span class="text-blue-300">s1</span> = PointStruct(x: <span class="text-orange-400">10</span>)
+<span class="text-pink-400">var</span> <span class="text-blue-300">s2</span> = s1
+s2.x = <span class="text-orange-400">20</span>
+<span class="text-yellow-400">print</span>(<span class="text-green-400">"s1.x = \(s1.x), s2.x = \(s2.x)"</span>)
+
+<span class="text-pink-400">var</span> <span class="text-blue-300">c1</span> = PointClass(x: <span class="text-orange-400">10</span>)
+<span class="text-pink-400">var</span> <span class="text-blue-300">c2</span> = c1
+c2.x = <span class="text-orange-400">20</span>
+<span class="text-yellow-400">print</span>(<span class="text-green-400">"c1.x = \(c1.x), c2.x = \(c2.x)"</span>)</code></pre>
+                            </div>
+
+                            <details class="group">
+                                <summary class="cursor-pointer text-primary font-medium hover:underline">Показать ответ</summary>
+                                <div class="mt-4 bg-zinc-900 rounded-xl p-4">
+                                    <pre class="text-sm overflow-x-auto"><code class="language-swift"><span class="text-zinc-500">// Вывод:</span>
+<span class="text-zinc-500">// s1.x = 10, s2.x = 20</span>
+<span class="text-zinc-500">// c1.x = 20, c2.x = 20</span></code></pre>
+                                </div>
+                                <div class="mt-3 p-3 bg-amber-50 dark:bg-amber-900/20 rounded-lg">
+                                    <p class="text-sm text-amber-800 dark:text-amber-200">
+                                        <strong>Объяснение:</strong><br>
+                                        • <strong>Struct (Value Type):</strong> <code>s2 = s1</code> создаёт КОПИЮ. Изменение s2 не влияет на s1.<br>
+                                        • <strong>Class (Reference Type):</strong> <code>c2 = c1</code> копирует ССЫЛКУ. c1 и c2 указывают на один объект в памяти. Изменение через c2 меняет тот же объект, который видит c1.<br><br>
+                                        <strong>Правило:</strong> Используйте struct по умолчанию. Class — когда нужна идентичность объекта или наследование.
+                                    </p>
+                                </div>
+                            </details>
+                        </div>
+                    </section>
+
+                    <!-- ===================== -->
+                    <!-- РАЗДЕЛ 5: OPTIONALS -->
+                    <!-- ===================== -->
+                    <section class="mb-16">
+                        <h2 class="text-2xl font-bold mb-6 pb-3 border-b border-zinc-200 dark:border-zinc-700">
+                            Раздел 5: Optionals
+                            <span class="text-sm font-normal text-zinc-500 ml-2">(Глава 7)</span>
+                        </h2>
+
+                        <!-- Упражнение 20 -->
+                        <div class="mb-8 p-6 bg-zinc-50 dark:bg-zinc-800/50 rounded-2xl">
+                            <div class="flex items-center gap-3 mb-4">
+                                <span class="flex items-center justify-center w-8 h-8 bg-primary text-white text-sm font-bold rounded-full">20</span>
+                                <h3 class="text-lg font-semibold">Optional Binding: if let и guard let</h3>
+                                <span class="px-2 py-1 text-xs bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-300 rounded-full">Средне</span>
+                            </div>
+
+                            <p class="text-zinc-600 dark:text-zinc-400 mb-4">
+                                Дана функция, которая возвращает Optional пользователя. Напишите код, который безопасно извлекает
+                                имя пользователя используя: 1) if let, 2) guard let, 3) nil coalescing (??).
+                            </p>
+                            <div class="bg-zinc-900 rounded-xl p-4 mb-4">
+                                <pre class="text-sm overflow-x-auto"><code class="language-swift"><span class="text-pink-400">func</span> <span class="text-blue-300">fetchUser</span>() -> (name: <span class="text-cyan-400">String</span>, age: <span class="text-cyan-400">Int</span>)? {
+    <span class="text-pink-400">return</span> (<span class="text-green-400">"Анна"</span>, <span class="text-orange-400">25</span>)  <span class="text-zinc-500">// или nil</span>
+}</code></pre>
+                            </div>
+
+                            <details class="group">
+                                <summary class="cursor-pointer text-primary font-medium hover:underline">Показать ответ</summary>
+                                <div class="mt-4 bg-zinc-900 rounded-xl p-4">
+                                    <pre class="text-sm overflow-x-auto"><code class="language-swift"><span class="text-pink-400">func</span> <span class="text-blue-300">fetchUser</span>() -> (name: <span class="text-cyan-400">String</span>, age: <span class="text-cyan-400">Int</span>)? {
+    <span class="text-pink-400">return</span> (<span class="text-green-400">"Анна"</span>, <span class="text-orange-400">25</span>)
+}
+
+<span class="text-zinc-500">// 1. if let</span>
+<span class="text-pink-400">if let</span> user = fetchUser() {
+    <span class="text-yellow-400">print</span>(<span class="text-green-400">"Привет, \(user.name)!"</span>)
+} <span class="text-pink-400">else</span> {
+    <span class="text-yellow-400">print</span>(<span class="text-green-400">"Пользователь не найден"</span>)
+}
+
+<span class="text-zinc-500">// 2. guard let (внутри функции)</span>
+<span class="text-pink-400">func</span> <span class="text-blue-300">greetUser</span>() {
+    <span class="text-pink-400">guard let</span> user = fetchUser() <span class="text-pink-400">else</span> {
+        <span class="text-yellow-400">print</span>(<span class="text-green-400">"Пользователь не найден"</span>)
+        <span class="text-pink-400">return</span>
+    }
+    <span class="text-zinc-500">// user гарантированно существует</span>
+    <span class="text-yellow-400">print</span>(<span class="text-green-400">"Привет, \(user.name)! Тебе \(user.age) лет."</span>)
+}
+greetUser()
+
+<span class="text-zinc-500">// 3. nil coalescing (??)</span>
+<span class="text-pink-400">let</span> <span class="text-blue-300">userName</span> = fetchUser()?.name ?? <span class="text-green-400">"Гость"</span>
+<span class="text-yellow-400">print</span>(<span class="text-green-400">"Имя: \(userName)"</span>)  <span class="text-zinc-500">// "Имя: Анна" или "Имя: Гость"</span></code></pre>
+                                </div>
+                                <div class="mt-3 p-3 bg-amber-50 dark:bg-amber-900/20 rounded-lg">
+                                    <p class="text-sm text-amber-800 dark:text-amber-200">
+                                        <strong>Когда использовать:</strong><br>
+                                        • <code>if let</code> — когда нужно выполнить код только если значение есть<br>
+                                        • <code>guard let</code> — для раннего выхода из функции (ошибка → return)<br>
+                                        • <code>??</code> — для значения по умолчанию
+                                    </p>
+                                </div>
+                            </details>
+                        </div>
+
+                        <!-- Упражнение 21 -->
+                        <div class="mb-8 p-6 bg-zinc-50 dark:bg-zinc-800/50 rounded-2xl">
+                            <div class="flex items-center gap-3 mb-4">
+                                <span class="flex items-center justify-center w-8 h-8 bg-primary text-white text-sm font-bold rounded-full">21</span>
+                                <h3 class="text-lg font-semibold">Optional Chaining</h3>
+                                <span class="px-2 py-1 text-xs bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300 rounded-full">Сложно</span>
+                            </div>
+
+                            <p class="text-zinc-600 dark:text-zinc-400 mb-4">
+                                Даны вложенные структуры. Используя optional chaining, безопасно получите название города
+                                из адреса пользователя. Если чего-то нет — верните "Город не указан".
+                            </p>
+                            <div class="bg-zinc-900 rounded-xl p-4 mb-4">
+                                <pre class="text-sm overflow-x-auto"><code class="language-swift"><span class="text-pink-400">struct</span> <span class="text-cyan-400">Address</span> { <span class="text-pink-400">var</span> city: <span class="text-cyan-400">String</span>? }
+<span class="text-pink-400">struct</span> <span class="text-cyan-400">User</span> { <span class="text-pink-400">var</span> address: <span class="text-cyan-400">Address</span>? }
+
+<span class="text-pink-400">let</span> <span class="text-blue-300">user1</span>: User? = User(address: Address(city: <span class="text-green-400">"Москва"</span>))
+<span class="text-pink-400">let</span> <span class="text-blue-300">user2</span>: User? = User(address: <span class="text-pink-400">nil</span>)
+<span class="text-pink-400">let</span> <span class="text-blue-300">user3</span>: User? = <span class="text-pink-400">nil</span></code></pre>
+                            </div>
+
+                            <details class="group">
+                                <summary class="cursor-pointer text-primary font-medium hover:underline">Показать ответ</summary>
+                                <div class="mt-4 bg-zinc-900 rounded-xl p-4">
+                                    <pre class="text-sm overflow-x-auto"><code class="language-swift"><span class="text-pink-400">struct</span> <span class="text-cyan-400">Address</span> { <span class="text-pink-400">var</span> city: <span class="text-cyan-400">String</span>? }
+<span class="text-pink-400">struct</span> <span class="text-cyan-400">User</span> { <span class="text-pink-400">var</span> address: <span class="text-cyan-400">Address</span>? }
+
+<span class="text-pink-400">let</span> <span class="text-blue-300">user1</span>: User? = User(address: Address(city: <span class="text-green-400">"Москва"</span>))
+<span class="text-pink-400">let</span> <span class="text-blue-300">user2</span>: User? = User(address: <span class="text-pink-400">nil</span>)
+<span class="text-pink-400">let</span> <span class="text-blue-300">user3</span>: User? = <span class="text-pink-400">nil</span>
+
+<span class="text-zinc-500">// Optional chaining с nil coalescing</span>
+<span class="text-pink-400">let</span> <span class="text-blue-300">city1</span> = user1?.address?.city ?? <span class="text-green-400">"Город не указан"</span>
+<span class="text-pink-400">let</span> <span class="text-blue-300">city2</span> = user2?.address?.city ?? <span class="text-green-400">"Город не указан"</span>
+<span class="text-pink-400">let</span> <span class="text-blue-300">city3</span> = user3?.address?.city ?? <span class="text-green-400">"Город не указан"</span>
+
+<span class="text-yellow-400">print</span>(city1)  <span class="text-zinc-500">// Москва</span>
+<span class="text-yellow-400">print</span>(city2)  <span class="text-zinc-500">// Город не указан (address = nil)</span>
+<span class="text-yellow-400">print</span>(city3)  <span class="text-zinc-500">// Город не указан (user = nil)</span>
+
+<span class="text-zinc-500">// Функция для получения города</span>
+<span class="text-pink-400">func</span> <span class="text-blue-300">getCity</span>(from user: User?) -> <span class="text-cyan-400">String</span> {
+    user?.address?.city ?? <span class="text-green-400">"Город не указан"</span>
+}</code></pre>
+                                </div>
+                                <div class="mt-3 p-3 bg-amber-50 dark:bg-amber-900/20 rounded-lg">
+                                    <p class="text-sm text-amber-800 dark:text-amber-200">
+                                        <strong>Optional Chaining:</strong> <code>user?.address?.city</code><br>
+                                        Если любое звено цепочки = nil, вся цепочка возвращает nil.<br>
+                                        Это безопасный способ обращаться к вложенным Optional без множественных if let.
+                                    </p>
+                                </div>
+                            </details>
+                        </div>
+
+                        <!-- Упражнение 22 -->
+                        <div class="mb-8 p-6 bg-zinc-50 dark:bg-zinc-800/50 rounded-2xl">
+                            <div class="flex items-center gap-3 mb-4">
+                                <span class="flex items-center justify-center w-8 h-8 bg-primary text-white text-sm font-bold rounded-full">22</span>
+                                <h3 class="text-lg font-semibold">compactMap для фильтрации nil</h3>
+                                <span class="px-2 py-1 text-xs bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-300 rounded-full">Средне</span>
+                            </div>
+
+                            <p class="text-zinc-600 dark:text-zinc-400 mb-4">
+                                Дан массив строк, которые могут представлять числа: ["1", "two", "3", "four", "5"].
+                                Преобразуйте его в массив Int, отфильтровав невалидные значения.
+                            </p>
+
+                            <details class="group">
+                                <summary class="cursor-pointer text-primary font-medium hover:underline">Показать ответ</summary>
+                                <div class="mt-4 bg-zinc-900 rounded-xl p-4">
+                                    <pre class="text-sm overflow-x-auto"><code class="language-swift"><span class="text-pink-400">let</span> <span class="text-blue-300">strings</span> = [<span class="text-green-400">"1"</span>, <span class="text-green-400">"two"</span>, <span class="text-green-400">"3"</span>, <span class="text-green-400">"four"</span>, <span class="text-green-400">"5"</span>]
+
+<span class="text-zinc-500">// compactMap автоматически отфильтровывает nil</span>
+<span class="text-pink-400">let</span> <span class="text-blue-300">numbers</span> = strings.<span class="text-yellow-400">compactMap</span> { <span class="text-cyan-400">Int</span>($0) }
+
+<span class="text-yellow-400">print</span>(numbers)  <span class="text-zinc-500">// [1, 3, 5]</span>
+
+<span class="text-zinc-500">// Что происходит под капотом:</span>
+<span class="text-zinc-500">// "1"   → Int("1")   → 1     ✓</span>
+<span class="text-zinc-500">// "two" → Int("two") → nil   ✗ (отфильтрован)</span>
+<span class="text-zinc-500">// "3"   → Int("3")   → 3     ✓</span>
+<span class="text-zinc-500">// "four"→ Int("four")→ nil   ✗ (отфильтрован)</span>
+<span class="text-zinc-500">// "5"   → Int("5")   → 5     ✓</span>
+
+<span class="text-zinc-500">// Сравните с обычным map:</span>
+<span class="text-pink-400">let</span> <span class="text-blue-300">withNils</span> = strings.<span class="text-yellow-400">map</span> { <span class="text-cyan-400">Int</span>($0) }
+<span class="text-yellow-400">print</span>(withNils)  <span class="text-zinc-500">// [Optional(1), nil, Optional(3), nil, Optional(5)]</span></code></pre>
+                                </div>
+                                <div class="mt-3 p-3 bg-amber-50 dark:bg-amber-900/20 rounded-lg">
+                                    <p class="text-sm text-amber-800 dark:text-amber-200">
+                                        <strong>compactMap vs map:</strong><br>
+                                        • <code>map</code> — преобразует каждый элемент, сохраняя nil<br>
+                                        • <code>compactMap</code> — преобразует И удаляет nil значения<br>
+                                        Идеально для безопасного преобразования данных.
+                                    </p>
+                                </div>
+                            </details>
+                        </div>
+                    </section>
+
+                    <!-- Итоговая статистика -->
+                    <section class="mb-12">
+                        <div class="p-6 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-2xl">
+                            <h3 class="font-semibold text-green-800 dark:text-green-200 mb-4 text-xl">Поздравляем!</h3>
+                            <p class="text-green-700 dark:text-green-300 mb-4">
+                                Вы прошли все 22 упражнения, охватывающие ключевые темы Swift:
+                            </p>
+                            <div class="grid md:grid-cols-2 gap-4">
+                                <div class="space-y-2">
+                                    <div class="flex items-center gap-2">
+                                        <span class="w-6 h-6 bg-green-500 text-white rounded-full flex items-center justify-center text-xs">6</span>
+                                        <span class="text-green-700 dark:text-green-300">Основы Swift</span>
+                                    </div>
+                                    <div class="flex items-center gap-2">
+                                        <span class="w-6 h-6 bg-green-500 text-white rounded-full flex items-center justify-center text-xs">6</span>
+                                        <span class="text-green-700 dark:text-green-300">Control Flow</span>
+                                    </div>
+                                    <div class="flex items-center gap-2">
+                                        <span class="w-6 h-6 bg-green-500 text-white rounded-full flex items-center justify-center text-xs">5</span>
+                                        <span class="text-green-700 dark:text-green-300">Функции и Closures</span>
+                                    </div>
+                                </div>
+                                <div class="space-y-2">
+                                    <div class="flex items-center gap-2">
+                                        <span class="w-6 h-6 bg-green-500 text-white rounded-full flex items-center justify-center text-xs">2</span>
+                                        <span class="text-green-700 dark:text-green-300">ООП (Struct/Class)</span>
+                                    </div>
+                                    <div class="flex items-center gap-2">
+                                        <span class="w-6 h-6 bg-green-500 text-white rounded-full flex items-center justify-center text-xs">3</span>
+                                        <span class="text-green-700 dark:text-green-300">Optionals</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                </div>
+
+                <nav class="flex justify-between gap-4 mt-16 pt-8 border-t border-zinc-200 dark:border-zinc-800">
+                    <a href="21-reusable-views.html" class="flex items-center gap-3 px-5 py-3 bg-zinc-100 dark:bg-zinc-800 hover:bg-primary hover:text-white rounded-xl transition-colors">
+                        <span class="text-xl">←</span>
+                        <span class="font-medium">Предыдущая</span>
+                    </a>
+                </nav>
+            </article>
+        </main>
+    </div>
+
+    <script>
+        const menuBtn = document.getElementById('menuBtn');
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('overlay');
+        menuBtn.addEventListener('click', () => {
+            sidebar.classList.toggle('-translate-x-full');
+            overlay.classList.toggle('hidden');
+        });
+        function closeSidebar() {
+            sidebar.classList.add('-translate-x-full');
+            overlay.classList.add('hidden');
+        }
+    </script>
+</body>
+</html>
