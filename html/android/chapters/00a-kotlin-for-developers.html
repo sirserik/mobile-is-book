@@ -278,28 +278,72 @@ button.<span class="function">setOnClickListener</span> {
         </section>
 
         <!-- Cheatsheet -->
-        <section class="bg-gradient-to-br from-green-50 to-teal-50 dark:from-green-900/20 dark:to-teal-900/20 rounded-xl p-6">
+        <section class="bg-zinc-100 dark:bg-zinc-800 rounded-xl p-6">
             <h2 class="text-xl font-bold mb-4 text-zinc-900 dark:text-white">Шпаргалка: JS → Kotlin</h2>
-            <div class="grid md:grid-cols-2 gap-4 text-sm">
-                <div>
-                    <table class="w-full">
-                        <tr><td class="py-1"><code>let</code></td><td class="py-1">→</td><td class="py-1"><code>var</code></td></tr>
-                        <tr><td class="py-1"><code>const</code></td><td class="py-1">→</td><td class="py-1"><code>val</code></td></tr>
-                        <tr><td class="py-1"><code>null | undefined</code></td><td class="py-1">→</td><td class="py-1"><code>null</code> (только)</td></tr>
-                        <tr><td class="py-1"><code>string | null</code></td><td class="py-1">→</td><td class="py-1"><code>String?</code></td></tr>
-                        <tr><td class="py-1"><code>??</code></td><td class="py-1">→</td><td class="py-1"><code>?:</code> (Elvis)</td></tr>
-                        <tr><td class="py-1"><code>?.</code></td><td class="py-1">→</td><td class="py-1"><code>?.</code> (same)</td></tr>
-                    </table>
+            <div class="grid md:grid-cols-2 gap-6 text-sm">
+                <div class="space-y-2">
+                    <div class="flex justify-between items-center py-2 border-b border-zinc-200 dark:border-zinc-700">
+                        <code class="text-orange-600 dark:text-orange-400">let</code>
+                        <span class="text-zinc-400">→</span>
+                        <code class="text-green-600 dark:text-green-400">var</code>
+                    </div>
+                    <div class="flex justify-between items-center py-2 border-b border-zinc-200 dark:border-zinc-700">
+                        <code class="text-orange-600 dark:text-orange-400">const</code>
+                        <span class="text-zinc-400">→</span>
+                        <code class="text-green-600 dark:text-green-400">val</code>
+                    </div>
+                    <div class="flex justify-between items-center py-2 border-b border-zinc-200 dark:border-zinc-700">
+                        <code class="text-orange-600 dark:text-orange-400">null | undefined</code>
+                        <span class="text-zinc-400">→</span>
+                        <code class="text-green-600 dark:text-green-400">null</code>
+                    </div>
+                    <div class="flex justify-between items-center py-2 border-b border-zinc-200 dark:border-zinc-700">
+                        <code class="text-orange-600 dark:text-orange-400">string | null</code>
+                        <span class="text-zinc-400">→</span>
+                        <code class="text-green-600 dark:text-green-400">String?</code>
+                    </div>
+                    <div class="flex justify-between items-center py-2 border-b border-zinc-200 dark:border-zinc-700">
+                        <code class="text-orange-600 dark:text-orange-400">??</code>
+                        <span class="text-zinc-400">→</span>
+                        <code class="text-green-600 dark:text-green-400">?:</code> <span class="text-zinc-500 dark:text-zinc-400 text-xs">(Elvis)</span>
+                    </div>
+                    <div class="flex justify-between items-center py-2">
+                        <code class="text-orange-600 dark:text-orange-400">?.</code>
+                        <span class="text-zinc-400">→</span>
+                        <code class="text-green-600 dark:text-green-400">?.</code> <span class="text-zinc-500 dark:text-zinc-400 text-xs">(same)</span>
+                    </div>
                 </div>
-                <div>
-                    <table class="w-full">
-                        <tr><td class="py-1"><code>interface</code></td><td class="py-1">→</td><td class="py-1"><code>data class</code></td></tr>
-                        <tr><td class="py-1"><code>async/await</code></td><td class="py-1">→</td><td class="py-1"><code>suspend</code></td></tr>
-                        <tr><td class="py-1"><code>Promise</code></td><td class="py-1">→</td><td class="py-1"><code>Flow/suspend</code></td></tr>
-                        <tr><td class="py-1"><code>=></code></td><td class="py-1">→</td><td class="py-1"><code>{ }</code> или <code>-></code></td></tr>
-                        <tr><td class="py-1"><code>switch</code></td><td class="py-1">→</td><td class="py-1"><code>when</code></td></tr>
-                        <tr><td class="py-1"><code>console.log</code></td><td class="py-1">→</td><td class="py-1"><code>println</code></td></tr>
-                    </table>
+                <div class="space-y-2">
+                    <div class="flex justify-between items-center py-2 border-b border-zinc-200 dark:border-zinc-700">
+                        <code class="text-orange-600 dark:text-orange-400">interface</code>
+                        <span class="text-zinc-400">→</span>
+                        <code class="text-green-600 dark:text-green-400">data class</code>
+                    </div>
+                    <div class="flex justify-between items-center py-2 border-b border-zinc-200 dark:border-zinc-700">
+                        <code class="text-orange-600 dark:text-orange-400">async/await</code>
+                        <span class="text-zinc-400">→</span>
+                        <code class="text-green-600 dark:text-green-400">suspend</code>
+                    </div>
+                    <div class="flex justify-between items-center py-2 border-b border-zinc-200 dark:border-zinc-700">
+                        <code class="text-orange-600 dark:text-orange-400">Promise</code>
+                        <span class="text-zinc-400">→</span>
+                        <code class="text-green-600 dark:text-green-400">Flow/suspend</code>
+                    </div>
+                    <div class="flex justify-between items-center py-2 border-b border-zinc-200 dark:border-zinc-700">
+                        <code class="text-orange-600 dark:text-orange-400">=&gt;</code>
+                        <span class="text-zinc-400">→</span>
+                        <code class="text-green-600 dark:text-green-400">{ }</code> <span class="text-zinc-500 dark:text-zinc-400 text-xs">или -&gt;</span>
+                    </div>
+                    <div class="flex justify-between items-center py-2 border-b border-zinc-200 dark:border-zinc-700">
+                        <code class="text-orange-600 dark:text-orange-400">switch</code>
+                        <span class="text-zinc-400">→</span>
+                        <code class="text-green-600 dark:text-green-400">when</code>
+                    </div>
+                    <div class="flex justify-between items-center py-2">
+                        <code class="text-orange-600 dark:text-orange-400">console.log</code>
+                        <span class="text-zinc-400">→</span>
+                        <code class="text-green-600 dark:text-green-400">println</code>
+                    </div>
                 </div>
             </div>
         </section>
