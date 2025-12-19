@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Частые ошибки | Android E-Commerce</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        pre { background: #1e1e1e; color: #d4d4d4; padding: 1rem; border-radius: 0.5rem; overflow-x: auto; }
+    </style>
+</head>
+<body class="bg-white dark:bg-zinc-900">
+    <div class="max-w-4xl mx-auto px-6 py-12">
+        <a href="../index.html" class="text-green-500 hover:underline mb-4 inline-block">&larr; Назад</a>
+        <h1 class="text-4xl font-bold text-zinc-900 dark:text-white mb-6">Частые ошибки новичков</h1>
+
+        <div class="space-y-8">
+            <div class="p-6 bg-red-50 dark:bg-red-900/20 rounded-xl border border-red-200 dark:border-red-800">
+                <h3 class="font-bold text-red-900 dark:text-red-100 mb-2">1. NullPointerException</h3>
+                <pre class="text-sm mb-2"><code>// Плохо
+val name: String = user.name // crash если null
+
+// Хорошо
+val name: String = user.name ?: "Unknown"</code></pre>
+                <p class="text-red-800 dark:text-red-200 text-sm">Всегда используйте nullable типы и Elvis оператор.</p>
+            </div>
+
+            <div class="p-6 bg-red-50 dark:bg-red-900/20 rounded-xl border border-red-200 dark:border-red-800">
+                <h3 class="font-bold text-red-900 dark:text-red-100 mb-2">2. Сетевой запрос на Main Thread</h3>
+                <pre class="text-sm mb-2"><code>// Плохо - crash!
+val data = api.getData()
+
+// Хорошо
+viewModelScope.launch {
+    val data = api.getData() // suspend функция
+}</code></pre>
+                <p class="text-red-800 dark:text-red-200 text-sm">Используйте coroutines для асинхронных операций.</p>
+            </div>
+
+            <div class="p-6 bg-red-50 dark:bg-red-900/20 rounded-xl border border-red-200 dark:border-red-800">
+                <h3 class="font-bold text-red-900 dark:text-red-100 mb-2">3. Забыли collectAsState</h3>
+                <pre class="text-sm mb-2"><code>// Плохо - UI не обновится
+val state = viewModel.uiState
+
+// Хорошо
+val state by viewModel.uiState.collectAsStateWithLifecycle()</code></pre>
+                <p class="text-red-800 dark:text-red-200 text-sm">Flow нужно собирать с помощью collect.</p>
+            </div>
+
+            <div class="p-6 bg-red-50 dark:bg-red-900/20 rounded-xl border border-red-200 dark:border-red-800">
+                <h3 class="font-bold text-red-900 dark:text-red-100 mb-2">4. Нет key в LazyColumn</h3>
+                <pre class="text-sm mb-2"><code>// Плохо - проблемы с рекомпозицией
+items(products) { ProductCard(it) }
+
+// Хорошо
+items(products, key = { it.id }) { ProductCard(it) }</code></pre>
+                <p class="text-red-800 dark:text-red-200 text-sm">Всегда добавляйте key для оптимизации.</p>
+            </div>
+
+            <div class="p-6 bg-red-50 dark:bg-red-900/20 rounded-xl border border-red-200 dark:border-red-800">
+                <h3 class="font-bold text-red-900 dark:text-red-100 mb-2">5. @Inject без @HiltViewModel</h3>
+                <pre class="text-sm mb-2"><code>// Плохо - Hilt не создаст ViewModel
+class MyViewModel @Inject constructor(...)
+
+// Хорошо
+@HiltViewModel
+class MyViewModel @Inject constructor(...)</code></pre>
+                <p class="text-red-800 dark:text-red-200 text-sm">ViewModel требует обе аннотации.</p>
+            </div>
+        </div>
+
+        <div class="flex justify-between items-center mt-12 pt-8 border-t border-zinc-200 dark:border-zinc-800">
+            <a href="cheatsheet.html" class="text-green-500 hover:underline">&larr; Шпаргалка</a>
+            <a href="../index.html" class="text-green-500 hover:underline">Оглавление</a>
+            <a href="glossary.html" class="text-green-500 hover:underline">Глоссарий &rarr;</a>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Глава 5: Список товаров | Android E-Commerce</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        pre { background: #1e1e1e; color: #d4d4d4; padding: 1rem; border-radius: 0.5rem; overflow-x: auto; }
+        .keyword { color: #569cd6; }
+        .function { color: #dcdcaa; }
+        .string { color: #ce9178; }
+        .comment { color: #6a9955; }
+        .annotation { color: #4ec9b0; }
+        .number { color: #b5cea8; }
+        .type { color: #4ec9b0; }
+    </style>
+</head>
+<body class="bg-white dark:bg-zinc-900">
+    <div class="max-w-4xl mx-auto px-6 py-12">
+        <a href="../index.html" class="text-green-500 hover:underline mb-4 inline-block">&larr; Назад к оглавлению</a>
+
+        <h1 class="text-4xl font-bold text-zinc-900 dark:text-white mb-6">Глава 5: Список товаров</h1>
+
+        <div class="prose dark:prose-invert max-w-none">
+
+            <!-- UseCase -->
+            <h2 class="text-2xl font-bold mt-8 mb-4">GetProductsUseCase</h2>
+            <pre class="mb-6"><code><span class="keyword">class</span> <span class="type">GetProductsUseCase</span> <span class="annotation">@Inject</span> <span class="keyword">constructor</span>(
+    <span class="keyword">private val</span> repository: <span class="type">ProductRepository</span>
+) {
+    <span class="keyword">operator fun</span> <span class="function">invoke</span>(): Flow&lt;Resource&lt;List&lt;<span class="type">Product</span>&gt;&gt;&gt; {
+        <span class="keyword">return</span> repository.getProducts()
+    }
+}</code></pre>
+
+            <!-- ViewModel -->
+            <h2 class="text-2xl font-bold mt-8 mb-4">HomeViewModel</h2>
+            <pre class="mb-6"><code><span class="keyword">data class</span> <span class="type">HomeUiState</span>(
+    <span class="keyword">val</span> isLoading: Boolean = <span class="keyword">false</span>,
+    <span class="keyword">val</span> products: List&lt;<span class="type">Product</span>&gt; = emptyList(),
+    <span class="keyword">val</span> error: String? = <span class="keyword">null</span>
+)
+
+<span class="annotation">@HiltViewModel</span>
+<span class="keyword">class</span> <span class="type">HomeViewModel</span> <span class="annotation">@Inject</span> <span class="keyword">constructor</span>(
+    <span class="keyword">private val</span> getProductsUseCase: <span class="type">GetProductsUseCase</span>
+) : ViewModel() {
+
+    <span class="keyword">private val</span> _uiState = MutableStateFlow(<span class="type">HomeUiState</span>())
+    <span class="keyword">val</span> uiState: StateFlow&lt;<span class="type">HomeUiState</span>&gt; = _uiState.asStateFlow()
+
+    <span class="keyword">init</span> {
+        loadProducts()
+    }
+
+    <span class="keyword">fun</span> <span class="function">loadProducts</span>() {
+        getProductsUseCase().onEach { result -&gt;
+            <span class="keyword">when</span> (result) {
+                <span class="keyword">is</span> Resource.Loading -&gt; {
+                    _uiState.update { it.copy(isLoading = <span class="keyword">true</span>) }
+                }
+                <span class="keyword">is</span> Resource.Success -&gt; {
+                    _uiState.update {
+                        it.copy(isLoading = <span class="keyword">false</span>, products = result.data)
+                    }
+                }
+                <span class="keyword">is</span> Resource.Error -&gt; {
+                    _uiState.update {
+                        it.copy(isLoading = <span class="keyword">false</span>, error = result.message)
+                    }
+                }
+            }
+        }.launchIn(viewModelScope)
+    }
+
+    <span class="keyword">fun</span> <span class="function">retry</span>() {
+        _uiState.update { it.copy(error = <span class="keyword">null</span>) }
+        loadProducts()
+    }
+}</code></pre>
+
+            <!-- HomeScreen -->
+            <h2 class="text-2xl font-bold mt-8 mb-4">HomeScreen</h2>
+            <pre class="mb-6"><code><span class="annotation">@Composable</span>
+<span class="keyword">fun</span> <span class="function">HomeScreen</span>(
+    viewModel: <span class="type">HomeViewModel</span> = hiltViewModel(),
+    onProductClick: (Int) -&gt; Unit
+) {
+    <span class="keyword">val</span> uiState <span class="keyword">by</span> viewModel.uiState.collectAsStateWithLifecycle()
+
+    <span class="function">Scaffold</span>(
+        topBar = {
+            <span class="function">TopAppBar</span>(
+                title = { <span class="function">Text</span>(<span class="string">"E-Commerce"</span>) },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.primary,
+                    titleContentColor = Color.White
+                )
+            )
+        }
+    ) { paddingValues -&gt;
+        <span class="function">Box</span>(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValues)
+        ) {
+            <span class="keyword">when</span> {
+                uiState.isLoading -&gt; {
+                    <span class="function">CircularProgressIndicator</span>(
+                        modifier = Modifier.align(Alignment.Center)
+                    )
+                }
+                uiState.error != <span class="keyword">null</span> -&gt; {
+                    <span class="function">ErrorContent</span>(
+                        message = uiState.error!!,
+                        onRetry = { viewModel.retry() }
+                    )
+                }
+                <span class="keyword">else</span> -&gt; {
+                    <span class="function">ProductGrid</span>(
+                        products = uiState.products,
+                        onProductClick = onProductClick
+                    )
+                }
+            }
+        }
+    }
+}</code></pre>
+
+            <!-- ProductGrid -->
+            <h2 class="text-2xl font-bold mt-8 mb-4">ProductGrid</h2>
+            <pre class="mb-6"><code><span class="annotation">@Composable</span>
+<span class="keyword">fun</span> <span class="function">ProductGrid</span>(
+    products: List&lt;<span class="type">Product</span>&gt;,
+    onProductClick: (Int) -&gt; Unit,
+    modifier: Modifier = Modifier
+) {
+    <span class="function">LazyVerticalGrid</span>(
+        columns = GridCells.Fixed(<span class="number">2</span>),
+        contentPadding = PaddingValues(<span class="number">16</span>.dp),
+        horizontalArrangement = Arrangement.spacedBy(<span class="number">12</span>.dp),
+        verticalArrangement = Arrangement.spacedBy(<span class="number">12</span>.dp),
+        modifier = modifier.fillMaxSize()
+    ) {
+        items(
+            items = products,
+            key = { it.id }
+        ) { product -&gt;
+            <span class="function">ProductCard</span>(
+                product = product,
+                onClick = { onProductClick(product.id) }
+            )
+        }
+    }
+}</code></pre>
+
+            <!-- ProductCard -->
+            <h2 class="text-2xl font-bold mt-8 mb-4">ProductCard</h2>
+            <pre class="mb-6"><code><span class="annotation">@Composable</span>
+<span class="keyword">fun</span> <span class="function">ProductCard</span>(
+    product: <span class="type">Product</span>,
+    onClick: () -&gt; Unit,
+    modifier: Modifier = Modifier
+) {
+    <span class="function">Card</span>(
+        modifier = modifier
+            .fillMaxWidth()
+            .clickable { onClick() },
+        elevation = CardDefaults.cardElevation(defaultElevation = <span class="number">4</span>.dp),
+        shape = RoundedCornerShape(<span class="number">12</span>.dp)
+    ) {
+        <span class="function">Column</span> {
+            <span class="comment">// Изображение</span>
+            <span class="function">AsyncImage</span>(
+                model = ImageRequest.Builder(LocalContext.current)
+                    .data(product.thumbnail)
+                    .crossfade(<span class="keyword">true</span>)
+                    .build(),
+                contentDescription = product.title,
+                contentScale = ContentScale.Crop,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(<span class="number">150</span>.dp)
+            )
+
+            <span class="comment">// Информация</span>
+            <span class="function">Column</span>(modifier = Modifier.padding(<span class="number">12</span>.dp)) {
+                <span class="function">Text</span>(
+                    text = product.title,
+                    style = MaterialTheme.typography.titleMedium,
+                    maxLines = <span class="number">1</span>,
+                    overflow = TextOverflow.Ellipsis
+                )
+
+                <span class="function">Spacer</span>(modifier = Modifier.height(<span class="number">4</span>.dp))
+
+                <span class="function">Row</span>(
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    <span class="function">Text</span>(
+                        text = <span class="string">"$${product.price}"</span>,
+                        style = MaterialTheme.typography.titleSmall,
+                        color = MaterialTheme.colorScheme.primary,
+                        fontWeight = FontWeight.Bold
+                    )
+
+                    <span class="keyword">if</span> (product.discountPercentage &gt; <span class="number">0</span>) {
+                        <span class="function">Spacer</span>(modifier = Modifier.width(<span class="number">8</span>.dp))
+                        <span class="function">Text</span>(
+                            text = <span class="string">"-${product.discountPercentage.toInt()}%"</span>,
+                            style = MaterialTheme.typography.labelSmall,
+                            color = Color.Red
+                        )
+                    }
+                }
+
+                <span class="function">Spacer</span>(modifier = Modifier.height(<span class="number">4</span>.dp))
+
+                <span class="comment">// Рейтинг</span>
+                <span class="function">Row</span>(verticalAlignment = Alignment.CenterVertically) {
+                    <span class="function">Icon</span>(
+                        imageVector = Icons.Default.Star,
+                        contentDescription = <span class="keyword">null</span>,
+                        tint = Color(<span class="number">0xFFFFB800</span>),
+                        modifier = Modifier.size(<span class="number">16</span>.dp)
+                    )
+                    <span class="function">Text</span>(
+                        text = String.format(<span class="string">"%.1f"</span>, product.rating),
+                        style = MaterialTheme.typography.labelMedium,
+                        modifier = Modifier.padding(start = <span class="number">4</span>.dp)
+                    )
+                }
+            }
+        }
+    }
+}</code></pre>
+
+            <!-- ErrorContent -->
+            <h2 class="text-2xl font-bold mt-8 mb-4">ErrorContent</h2>
+            <pre class="mb-6"><code><span class="annotation">@Composable</span>
+<span class="keyword">fun</span> <span class="function">ErrorContent</span>(
+    message: String,
+    onRetry: () -&gt; Unit,
+    modifier: Modifier = Modifier
+) {
+    <span class="function">Column</span>(
+        modifier = modifier
+            .fillMaxSize()
+            .padding(<span class="number">32</span>.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
+        <span class="function">Icon</span>(
+            imageVector = Icons.Default.Warning,
+            contentDescription = <span class="keyword">null</span>,
+            tint = MaterialTheme.colorScheme.error,
+            modifier = Modifier.size(<span class="number">64</span>.dp)
+        )
+
+        <span class="function">Spacer</span>(modifier = Modifier.height(<span class="number">16</span>.dp))
+
+        <span class="function">Text</span>(
+            text = message,
+            style = MaterialTheme.typography.bodyLarge,
+            textAlign = TextAlign.Center
+        )
+
+        <span class="function">Spacer</span>(modifier = Modifier.height(<span class="number">24</span>.dp))
+
+        <span class="function">Button</span>(onClick = onRetry) {
+            <span class="function">Text</span>(<span class="string">"Повторить"</span>)
+        }
+    }
+}</code></pre>
+
+            <!-- Coil -->
+            <h2 class="text-2xl font-bold mt-8 mb-4">Coil для изображений</h2>
+            <div class="bg-zinc-100 dark:bg-zinc-800 rounded-xl p-6 mb-6">
+                <h3 class="font-semibold mb-3">Возможности Coil</h3>
+                <ul class="space-y-2 text-sm">
+                    <li>• <strong>crossfade</strong> — анимация появления</li>
+                    <li>• <strong>placeholder</strong> — заглушка при загрузке</li>
+                    <li>• <strong>error</strong> — изображение при ошибке</li>
+                    <li>• <strong>memoryCachePolicy</strong> — кэширование в памяти</li>
+                    <li>• <strong>diskCachePolicy</strong> — кэширование на диске</li>
+                </ul>
+            </div>
+
+            <pre class="mb-6"><code><span class="function">AsyncImage</span>(
+    model = ImageRequest.Builder(LocalContext.current)
+        .data(product.thumbnail)
+        .crossfade(<span class="keyword">true</span>)
+        .placeholder(R.drawable.placeholder)
+        .error(R.drawable.error)
+        .memoryCachePolicy(CachePolicy.ENABLED)
+        .build(),
+    contentDescription = product.title,
+    contentScale = ContentScale.Crop,
+    modifier = Modifier.fillMaxWidth()
+)</code></pre>
+
+            <!-- Pull to Refresh -->
+            <h2 class="text-2xl font-bold mt-8 mb-4">Pull to Refresh</h2>
+            <pre class="mb-6"><code><span class="annotation">@OptIn</span>(ExperimentalMaterial3Api::<span class="keyword">class</span>)
+<span class="annotation">@Composable</span>
+<span class="keyword">fun</span> <span class="function">HomeScreen</span>(...) {
+    <span class="keyword">val</span> pullRefreshState = rememberPullToRefreshState()
+
+    <span class="function">PullToRefreshBox</span>(
+        isRefreshing = uiState.isLoading,
+        onRefresh = { viewModel.loadProducts() },
+        state = pullRefreshState
+    ) {
+        <span class="function">ProductGrid</span>(
+            products = uiState.products,
+            onProductClick = onProductClick
+        )
+    }
+}</code></pre>
+
+            <!-- Итоги -->
+            <div class="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-xl p-6 mb-8">
+                <h3 class="font-semibold text-green-900 dark:text-green-100 mb-3">Что мы создали</h3>
+                <ul class="text-green-800 dark:text-green-200 space-y-2">
+                    <li>• UseCase для получения списка товаров</li>
+                    <li>• ViewModel с UI State</li>
+                    <li>• HomeScreen с обработкой состояний</li>
+                    <li>• ProductGrid с LazyVerticalGrid</li>
+                    <li>• ProductCard с Coil для изображений</li>
+                    <li>• ErrorContent для отображения ошибок</li>
+                </ul>
+            </div>
+
+        </div>
+
+        <div class="flex justify-between items-center mt-12 pt-8 border-t border-zinc-200 dark:border-zinc-800">
+            <a href="json-parsing.html" class="text-green-500 hover:underline">&larr; Парсинг JSON</a>
+            <a href="../index.html" class="text-green-500 hover:underline">Оглавление</a>
+            <a href="06-product-detail.html" class="text-green-500 hover:underline">Детали товара &rarr;</a>
+        </div>
+    </div>
+</body>
+</html>

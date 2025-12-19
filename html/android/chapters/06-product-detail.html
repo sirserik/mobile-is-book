@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Глава 6: Детали товара | Android E-Commerce</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        pre { background: #1e1e1e; color: #d4d4d4; padding: 1rem; border-radius: 0.5rem; overflow-x: auto; }
+        .keyword { color: #569cd6; }
+        .function { color: #dcdcaa; }
+        .string { color: #ce9178; }
+        .comment { color: #6a9955; }
+        .annotation { color: #4ec9b0; }
+        .number { color: #b5cea8; }
+        .type { color: #4ec9b0; }
+    </style>
+</head>
+<body class="bg-white dark:bg-zinc-900">
+    <div class="max-w-4xl mx-auto px-6 py-12">
+        <a href="../index.html" class="text-green-500 hover:underline mb-4 inline-block">&larr; Назад к оглавлению</a>
+
+        <h1 class="text-4xl font-bold text-zinc-900 dark:text-white mb-6">Глава 6: Детали товара</h1>
+
+        <div class="prose dark:prose-invert max-w-none">
+
+            <!-- UseCase -->
+            <h2 class="text-2xl font-bold mt-8 mb-4">GetProductByIdUseCase</h2>
+            <pre class="mb-6"><code><span class="keyword">class</span> <span class="type">GetProductByIdUseCase</span> <span class="annotation">@Inject</span> <span class="keyword">constructor</span>(
+    <span class="keyword">private val</span> repository: <span class="type">ProductRepository</span>
+) {
+    <span class="keyword">operator fun</span> <span class="function">invoke</span>(id: Int): Flow&lt;Resource&lt;<span class="type">Product</span>&gt;&gt; {
+        <span class="keyword">return</span> repository.getProductById(id)
+    }
+}</code></pre>
+
+            <!-- ViewModel -->
+            <h2 class="text-2xl font-bold mt-8 mb-4">DetailViewModel</h2>
+            <pre class="mb-6"><code><span class="keyword">sealed class</span> <span class="type">DetailUiState</span> {
+    <span class="keyword">object</span> Loading : <span class="type">DetailUiState</span>()
+    <span class="keyword">data class</span> <span class="type">Success</span>(<span class="keyword">val</span> product: <span class="type">Product</span>) : <span class="type">DetailUiState</span>()
+    <span class="keyword">data class</span> <span class="type">Error</span>(<span class="keyword">val</span> message: String) : <span class="type">DetailUiState</span>()
+}
+
+<span class="annotation">@HiltViewModel</span>
+<span class="keyword">class</span> <span class="type">DetailViewModel</span> <span class="annotation">@Inject</span> <span class="keyword">constructor</span>(
+    <span class="keyword">private val</span> getProductByIdUseCase: <span class="type">GetProductByIdUseCase</span>,
+    <span class="keyword">private val</span> addToCartUseCase: <span class="type">AddToCartUseCase</span>,
+    savedStateHandle: SavedStateHandle
+) : ViewModel() {
+
+    <span class="keyword">private val</span> productId: Int = savedStateHandle.get&lt;Int&gt;(<span class="string">"productId"</span>) ?: <span class="number">0</span>
+
+    <span class="keyword">private val</span> _uiState = MutableStateFlow&lt;<span class="type">DetailUiState</span>&gt;(<span class="type">DetailUiState</span>.Loading)
+    <span class="keyword">val</span> uiState: StateFlow&lt;<span class="type">DetailUiState</span>&gt; = _uiState.asStateFlow()
+
+    <span class="keyword">init</span> {
+        loadProduct()
+    }
+
+    <span class="keyword">private fun</span> <span class="function">loadProduct</span>() {
+        getProductByIdUseCase(productId).onEach { result -&gt;
+            _uiState.value = <span class="keyword">when</span> (result) {
+                <span class="keyword">is</span> Resource.Loading -&gt; <span class="type">DetailUiState</span>.Loading
+                <span class="keyword">is</span> Resource.Success -&gt; <span class="type">DetailUiState</span>.Success(result.data)
+                <span class="keyword">is</span> Resource.Error -&gt; <span class="type">DetailUiState</span>.Error(result.message)
+            }
+        }.launchIn(viewModelScope)
+    }
+
+    <span class="keyword">fun</span> <span class="function">addToCart</span>() {
+        <span class="keyword">val</span> state = _uiState.value
+        <span class="keyword">if</span> (state <span class="keyword">is</span> <span class="type">DetailUiState</span>.Success) {
+            viewModelScope.launch {
+                addToCartUseCase(state.product)
+            }
+        }
+    }
+}</code></pre>
+
+            <!-- DetailScreen -->
+            <h2 class="text-2xl font-bold mt-8 mb-4">DetailScreen</h2>
+            <pre class="mb-6"><code><span class="annotation">@Composable</span>
+<span class="keyword">fun</span> <span class="function">DetailScreen</span>(
+    viewModel: <span class="type">DetailViewModel</span> = hiltViewModel(),
+    onBackClick: () -&gt; Unit
+) {
+    <span class="keyword">val</span> uiState <span class="keyword">by</span> viewModel.uiState.collectAsStateWithLifecycle()
+
+    <span class="function">Scaffold</span>(
+        topBar = {
+            <span class="function">TopAppBar</span>(
+                title = { <span class="function">Text</span>(<span class="string">"Детали товара"</span>) },
+                navigationIcon = {
+                    <span class="function">IconButton</span>(onClick = onBackClick) {
+                        <span class="function">Icon</span>(Icons.AutoMirrored.Filled.ArrowBack, <span class="string">"Назад"</span>)
+                    }
+                }
+            )
+        }
+    ) { paddingValues -&gt;
+        <span class="keyword">when</span> (<span class="keyword">val</span> state = uiState) {
+            <span class="keyword">is</span> <span class="type">DetailUiState</span>.Loading -&gt; {
+                <span class="function">LoadingIndicator</span>(Modifier.padding(paddingValues))
+            }
+            <span class="keyword">is</span> <span class="type">DetailUiState</span>.Error -&gt; {
+                <span class="function">ErrorContent</span>(message = state.message, onRetry = { })
+            }
+            <span class="keyword">is</span> <span class="type">DetailUiState</span>.Success -&gt; {
+                <span class="function">ProductDetailContent</span>(
+                    product = state.product,
+                    onAddToCart = { viewModel.addToCart() },
+                    modifier = Modifier.padding(paddingValues)
+                )
+            }
+        }
+    }
+}</code></pre>
+
+            <!-- ProductDetailContent -->
+            <h2 class="text-2xl font-bold mt-8 mb-4">ProductDetailContent</h2>
+            <pre class="mb-6"><code><span class="annotation">@Composable</span>
+<span class="keyword">fun</span> <span class="function">ProductDetailContent</span>(
+    product: <span class="type">Product</span>,
+    onAddToCart: () -&gt; Unit,
+    modifier: Modifier = Modifier
+) {
+    <span class="function">Column</span>(
+        modifier = modifier
+            .fillMaxSize()
+            .verticalScroll(rememberScrollState())
+    ) {
+        <span class="comment">// Галерея изображений</span>
+        <span class="function">ImagePager</span>(images = product.images)
+
+        <span class="function">Column</span>(modifier = Modifier.padding(<span class="number">16</span>.dp)) {
+            <span class="comment">// Заголовок и бренд</span>
+            <span class="function">Text</span>(
+                text = product.title,
+                style = MaterialTheme.typography.headlineMedium,
+                fontWeight = FontWeight.Bold
+            )
+
+            <span class="function">Spacer</span>(modifier = Modifier.height(<span class="number">4</span>.dp))
+
+            <span class="function">Text</span>(
+                text = product.brand,
+                style = MaterialTheme.typography.bodyLarge,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+
+            <span class="function">Spacer</span>(modifier = Modifier.height(<span class="number">16</span>.dp))
+
+            <span class="comment">// Цена</span>
+            <span class="function">PriceSection</span>(
+                price = product.price,
+                discountPercentage = product.discountPercentage
+            )
+
+            <span class="function">Spacer</span>(modifier = Modifier.height(<span class="number">16</span>.dp))
+
+            <span class="comment">// Рейтинг и наличие</span>
+            <span class="function">Row</span>(
+                horizontalArrangement = Arrangement.spacedBy(<span class="number">24</span>.dp)
+            ) {
+                <span class="function">RatingBadge</span>(rating = product.rating)
+                <span class="function">StockBadge</span>(stock = product.stock)
+            }
+
+            <span class="function">Spacer</span>(modifier = Modifier.height(<span class="number">24</span>.dp))
+
+            <span class="comment">// Описание</span>
+            <span class="function">Text</span>(
+                text = <span class="string">"Описание"</span>,
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.SemiBold
+            )
+
+            <span class="function">Spacer</span>(modifier = Modifier.height(<span class="number">8</span>.dp))
+
+            <span class="function">Text</span>(
+                text = product.description,
+                style = MaterialTheme.typography.bodyMedium
+            )
+
+            <span class="function">Spacer</span>(modifier = Modifier.height(<span class="number">32</span>.dp))
+
+            <span class="comment">// Кнопка добавления</span>
+            <span class="function">Button</span>(
+                onClick = onAddToCart,
+                modifier = Modifier.fillMaxWidth(),
+                shape = RoundedCornerShape(<span class="number">12</span>.dp)
+            ) {
+                <span class="function">Icon</span>(Icons.Default.ShoppingCart, <span class="keyword">null</span>)
+                <span class="function">Spacer</span>(modifier = Modifier.width(<span class="number">8</span>.dp))
+                <span class="function">Text</span>(<span class="string">"Добавить в корзину"</span>)
+            }
+        }
+    }
+}</code></pre>
+
+            <!-- ImagePager -->
+            <h2 class="text-2xl font-bold mt-8 mb-4">ImagePager — галерея изображений</h2>
+            <pre class="mb-6"><code><span class="annotation">@OptIn</span>(ExperimentalFoundationApi::<span class="keyword">class</span>)
+<span class="annotation">@Composable</span>
+<span class="keyword">fun</span> <span class="function">ImagePager</span>(images: List&lt;String&gt;) {
+    <span class="keyword">val</span> pagerState = rememberPagerState(pageCount = { images.size })
+
+    <span class="function">Box</span> {
+        <span class="function">HorizontalPager</span>(
+            state = pagerState,
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(<span class="number">300</span>.dp)
+        ) { page -&gt;
+            <span class="function">AsyncImage</span>(
+                model = images[page],
+                contentDescription = <span class="keyword">null</span>,
+                contentScale = ContentScale.Fit,
+                modifier = Modifier.fillMaxSize()
+            )
+        }
+
+        <span class="comment">// Индикатор страниц</span>
+        <span class="function">Row</span>(
+            modifier = Modifier
+                .align(Alignment.BottomCenter)
+                .padding(bottom = <span class="number">16</span>.dp),
+            horizontalArrangement = Arrangement.spacedBy(<span class="number">8</span>.dp)
+        ) {
+            repeat(images.size) { index -&gt;
+                <span class="function">Box</span>(
+                    modifier = Modifier
+                        .size(<span class="number">8</span>.dp)
+                        .clip(CircleShape)
+                        .background(
+                            <span class="keyword">if</span> (pagerState.currentPage == index)
+                                MaterialTheme.colorScheme.primary
+                            <span class="keyword">else</span>
+                                Color.Gray.copy(alpha = <span class="number">0.5f</span>)
+                        )
+                )
+            }
+        }
+    }
+}</code></pre>
+
+            <!-- PriceSection -->
+            <h2 class="text-2xl font-bold mt-8 mb-4">PriceSection</h2>
+            <pre class="mb-6"><code><span class="annotation">@Composable</span>
+<span class="keyword">fun</span> <span class="function">PriceSection</span>(
+    price: Double,
+    discountPercentage: Double
+) {
+    <span class="keyword">val</span> discountedPrice = price * (<span class="number">1</span> - discountPercentage / <span class="number">100</span>)
+
+    <span class="function">Row</span>(verticalAlignment = Alignment.CenterVertically) {
+        <span class="function">Text</span>(
+            text = <span class="string">"$${String.format("</span>%.2f<span class="string">", discountedPrice)}"</span>,
+            style = MaterialTheme.typography.headlineSmall,
+            fontWeight = FontWeight.Bold,
+            color = MaterialTheme.colorScheme.primary
+        )
+
+        <span class="keyword">if</span> (discountPercentage &gt; <span class="number">0</span>) {
+            <span class="function">Spacer</span>(modifier = Modifier.width(<span class="number">12</span>.dp))
+
+            <span class="function">Text</span>(
+                text = <span class="string">"$$price"</span>,
+                style = MaterialTheme.typography.bodyLarge,
+                textDecoration = TextDecoration.LineThrough,
+                color = Color.Gray
+            )
+
+            <span class="function">Spacer</span>(modifier = Modifier.width(<span class="number">8</span>.dp))
+
+            <span class="function">Surface</span>(
+                color = Color.Red.copy(alpha = <span class="number">0.1f</span>),
+                shape = RoundedCornerShape(<span class="number">4</span>.dp)
+            ) {
+                <span class="function">Text</span>(
+                    text = <span class="string">"-${discountPercentage.toInt()}%"</span>,
+                    color = Color.Red,
+                    modifier = Modifier.padding(horizontal = <span class="number">6</span>.dp, vertical = <span class="number">2</span>.dp),
+                    style = MaterialTheme.typography.labelMedium
+                )
+            }
+        }
+    }
+}</code></pre>
+
+            <!-- RatingBadge -->
+            <h2 class="text-2xl font-bold mt-8 mb-4">RatingBadge и StockBadge</h2>
+            <pre class="mb-6"><code><span class="annotation">@Composable</span>
+<span class="keyword">fun</span> <span class="function">RatingBadge</span>(rating: Double) {
+    <span class="function">Row</span>(verticalAlignment = Alignment.CenterVertically) {
+        <span class="function">Icon</span>(
+            imageVector = Icons.Default.Star,
+            contentDescription = <span class="keyword">null</span>,
+            tint = Color(<span class="number">0xFFFFB800</span>),
+            modifier = Modifier.size(<span class="number">20</span>.dp)
+        )
+        <span class="function">Spacer</span>(modifier = Modifier.width(<span class="number">4</span>.dp))
+        <span class="function">Text</span>(
+            text = String.format(<span class="string">"%.1f"</span>, rating),
+            style = MaterialTheme.typography.bodyLarge,
+            fontWeight = FontWeight.Medium
+        )
+    }
+}
+
+<span class="annotation">@Composable</span>
+<span class="keyword">fun</span> <span class="function">StockBadge</span>(stock: Int) {
+    <span class="keyword">val</span> (text, color) = <span class="keyword">when</span> {
+        stock &gt; <span class="number">10</span> -&gt; <span class="string">"В наличии"</span> to Color.Green
+        stock &gt; <span class="number">0</span> -&gt; <span class="string">"Мало"</span> to Color(<span class="number">0xFFFF9800</span>)
+        <span class="keyword">else</span> -&gt; <span class="string">"Нет в наличии"</span> to Color.Red
+    }
+
+    <span class="function">Text</span>(
+        text = text,
+        color = color,
+        style = MaterialTheme.typography.bodyLarge,
+        fontWeight = FontWeight.Medium
+    )
+}</code></pre>
+
+            <!-- Итоги -->
+            <div class="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-xl p-6 mb-8">
+                <h3 class="font-semibold text-green-900 dark:text-green-100 mb-3">Что мы создали</h3>
+                <ul class="text-green-800 dark:text-green-200 space-y-2">
+                    <li>• DetailViewModel с Sealed Class для состояний</li>
+                    <li>• HorizontalPager для галереи изображений</li>
+                    <li>• Секцию с ценой и скидкой</li>
+                    <li>• Бейджи рейтинга и наличия</li>
+                    <li>• Кнопку добавления в корзину</li>
+                </ul>
+            </div>
+
+        </div>
+
+        <div class="flex justify-between items-center mt-12 pt-8 border-t border-zinc-200 dark:border-zinc-800">
+            <a href="05-product-list.html" class="text-green-500 hover:underline">&larr; Список товаров</a>
+            <a href="../index.html" class="text-green-500 hover:underline">Оглавление</a>
+            <a href="07-search.html" class="text-green-500 hover:underline">Поиск &rarr;</a>
+        </div>
+    </div>
+</body>
+</html>

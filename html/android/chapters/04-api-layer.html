@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Глава 4: Retrofit + API | Android E-Commerce</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        pre { background: #1e1e1e; color: #d4d4d4; padding: 1rem; border-radius: 0.5rem; overflow-x: auto; }
+        .keyword { color: #569cd6; }
+        .function { color: #dcdcaa; }
+        .string { color: #ce9178; }
+        .comment { color: #6a9955; }
+        .annotation { color: #4ec9b0; }
+        .number { color: #b5cea8; }
+        .type { color: #4ec9b0; }
+    </style>
+</head>
+<body class="bg-white dark:bg-zinc-900">
+    <div class="max-w-4xl mx-auto px-6 py-12">
+        <a href="../index.html" class="text-green-500 hover:underline mb-4 inline-block">&larr; Назад к оглавлению</a>
+
+        <h1 class="text-4xl font-bold text-zinc-900 dark:text-white mb-6">Глава 4: Retrofit + API</h1>
+
+        <div class="prose dark:prose-invert max-w-none">
+
+            <!-- DummyJSON API -->
+            <h2 class="text-2xl font-bold mt-8 mb-4">DummyJSON API</h2>
+            <p class="text-zinc-600 dark:text-zinc-400 mb-4">
+                Мы используем бесплатный API <a href="https://dummyjson.com" target="_blank" class="text-green-500 hover:underline">dummyjson.com</a>
+                для получения данных о товарах.
+            </p>
+
+            <div class="bg-zinc-100 dark:bg-zinc-800 rounded-xl p-6 mb-8">
+                <h3 class="font-semibold mb-3">Основные эндпоинты</h3>
+                <div class="space-y-2 text-sm font-mono">
+                    <p><span class="text-green-500">GET</span> /products — список товаров</p>
+                    <p><span class="text-green-500">GET</span> /products/{id} — товар по ID</p>
+                    <p><span class="text-green-500">GET</span> /products/search?q={query} — поиск</p>
+                    <p><span class="text-green-500">GET</span> /products/categories — категории</p>
+                    <p><span class="text-green-500">GET</span> /products/category/{name} — товары категории</p>
+                </div>
+            </div>
+
+            <!-- Пример ответа -->
+            <h2 class="text-2xl font-bold mt-8 mb-4">Пример ответа API</h2>
+            <pre class="mb-6"><code>{
+  <span class="string">"products"</span>: [
+    {
+      <span class="string">"id"</span>: <span class="number">1</span>,
+      <span class="string">"title"</span>: <span class="string">"iPhone 9"</span>,
+      <span class="string">"description"</span>: <span class="string">"An apple mobile..."</span>,
+      <span class="string">"price"</span>: <span class="number">549</span>,
+      <span class="string">"discountPercentage"</span>: <span class="number">12.96</span>,
+      <span class="string">"rating"</span>: <span class="number">4.69</span>,
+      <span class="string">"stock"</span>: <span class="number">94</span>,
+      <span class="string">"brand"</span>: <span class="string">"Apple"</span>,
+      <span class="string">"category"</span>: <span class="string">"smartphones"</span>,
+      <span class="string">"thumbnail"</span>: <span class="string">"https://..."</span>,
+      <span class="string">"images"</span>: [<span class="string">"https://..."</span>, <span class="string">"https://..."</span>]
+    }
+  ],
+  <span class="string">"total"</span>: <span class="number">100</span>,
+  <span class="string">"skip"</span>: <span class="number">0</span>,
+  <span class="string">"limit"</span>: <span class="number">30</span>
+}</code></pre>
+
+            <!-- DTO модели -->
+            <h2 class="text-2xl font-bold mt-8 mb-4">DTO модели</h2>
+            <pre class="mb-6"><code><span class="comment">// data/dto/ProductDto.kt</span>
+<span class="annotation">@JsonClass</span>(generateAdapter = <span class="keyword">true</span>)
+<span class="keyword">data class</span> <span class="type">ProductDto</span>(
+    <span class="annotation">@Json</span>(name = <span class="string">"id"</span>) <span class="keyword">val</span> id: Int,
+    <span class="annotation">@Json</span>(name = <span class="string">"title"</span>) <span class="keyword">val</span> title: String,
+    <span class="annotation">@Json</span>(name = <span class="string">"description"</span>) <span class="keyword">val</span> description: String,
+    <span class="annotation">@Json</span>(name = <span class="string">"price"</span>) <span class="keyword">val</span> price: Double,
+    <span class="annotation">@Json</span>(name = <span class="string">"discountPercentage"</span>) <span class="keyword">val</span> discountPercentage: Double,
+    <span class="annotation">@Json</span>(name = <span class="string">"rating"</span>) <span class="keyword">val</span> rating: Double,
+    <span class="annotation">@Json</span>(name = <span class="string">"stock"</span>) <span class="keyword">val</span> stock: Int,
+    <span class="annotation">@Json</span>(name = <span class="string">"brand"</span>) <span class="keyword">val</span> brand: String?,
+    <span class="annotation">@Json</span>(name = <span class="string">"category"</span>) <span class="keyword">val</span> category: String,
+    <span class="annotation">@Json</span>(name = <span class="string">"thumbnail"</span>) <span class="keyword">val</span> thumbnail: String,
+    <span class="annotation">@Json</span>(name = <span class="string">"images"</span>) <span class="keyword">val</span> images: List&lt;String&gt;
+)
+
+<span class="comment">// data/dto/ProductsResponse.kt</span>
+<span class="annotation">@JsonClass</span>(generateAdapter = <span class="keyword">true</span>)
+<span class="keyword">data class</span> <span class="type">ProductsResponse</span>(
+    <span class="annotation">@Json</span>(name = <span class="string">"products"</span>) <span class="keyword">val</span> products: List&lt;<span class="type">ProductDto</span>&gt;,
+    <span class="annotation">@Json</span>(name = <span class="string">"total"</span>) <span class="keyword">val</span> total: Int,
+    <span class="annotation">@Json</span>(name = <span class="string">"skip"</span>) <span class="keyword">val</span> skip: Int,
+    <span class="annotation">@Json</span>(name = <span class="string">"limit"</span>) <span class="keyword">val</span> limit: Int
+)</code></pre>
+
+            <!-- API Interface -->
+            <h2 class="text-2xl font-bold mt-8 mb-4">API Interface</h2>
+            <pre class="mb-6"><code><span class="comment">// data/api/ProductApi.kt</span>
+<span class="keyword">interface</span> <span class="type">ProductApi</span> {
+
+    <span class="annotation">@GET</span>(<span class="string">"products"</span>)
+    <span class="keyword">suspend fun</span> <span class="function">getProducts</span>(
+        <span class="annotation">@Query</span>(<span class="string">"limit"</span>) limit: Int = <span class="number">30</span>,
+        <span class="annotation">@Query</span>(<span class="string">"skip"</span>) skip: Int = <span class="number">0</span>
+    ): <span class="type">ProductsResponse</span>
+
+    <span class="annotation">@GET</span>(<span class="string">"products/{id}"</span>)
+    <span class="keyword">suspend fun</span> <span class="function">getProductById</span>(
+        <span class="annotation">@Path</span>(<span class="string">"id"</span>) id: Int
+    ): <span class="type">ProductDto</span>
+
+    <span class="annotation">@GET</span>(<span class="string">"products/search"</span>)
+    <span class="keyword">suspend fun</span> <span class="function">searchProducts</span>(
+        <span class="annotation">@Query</span>(<span class="string">"q"</span>) query: String
+    ): <span class="type">ProductsResponse</span>
+
+    <span class="annotation">@GET</span>(<span class="string">"products/categories"</span>)
+    <span class="keyword">suspend fun</span> <span class="function">getCategories</span>(): List&lt;String&gt;
+
+    <span class="annotation">@GET</span>(<span class="string">"products/category/{category}"</span>)
+    <span class="keyword">suspend fun</span> <span class="function">getProductsByCategory</span>(
+        <span class="annotation">@Path</span>(<span class="string">"category"</span>) category: String
+    ): <span class="type">ProductsResponse</span>
+}</code></pre>
+
+            <!-- Network Module -->
+            <h2 class="text-2xl font-bold mt-8 mb-4">Network Module (Hilt)</h2>
+            <pre class="mb-6"><code><span class="comment">// di/NetworkModule.kt</span>
+<span class="annotation">@Module</span>
+<span class="annotation">@InstallIn</span>(SingletonComponent::<span class="keyword">class</span>)
+<span class="keyword">object</span> <span class="type">NetworkModule</span> {
+
+    <span class="annotation">@Provides</span>
+    <span class="annotation">@Singleton</span>
+    <span class="keyword">fun</span> <span class="function">provideMoshi</span>(): <span class="type">Moshi</span> {
+        <span class="keyword">return</span> Moshi.Builder()
+            .add(KotlinJsonAdapterFactory())
+            .build()
+    }
+
+    <span class="annotation">@Provides</span>
+    <span class="annotation">@Singleton</span>
+    <span class="keyword">fun</span> <span class="function">provideOkHttpClient</span>(): <span class="type">OkHttpClient</span> {
+        <span class="keyword">return</span> OkHttpClient.Builder()
+            .addInterceptor(HttpLoggingInterceptor().apply {
+                level = HttpLoggingInterceptor.Level.BODY
+            })
+            .connectTimeout(<span class="number">30</span>, TimeUnit.SECONDS)
+            .readTimeout(<span class="number">30</span>, TimeUnit.SECONDS)
+            .build()
+    }
+
+    <span class="annotation">@Provides</span>
+    <span class="annotation">@Singleton</span>
+    <span class="keyword">fun</span> <span class="function">provideRetrofit</span>(
+        okHttpClient: <span class="type">OkHttpClient</span>,
+        moshi: <span class="type">Moshi</span>
+    ): <span class="type">Retrofit</span> {
+        <span class="keyword">return</span> Retrofit.Builder()
+            .baseUrl(Constants.BASE_URL)
+            .client(okHttpClient)
+            .addConverterFactory(MoshiConverterFactory.create(moshi))
+            .build()
+    }
+
+    <span class="annotation">@Provides</span>
+    <span class="annotation">@Singleton</span>
+    <span class="keyword">fun</span> <span class="function">provideProductApi</span>(retrofit: <span class="type">Retrofit</span>): <span class="type">ProductApi</span> {
+        <span class="keyword">return</span> retrofit.create(<span class="type">ProductApi</span>::<span class="keyword">class</span>.java)
+    }
+}</code></pre>
+
+            <!-- Repository -->
+            <h2 class="text-2xl font-bold mt-8 mb-4">Repository</h2>
+            <pre class="mb-6"><code><span class="comment">// domain/repository/ProductRepository.kt</span>
+<span class="keyword">interface</span> <span class="type">ProductRepository</span> {
+    <span class="keyword">fun</span> <span class="function">getProducts</span>(): Flow&lt;Resource&lt;List&lt;<span class="type">Product</span>&gt;&gt;&gt;
+    <span class="keyword">fun</span> <span class="function">getProductById</span>(id: Int): Flow&lt;Resource&lt;<span class="type">Product</span>&gt;&gt;
+    <span class="keyword">fun</span> <span class="function">searchProducts</span>(query: String): Flow&lt;Resource&lt;List&lt;<span class="type">Product</span>&gt;&gt;&gt;
+}
+
+<span class="comment">// data/repository/ProductRepositoryImpl.kt</span>
+<span class="keyword">class</span> <span class="type">ProductRepositoryImpl</span> <span class="annotation">@Inject</span> <span class="keyword">constructor</span>(
+    <span class="keyword">private val</span> api: <span class="type">ProductApi</span>
+) : <span class="type">ProductRepository</span> {
+
+    <span class="keyword">override fun</span> <span class="function">getProducts</span>(): Flow&lt;Resource&lt;List&lt;<span class="type">Product</span>&gt;&gt;&gt; = flow {
+        emit(Resource.Loading)
+        <span class="keyword">try</span> {
+            <span class="keyword">val</span> response = api.getProducts()
+            <span class="keyword">val</span> products = response.products.map { it.toDomain() }
+            emit(Resource.Success(products))
+        } <span class="keyword">catch</span> (e: HttpException) {
+            emit(Resource.Error(<span class="string">"Ошибка сервера: </span>\${e.code()}<span class="string">"</span>))
+        } <span class="keyword">catch</span> (e: IOException) {
+            emit(Resource.Error(<span class="string">"Проверьте подключение к интернету"</span>))
+        }
+    }
+
+    <span class="keyword">override fun</span> <span class="function">getProductById</span>(id: Int): Flow&lt;Resource&lt;<span class="type">Product</span>&gt;&gt; = flow {
+        emit(Resource.Loading)
+        <span class="keyword">try</span> {
+            <span class="keyword">val</span> product = api.getProductById(id).toDomain()
+            emit(Resource.Success(product))
+        } <span class="keyword">catch</span> (e: Exception) {
+            emit(Resource.Error(e.message ?: <span class="string">"Неизвестная ошибка"</span>))
+        }
+    }
+
+    <span class="keyword">override fun</span> <span class="function">searchProducts</span>(query: String): Flow&lt;Resource&lt;List&lt;<span class="type">Product</span>&gt;&gt;&gt; = flow {
+        emit(Resource.Loading)
+        <span class="keyword">try</span> {
+            <span class="keyword">val</span> response = api.searchProducts(query)
+            <span class="keyword">val</span> products = response.products.map { it.toDomain() }
+            emit(Resource.Success(products))
+        } <span class="keyword">catch</span> (e: Exception) {
+            emit(Resource.Error(e.message ?: <span class="string">"Ошибка поиска"</span>))
+        }
+    }
+}</code></pre>
+
+            <!-- Mapper -->
+            <h2 class="text-2xl font-bold mt-8 mb-4">Mapper</h2>
+            <pre class="mb-6"><code><span class="comment">// data/mapper/ProductMapper.kt</span>
+<span class="keyword">fun</span> <span class="type">ProductDto</span>.<span class="function">toDomain</span>(): <span class="type">Product</span> {
+    <span class="keyword">return</span> Product(
+        id = id,
+        title = title,
+        description = description,
+        price = price,
+        discountPercentage = discountPercentage,
+        rating = rating,
+        stock = stock,
+        brand = brand ?: <span class="string">"Unknown"</span>,
+        category = category,
+        thumbnail = thumbnail,
+        images = images
+    )
+}</code></pre>
+
+            <!-- Repository Module -->
+            <h2 class="text-2xl font-bold mt-8 mb-4">Repository Module</h2>
+            <pre class="mb-6"><code><span class="comment">// di/RepositoryModule.kt</span>
+<span class="annotation">@Module</span>
+<span class="annotation">@InstallIn</span>(SingletonComponent::<span class="keyword">class</span>)
+<span class="keyword">abstract class</span> <span class="type">RepositoryModule</span> {
+
+    <span class="annotation">@Binds</span>
+    <span class="annotation">@Singleton</span>
+    <span class="keyword">abstract fun</span> <span class="function">bindProductRepository</span>(
+        impl: <span class="type">ProductRepositoryImpl</span>
+    ): <span class="type">ProductRepository</span>
+}</code></pre>
+
+            <!-- Аннотации Retrofit -->
+            <h2 class="text-2xl font-bold mt-8 mb-4">Аннотации Retrofit</h2>
+            <div class="overflow-x-auto mb-8">
+                <table class="w-full text-sm">
+                    <thead class="bg-zinc-100 dark:bg-zinc-800">
+                        <tr>
+                            <th class="px-4 py-2 text-left">Аннотация</th>
+                            <th class="px-4 py-2 text-left">Описание</th>
+                            <th class="px-4 py-2 text-left">Пример</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-zinc-200 dark:divide-zinc-700">
+                        <tr>
+                            <td class="px-4 py-2"><code>@GET</code></td>
+                            <td class="px-4 py-2">GET запрос</td>
+                            <td class="px-4 py-2"><code>@GET("products")</code></td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-2"><code>@POST</code></td>
+                            <td class="px-4 py-2">POST запрос</td>
+                            <td class="px-4 py-2"><code>@POST("auth/login")</code></td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-2"><code>@Path</code></td>
+                            <td class="px-4 py-2">Параметр в URL</td>
+                            <td class="px-4 py-2"><code>@Path("id") id: Int</code></td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-2"><code>@Query</code></td>
+                            <td class="px-4 py-2">Query параметр</td>
+                            <td class="px-4 py-2"><code>@Query("q") query: String</code></td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-2"><code>@Body</code></td>
+                            <td class="px-4 py-2">Тело запроса</td>
+                            <td class="px-4 py-2"><code>@Body request: LoginRequest</code></td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-2"><code>@Header</code></td>
+                            <td class="px-4 py-2">Заголовок</td>
+                            <td class="px-4 py-2"><code>@Header("Authorization") token: String</code></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Обработка ошибок -->
+            <h2 class="text-2xl font-bold mt-8 mb-4">Обработка ошибок</h2>
+            <pre class="mb-6"><code><span class="keyword">sealed class</span> <span class="type">NetworkError</span> : Exception() {
+    <span class="keyword">object</span> NoConnection : <span class="type">NetworkError</span>()
+    <span class="keyword">data class</span> <span class="type">ServerError</span>(<span class="keyword">val</span> code: Int) : <span class="type">NetworkError</span>()
+    <span class="keyword">data class</span> <span class="type">Unknown</span>(<span class="keyword">override val</span> message: String?) : <span class="type">NetworkError</span>()
+}
+
+<span class="keyword">suspend fun</span> &lt;T&gt; <span class="function">safeApiCall</span>(
+    call: <span class="keyword">suspend</span> () -&gt; T
+): <span class="type">Result</span>&lt;T&gt; {
+    <span class="keyword">return try</span> {
+        <span class="type">Result</span>.success(call())
+    } <span class="keyword">catch</span> (e: HttpException) {
+        <span class="type">Result</span>.failure(<span class="type">NetworkError</span>.ServerError(e.code()))
+    } <span class="keyword">catch</span> (e: IOException) {
+        <span class="type">Result</span>.failure(<span class="type">NetworkError</span>.NoConnection)
+    } <span class="keyword">catch</span> (e: Exception) {
+        <span class="type">Result</span>.failure(<span class="type">NetworkError</span>.Unknown(e.message))
+    }
+}</code></pre>
+
+            <!-- Логирование -->
+            <div class="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-xl p-4 mb-6">
+                <h3 class="font-semibold text-yellow-900 dark:text-yellow-100 mb-2">Совет по отладке</h3>
+                <p class="text-yellow-800 dark:text-yellow-200 text-sm">
+                    Используйте <code>HttpLoggingInterceptor</code> для просмотра всех запросов и ответов в Logcat.
+                    В релизной сборке отключите логирование для безопасности.
+                </p>
+            </div>
+
+            <!-- Итоги -->
+            <div class="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-xl p-6 mb-8">
+                <h3 class="font-semibold text-green-900 dark:text-green-100 mb-3">Что мы создали</h3>
+                <ul class="text-green-800 dark:text-green-200 space-y-2">
+                    <li>• DTO модели для API ответов</li>
+                    <li>• Retrofit API interface с suspend функциями</li>
+                    <li>• Hilt модуль для настройки сети</li>
+                    <li>• Repository с Flow и обработкой ошибок</li>
+                    <li>• Mapper для преобразования DTO → Domain</li>
+                </ul>
+            </div>
+
+        </div>
+
+        <div class="flex justify-between items-center mt-12 pt-8 border-t border-zinc-200 dark:border-zinc-800">
+            <a href="03-project-setup.html" class="text-green-500 hover:underline">&larr; Настройка проекта</a>
+            <a href="../index.html" class="text-green-500 hover:underline">Оглавление</a>
+            <a href="json-parsing.html" class="text-green-500 hover:underline">Парсинг JSON &rarr;</a>
+        </div>
+    </div>
+</body>
+</html>

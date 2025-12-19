@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Глава 9: Корзина | Android E-Commerce</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        pre { background: #1e1e1e; color: #d4d4d4; padding: 1rem; border-radius: 0.5rem; overflow-x: auto; }
+        .keyword { color: #569cd6; }
+        .function { color: #dcdcaa; }
+        .string { color: #ce9178; }
+        .comment { color: #6a9955; }
+        .annotation { color: #4ec9b0; }
+        .number { color: #b5cea8; }
+        .type { color: #4ec9b0; }
+    </style>
+</head>
+<body class="bg-white dark:bg-zinc-900">
+    <div class="max-w-4xl mx-auto px-6 py-12">
+        <a href="../index.html" class="text-green-500 hover:underline mb-4 inline-block">&larr; Назад к оглавлению</a>
+
+        <h1 class="text-4xl font-bold text-zinc-900 dark:text-white mb-6">Глава 9: Корзина</h1>
+
+        <div class="prose dark:prose-invert max-w-none">
+
+            <!-- CartItem модель -->
+            <h2 class="text-2xl font-bold mt-8 mb-4">CartItem модель</h2>
+            <pre class="mb-6"><code><span class="comment">// domain/model/CartItem.kt</span>
+<span class="keyword">data class</span> <span class="type">CartItem</span>(
+    <span class="keyword">val</span> product: <span class="type">Product</span>,
+    <span class="keyword">val</span> quantity: Int
+) {
+    <span class="keyword">val</span> totalPrice: Double
+        <span class="keyword">get</span>() = product.price * quantity
+}</code></pre>
+
+            <!-- Room Entity -->
+            <h2 class="text-2xl font-bold mt-8 mb-4">CartEntity</h2>
+            <pre class="mb-6"><code><span class="annotation">@Entity</span>(tableName = <span class="string">"cart"</span>)
+<span class="keyword">data class</span> <span class="type">CartEntity</span>(
+    <span class="annotation">@PrimaryKey</span>
+    <span class="keyword">val</span> productId: Int,
+    <span class="keyword">val</span> title: String,
+    <span class="keyword">val</span> price: Double,
+    <span class="keyword">val</span> thumbnail: String,
+    <span class="keyword">val</span> quantity: Int
+)</code></pre>
+
+            <!-- DAO -->
+            <h2 class="text-2xl font-bold mt-8 mb-4">CartDao</h2>
+            <pre class="mb-6"><code><span class="annotation">@Dao</span>
+<span class="keyword">interface</span> <span class="type">CartDao</span> {
+
+    <span class="annotation">@Query</span>(<span class="string">"SELECT * FROM cart"</span>)
+    <span class="keyword">fun</span> <span class="function">getAllItems</span>(): Flow&lt;List&lt;<span class="type">CartEntity</span>&gt;&gt;
+
+    <span class="annotation">@Query</span>(<span class="string">"SELECT SUM(quantity) FROM cart"</span>)
+    <span class="keyword">fun</span> <span class="function">getTotalItemCount</span>(): Flow&lt;Int?&gt;
+
+    <span class="annotation">@Query</span>(<span class="string">"SELECT SUM(price * quantity) FROM cart"</span>)
+    <span class="keyword">fun</span> <span class="function">getTotalPrice</span>(): Flow&lt;Double?&gt;
+
+    <span class="annotation">@Insert</span>(onConflict = OnConflictStrategy.REPLACE)
+    <span class="keyword">suspend fun</span> <span class="function">insertItem</span>(item: <span class="type">CartEntity</span>)
+
+    <span class="annotation">@Query</span>(<span class="string">"UPDATE cart SET quantity = quantity + 1 WHERE productId = :productId"</span>)
+    <span class="keyword">suspend fun</span> <span class="function">incrementQuantity</span>(productId: Int)
+
+    <span class="annotation">@Query</span>(<span class="string">"UPDATE cart SET quantity = quantity - 1 WHERE productId = :productId AND quantity > 1"</span>)
+    <span class="keyword">suspend fun</span> <span class="function">decrementQuantity</span>(productId: Int)
+
+    <span class="annotation">@Query</span>(<span class="string">"DELETE FROM cart WHERE productId = :productId"</span>)
+    <span class="keyword">suspend fun</span> <span class="function">removeItem</span>(productId: Int)
+
+    <span class="annotation">@Query</span>(<span class="string">"DELETE FROM cart"</span>)
+    <span class="keyword">suspend fun</span> <span class="function">clearCart</span>()
+
+    <span class="annotation">@Query</span>(<span class="string">"SELECT * FROM cart WHERE productId = :productId"</span>)
+    <span class="keyword">suspend fun</span> <span class="function">getItem</span>(productId: Int): <span class="type">CartEntity</span>?
+}</code></pre>
+
+            <!-- Repository -->
+            <h2 class="text-2xl font-bold mt-8 mb-4">CartRepository</h2>
+            <pre class="mb-6"><code><span class="keyword">class</span> <span class="type">CartRepositoryImpl</span> <span class="annotation">@Inject</span> <span class="keyword">constructor</span>(
+    <span class="keyword">private val</span> cartDao: <span class="type">CartDao</span>
+) : <span class="type">CartRepository</span> {
+
+    <span class="keyword">override fun</span> <span class="function">getCartItems</span>(): Flow&lt;List&lt;<span class="type">CartItem</span>&gt;&gt; {
+        <span class="keyword">return</span> cartDao.getAllItems().map { entities -&gt;
+            entities.map { it.toDomain() }
+        }
+    }
+
+    <span class="keyword">override fun</span> <span class="function">getCartCount</span>(): Flow&lt;Int&gt; {
+        <span class="keyword">return</span> cartDao.getTotalItemCount().map { it ?: <span class="number">0</span> }
+    }
+
+    <span class="keyword">override fun</span> <span class="function">getTotalPrice</span>(): Flow&lt;Double&gt; {
+        <span class="keyword">return</span> cartDao.getTotalPrice().map { it ?: <span class="number">0.0</span> }
+    }
+
+    <span class="keyword">override suspend fun</span> <span class="function">addToCart</span>(product: <span class="type">Product</span>) {
+        <span class="keyword">val</span> existing = cartDao.getItem(product.id)
+        <span class="keyword">if</span> (existing != <span class="keyword">null</span>) {
+            cartDao.incrementQuantity(product.id)
+        } <span class="keyword">else</span> {
+            cartDao.insertItem(product.toCartEntity())
+        }
+    }
+
+    <span class="keyword">override suspend fun</span> <span class="function">updateQuantity</span>(productId: Int, increment: Boolean) {
+        <span class="keyword">if</span> (increment) {
+            cartDao.incrementQuantity(productId)
+        } <span class="keyword">else</span> {
+            <span class="keyword">val</span> item = cartDao.getItem(productId)
+            <span class="keyword">if</span> (item != <span class="keyword">null</span> && item.quantity > <span class="number">1</span>) {
+                cartDao.decrementQuantity(productId)
+            } <span class="keyword">else</span> {
+                cartDao.removeItem(productId)
+            }
+        }
+    }
+
+    <span class="keyword">override suspend fun</span> <span class="function">removeFromCart</span>(productId: Int) {
+        cartDao.removeItem(productId)
+    }
+
+    <span class="keyword">override suspend fun</span> <span class="function">clearCart</span>() {
+        cartDao.clearCart()
+    }
+}</code></pre>
+
+            <!-- CartViewModel -->
+            <h2 class="text-2xl font-bold mt-8 mb-4">CartViewModel</h2>
+            <pre class="mb-6"><code><span class="keyword">data class</span> <span class="type">CartUiState</span>(
+    <span class="keyword">val</span> items: List&lt;<span class="type">CartItem</span>&gt; = emptyList(),
+    <span class="keyword">val</span> totalPrice: Double = <span class="number">0.0</span>,
+    <span class="keyword">val</span> isCheckingOut: Boolean = <span class="keyword">false</span>
+)
+
+<span class="annotation">@HiltViewModel</span>
+<span class="keyword">class</span> <span class="type">CartViewModel</span> <span class="annotation">@Inject</span> <span class="keyword">constructor</span>(
+    <span class="keyword">private val</span> cartRepository: <span class="type">CartRepository</span>
+) : ViewModel() {
+
+    <span class="keyword">private val</span> _uiState = MutableStateFlow(<span class="type">CartUiState</span>())
+    <span class="keyword">val</span> uiState: StateFlow&lt;<span class="type">CartUiState</span>&gt; = _uiState.asStateFlow()
+
+    <span class="keyword">init</span> {
+        viewModelScope.launch {
+            combine(
+                cartRepository.getCartItems(),
+                cartRepository.getTotalPrice()
+            ) { items, total -&gt;
+                <span class="type">CartUiState</span>(items = items, totalPrice = total)
+            }.collect { state -&gt;
+                _uiState.value = state
+            }
+        }
+    }
+
+    <span class="keyword">fun</span> <span class="function">incrementQuantity</span>(productId: Int) {
+        viewModelScope.launch {
+            cartRepository.updateQuantity(productId, increment = <span class="keyword">true</span>)
+        }
+    }
+
+    <span class="keyword">fun</span> <span class="function">decrementQuantity</span>(productId: Int) {
+        viewModelScope.launch {
+            cartRepository.updateQuantity(productId, increment = <span class="keyword">false</span>)
+        }
+    }
+
+    <span class="keyword">fun</span> <span class="function">removeItem</span>(productId: Int) {
+        viewModelScope.launch {
+            cartRepository.removeFromCart(productId)
+        }
+    }
+
+    <span class="keyword">fun</span> <span class="function">checkout</span>() {
+        viewModelScope.launch {
+            _uiState.update { it.copy(isCheckingOut = <span class="keyword">true</span>) }
+            <span class="comment">// Имитация оформления заказа</span>
+            delay(<span class="number">2000</span>)
+            cartRepository.clearCart()
+            _uiState.update { it.copy(isCheckingOut = <span class="keyword">false</span>) }
+        }
+    }
+}</code></pre>
+
+            <!-- CartScreen -->
+            <h2 class="text-2xl font-bold mt-8 mb-4">CartScreen</h2>
+            <pre class="mb-6"><code><span class="annotation">@Composable</span>
+<span class="keyword">fun</span> <span class="function">CartScreen</span>(
+    viewModel: <span class="type">CartViewModel</span> = hiltViewModel()
+) {
+    <span class="keyword">val</span> uiState <span class="keyword">by</span> viewModel.uiState.collectAsStateWithLifecycle()
+
+    <span class="function">Scaffold</span>(
+        topBar = {
+            <span class="function">TopAppBar</span>(title = { <span class="function">Text</span>(<span class="string">"Корзина"</span>) })
+        },
+        bottomBar = {
+            <span class="keyword">if</span> (uiState.items.isNotEmpty()) {
+                <span class="function">CartBottomBar</span>(
+                    totalPrice = uiState.totalPrice,
+                    isLoading = uiState.isCheckingOut,
+                    onCheckout = { viewModel.checkout() }
+                )
+            }
+        }
+    ) { paddingValues -&gt;
+        <span class="keyword">if</span> (uiState.items.isEmpty()) {
+            <span class="function">EmptyCart</span>(Modifier.padding(paddingValues))
+        } <span class="keyword">else</span> {
+            <span class="function">LazyColumn</span>(
+                contentPadding = paddingValues,
+                verticalArrangement = Arrangement.spacedBy(<span class="number">8</span>.dp),
+                modifier = Modifier.padding(horizontal = <span class="number">16</span>.dp)
+            ) {
+                items(uiState.items, key = { it.product.id }) { item -&gt;
+                    <span class="function">CartItemCard</span>(
+                        item = item,
+                        onIncrement = { viewModel.incrementQuantity(item.product.id) },
+                        onDecrement = { viewModel.decrementQuantity(item.product.id) },
+                        onRemove = { viewModel.removeItem(item.product.id) }
+                    )
+                }
+            }
+        }
+    }
+}</code></pre>
+
+            <!-- CartItemCard -->
+            <h2 class="text-2xl font-bold mt-8 mb-4">CartItemCard</h2>
+            <pre class="mb-6"><code><span class="annotation">@Composable</span>
+<span class="keyword">fun</span> <span class="function">CartItemCard</span>(
+    item: <span class="type">CartItem</span>,
+    onIncrement: () -&gt; Unit,
+    onDecrement: () -&gt; Unit,
+    onRemove: () -&gt; Unit
+) {
+    <span class="function">Card</span>(
+        modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(<span class="number">12</span>.dp)
+    ) {
+        <span class="function">Row</span>(
+            modifier = Modifier.padding(<span class="number">12</span>.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            <span class="function">AsyncImage</span>(
+                model = item.product.thumbnail,
+                contentDescription = <span class="keyword">null</span>,
+                modifier = Modifier
+                    .size(<span class="number">80</span>.dp)
+                    .clip(RoundedCornerShape(<span class="number">8</span>.dp))
+            )
+
+            <span class="function">Spacer</span>(modifier = Modifier.width(<span class="number">12</span>.dp))
+
+            <span class="function">Column</span>(modifier = Modifier.weight(<span class="number">1f</span>)) {
+                <span class="function">Text</span>(
+                    text = item.product.title,
+                    style = MaterialTheme.typography.titleMedium,
+                    maxLines = <span class="number">2</span>
+                )
+
+                <span class="function">Spacer</span>(modifier = Modifier.height(<span class="number">4</span>.dp))
+
+                <span class="function">Text</span>(
+                    text = <span class="string">"$${String.format("</span>%.2f<span class="string">", item.totalPrice)}"</span>,
+                    style = MaterialTheme.typography.titleSmall,
+                    color = MaterialTheme.colorScheme.primary
+                )
+
+                <span class="function">Spacer</span>(modifier = Modifier.height(<span class="number">8</span>.dp))
+
+                <span class="comment">// Количество</span>
+                <span class="function">QuantitySelector</span>(
+                    quantity = item.quantity,
+                    onIncrement = onIncrement,
+                    onDecrement = onDecrement
+                )
+            }
+
+            <span class="function">IconButton</span>(onClick = onRemove) {
+                <span class="function">Icon</span>(
+                    imageVector = Icons.Default.Delete,
+                    contentDescription = <span class="string">"Удалить"</span>,
+                    tint = Color.Red
+                )
+            }
+        }
+    }
+}</code></pre>
+
+            <!-- QuantitySelector -->
+            <h2 class="text-2xl font-bold mt-8 mb-4">QuantitySelector</h2>
+            <pre class="mb-6"><code><span class="annotation">@Composable</span>
+<span class="keyword">fun</span> <span class="function">QuantitySelector</span>(
+    quantity: Int,
+    onIncrement: () -&gt; Unit,
+    onDecrement: () -&gt; Unit
+) {
+    <span class="function">Row</span>(
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = Modifier
+            .background(
+                MaterialTheme.colorScheme.surfaceVariant,
+                RoundedCornerShape(<span class="number">8</span>.dp)
+            )
+    ) {
+        <span class="function">IconButton</span>(
+            onClick = onDecrement,
+            modifier = Modifier.size(<span class="number">32</span>.dp)
+        ) {
+            <span class="function">Icon</span>(
+                imageVector = Icons.Default.Remove,
+                contentDescription = <span class="string">"Уменьшить"</span>,
+                modifier = Modifier.size(<span class="number">16</span>.dp)
+            )
+        }
+
+        <span class="function">Text</span>(
+            text = quantity.toString(),
+            style = MaterialTheme.typography.titleMedium,
+            modifier = Modifier.padding(horizontal = <span class="number">12</span>.dp)
+        )
+
+        <span class="function">IconButton</span>(
+            onClick = onIncrement,
+            modifier = Modifier.size(<span class="number">32</span>.dp)
+        ) {
+            <span class="function">Icon</span>(
+                imageVector = Icons.Default.Add,
+                contentDescription = <span class="string">"Увеличить"</span>,
+                modifier = Modifier.size(<span class="number">16</span>.dp)
+            )
+        }
+    }
+}</code></pre>
+
+            <!-- CartBottomBar -->
+            <h2 class="text-2xl font-bold mt-8 mb-4">CartBottomBar</h2>
+            <pre class="mb-6"><code><span class="annotation">@Composable</span>
+<span class="keyword">fun</span> <span class="function">CartBottomBar</span>(
+    totalPrice: Double,
+    isLoading: Boolean,
+    onCheckout: () -&gt; Unit
+) {
+    <span class="function">Surface</span>(
+        tonalElevation = <span class="number">8</span>.dp,
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        <span class="function">Row</span>(
+            modifier = Modifier
+                .padding(<span class="number">16</span>.dp)
+                .fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            <span class="function">Column</span> {
+                <span class="function">Text</span>(
+                    text = <span class="string">"Итого:"</span>,
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = Color.Gray
+                )
+                <span class="function">Text</span>(
+                    text = <span class="string">"$${String.format("</span>%.2f<span class="string">", totalPrice)}"</span>,
+                    style = MaterialTheme.typography.headlineSmall,
+                    fontWeight = FontWeight.Bold
+                )
+            }
+
+            <span class="function">Button</span>(
+                onClick = onCheckout,
+                enabled = !isLoading,
+                shape = RoundedCornerShape(<span class="number">12</span>.dp)
+            ) {
+                <span class="keyword">if</span> (isLoading) {
+                    <span class="function">CircularProgressIndicator</span>(
+                        modifier = Modifier.size(<span class="number">20</span>.dp),
+                        color = Color.White
+                    )
+                } <span class="keyword">else</span> {
+                    <span class="function">Text</span>(<span class="string">"Оформить заказ"</span>)
+                }
+            }
+        }
+    }
+}</code></pre>
+
+            <!-- Cart Badge -->
+            <h2 class="text-2xl font-bold mt-8 mb-4">Cart Badge в навигации</h2>
+            <pre class="mb-6"><code><span class="annotation">@Composable</span>
+<span class="keyword">fun</span> <span class="function">CartBadge</span>(count: Int) {
+    <span class="function">BadgedBox</span>(
+        badge = {
+            <span class="keyword">if</span> (count &gt; <span class="number">0</span>) {
+                <span class="function">Badge</span> {
+                    <span class="function">Text</span>(<span class="keyword">if</span> (count &gt; <span class="number">99</span>) <span class="string">"99+"</span> <span class="keyword">else</span> count.toString())
+                }
+            }
+        }
+    ) {
+        <span class="function">Icon</span>(
+            imageVector = Icons.Default.ShoppingCart,
+            contentDescription = <span class="string">"Корзина"</span>
+        )
+    }
+}</code></pre>
+
+            <!-- Итоги -->
+            <div class="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-xl p-6 mb-8">
+                <h3 class="font-semibold text-green-900 dark:text-green-100 mb-3">Что мы создали</h3>
+                <ul class="text-green-800 dark:text-green-200 space-y-2">
+                    <li>• CartEntity и CartDao для хранения</li>
+                    <li>• CartRepository с управлением количеством</li>
+                    <li>• CartViewModel с combine для подсчёта</li>
+                    <li>• CartItemCard с QuantitySelector</li>
+                    <li>• CartBottomBar с кнопкой оформления</li>
+                    <li>• BadgedBox для отображения количества</li>
+                </ul>
+            </div>
+
+        </div>
+
+        <div class="flex justify-between items-center mt-12 pt-8 border-t border-zinc-200 dark:border-zinc-800">
+            <a href="08-favorites.html" class="text-green-500 hover:underline">&larr; Избранное</a>
+            <a href="../index.html" class="text-green-500 hover:underline">Оглавление</a>
+            <a href="10-navigation.html" class="text-green-500 hover:underline">Навигация &rarr;</a>
+        </div>
+    </div>
+</body>
+</html>

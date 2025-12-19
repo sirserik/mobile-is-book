@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Глава 13: Финал | Android E-Commerce</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        pre { background: #1e1e1e; color: #d4d4d4; padding: 1rem; border-radius: 0.5rem; overflow-x: auto; }
+        .keyword { color: #569cd6; }
+        .string { color: #ce9178; }
+    </style>
+</head>
+<body class="bg-white dark:bg-zinc-900">
+    <div class="max-w-4xl mx-auto px-6 py-12">
+        <a href="../index.html" class="text-green-500 hover:underline mb-4 inline-block">&larr; Назад</a>
+        <h1 class="text-4xl font-bold text-zinc-900 dark:text-white mb-6">Глава 13: Финализация и публикация</h1>
+        <div class="prose dark:prose-invert max-w-none">
+
+            <h2 class="text-2xl font-bold mt-8 mb-4">ProGuard / R8</h2>
+            <pre><code><span class="comment"># proguard-rules.pro</span>
+-keep class com.example.ecommerce.data.dto.** { *; }
+-keepclassmembers class * {
+    @com.squareup.moshi.Json <fields>;
+}
+-dontwarn okhttp3.**
+-dontwarn retrofit2.**</code></pre>
+
+            <h2 class="text-2xl font-bold mt-8 mb-4">Release build</h2>
+            <pre><code>android {
+    buildTypes {
+        release {
+            isMinifyEnabled = <span class="keyword">true</span>
+            isShrinkResources = <span class="keyword">true</span>
+            proguardFiles(
+                getDefaultProguardFile(<span class="string">"proguard-android-optimize.txt"</span>),
+                <span class="string">"proguard-rules.pro"</span>
+            )
+            signingConfig = signingConfigs.getByName(<span class="string">"release"</span>)
+        }
+    }
+}</code></pre>
+
+            <h2 class="text-2xl font-bold mt-8 mb-4">Подписание APK</h2>
+            <pre><code>signingConfigs {
+    create(<span class="string">"release"</span>) {
+        storeFile = file(<span class="string">"keystore.jks"</span>)
+        storePassword = System.getenv(<span class="string">"KEYSTORE_PASSWORD"</span>)
+        keyAlias = System.getenv(<span class="string">"KEY_ALIAS"</span>)
+        keyPassword = System.getenv(<span class="string">"KEY_PASSWORD"</span>)
+    }
+}</code></pre>
+
+            <h2 class="text-2xl font-bold mt-8 mb-4">Чеклист перед публикацией</h2>
+            <ul class="space-y-2 text-zinc-600 dark:text-zinc-400">
+                <li class="flex items-center gap-2"><span class="text-green-500">✓</span> Удалены логи и debug код</li>
+                <li class="flex items-center gap-2"><span class="text-green-500">✓</span> Настроен ProGuard</li>
+                <li class="flex items-center gap-2"><span class="text-green-500">✓</span> Протестировано на разных устройствах</li>
+                <li class="flex items-center gap-2"><span class="text-green-500">✓</span> Иконки и скриншоты готовы</li>
+                <li class="flex items-center gap-2"><span class="text-green-500">✓</span> Описание на всех языках</li>
+                <li class="flex items-center gap-2"><span class="text-green-500">✓</span> Privacy Policy готова</li>
+            </ul>
+
+            <div class="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-xl p-6 mt-8">
+                <h3 class="font-semibold text-green-900 dark:text-green-100 mb-3">Поздравляем!</h3>
+                <p class="text-green-800 dark:text-green-200">
+                    Вы создали полноценное E-Commerce приложение на Android с Jetpack Compose,
+                    MVVM + Clean Architecture, Hilt DI и Room.
+                </p>
+            </div>
+        </div>
+        <div class="flex justify-between items-center mt-12 pt-8 border-t border-zinc-200 dark:border-zinc-800">
+            <a href="12-testing.html" class="text-green-500 hover:underline">&larr; Тестирование</a>
+            <a href="../index.html" class="text-green-500 hover:underline">Оглавление</a>
+            <a href="cheatsheet.html" class="text-green-500 hover:underline">Шпаргалка &rarr;</a>
+        </div>
+    </div>
+</body>
+</html>

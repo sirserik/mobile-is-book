@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Глава 2: MVVM + Clean Architecture | Android E-Commerce</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        pre { background: #1e1e1e; color: #d4d4d4; padding: 1rem; border-radius: 0.5rem; overflow-x: auto; }
+        .keyword { color: #569cd6; }
+        .function { color: #dcdcaa; }
+        .string { color: #ce9178; }
+        .comment { color: #6a9955; }
+        .annotation { color: #4ec9b0; }
+        .number { color: #b5cea8; }
+        .type { color: #4ec9b0; }
+    </style>
+</head>
+<body class="bg-white dark:bg-zinc-900">
+    <div class="max-w-4xl mx-auto px-6 py-12">
+        <a href="../index.html" class="text-green-500 hover:underline mb-4 inline-block">&larr; Назад к оглавлению</a>
+
+        <h1 class="text-4xl font-bold text-zinc-900 dark:text-white mb-6">Глава 2: MVVM + Clean Architecture</h1>
+
+        <div class="prose dark:prose-invert max-w-none">
+
+            <!-- Введение -->
+            <h2 class="text-2xl font-bold mt-8 mb-4">Зачем нужна архитектура?</h2>
+            <p class="text-zinc-600 dark:text-zinc-400 mb-4">
+                Хорошая архитектура позволяет:
+            </p>
+            <ul class="list-disc list-inside text-zinc-600 dark:text-zinc-400 mb-6 space-y-2">
+                <li>Разделить ответственность между компонентами</li>
+                <li>Упростить тестирование</li>
+                <li>Облегчить поддержку и расширение кода</li>
+                <li>Работать в команде без конфликтов</li>
+            </ul>
+
+            <!-- MVVM -->
+            <h2 class="text-2xl font-bold mt-8 mb-4">Паттерн MVVM</h2>
+            <p class="text-zinc-600 dark:text-zinc-400 mb-4">
+                MVVM (Model-View-ViewModel) разделяет приложение на три слоя:
+            </p>
+
+            <div class="grid md:grid-cols-3 gap-4 mb-8">
+                <div class="p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200 dark:border-blue-800">
+                    <h4 class="font-semibold text-blue-900 dark:text-blue-100 mb-2">Model</h4>
+                    <p class="text-sm text-blue-800 dark:text-blue-200">Данные и бизнес-логика. Data classes, Repository, UseCase.</p>
+                </div>
+                <div class="p-4 bg-green-50 dark:bg-green-900/20 rounded-lg border border-green-200 dark:border-green-800">
+                    <h4 class="font-semibold text-green-900 dark:text-green-100 mb-2">View</h4>
+                    <p class="text-sm text-green-800 dark:text-green-200">UI слой. Composable функции, которые отображают данные.</p>
+                </div>
+                <div class="p-4 bg-purple-50 dark:bg-purple-900/20 rounded-lg border border-purple-200 dark:border-purple-800">
+                    <h4 class="font-semibold text-purple-900 dark:text-purple-100 mb-2">ViewModel</h4>
+                    <p class="text-sm text-purple-800 dark:text-purple-200">Связь между Model и View. Хранит UI state, обрабатывает события.</p>
+                </div>
+            </div>
+
+            <!-- Схема -->
+            <div class="bg-zinc-100 dark:bg-zinc-800 rounded-xl p-6 mb-8 font-mono text-sm">
+                <pre class="text-center">
+┌─────────────────────────────────────────────────────┐
+│                      VIEW                           │
+│              (Composable функции)                   │
+│         Отображает state, отправляет events         │
+└─────────────────────┬───────────────────────────────┘
+                      │ state ↑  │ events ↓
+┌─────────────────────┴───────────────────────────────┐
+│                   VIEWMODEL                         │
+│       Хранит UI State, обрабатывает логику          │
+│              StateFlow / LiveData                   │
+└─────────────────────┬───────────────────────────────┘
+                      │
+┌─────────────────────┴───────────────────────────────┐
+│                    USE CASE                         │
+│            Бизнес-логика приложения                 │
+└─────────────────────┬───────────────────────────────┘
+                      │
+┌─────────────────────┴───────────────────────────────┐
+│                   REPOSITORY                        │
+│         Источник данных (API, Database)             │
+└─────────────────────────────────────────────────────┘
+                </pre>
+            </div>
+
+            <!-- Clean Architecture -->
+            <h2 class="text-2xl font-bold mt-8 mb-4">Clean Architecture</h2>
+            <p class="text-zinc-600 dark:text-zinc-400 mb-4">
+                Clean Architecture добавляет чёткое разделение на слои с однонаправленными зависимостями.
+            </p>
+
+            <div class="space-y-4 mb-8">
+                <div class="p-4 bg-zinc-50 dark:bg-zinc-800 rounded-lg border-l-4 border-green-500">
+                    <h4 class="font-semibold mb-1">Presentation Layer</h4>
+                    <p class="text-sm text-zinc-600 dark:text-zinc-400">UI компоненты и ViewModel. Зависит от Domain.</p>
+                </div>
+                <div class="p-4 bg-zinc-50 dark:bg-zinc-800 rounded-lg border-l-4 border-blue-500">
+                    <h4 class="font-semibold mb-1">Domain Layer</h4>
+                    <p class="text-sm text-zinc-600 dark:text-zinc-400">UseCase и бизнес-модели. Не зависит ни от чего.</p>
+                </div>
+                <div class="p-4 bg-zinc-50 dark:bg-zinc-800 rounded-lg border-l-4 border-purple-500">
+                    <h4 class="font-semibold mb-1">Data Layer</h4>
+                    <p class="text-sm text-zinc-600 dark:text-zinc-400">Repository, API, Database. Реализует интерфейсы из Domain.</p>
+                </div>
+            </div>
+
+            <!-- Структура проекта -->
+            <h2 class="text-2xl font-bold mt-8 mb-4">Структура проекта</h2>
+            <pre class="mb-6"><code>app/
+├── di/                    <span class="comment"># Hilt модули</span>
+├── common/                <span class="comment"># Общие утилиты</span>
+│
+├── data/                  <span class="comment"># Data Layer</span>
+│   ├── api/              <span class="comment"># Retrofit сервисы</span>
+│   ├── dto/              <span class="comment"># Data Transfer Objects</span>
+│   ├── mapper/           <span class="comment"># DTO → Domain маперы</span>
+│   └── repository/       <span class="comment"># Реализации репозиториев</span>
+│
+├── domain/               <span class="comment"># Domain Layer</span>
+│   ├── model/           <span class="comment"># Бизнес-модели</span>
+│   ├── repository/      <span class="comment"># Интерфейсы репозиториев</span>
+│   └── usecase/         <span class="comment"># Use Cases</span>
+│
+└── presentation/         <span class="comment"># Presentation Layer</span>
+    ├── home/
+    │   ├── HomeScreen.kt
+    │   └── HomeViewModel.kt
+    ├── detail/
+    ├── cart/
+    └── components/       <span class="comment"># Общие UI компоненты</span></code></pre>
+
+            <!-- Model -->
+            <h2 class="text-2xl font-bold mt-8 mb-4">Model: Data Classes</h2>
+            <pre class="mb-6"><code><span class="comment">// Domain model — чистая бизнес-модель</span>
+<span class="keyword">data class</span> <span class="type">Product</span>(
+    <span class="keyword">val</span> id: Int,
+    <span class="keyword">val</span> title: String,
+    <span class="keyword">val</span> description: String,
+    <span class="keyword">val</span> price: Double,
+    <span class="keyword">val</span> discountPercentage: Double,
+    <span class="keyword">val</span> rating: Double,
+    <span class="keyword">val</span> stock: Int,
+    <span class="keyword">val</span> brand: String,
+    <span class="keyword">val</span> category: String,
+    <span class="keyword">val</span> thumbnail: String,
+    <span class="keyword">val</span> images: List&lt;String&gt;
+)
+
+<span class="comment">// DTO — модель для API (Data Layer)</span>
+<span class="annotation">@JsonClass</span>(generateAdapter = <span class="keyword">true</span>)
+<span class="keyword">data class</span> <span class="type">ProductDto</span>(
+    <span class="annotation">@Json</span>(name = <span class="string">"id"</span>) <span class="keyword">val</span> id: Int,
+    <span class="annotation">@Json</span>(name = <span class="string">"title"</span>) <span class="keyword">val</span> title: String,
+    <span class="comment">// ...</span>
+)</code></pre>
+
+            <!-- Mapper -->
+            <h3 class="text-xl font-semibold mt-6 mb-3">Mapper: DTO → Domain</h3>
+            <pre class="mb-6"><code><span class="comment">// Extension функция для маппинга</span>
+<span class="keyword">fun</span> <span class="type">ProductDto</span>.<span class="function">toDomain</span>(): <span class="type">Product</span> {
+    <span class="keyword">return</span> Product(
+        id = id,
+        title = title,
+        description = description,
+        price = price,
+        discountPercentage = discountPercentage,
+        rating = rating,
+        stock = stock,
+        brand = brand,
+        category = category,
+        thumbnail = thumbnail,
+        images = images
+    )
+}
+
+<span class="comment">// Для списков</span>
+<span class="keyword">fun</span> List&lt;<span class="type">ProductDto</span>&gt;.<span class="function">toDomain</span>(): List&lt;<span class="type">Product</span>&gt; = map { it.toDomain() }</code></pre>
+
+            <!-- Repository -->
+            <h2 class="text-2xl font-bold mt-8 mb-4">Repository</h2>
+            <pre class="mb-6"><code><span class="comment">// Domain Layer — интерфейс</span>
+<span class="keyword">interface</span> <span class="type">ProductRepository</span> {
+    <span class="keyword">suspend fun</span> <span class="function">getProducts</span>(): List&lt;<span class="type">Product</span>&gt;
+    <span class="keyword">suspend fun</span> <span class="function">getProductById</span>(id: Int): <span class="type">Product</span>
+    <span class="keyword">suspend fun</span> <span class="function">searchProducts</span>(query: String): List&lt;<span class="type">Product</span>&gt;
+}
+
+<span class="comment">// Data Layer — реализация</span>
+<span class="keyword">class</span> <span class="type">ProductRepositoryImpl</span> <span class="annotation">@Inject</span> <span class="keyword">constructor</span>(
+    <span class="keyword">private val</span> api: ProductApi
+) : <span class="type">ProductRepository</span> {
+
+    <span class="keyword">override suspend fun</span> <span class="function">getProducts</span>(): List&lt;<span class="type">Product</span>&gt; {
+        <span class="keyword">return</span> api.getProducts().products.toDomain()
+    }
+
+    <span class="keyword">override suspend fun</span> <span class="function">getProductById</span>(id: Int): <span class="type">Product</span> {
+        <span class="keyword">return</span> api.getProductById(id).toDomain()
+    }
+
+    <span class="keyword">override suspend fun</span> <span class="function">searchProducts</span>(query: String): List&lt;<span class="type">Product</span>&gt; {
+        <span class="keyword">return</span> api.searchProducts(query).products.toDomain()
+    }
+}</code></pre>
+
+            <!-- UseCase -->
+            <h2 class="text-2xl font-bold mt-8 mb-4">UseCase</h2>
+            <p class="text-zinc-600 dark:text-zinc-400 mb-4">
+                UseCase инкапсулирует одну бизнес-операцию. Это делает код переиспользуемым и тестируемым.
+            </p>
+
+            <pre class="mb-6"><code><span class="keyword">class</span> <span class="type">GetProductsUseCase</span> <span class="annotation">@Inject</span> <span class="keyword">constructor</span>(
+    <span class="keyword">private val</span> repository: <span class="type">ProductRepository</span>
+) {
+    <span class="keyword">suspend operator fun</span> <span class="function">invoke</span>(): <span class="type">Result</span>&lt;List&lt;<span class="type">Product</span>&gt;&gt; {
+        <span class="keyword">return try</span> {
+            <span class="type">Result</span>.success(repository.getProducts())
+        } <span class="keyword">catch</span> (e: Exception) {
+            <span class="type">Result</span>.failure(e)
+        }
+    }
+}
+
+<span class="comment">// UseCase с параметрами</span>
+<span class="keyword">class</span> <span class="type">GetProductByIdUseCase</span> <span class="annotation">@Inject</span> <span class="keyword">constructor</span>(
+    <span class="keyword">private val</span> repository: <span class="type">ProductRepository</span>
+) {
+    <span class="keyword">suspend operator fun</span> <span class="function">invoke</span>(id: Int): <span class="type">Result</span>&lt;<span class="type">Product</span>&gt; {
+        <span class="keyword">return try</span> {
+            <span class="type">Result</span>.success(repository.getProductById(id))
+        } <span class="keyword">catch</span> (e: Exception) {
+            <span class="type">Result</span>.failure(e)
+        }
+    }
+}</code></pre>
+
+            <!-- ViewModel -->
+            <h2 class="text-2xl font-bold mt-8 mb-4">ViewModel</h2>
+            <p class="text-zinc-600 dark:text-zinc-400 mb-4">
+                ViewModel хранит UI state и обрабатывает пользовательские события.
+            </p>
+
+            <pre class="mb-6"><code><span class="comment">// UI State</span>
+<span class="keyword">data class</span> <span class="type">HomeUiState</span>(
+    <span class="keyword">val</span> isLoading: Boolean = <span class="keyword">false</span>,
+    <span class="keyword">val</span> products: List&lt;<span class="type">Product</span>&gt; = emptyList(),
+    <span class="keyword">val</span> error: String? = <span class="keyword">null</span>
+)
+
+<span class="comment">// ViewModel</span>
+<span class="annotation">@HiltViewModel</span>
+<span class="keyword">class</span> <span class="type">HomeViewModel</span> <span class="annotation">@Inject</span> <span class="keyword">constructor</span>(
+    <span class="keyword">private val</span> getProductsUseCase: <span class="type">GetProductsUseCase</span>
+) : ViewModel() {
+
+    <span class="keyword">private val</span> _uiState = MutableStateFlow(<span class="type">HomeUiState</span>())
+    <span class="keyword">val</span> uiState: StateFlow&lt;<span class="type">HomeUiState</span>&gt; = _uiState.asStateFlow()
+
+    <span class="keyword">init</span> {
+        loadProducts()
+    }
+
+    <span class="keyword">fun</span> <span class="function">loadProducts</span>() {
+        viewModelScope.launch {
+            _uiState.update { it.copy(isLoading = <span class="keyword">true</span>) }
+
+            getProductsUseCase()
+                .onSuccess { products -&gt;
+                    _uiState.update {
+                        it.copy(isLoading = <span class="keyword">false</span>, products = products)
+                    }
+                }
+                .onFailure { error -&gt;
+                    _uiState.update {
+                        it.copy(isLoading = <span class="keyword">false</span>, error = error.message)
+                    }
+                }
+        }
+    }
+
+    <span class="keyword">fun</span> <span class="function">retry</span>() {
+        _uiState.update { it.copy(error = <span class="keyword">null</span>) }
+        loadProducts()
+    }
+}</code></pre>
+
+            <!-- View -->
+            <h2 class="text-2xl font-bold mt-8 mb-4">View (Composable)</h2>
+            <pre class="mb-6"><code><span class="annotation">@Composable</span>
+<span class="keyword">fun</span> <span class="function">HomeScreen</span>(
+    viewModel: <span class="type">HomeViewModel</span> = hiltViewModel(),
+    onProductClick: (Int) -&gt; Unit
+) {
+    <span class="keyword">val</span> uiState <span class="keyword">by</span> viewModel.uiState.collectAsStateWithLifecycle()
+
+    <span class="keyword">when</span> {
+        uiState.isLoading -&gt; {
+            <span class="function">LoadingIndicator</span>()
+        }
+        uiState.error != <span class="keyword">null</span> -&gt; {
+            <span class="function">ErrorMessage</span>(
+                message = uiState.error!!,
+                onRetry = { viewModel.retry() }
+            )
+        }
+        <span class="keyword">else</span> -&gt; {
+            <span class="function">ProductList</span>(
+                products = uiState.products,
+                onProductClick = onProductClick
+            )
+        }
+    }
+}
+
+<span class="annotation">@Composable</span>
+<span class="keyword">private fun</span> <span class="function">ProductList</span>(
+    products: List&lt;<span class="type">Product</span>&gt;,
+    onProductClick: (Int) -&gt; Unit
+) {
+    <span class="function">LazyVerticalGrid</span>(
+        columns = GridCells.Fixed(<span class="number">2</span>),
+        contentPadding = PaddingValues(<span class="number">16</span>.dp),
+        horizontalArrangement = Arrangement.spacedBy(<span class="number">8</span>.dp),
+        verticalArrangement = Arrangement.spacedBy(<span class="number">8</span>.dp)
+    ) {
+        items(products, key = { it.id }) { product -&gt;
+            <span class="function">ProductCard</span>(
+                product = product,
+                onClick = { onProductClick(product.id) }
+            )
+        }
+    }
+}</code></pre>
+
+            <!-- StateFlow vs LiveData -->
+            <h2 class="text-2xl font-bold mt-8 mb-4">StateFlow vs LiveData</h2>
+            <div class="overflow-x-auto mb-8">
+                <table class="w-full text-sm">
+                    <thead class="bg-zinc-100 dark:bg-zinc-800">
+                        <tr>
+                            <th class="px-4 py-2 text-left">Характеристика</th>
+                            <th class="px-4 py-2 text-left">StateFlow</th>
+                            <th class="px-4 py-2 text-left">LiveData</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-zinc-200 dark:divide-zinc-700">
+                        <tr>
+                            <td class="px-4 py-2">Требует начальное значение</td>
+                            <td class="px-4 py-2">Да</td>
+                            <td class="px-4 py-2">Нет</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-2">Null-safety</td>
+                            <td class="px-4 py-2">Безопасен</td>
+                            <td class="px-4 py-2">Может быть null</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-2">Lifecycle aware</td>
+                            <td class="px-4 py-2">С расширением</td>
+                            <td class="px-4 py-2">Да</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-2">Для Compose</td>
+                            <td class="px-4 py-2">Рекомендуется</td>
+                            <td class="px-4 py-2">Работает</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Unidirectional Data Flow -->
+            <h2 class="text-2xl font-bold mt-8 mb-4">Однонаправленный поток данных (UDF)</h2>
+            <div class="bg-zinc-100 dark:bg-zinc-800 rounded-xl p-6 mb-8 font-mono text-sm">
+                <pre class="text-center">
+     ┌──────────────────────────────────┐
+     │            UI (View)             │
+     │     Отображает UI State          │
+     └────────────┬───────────────┬─────┘
+                  │               │
+         UI State │               │ Events
+                  ↑               ↓
+     ┌────────────┴───────────────┴─────┐
+     │          ViewModel               │
+     │   Обрабатывает события,          │
+     │   обновляет state                │
+     └──────────────────────────────────┘
+                </pre>
+            </div>
+
+            <div class="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-xl p-6 mb-8">
+                <h3 class="font-semibold text-green-900 dark:text-green-100 mb-3">Преимущества UDF</h3>
+                <ul class="text-green-800 dark:text-green-200 space-y-2">
+                    <li>• Предсказуемость — state изменяется только в одном месте</li>
+                    <li>• Отладка — легко отследить изменения</li>
+                    <li>• Тестирование — можно тестировать ViewModel изолированно</li>
+                    <li>• Time Travel — можно воспроизвести последовательность событий</li>
+                </ul>
+            </div>
+
+            <!-- Sealed class для состояний -->
+            <h2 class="text-2xl font-bold mt-8 mb-4">Sealed Class для UI State</h2>
+            <pre class="mb-6"><code><span class="keyword">sealed class</span> <span class="type">ProductDetailState</span> {
+    <span class="keyword">object</span> <span class="type">Loading</span> : <span class="type">ProductDetailState</span>()
+    <span class="keyword">data class</span> <span class="type">Success</span>(<span class="keyword">val</span> product: <span class="type">Product</span>) : <span class="type">ProductDetailState</span>()
+    <span class="keyword">data class</span> <span class="type">Error</span>(<span class="keyword">val</span> message: String) : <span class="type">ProductDetailState</span>()
+}
+
+<span class="comment">// В ViewModel</span>
+<span class="keyword">private val</span> _state = MutableStateFlow&lt;<span class="type">ProductDetailState</span>&gt;(<span class="type">ProductDetailState</span>.Loading)
+<span class="keyword">val</span> state: StateFlow&lt;<span class="type">ProductDetailState</span>&gt; = _state.asStateFlow()
+
+<span class="comment">// В Composable</span>
+<span class="keyword">when</span> (<span class="keyword">val</span> state = uiState) {
+    <span class="keyword">is</span> <span class="type">ProductDetailState</span>.Loading -&gt; <span class="function">LoadingIndicator</span>()
+    <span class="keyword">is</span> <span class="type">ProductDetailState</span>.Success -&gt; <span class="function">ProductContent</span>(state.product)
+    <span class="keyword">is</span> <span class="type">ProductDetailState</span>.Error -&gt; <span class="function">ErrorMessage</span>(state.message)
+}</code></pre>
+
+            <!-- Итоги -->
+            <div class="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-xl p-6 mb-8">
+                <h3 class="font-semibold text-green-900 dark:text-green-100 mb-3">Ключевые концепции</h3>
+                <ul class="text-green-800 dark:text-green-200 space-y-2">
+                    <li>• <strong>MVVM</strong> — разделение на Model, View, ViewModel</li>
+                    <li>• <strong>Clean Architecture</strong> — слои Presentation, Domain, Data</li>
+                    <li>• <strong>Repository</strong> — абстракция над источниками данных</li>
+                    <li>• <strong>UseCase</strong> — инкапсуляция бизнес-логики</li>
+                    <li>• <strong>StateFlow</strong> — реактивное хранение UI state</li>
+                    <li>• <strong>UDF</strong> — однонаправленный поток данных</li>
+                </ul>
+            </div>
+
+        </div>
+
+        <div class="flex justify-between items-center mt-12 pt-8 border-t border-zinc-200 dark:border-zinc-800">
+            <a href="01-compose-basics.html" class="text-green-500 hover:underline">&larr; Основы Compose</a>
+            <a href="../index.html" class="text-green-500 hover:underline">Оглавление</a>
+            <a href="03-project-setup.html" class="text-green-500 hover:underline">Настройка проекта &rarr;</a>
+        </div>
+    </div>
+</body>
+</html>

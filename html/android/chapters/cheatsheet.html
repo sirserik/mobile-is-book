@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Шпаргалка | Android E-Commerce</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-white dark:bg-zinc-900">
+    <div class="max-w-4xl mx-auto px-6 py-12">
+        <a href="../index.html" class="text-green-500 hover:underline mb-4 inline-block">&larr; Назад</a>
+        <h1 class="text-4xl font-bold text-zinc-900 dark:text-white mb-6">Шпаргалка Kotlin vs JavaScript</h1>
+
+        <div class="overflow-x-auto">
+            <table class="w-full text-sm mb-8">
+                <thead class="bg-zinc-100 dark:bg-zinc-800">
+                    <tr><th class="px-4 py-2 text-left">JavaScript</th><th class="px-4 py-2 text-left">Kotlin</th></tr>
+                </thead>
+                <tbody class="divide-y divide-zinc-200 dark:divide-zinc-700">
+                    <tr><td class="px-4 py-2"><code>let x = 1</code></td><td class="px-4 py-2"><code>var x = 1</code></td></tr>
+                    <tr><td class="px-4 py-2"><code>const x = 1</code></td><td class="px-4 py-2"><code>val x = 1</code></td></tr>
+                    <tr><td class="px-4 py-2"><code>null</code></td><td class="px-4 py-2"><code>null</code> (требует <code>?</code>)</td></tr>
+                    <tr><td class="px-4 py-2"><code>x ?? default</code></td><td class="px-4 py-2"><code>x ?: default</code></td></tr>
+                    <tr><td class="px-4 py-2"><code>x?.y</code></td><td class="px-4 py-2"><code>x?.y</code></td></tr>
+                    <tr><td class="px-4 py-2"><code>async/await</code></td><td class="px-4 py-2"><code>suspend/coroutines</code></td></tr>
+                    <tr><td class="px-4 py-2"><code>Promise</code></td><td class="px-4 py-2"><code>Deferred / Flow</code></td></tr>
+                    <tr><td class="px-4 py-2"><code>array.map()</code></td><td class="px-4 py-2"><code>list.map { }</code></td></tr>
+                    <tr><td class="px-4 py-2"><code>array.filter()</code></td><td class="px-4 py-2"><code>list.filter { }</code></td></tr>
+                    <tr><td class="px-4 py-2"><code>{ key: value }</code></td><td class="px-4 py-2"><code>data class</code></td></tr>
+                    <tr><td class="px-4 py-2"><code>interface</code></td><td class="px-4 py-2"><code>interface</code></td></tr>
+                    <tr><td class="px-4 py-2"><code>class</code></td><td class="px-4 py-2"><code>class</code></td></tr>
+                    <tr><td class="px-4 py-2"><code>() => {}</code></td><td class="px-4 py-2"><code>{ }</code> (lambda)</td></tr>
+                    <tr><td class="px-4 py-2"><code>switch</code></td><td class="px-4 py-2"><code>when</code></td></tr>
+                    <tr><td class="px-4 py-2"><code>typeof x</code></td><td class="px-4 py-2"><code>x is Type</code></td></tr>
+                    <tr><td class="px-4 py-2"><code>`${var}`</code></td><td class="px-4 py-2"><code>"$var"</code> или <code>"${expr}"</code></td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 class="text-2xl font-bold mt-8 mb-4">Compose vs React</h2>
+        <div class="overflow-x-auto">
+            <table class="w-full text-sm">
+                <thead class="bg-zinc-100 dark:bg-zinc-800">
+                    <tr><th class="px-4 py-2 text-left">React</th><th class="px-4 py-2 text-left">Compose</th></tr>
+                </thead>
+                <tbody class="divide-y divide-zinc-200 dark:divide-zinc-700">
+                    <tr><td class="px-4 py-2"><code>useState</code></td><td class="px-4 py-2"><code>remember { mutableStateOf() }</code></td></tr>
+                    <tr><td class="px-4 py-2"><code>useEffect</code></td><td class="px-4 py-2"><code>LaunchedEffect</code></td></tr>
+                    <tr><td class="px-4 py-2"><code>&lt;div&gt;</code></td><td class="px-4 py-2"><code>Box</code></td></tr>
+                    <tr><td class="px-4 py-2"><code>flex column</code></td><td class="px-4 py-2"><code>Column</code></td></tr>
+                    <tr><td class="px-4 py-2"><code>flex row</code></td><td class="px-4 py-2"><code>Row</code></td></tr>
+                    <tr><td class="px-4 py-2"><code>map()</code></td><td class="px-4 py-2"><code>LazyColumn { items() }</code></td></tr>
+                    <tr><td class="px-4 py-2"><code>props</code></td><td class="px-4 py-2">Параметры функции</td></tr>
+                    <tr><td class="px-4 py-2"><code>children</code></td><td class="px-4 py-2"><code>content: @Composable () -> Unit</code></td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="flex justify-between items-center mt-12 pt-8 border-t border-zinc-200 dark:border-zinc-800">
+            <a href="13-final.html" class="text-green-500 hover:underline">&larr; Финал</a>
+            <a href="../index.html" class="text-green-500 hover:underline">Оглавление</a>
+            <a href="common-mistakes.html" class="text-green-500 hover:underline">Частые ошибки &rarr;</a>
+        </div>
+    </div>
+</body>
+</html>

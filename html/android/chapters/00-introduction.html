@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Введение | Android E-Commerce</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        pre { background: #1e1e1e; color: #d4d4d4; padding: 1rem; border-radius: 0.5rem; overflow-x: auto; }
+    </style>
+</head>
+<body class="bg-white dark:bg-zinc-900">
+    <div class="max-w-4xl mx-auto px-6 py-12">
+        <a href="../index.html" class="text-green-500 hover:underline mb-4 inline-block">&larr; Назад к оглавлению</a>
+
+        <h1 class="text-4xl font-bold text-zinc-900 dark:text-white mb-6">Введение</h1>
+
+        <div class="prose dark:prose-invert max-w-none">
+            <h2 class="text-2xl font-bold mt-8 mb-4">О книге</h2>
+            <p class="text-zinc-600 dark:text-zinc-400 mb-6">
+                Это практическое руководство по созданию современного Android приложения E-Commerce с использованием
+                Jetpack Compose и архитектуры MVVM + Clean Architecture.
+            </p>
+
+            <div class="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-xl p-6 mb-8">
+                <h3 class="font-semibold text-green-900 dark:text-green-100 mb-3">Что вы создадите</h3>
+                <p class="text-green-800 dark:text-green-200">
+                    Полноценное приложение интернет-магазина с каталогом товаров, поиском, избранным,
+                    корзиной и оформлением заказа.
+                </p>
+            </div>
+
+            <h2 class="text-2xl font-bold mt-8 mb-4">Для кого эта книга?</h2>
+            <ul class="space-y-3 text-zinc-600 dark:text-zinc-400 mb-8">
+                <li class="flex items-start gap-3">
+                    <span class="text-green-500 mt-1">✓</span>
+                    <span><strong>Web-разработчики</strong> — переходящие на мобильную разработку</span>
+                </li>
+                <li class="flex items-start gap-3">
+                    <span class="text-green-500 mt-1">✓</span>
+                    <span><strong>iOS разработчики</strong> — желающие изучить Android</span>
+                </li>
+                <li class="flex items-start gap-3">
+                    <span class="text-green-500 mt-1">✓</span>
+                    <span><strong>Начинающие Android разработчики</strong> — желающие освоить современный стек</span>
+                </li>
+                <li class="flex items-start gap-3">
+                    <span class="text-green-500 mt-1">✓</span>
+                    <span><strong>Java разработчики</strong> — переходящие на Kotlin + Compose</span>
+                </li>
+            </ul>
+
+            <h2 class="text-2xl font-bold mt-8 mb-4">Требования</h2>
+            <div class="grid md:grid-cols-2 gap-4 mb-8">
+                <div class="p-4 bg-zinc-50 dark:bg-zinc-800 rounded-lg">
+                    <h4 class="font-semibold mb-2">Оборудование</h4>
+                    <ul class="text-sm text-zinc-600 dark:text-zinc-400 space-y-1">
+                        <li>• Windows / macOS / Linux</li>
+                        <li>• 8 GB RAM (16 GB рекомендуется)</li>
+                        <li>• 10 GB свободного места</li>
+                    </ul>
+                </div>
+                <div class="p-4 bg-zinc-50 dark:bg-zinc-800 rounded-lg">
+                    <h4 class="font-semibold mb-2">Софт</h4>
+                    <ul class="text-sm text-zinc-600 dark:text-zinc-400 space-y-1">
+                        <li>• Android Studio Hedgehog+</li>
+                        <li>• JDK 17+</li>
+                        <li>• Android SDK 24+</li>
+                    </ul>
+                </div>
+            </div>
+
+            <h2 class="text-2xl font-bold mt-8 mb-4">Технологический стек</h2>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-8">
+                <div class="p-3 bg-zinc-100 dark:bg-zinc-800 rounded-lg text-center">
+                    <div class="text-2xl mb-1">🟣</div>
+                    <div class="text-sm font-medium">Kotlin</div>
+                </div>
+                <div class="p-3 bg-zinc-100 dark:bg-zinc-800 rounded-lg text-center">
+                    <div class="text-2xl mb-1">🎨</div>
+                    <div class="text-sm font-medium">Compose</div>
+                </div>
+                <div class="p-3 bg-zinc-100 dark:bg-zinc-800 rounded-lg text-center">
+                    <div class="text-2xl mb-1">🏗️</div>
+                    <div class="text-sm font-medium">MVVM</div>
+                </div>
+                <div class="p-3 bg-zinc-100 dark:bg-zinc-800 rounded-lg text-center">
+                    <div class="text-2xl mb-1">💉</div>
+                    <div class="text-sm font-medium">Hilt</div>
+                </div>
+                <div class="p-3 bg-zinc-100 dark:bg-zinc-800 rounded-lg text-center">
+                    <div class="text-2xl mb-1">🌐</div>
+                    <div class="text-sm font-medium">Retrofit</div>
+                </div>
+                <div class="p-3 bg-zinc-100 dark:bg-zinc-800 rounded-lg text-center">
+                    <div class="text-2xl mb-1">💾</div>
+                    <div class="text-sm font-medium">Room</div>
+                </div>
+                <div class="p-3 bg-zinc-100 dark:bg-zinc-800 rounded-lg text-center">
+                    <div class="text-2xl mb-1">🔄</div>
+                    <div class="text-sm font-medium">Coroutines</div>
+                </div>
+                <div class="p-3 bg-zinc-100 dark:bg-zinc-800 rounded-lg text-center">
+                    <div class="text-2xl mb-1">📡</div>
+                    <div class="text-sm font-medium">Flow</div>
+                </div>
+            </div>
+
+            <h2 class="text-2xl font-bold mt-8 mb-4">Исходный проект</h2>
+            <p class="text-zinc-600 dark:text-zinc-400 mb-4">
+                Книга основана на открытом проекте
+                <a href="https://github.com/mustfaunlu/Ecommerce-Compose" target="_blank" class="text-green-500 hover:underline">Ecommerce-Compose</a>
+                от Mustafa Unlu.
+            </p>
+
+            <div class="bg-zinc-100 dark:bg-zinc-800 rounded-xl p-6">
+                <h3 class="font-semibold mb-3">Структура курса</h3>
+                <ol class="space-y-2 text-zinc-600 dark:text-zinc-400">
+                    <li><strong>Главы 0-2:</strong> Основы Kotlin и Jetpack Compose</li>
+                    <li><strong>Главы 3-4:</strong> Настройка проекта и API</li>
+                    <li><strong>Главы 5-10:</strong> Создание фич приложения</li>
+                    <li><strong>Главы 11-13:</strong> DI, тестирование, публикация</li>
+                </ol>
+            </div>
+        </div>
+
+        <div class="flex justify-between items-center mt-12 pt-8 border-t border-zinc-200 dark:border-zinc-800">
+            <span class="text-zinc-400">Начало</span>
+            <a href="../index.html" class="text-green-500 hover:underline">Оглавление</a>
+            <a href="00a-kotlin-for-developers.html" class="text-green-500 hover:underline">Kotlin для разработчиков &rarr;</a>
+        </div>
+    </div>
+</body>
+</html>

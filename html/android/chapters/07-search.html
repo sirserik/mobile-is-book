@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Глава 7: Поиск | Android E-Commerce</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        pre { background: #1e1e1e; color: #d4d4d4; padding: 1rem; border-radius: 0.5rem; overflow-x: auto; }
+        .keyword { color: #569cd6; }
+        .function { color: #dcdcaa; }
+        .string { color: #ce9178; }
+        .comment { color: #6a9955; }
+        .annotation { color: #4ec9b0; }
+        .number { color: #b5cea8; }
+        .type { color: #4ec9b0; }
+    </style>
+</head>
+<body class="bg-white dark:bg-zinc-900">
+    <div class="max-w-4xl mx-auto px-6 py-12">
+        <a href="../index.html" class="text-green-500 hover:underline mb-4 inline-block">&larr; Назад к оглавлению</a>
+
+        <h1 class="text-4xl font-bold text-zinc-900 dark:text-white mb-6">Глава 7: Поиск</h1>
+
+        <div class="prose dark:prose-invert max-w-none">
+
+            <!-- UseCase -->
+            <h2 class="text-2xl font-bold mt-8 mb-4">SearchProductsUseCase</h2>
+            <pre class="mb-6"><code><span class="keyword">class</span> <span class="type">SearchProductsUseCase</span> <span class="annotation">@Inject</span> <span class="keyword">constructor</span>(
+    <span class="keyword">private val</span> repository: <span class="type">ProductRepository</span>
+) {
+    <span class="keyword">operator fun</span> <span class="function">invoke</span>(query: String): Flow&lt;Resource&lt;List&lt;<span class="type">Product</span>&gt;&gt;&gt; {
+        <span class="keyword">return</span> repository.searchProducts(query)
+    }
+}</code></pre>
+
+            <!-- ViewModel -->
+            <h2 class="text-2xl font-bold mt-8 mb-4">SearchViewModel с Debounce</h2>
+            <pre class="mb-6"><code><span class="keyword">data class</span> <span class="type">SearchUiState</span>(
+    <span class="keyword">val</span> query: String = <span class="string">""</span>,
+    <span class="keyword">val</span> isLoading: Boolean = <span class="keyword">false</span>,
+    <span class="keyword">val</span> products: List&lt;<span class="type">Product</span>&gt; = emptyList(),
+    <span class="keyword">val</span> error: String? = <span class="keyword">null</span>,
+    <span class="keyword">val</span> isSearchActive: Boolean = <span class="keyword">false</span>
+)
+
+<span class="annotation">@HiltViewModel</span>
+<span class="keyword">class</span> <span class="type">SearchViewModel</span> <span class="annotation">@Inject</span> <span class="keyword">constructor</span>(
+    <span class="keyword">private val</span> searchProductsUseCase: <span class="type">SearchProductsUseCase</span>
+) : ViewModel() {
+
+    <span class="keyword">private val</span> _uiState = MutableStateFlow(<span class="type">SearchUiState</span>())
+    <span class="keyword">val</span> uiState: StateFlow&lt;<span class="type">SearchUiState</span>&gt; = _uiState.asStateFlow()
+
+    <span class="keyword">private val</span> searchQuery = MutableStateFlow(<span class="string">""</span>)
+
+    <span class="keyword">init</span> {
+        <span class="comment">// Debounce: ждём 300ms после ввода перед поиском</span>
+        searchQuery
+            .debounce(<span class="number">300</span>)
+            .filter { it.length >= <span class="number">2</span> }
+            .distinctUntilChanged()
+            .flatMapLatest { query -&gt;
+                searchProductsUseCase(query)
+            }
+            .onEach { result -&gt;
+                <span class="keyword">when</span> (result) {
+                    <span class="keyword">is</span> Resource.Loading -&gt; {
+                        _uiState.update { it.copy(isLoading = <span class="keyword">true</span>) }
+                    }
+                    <span class="keyword">is</span> Resource.Success -&gt; {
+                        _uiState.update {
+                            it.copy(isLoading = <span class="keyword">false</span>, products = result.data)
+                        }
+                    }
+                    <span class="keyword">is</span> Resource.Error -&gt; {
+                        _uiState.update {
+                            it.copy(isLoading = <span class="keyword">false</span>, error = result.message)
+                        }
+                    }
+                }
+            }
+            .launchIn(viewModelScope)
+    }
+
+    <span class="keyword">fun</span> <span class="function">onQueryChange</span>(query: String) {
+        _uiState.update { it.copy(query = query) }
+        searchQuery.value = query
+
+        <span class="keyword">if</span> (query.isEmpty()) {
+            _uiState.update { it.copy(products = emptyList()) }
+        }
+    }
+
+    <span class="keyword">fun</span> <span class="function">onSearchActiveChange</span>(active: Boolean) {
+        _uiState.update { it.copy(isSearchActive = active) }
+    }
+
+    <span class="keyword">fun</span> <span class="function">clearSearch</span>() {
+        _uiState.update {
+            it.copy(query = <span class="string">""</span>, products = emptyList())
+        }
+        searchQuery.value = <span class="string">""</span>
+    }
+}</code></pre>
+
+            <!-- Debounce объяснение -->
+            <div class="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-xl p-4 mb-6">
+                <h3 class="font-semibold text-blue-900 dark:text-blue-100 mb-2">Что такое Debounce?</h3>
+                <p class="text-blue-800 dark:text-blue-200 text-sm">
+                    Debounce откладывает выполнение до тех пор, пока не пройдёт указанное время без новых событий.
+                    Это предотвращает лишние API запросы при каждом нажатии клавиши.
+                </p>
+            </div>
+
+            <!-- SearchScreen -->
+            <h2 class="text-2xl font-bold mt-8 mb-4">SearchScreen</h2>
+            <pre class="mb-6"><code><span class="annotation">@OptIn</span>(ExperimentalMaterial3Api::<span class="keyword">class</span>)
+<span class="annotation">@Composable</span>
+<span class="keyword">fun</span> <span class="function">SearchScreen</span>(
+    viewModel: <span class="type">SearchViewModel</span> = hiltViewModel(),
+    onProductClick: (Int) -&gt; Unit,
+    onBackClick: () -&gt; Unit
+) {
+    <span class="keyword">val</span> uiState <span class="keyword">by</span> viewModel.uiState.collectAsStateWithLifecycle()
+
+    <span class="function">Column</span>(modifier = Modifier.fillMaxSize()) {
+        <span class="comment">// Поле поиска</span>
+        <span class="function">SearchBar</span>(
+            query = uiState.query,
+            onQueryChange = { viewModel.onQueryChange(it) },
+            onSearch = { },
+            active = uiState.isSearchActive,
+            onActiveChange = { viewModel.onSearchActiveChange(it) },
+            placeholder = { <span class="function">Text</span>(<span class="string">"Поиск товаров..."</span>) },
+            leadingIcon = {
+                <span class="function">IconButton</span>(onClick = onBackClick) {
+                    <span class="function">Icon</span>(Icons.AutoMirrored.Filled.ArrowBack, <span class="string">"Назад"</span>)
+                }
+            },
+            trailingIcon = {
+                <span class="keyword">if</span> (uiState.query.isNotEmpty()) {
+                    <span class="function">IconButton</span>(onClick = { viewModel.clearSearch() }) {
+                        <span class="function">Icon</span>(Icons.Default.Close, <span class="string">"Очистить"</span>)
+                    }
+                }
+            },
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(<span class="number">16</span>.dp)
+        ) {
+            <span class="comment">// Результаты поиска</span>
+            <span class="function">SearchResults</span>(
+                isLoading = uiState.isLoading,
+                products = uiState.products,
+                onProductClick = onProductClick
+            )
+        }
+    }
+}</code></pre>
+
+            <!-- SearchResults -->
+            <h2 class="text-2xl font-bold mt-8 mb-4">SearchResults</h2>
+            <pre class="mb-6"><code><span class="annotation">@Composable</span>
+<span class="keyword">fun</span> <span class="function">SearchResults</span>(
+    isLoading: Boolean,
+    products: List&lt;<span class="type">Product</span>&gt;,
+    onProductClick: (Int) -&gt; Unit
+) {
+    <span class="keyword">when</span> {
+        isLoading -&gt; {
+            <span class="function">Box</span>(
+                modifier = Modifier.fillMaxWidth().padding(<span class="number">32</span>.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                <span class="function">CircularProgressIndicator</span>()
+            }
+        }
+        products.isEmpty() -&gt; {
+            <span class="function">EmptySearchResult</span>()
+        }
+        <span class="keyword">else</span> -&gt; {
+            <span class="function">LazyColumn</span>(
+                contentPadding = PaddingValues(<span class="number">16</span>.dp),
+                verticalArrangement = Arrangement.spacedBy(<span class="number">8</span>.dp)
+            ) {
+                items(products, key = { it.id }) { product -&gt;
+                    <span class="function">SearchResultItem</span>(
+                        product = product,
+                        onClick = { onProductClick(product.id) }
+                    )
+                }
+            }
+        }
+    }
+}
+
+<span class="annotation">@Composable</span>
+<span class="keyword">fun</span> <span class="function">EmptySearchResult</span>() {
+    <span class="function">Column</span>(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(<span class="number">32</span>.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        <span class="function">Icon</span>(
+            imageVector = Icons.Default.Search,
+            contentDescription = <span class="keyword">null</span>,
+            modifier = Modifier.size(<span class="number">64</span>.dp),
+            tint = Color.Gray
+        )
+        <span class="function">Spacer</span>(modifier = Modifier.height(<span class="number">16</span>.dp))
+        <span class="function">Text</span>(
+            text = <span class="string">"Ничего не найдено"</span>,
+            style = MaterialTheme.typography.bodyLarge,
+            color = Color.Gray
+        )
+    }
+}</code></pre>
+
+            <!-- SearchResultItem -->
+            <h2 class="text-2xl font-bold mt-8 mb-4">SearchResultItem</h2>
+            <pre class="mb-6"><code><span class="annotation">@Composable</span>
+<span class="keyword">fun</span> <span class="function">SearchResultItem</span>(
+    product: <span class="type">Product</span>,
+    onClick: () -&gt; Unit
+) {
+    <span class="function">Card</span>(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable { onClick() },
+        shape = RoundedCornerShape(<span class="number">8</span>.dp)
+    ) {
+        <span class="function">Row</span>(
+            modifier = Modifier.padding(<span class="number">12</span>.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            <span class="function">AsyncImage</span>(
+                model = product.thumbnail,
+                contentDescription = <span class="keyword">null</span>,
+                modifier = Modifier
+                    .size(<span class="number">60</span>.dp)
+                    .clip(RoundedCornerShape(<span class="number">8</span>.dp)),
+                contentScale = ContentScale.Crop
+            )
+
+            <span class="function">Spacer</span>(modifier = Modifier.width(<span class="number">12</span>.dp))
+
+            <span class="function">Column</span>(modifier = Modifier.weight(<span class="number">1f</span>)) {
+                <span class="function">Text</span>(
+                    text = product.title,
+                    style = MaterialTheme.typography.titleMedium,
+                    maxLines = <span class="number">1</span>,
+                    overflow = TextOverflow.Ellipsis
+                )
+
+                <span class="function">Text</span>(
+                    text = product.category,
+                    style = MaterialTheme.typography.bodySmall,
+                    color = Color.Gray
+                )
+
+                <span class="function">Text</span>(
+                    text = <span class="string">"$${product.price}"</span>,
+                    style = MaterialTheme.typography.titleSmall,
+                    color = MaterialTheme.colorScheme.primary,
+                    fontWeight = FontWeight.Bold
+                )
+            }
+        }
+    }
+}</code></pre>
+
+            <!-- Flow операторы -->
+            <h2 class="text-2xl font-bold mt-8 mb-4">Flow операторы для поиска</h2>
+            <div class="overflow-x-auto mb-8">
+                <table class="w-full text-sm">
+                    <thead class="bg-zinc-100 dark:bg-zinc-800">
+                        <tr>
+                            <th class="px-4 py-2 text-left">Оператор</th>
+                            <th class="px-4 py-2 text-left">Описание</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-zinc-200 dark:divide-zinc-700">
+                        <tr>
+                            <td class="px-4 py-2"><code>debounce(300)</code></td>
+                            <td class="px-4 py-2">Ждёт 300ms без новых значений</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-2"><code>filter { }</code></td>
+                            <td class="px-4 py-2">Фильтрует значения (мин. 2 символа)</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-2"><code>distinctUntilChanged()</code></td>
+                            <td class="px-4 py-2">Пропускает повторяющиеся значения</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-2"><code>flatMapLatest { }</code></td>
+                            <td class="px-4 py-2">Отменяет предыдущий запрос при новом</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- История поиска -->
+            <h2 class="text-2xl font-bold mt-8 mb-4">История поиска (DataStore)</h2>
+            <pre class="mb-6"><code><span class="keyword">class</span> <span class="type">SearchHistoryDataStore</span> <span class="annotation">@Inject</span> <span class="keyword">constructor</span>(
+    <span class="keyword">private val</span> dataStore: DataStore&lt;Preferences&gt;
+) {
+    <span class="keyword">private val</span> SEARCH_HISTORY_KEY = stringSetPreferencesKey(<span class="string">"search_history"</span>)
+
+    <span class="keyword">val</span> searchHistory: Flow&lt;List&lt;String&gt;&gt; = dataStore.data.map { prefs -&gt;
+        prefs[SEARCH_HISTORY_KEY]?.toList() ?: emptyList()
+    }
+
+    <span class="keyword">suspend fun</span> <span class="function">addToHistory</span>(query: String) {
+        dataStore.edit { prefs -&gt;
+            <span class="keyword">val</span> current = prefs[SEARCH_HISTORY_KEY]?.toMutableSet() ?: mutableSetOf()
+            current.add(query)
+            <span class="comment">// Храним только последние 10</span>
+            prefs[SEARCH_HISTORY_KEY] = current.takeLast(<span class="number">10</span>).toSet()
+        }
+    }
+
+    <span class="keyword">suspend fun</span> <span class="function">clearHistory</span>() {
+        dataStore.edit { prefs -&gt;
+            prefs.remove(SEARCH_HISTORY_KEY)
+        }
+    }
+}</code></pre>
+
+            <!-- Итоги -->
+            <div class="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-xl p-6 mb-8">
+                <h3 class="font-semibold text-green-900 dark:text-green-100 mb-3">Что мы создали</h3>
+                <ul class="text-green-800 dark:text-green-200 space-y-2">
+                    <li>• SearchViewModel с debounce</li>
+                    <li>• Material 3 SearchBar</li>
+                    <li>• Результаты поиска с LazyColumn</li>
+                    <li>• Историю поиска с DataStore</li>
+                    <li>• Использование Flow операторов</li>
+                </ul>
+            </div>
+
+        </div>
+
+        <div class="flex justify-between items-center mt-12 pt-8 border-t border-zinc-200 dark:border-zinc-800">
+            <a href="06-product-detail.html" class="text-green-500 hover:underline">&larr; Детали товара</a>
+            <a href="../index.html" class="text-green-500 hover:underline">Оглавление</a>
+            <a href="08-favorites.html" class="text-green-500 hover:underline">Избранное &rarr;</a>
+        </div>
+    </div>
+</body>
+</html>

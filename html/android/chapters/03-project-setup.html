@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Глава 3: Настройка проекта | Android E-Commerce</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        pre { background: #1e1e1e; color: #d4d4d4; padding: 1rem; border-radius: 0.5rem; overflow-x: auto; }
+        .keyword { color: #569cd6; }
+        .function { color: #dcdcaa; }
+        .string { color: #ce9178; }
+        .comment { color: #6a9955; }
+        .annotation { color: #4ec9b0; }
+        .number { color: #b5cea8; }
+    </style>
+</head>
+<body class="bg-white dark:bg-zinc-900">
+    <div class="max-w-4xl mx-auto px-6 py-12">
+        <a href="../index.html" class="text-green-500 hover:underline mb-4 inline-block">&larr; Назад к оглавлению</a>
+
+        <h1 class="text-4xl font-bold text-zinc-900 dark:text-white mb-6">Глава 3: Настройка проекта</h1>
+
+        <div class="prose dark:prose-invert max-w-none">
+
+            <!-- Создание проекта -->
+            <h2 class="text-2xl font-bold mt-8 mb-4">Создание проекта</h2>
+            <ol class="list-decimal list-inside text-zinc-600 dark:text-zinc-400 mb-6 space-y-2">
+                <li>Откройте Android Studio</li>
+                <li>File → New → New Project</li>
+                <li>Выберите "Empty Activity" (Compose)</li>
+                <li>Укажите имя: <code class="bg-zinc-100 dark:bg-zinc-800 px-2 py-1 rounded">EcommerceApp</code></li>
+                <li>Package: <code class="bg-zinc-100 dark:bg-zinc-800 px-2 py-1 rounded">com.example.ecommerce</code></li>
+                <li>Minimum SDK: API 24 (Android 7.0)</li>
+            </ol>
+
+            <!-- build.gradle (Project) -->
+            <h2 class="text-2xl font-bold mt-8 mb-4">build.gradle.kts (Project)</h2>
+            <pre class="mb-6"><code><span class="comment">// Top-level build file</span>
+plugins {
+    id(<span class="string">"com.android.application"</span>) version <span class="string">"8.2.0"</span> apply <span class="keyword">false</span>
+    id(<span class="string">"org.jetbrains.kotlin.android"</span>) version <span class="string">"1.9.20"</span> apply <span class="keyword">false</span>
+    id(<span class="string">"com.google.dagger.hilt.android"</span>) version <span class="string">"2.48"</span> apply <span class="keyword">false</span>
+    id(<span class="string">"com.google.devtools.ksp"</span>) version <span class="string">"1.9.20-1.0.14"</span> apply <span class="keyword">false</span>
+}</code></pre>
+
+            <!-- build.gradle (App) -->
+            <h2 class="text-2xl font-bold mt-8 mb-4">build.gradle.kts (App)</h2>
+            <pre class="mb-6"><code>plugins {
+    id(<span class="string">"com.android.application"</span>)
+    id(<span class="string">"org.jetbrains.kotlin.android"</span>)
+    id(<span class="string">"com.google.dagger.hilt.android"</span>)
+    id(<span class="string">"com.google.devtools.ksp"</span>)
+}
+
+android {
+    namespace = <span class="string">"com.example.ecommerce"</span>
+    compileSdk = <span class="number">34</span>
+
+    defaultConfig {
+        applicationId = <span class="string">"com.example.ecommerce"</span>
+        minSdk = <span class="number">24</span>
+        targetSdk = <span class="number">34</span>
+        versionCode = <span class="number">1</span>
+        versionName = <span class="string">"1.0"</span>
+    }
+
+    buildTypes {
+        release {
+            isMinifyEnabled = <span class="keyword">true</span>
+            proguardFiles(
+                getDefaultProguardFile(<span class="string">"proguard-android-optimize.txt"</span>),
+                <span class="string">"proguard-rules.pro"</span>
+            )
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
+    }
+
+    kotlinOptions {
+        jvmTarget = <span class="string">"17"</span>
+    }
+
+    buildFeatures {
+        compose = <span class="keyword">true</span>
+    }
+
+    composeOptions {
+        kotlinCompilerExtensionVersion = <span class="string">"1.5.5"</span>
+    }
+}</code></pre>
+
+            <!-- Зависимости -->
+            <h2 class="text-2xl font-bold mt-8 mb-4">Зависимости</h2>
+            <pre class="mb-6"><code>dependencies {
+    <span class="comment">// Compose BOM</span>
+    <span class="keyword">val</span> composeBom = platform(<span class="string">"androidx.compose:compose-bom:2024.01.00"</span>)
+    implementation(composeBom)
+
+    <span class="comment">// Core</span>
+    implementation(<span class="string">"androidx.core:core-ktx:1.12.0"</span>)
+    implementation(<span class="string">"androidx.lifecycle:lifecycle-runtime-ktx:2.7.0"</span>)
+    implementation(<span class="string">"androidx.activity:activity-compose:1.8.2"</span>)
+
+    <span class="comment">// Compose</span>
+    implementation(<span class="string">"androidx.compose.ui:ui"</span>)
+    implementation(<span class="string">"androidx.compose.ui:ui-graphics"</span>)
+    implementation(<span class="string">"androidx.compose.ui:ui-tooling-preview"</span>)
+    implementation(<span class="string">"androidx.compose.material3:material3"</span>)
+
+    <span class="comment">// Navigation</span>
+    implementation(<span class="string">"androidx.navigation:navigation-compose:2.7.6"</span>)
+
+    <span class="comment">// Hilt</span>
+    implementation(<span class="string">"com.google.dagger:hilt-android:2.48"</span>)
+    ksp(<span class="string">"com.google.dagger:hilt-compiler:2.48"</span>)
+    implementation(<span class="string">"androidx.hilt:hilt-navigation-compose:1.1.0"</span>)
+
+    <span class="comment">// Retrofit + Moshi</span>
+    implementation(<span class="string">"com.squareup.retrofit2:retrofit:2.9.0"</span>)
+    implementation(<span class="string">"com.squareup.retrofit2:converter-moshi:2.9.0"</span>)
+    implementation(<span class="string">"com.squareup.moshi:moshi-kotlin:1.15.0"</span>)
+    ksp(<span class="string">"com.squareup.moshi:moshi-kotlin-codegen:1.15.0"</span>)
+
+    <span class="comment">// OkHttp</span>
+    implementation(<span class="string">"com.squareup.okhttp3:okhttp:4.12.0"</span>)
+    implementation(<span class="string">"com.squareup.okhttp3:logging-interceptor:4.12.0"</span>)
+
+    <span class="comment">// Coil (Image Loading)</span>
+    implementation(<span class="string">"io.coil-kt:coil-compose:2.5.0"</span>)
+
+    <span class="comment">// Room</span>
+    implementation(<span class="string">"androidx.room:room-runtime:2.6.1"</span>)
+    implementation(<span class="string">"androidx.room:room-ktx:2.6.1"</span>)
+    ksp(<span class="string">"androidx.room:room-compiler:2.6.1"</span>)
+
+    <span class="comment">// DataStore</span>
+    implementation(<span class="string">"androidx.datastore:datastore-preferences:1.0.0"</span>)
+
+    <span class="comment">// Lifecycle</span>
+    implementation(<span class="string">"androidx.lifecycle:lifecycle-viewmodel-compose:2.7.0"</span>)
+    implementation(<span class="string">"androidx.lifecycle:lifecycle-runtime-compose:2.7.0"</span>)
+
+    <span class="comment">// Testing</span>
+    testImplementation(<span class="string">"junit:junit:4.13.2"</span>)
+    testImplementation(<span class="string">"org.mockito:mockito-core:5.8.0"</span>)
+    testImplementation(<span class="string">"org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.3"</span>)
+    androidTestImplementation(<span class="string">"androidx.test.ext:junit:1.1.5"</span>)
+    androidTestImplementation(<span class="string">"androidx.compose.ui:ui-test-junit4"</span>)
+    debugImplementation(<span class="string">"androidx.compose.ui:ui-tooling"</span>)
+}</code></pre>
+
+            <!-- Структура папок -->
+            <h2 class="text-2xl font-bold mt-8 mb-4">Структура папок</h2>
+            <pre class="mb-6"><code>app/src/main/java/com/example/ecommerce/
+├── EcommerceApp.kt          <span class="comment"># Application class</span>
+├── MainActivity.kt
+│
+├── common/
+│   ├── Resource.kt          <span class="comment"># Wrapper для состояний</span>
+│   └── Constants.kt
+│
+├── di/
+│   ├── AppModule.kt         <span class="comment"># Hilt модули</span>
+│   └── NetworkModule.kt
+│
+├── data/
+│   ├── api/
+│   │   └── ProductApi.kt
+│   ├── dto/
+│   │   ├── ProductDto.kt
+│   │   └── ProductsResponse.kt
+│   ├── mapper/
+│   │   └── ProductMapper.kt
+│   └── repository/
+│       └── ProductRepositoryImpl.kt
+│
+├── domain/
+│   ├── model/
+│   │   └── Product.kt
+│   ├── repository/
+│   │   └── ProductRepository.kt
+│   └── usecase/
+│       ├── GetProductsUseCase.kt
+│       └── GetProductByIdUseCase.kt
+│
+└── presentation/
+    ├── navigation/
+    │   └── NavGraph.kt
+    ├── home/
+    │   ├── HomeScreen.kt
+    │   └── HomeViewModel.kt
+    ├── detail/
+    │   ├── DetailScreen.kt
+    │   └── DetailViewModel.kt
+    ├── cart/
+    ├── search/
+    └── components/
+        ├── ProductCard.kt
+        └── LoadingIndicator.kt</code></pre>
+
+            <!-- Application Class -->
+            <h2 class="text-2xl font-bold mt-8 mb-4">Application Class</h2>
+            <pre class="mb-6"><code><span class="annotation">@HiltAndroidApp</span>
+<span class="keyword">class</span> EcommerceApp : Application()</code></pre>
+
+            <p class="text-zinc-600 dark:text-zinc-400 mb-4">
+                Зарегистрируйте в <code>AndroidManifest.xml</code>:
+            </p>
+
+            <pre class="mb-6"><code>&lt;application
+    android:name=<span class="string">".EcommerceApp"</span>
+    android:allowBackup=<span class="string">"true"</span>
+    android:icon=<span class="string">"@mipmap/ic_launcher"</span>
+    android:label=<span class="string">"@string/app_name"</span>
+    android:theme=<span class="string">"@style/Theme.EcommerceApp"</span>
+    android:usesCleartextTraffic=<span class="string">"true"</span>&gt;
+
+    &lt;activity
+        android:name=<span class="string">".MainActivity"</span>
+        android:exported=<span class="string">"true"</span>&gt;
+        &lt;intent-filter&gt;
+            &lt;action android:name=<span class="string">"android.intent.action.MAIN"</span> /&gt;
+            &lt;category android:name=<span class="string">"android.intent.category.LAUNCHER"</span> /&gt;
+        &lt;/intent-filter&gt;
+    &lt;/activity&gt;
+
+&lt;/application&gt;</code></pre>
+
+            <!-- MainActivity -->
+            <h2 class="text-2xl font-bold mt-8 mb-4">MainActivity</h2>
+            <pre class="mb-6"><code><span class="annotation">@AndroidEntryPoint</span>
+<span class="keyword">class</span> MainActivity : ComponentActivity() {
+    <span class="keyword">override fun</span> <span class="function">onCreate</span>(savedInstanceState: Bundle?) {
+        <span class="keyword">super</span>.onCreate(savedInstanceState)
+        setContent {
+            EcommerceTheme {
+                Surface(
+                    modifier = Modifier.fillMaxSize(),
+                    color = MaterialTheme.colorScheme.background
+                ) {
+                    <span class="function">EcommerceNavGraph</span>()
+                }
+            }
+        }
+    }
+}</code></pre>
+
+            <!-- Resource wrapper -->
+            <h2 class="text-2xl font-bold mt-8 mb-4">Resource: Wrapper для состояний</h2>
+            <pre class="mb-6"><code><span class="keyword">sealed class</span> Resource&lt;<span class="keyword">out</span> T&gt; {
+    <span class="keyword">data class</span> Success&lt;T&gt;(<span class="keyword">val</span> data: T) : Resource&lt;T&gt;()
+    <span class="keyword">data class</span> Error(<span class="keyword">val</span> message: String) : Resource&lt;Nothing&gt;()
+    <span class="keyword">object</span> Loading : Resource&lt;Nothing&gt;()
+}
+
+<span class="comment">// Использование в Repository</span>
+<span class="keyword">fun</span> &lt;T&gt; <span class="function">safeApiCall</span>(call: <span class="keyword">suspend</span> () -&gt; T): Flow&lt;Resource&lt;T&gt;&gt; = flow {
+    emit(Resource.Loading)
+    <span class="keyword">try</span> {
+        emit(Resource.Success(call()))
+    } <span class="keyword">catch</span> (e: Exception) {
+        emit(Resource.Error(e.message ?: <span class="string">"Unknown error"</span>))
+    }
+}</code></pre>
+
+            <!-- Constants -->
+            <h2 class="text-2xl font-bold mt-8 mb-4">Constants</h2>
+            <pre class="mb-6"><code><span class="keyword">object</span> Constants {
+    <span class="keyword">const val</span> BASE_URL = <span class="string">"https://dummyjson.com/"</span>
+    <span class="keyword">const val</span> DATABASE_NAME = <span class="string">"ecommerce_db"</span>
+}</code></pre>
+
+            <!-- Разрешения -->
+            <h2 class="text-2xl font-bold mt-8 mb-4">Разрешения</h2>
+            <p class="text-zinc-600 dark:text-zinc-400 mb-4">
+                Добавьте в <code>AndroidManifest.xml</code>:
+            </p>
+            <pre class="mb-6"><code>&lt;uses-permission android:name=<span class="string">"android.permission.INTERNET"</span> /&gt;</code></pre>
+
+            <!-- Gradle Sync -->
+            <div class="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-xl p-4 mb-6">
+                <p class="text-yellow-800 dark:text-yellow-200 text-sm">
+                    <strong>Важно:</strong> После добавления зависимостей нажмите "Sync Now" в Android Studio
+                    для загрузки библиотек.
+                </p>
+            </div>
+
+            <!-- Проверка -->
+            <h2 class="text-2xl font-bold mt-8 mb-4">Проверка настройки</h2>
+            <p class="text-zinc-600 dark:text-zinc-400 mb-4">
+                Запустите проект на эмуляторе или устройстве. Если всё настроено правильно,
+                вы увидите пустой экран с темой Material 3.
+            </p>
+
+            <!-- Итоги -->
+            <div class="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-xl p-6 mb-8">
+                <h3 class="font-semibold text-green-900 dark:text-green-100 mb-3">Что мы настроили</h3>
+                <ul class="text-green-800 dark:text-green-200 space-y-2">
+                    <li>• Проект с Jetpack Compose</li>
+                    <li>• Hilt для Dependency Injection</li>
+                    <li>• Retrofit + Moshi для работы с API</li>
+                    <li>• Room для локальной базы данных</li>
+                    <li>• Coil для загрузки изображений</li>
+                    <li>• Структуру папок по Clean Architecture</li>
+                </ul>
+            </div>
+
+        </div>
+
+        <div class="flex justify-between items-center mt-12 pt-8 border-t border-zinc-200 dark:border-zinc-800">
+            <a href="02-mvvm.html" class="text-green-500 hover:underline">&larr; MVVM + Clean Architecture</a>
+            <a href="../index.html" class="text-green-500 hover:underline">Оглавление</a>
+            <a href="04-api-layer.html" class="text-green-500 hover:underline">Retrofit + API &rarr;</a>
+        </div>
+    </div>
+</body>
+</html>

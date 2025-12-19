@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kotlin для JS/PHP разработчиков | Android E-Commerce</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        pre { background: #1e1e1e; color: #d4d4d4; padding: 1rem; border-radius: 0.5rem; overflow-x: auto; font-size: 0.875rem; }
+        .keyword { color: #cc7832; }
+        .type { color: #a9b7c6; }
+        .string { color: #6a8759; }
+        .comment { color: #808080; }
+        .number { color: #6897bb; }
+    </style>
+</head>
+<body class="bg-white dark:bg-zinc-900">
+    <div class="max-w-4xl mx-auto px-6 py-12">
+        <a href="../index.html" class="text-green-500 hover:underline mb-4 inline-block">&larr; Назад к оглавлению</a>
+
+        <h1 class="text-4xl font-bold text-zinc-900 dark:text-white mb-4">Kotlin для JS/PHP разработчиков</h1>
+        <p class="text-xl text-zinc-600 dark:text-zinc-400 mb-8">Быстрый переход с JavaScript/TypeScript/PHP на Kotlin</p>
+
+        <!-- Variables -->
+        <section class="mb-12">
+            <h2 class="text-2xl font-bold mb-4">1. Переменные</h2>
+            <div class="grid md:grid-cols-2 gap-4">
+                <div>
+                    <h4 class="text-sm font-semibold text-zinc-500 mb-2">JavaScript / TypeScript</h4>
+                    <pre><code><span class="keyword">let</span> name = <span class="string">"John"</span>      <span class="comment">// изменяемая</span>
+<span class="keyword">const</span> age = <span class="number">25</span>         <span class="comment">// константа</span>
+<span class="keyword">let</span> score: <span class="type">number</span> = <span class="number">100</span> <span class="comment">// с типом</span></code></pre>
+                </div>
+                <div>
+                    <h4 class="text-sm font-semibold text-zinc-500 mb-2">Kotlin</h4>
+                    <pre><code><span class="keyword">var</span> name = <span class="string">"John"</span>      <span class="comment">// изменяемая</span>
+<span class="keyword">val</span> age = <span class="number">25</span>           <span class="comment">// константа (immutable)</span>
+<span class="keyword">var</span> score: <span class="type">Int</span> = <span class="number">100</span>  <span class="comment">// с типом</span></code></pre>
+                </div>
+            </div>
+            <div class="mt-4 p-4 bg-green-50 dark:bg-green-900/20 rounded-lg">
+                <p class="text-sm text-green-800 dark:text-green-200">
+                    <strong>Правило:</strong> Всегда используйте <code>val</code> по умолчанию. Используйте <code>var</code> только когда значение должно меняться.
+                </p>
+            </div>
+        </section>
+
+        <!-- Nullable -->
+        <section class="mb-12">
+            <h2 class="text-2xl font-bold mb-4">2. Nullable типы (важно!)</h2>
+            <div class="grid md:grid-cols-2 gap-4">
+                <div>
+                    <h4 class="text-sm font-semibold text-zinc-500 mb-2">JavaScript / TypeScript</h4>
+                    <pre><code><span class="keyword">let</span> name: <span class="type">string</span> | <span class="type">null</span> = <span class="keyword">null</span>
+<span class="keyword">let</span> user: <span class="type">User</span> | <span class="type">undefined</span>
+
+<span class="comment">// Optional chaining</span>
+<span class="keyword">const</span> city = user?.address?.city
+
+<span class="comment">// Nullish coalescing</span>
+<span class="keyword">const</span> result = value ?? <span class="string">"default"</span></code></pre>
+                </div>
+                <div>
+                    <h4 class="text-sm font-semibold text-zinc-500 mb-2">Kotlin</h4>
+                    <pre><code><span class="keyword">var</span> name: <span class="type">String?</span> = <span class="keyword">null</span>  <span class="comment">// ? = nullable</span>
+<span class="keyword">var</span> user: <span class="type">User?</span> = <span class="keyword">null</span>
+
+<span class="comment">// Safe call</span>
+<span class="keyword">val</span> city = user?.address?.city
+
+<span class="comment">// Elvis operator</span>
+<span class="keyword">val</span> result = value ?: <span class="string">"default"</span></code></pre>
+                </div>
+            </div>
+            <div class="mt-4 p-4 bg-red-50 dark:bg-red-900/20 rounded-lg">
+                <p class="text-sm text-red-800 dark:text-red-200">
+                    <strong>Опасно:</strong> <code>!!</code> — force unwrap. Выбросит исключение если null. Избегайте!
+                </p>
+                <pre class="mt-2 !bg-red-900/30"><code><span class="keyword">val</span> name = user!!.name  <span class="comment">// NPE если user == null</span></code></pre>
+            </div>
+        </section>
+
+        <!-- Functions -->
+        <section class="mb-12">
+            <h2 class="text-2xl font-bold mb-4">3. Функции</h2>
+            <div class="grid md:grid-cols-2 gap-4">
+                <div>
+                    <h4 class="text-sm font-semibold text-zinc-500 mb-2">JavaScript / TypeScript</h4>
+                    <pre><code><span class="comment">// Обычная функция</span>
+<span class="keyword">function</span> <span class="function">greet</span>(name: <span class="type">string</span>): <span class="type">string</span> {
+    <span class="keyword">return</span> <span class="string">`Hello, ${name}!`</span>
+}
+
+<span class="comment">// Arrow function</span>
+<span class="keyword">const</span> add = (a: <span class="type">number</span>, b: <span class="type">number</span>) => a + b
+
+<span class="comment">// Default параметр</span>
+<span class="keyword">function</span> <span class="function">log</span>(msg: <span class="type">string</span>, level = <span class="string">"info"</span>) {}</code></pre>
+                </div>
+                <div>
+                    <h4 class="text-sm font-semibold text-zinc-500 mb-2">Kotlin</h4>
+                    <pre><code><span class="comment">// Обычная функция</span>
+<span class="keyword">fun</span> <span class="function">greet</span>(name: <span class="type">String</span>): <span class="type">String</span> {
+    <span class="keyword">return</span> <span class="string">"Hello, $name!"</span>
+}
+
+<span class="comment">// Single expression</span>
+<span class="keyword">fun</span> <span class="function">add</span>(a: <span class="type">Int</span>, b: <span class="type">Int</span>) = a + b
+
+<span class="comment">// Default параметр</span>
+<span class="keyword">fun</span> <span class="function">log</span>(msg: <span class="type">String</span>, level: <span class="type">String</span> = <span class="string">"info"</span>) {}</code></pre>
+                </div>
+            </div>
+        </section>
+
+        <!-- Data Class -->
+        <section class="mb-12">
+            <h2 class="text-2xl font-bold mb-4">4. Data Class (аналог interface/type)</h2>
+            <div class="grid md:grid-cols-2 gap-4">
+                <div>
+                    <h4 class="text-sm font-semibold text-zinc-500 mb-2">TypeScript</h4>
+                    <pre><code><span class="keyword">interface</span> <span class="type">User</span> {
+    id: <span class="type">number</span>
+    name: <span class="type">string</span>
+    email: <span class="type">string</span>
+}
+
+<span class="keyword">const</span> user: <span class="type">User</span> = {
+    id: <span class="number">1</span>,
+    name: <span class="string">"John"</span>,
+    email: <span class="string">"john@mail.com"</span>
+}</code></pre>
+                </div>
+                <div>
+                    <h4 class="text-sm font-semibold text-zinc-500 mb-2">Kotlin</h4>
+                    <pre><code><span class="keyword">data class</span> <span class="type">User</span>(
+    <span class="keyword">val</span> id: <span class="type">Int</span>,
+    <span class="keyword">val</span> name: <span class="type">String</span>,
+    <span class="keyword">val</span> email: <span class="type">String</span>
+)
+
+<span class="keyword">val</span> user = <span class="type">User</span>(
+    id = <span class="number">1</span>,
+    name = <span class="string">"John"</span>,
+    email = <span class="string">"john@mail.com"</span>
+)</code></pre>
+                </div>
+            </div>
+            <div class="mt-4 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
+                <p class="text-sm text-blue-800 dark:text-blue-200">
+                    <strong>Бонус:</strong> data class автоматически генерирует <code>equals()</code>, <code>hashCode()</code>, <code>toString()</code>, <code>copy()</code>
+                </p>
+            </div>
+        </section>
+
+        <!-- Collections -->
+        <section class="mb-12">
+            <h2 class="text-2xl font-bold mb-4">5. Коллекции</h2>
+            <div class="grid md:grid-cols-2 gap-4">
+                <div>
+                    <h4 class="text-sm font-semibold text-zinc-500 mb-2">JavaScript</h4>
+                    <pre><code><span class="keyword">const</span> nums = [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>]
+<span class="keyword">const</span> doubled = nums.<span class="function">map</span>(n => n * <span class="number">2</span>)
+<span class="keyword">const</span> evens = nums.<span class="function">filter</span>(n => n % <span class="number">2</span> === <span class="number">0</span>)
+<span class="keyword">const</span> sum = nums.<span class="function">reduce</span>((a, b) => a + b, <span class="number">0</span>)
+<span class="keyword">const</span> first = nums.<span class="function">find</span>(n => n > <span class="number">1</span>)</code></pre>
+                </div>
+                <div>
+                    <h4 class="text-sm font-semibold text-zinc-500 mb-2">Kotlin</h4>
+                    <pre><code><span class="keyword">val</span> nums = <span class="function">listOf</span>(<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>)
+<span class="keyword">val</span> doubled = nums.<span class="function">map</span> { it * <span class="number">2</span> }
+<span class="keyword">val</span> evens = nums.<span class="function">filter</span> { it % <span class="number">2</span> == <span class="number">0</span> }
+<span class="keyword">val</span> sum = nums.<span class="function">reduce</span> { a, b -> a + b }
+<span class="keyword">val</span> first = nums.<span class="function">find</span> { it > <span class="number">1</span> }</code></pre>
+                </div>
+            </div>
+        </section>
+
+        <!-- Coroutines -->
+        <section class="mb-12">
+            <h2 class="text-2xl font-bold mb-4">6. Асинхронность: Coroutines</h2>
+            <div class="grid md:grid-cols-2 gap-4">
+                <div>
+                    <h4 class="text-sm font-semibold text-zinc-500 mb-2">JavaScript async/await</h4>
+                    <pre><code><span class="keyword">async function</span> <span class="function">fetchUser</span>(): <span class="type">Promise</span>&lt;<span class="type">User</span>&gt; {
+    <span class="keyword">const</span> response = <span class="keyword">await</span> <span class="function">fetch</span>(url)
+    <span class="keyword">return</span> response.<span class="function">json</span>()
+}
+
+<span class="comment">// Вызов</span>
+<span class="keyword">const</span> user = <span class="keyword">await</span> <span class="function">fetchUser</span>()</code></pre>
+                </div>
+                <div>
+                    <h4 class="text-sm font-semibold text-zinc-500 mb-2">Kotlin Coroutines</h4>
+                    <pre><code><span class="keyword">suspend fun</span> <span class="function">fetchUser</span>(): <span class="type">User</span> {
+    <span class="keyword">val</span> response = api.<span class="function">getUser</span>()
+    <span class="keyword">return</span> response
+}
+
+<span class="comment">// Вызов</span>
+viewModelScope.<span class="function">launch</span> {
+    <span class="keyword">val</span> user = <span class="function">fetchUser</span>()
+}</code></pre>
+                </div>
+            </div>
+            <div class="mt-4 p-4 bg-yellow-50 dark:bg-yellow-900/20 rounded-lg">
+                <p class="text-sm text-yellow-800 dark:text-yellow-200">
+                    <strong>Ключевое:</strong> <code>suspend</code> функции можно вызывать только из других <code>suspend</code> функций или coroutine scope.
+                </p>
+            </div>
+        </section>
+
+        <!-- Lambdas -->
+        <section class="mb-12">
+            <h2 class="text-2xl font-bold mb-4">7. Лямбды и замыкания</h2>
+            <div class="grid md:grid-cols-2 gap-4">
+                <div>
+                    <h4 class="text-sm font-semibold text-zinc-500 mb-2">JavaScript</h4>
+                    <pre><code><span class="comment">// Arrow function</span>
+<span class="keyword">const</span> onClick = (item) => {
+    console.<span class="function">log</span>(item)
+}
+
+<span class="comment">// Callback</span>
+button.<span class="function">addEventListener</span>(<span class="string">'click'</span>, () => {
+    console.<span class="function">log</span>(<span class="string">'clicked'</span>)
+})</code></pre>
+                </div>
+                <div>
+                    <h4 class="text-sm font-semibold text-zinc-500 mb-2">Kotlin</h4>
+                    <pre><code><span class="comment">// Lambda</span>
+<span class="keyword">val</span> onClick: (<span class="type">Item</span>) -> <span class="type">Unit</span> = { item ->
+    <span class="function">println</span>(item)
+}
+
+<span class="comment">// Trailing lambda</span>
+button.<span class="function">setOnClickListener</span> {
+    <span class="function">println</span>(<span class="string">"clicked"</span>)
+}</code></pre>
+                </div>
+            </div>
+        </section>
+
+        <!-- When -->
+        <section class="mb-12">
+            <h2 class="text-2xl font-bold mb-4">8. When (switch на стероидах)</h2>
+            <div class="grid md:grid-cols-2 gap-4">
+                <div>
+                    <h4 class="text-sm font-semibold text-zinc-500 mb-2">JavaScript</h4>
+                    <pre><code><span class="keyword">switch</span> (status) {
+    <span class="keyword">case</span> <span class="string">'loading'</span>:
+        <span class="keyword">return</span> <span class="string">'Loading...'</span>
+    <span class="keyword">case</span> <span class="string">'success'</span>:
+        <span class="keyword">return</span> <span class="string">'Done!'</span>
+    <span class="keyword">case</span> <span class="string">'error'</span>:
+        <span class="keyword">return</span> <span class="string">'Failed'</span>
+    <span class="keyword">default</span>:
+        <span class="keyword">return</span> <span class="string">'Unknown'</span>
+}</code></pre>
+                </div>
+                <div>
+                    <h4 class="text-sm font-semibold text-zinc-500 mb-2">Kotlin</h4>
+                    <pre><code><span class="keyword">when</span> (status) {
+    <span class="string">"loading"</span> -> <span class="string">"Loading..."</span>
+    <span class="string">"success"</span> -> <span class="string">"Done!"</span>
+    <span class="string">"error"</span> -> <span class="string">"Failed"</span>
+    <span class="keyword">else</span> -> <span class="string">"Unknown"</span>
+}
+
+<span class="comment">// С типами (sealed class)</span>
+<span class="keyword">when</span> (state) {
+    <span class="keyword">is</span> <span class="type">Loading</span> -> showLoader()
+    <span class="keyword">is</span> <span class="type">Success</span> -> showData(state.data)
+    <span class="keyword">is</span> <span class="type">Error</span> -> showError(state.message)
+}</code></pre>
+                </div>
+            </div>
+        </section>
+
+        <!-- Cheatsheet -->
+        <section class="bg-gradient-to-br from-green-50 to-teal-50 dark:from-green-900/20 dark:to-teal-900/20 rounded-xl p-6">
+            <h2 class="text-xl font-bold mb-4">Шпаргалка: JS → Kotlin</h2>
+            <div class="grid md:grid-cols-2 gap-4 text-sm">
+                <div>
+                    <table class="w-full">
+                        <tr><td class="py-1"><code>let</code></td><td class="py-1">→</td><td class="py-1"><code>var</code></td></tr>
+                        <tr><td class="py-1"><code>const</code></td><td class="py-1">→</td><td class="py-1"><code>val</code></td></tr>
+                        <tr><td class="py-1"><code>null | undefined</code></td><td class="py-1">→</td><td class="py-1"><code>null</code> (только)</td></tr>
+                        <tr><td class="py-1"><code>string | null</code></td><td class="py-1">→</td><td class="py-1"><code>String?</code></td></tr>
+                        <tr><td class="py-1"><code>??</code></td><td class="py-1">→</td><td class="py-1"><code>?:</code> (Elvis)</td></tr>
+                        <tr><td class="py-1"><code>?.</code></td><td class="py-1">→</td><td class="py-1"><code>?.</code> (same)</td></tr>
+                    </table>
+                </div>
+                <div>
+                    <table class="w-full">
+                        <tr><td class="py-1"><code>interface</code></td><td class="py-1">→</td><td class="py-1"><code>data class</code></td></tr>
+                        <tr><td class="py-1"><code>async/await</code></td><td class="py-1">→</td><td class="py-1"><code>suspend</code></td></tr>
+                        <tr><td class="py-1"><code>Promise</code></td><td class="py-1">→</td><td class="py-1"><code>Flow/suspend</code></td></tr>
+                        <tr><td class="py-1"><code>=></code></td><td class="py-1">→</td><td class="py-1"><code>{ }</code> или <code>-></code></td></tr>
+                        <tr><td class="py-1"><code>switch</code></td><td class="py-1">→</td><td class="py-1"><code>when</code></td></tr>
+                        <tr><td class="py-1"><code>console.log</code></td><td class="py-1">→</td><td class="py-1"><code>println</code></td></tr>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <div class="flex justify-between items-center mt-12 pt-8 border-t border-zinc-200 dark:border-zinc-800">
+            <a href="00-introduction.html" class="text-green-500 hover:underline">&larr; Введение</a>
+            <a href="../index.html" class="text-green-500 hover:underline">Оглавление</a>
+            <a href="01-compose-basics.html" class="text-green-500 hover:underline">Основы Compose &rarr;</a>
+        </div>
+    </div>
+</body>
+</html>

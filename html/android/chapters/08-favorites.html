@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Глава 8: Избранное | Android E-Commerce</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        pre { background: #1e1e1e; color: #d4d4d4; padding: 1rem; border-radius: 0.5rem; overflow-x: auto; }
+        .keyword { color: #569cd6; }
+        .function { color: #dcdcaa; }
+        .string { color: #ce9178; }
+        .comment { color: #6a9955; }
+        .annotation { color: #4ec9b0; }
+        .number { color: #b5cea8; }
+        .type { color: #4ec9b0; }
+    </style>
+</head>
+<body class="bg-white dark:bg-zinc-900">
+    <div class="max-w-4xl mx-auto px-6 py-12">
+        <a href="../index.html" class="text-green-500 hover:underline mb-4 inline-block">&larr; Назад к оглавлению</a>
+
+        <h1 class="text-4xl font-bold text-zinc-900 dark:text-white mb-6">Глава 8: Избранное</h1>
+
+        <div class="prose dark:prose-invert max-w-none">
+
+            <!-- Room Entity -->
+            <h2 class="text-2xl font-bold mt-8 mb-4">Room Entity</h2>
+            <pre class="mb-6"><code><span class="annotation">@Entity</span>(tableName = <span class="string">"favorites"</span>)
+<span class="keyword">data class</span> <span class="type">FavoriteEntity</span>(
+    <span class="annotation">@PrimaryKey</span>
+    <span class="keyword">val</span> id: Int,
+    <span class="keyword">val</span> title: String,
+    <span class="keyword">val</span> price: Double,
+    <span class="keyword">val</span> thumbnail: String,
+    <span class="keyword">val</span> addedAt: Long = System.currentTimeMillis()
+)</code></pre>
+
+            <!-- DAO -->
+            <h2 class="text-2xl font-bold mt-8 mb-4">DAO</h2>
+            <pre class="mb-6"><code><span class="annotation">@Dao</span>
+<span class="keyword">interface</span> <span class="type">FavoriteDao</span> {
+
+    <span class="annotation">@Query</span>(<span class="string">"SELECT * FROM favorites ORDER BY addedAt DESC"</span>)
+    <span class="keyword">fun</span> <span class="function">getAllFavorites</span>(): Flow&lt;List&lt;<span class="type">FavoriteEntity</span>&gt;&gt;
+
+    <span class="annotation">@Query</span>(<span class="string">"SELECT EXISTS(SELECT 1 FROM favorites WHERE id = :productId)"</span>)
+    <span class="keyword">fun</span> <span class="function">isFavorite</span>(productId: Int): Flow&lt;Boolean&gt;
+
+    <span class="annotation">@Insert</span>(onConflict = OnConflictStrategy.REPLACE)
+    <span class="keyword">suspend fun</span> <span class="function">addToFavorites</span>(favorite: <span class="type">FavoriteEntity</span>)
+
+    <span class="annotation">@Query</span>(<span class="string">"DELETE FROM favorites WHERE id = :productId"</span>)
+    <span class="keyword">suspend fun</span> <span class="function">removeFromFavorites</span>(productId: Int)
+
+    <span class="annotation">@Query</span>(<span class="string">"SELECT COUNT(*) FROM favorites"</span>)
+    <span class="keyword">fun</span> <span class="function">getFavoritesCount</span>(): Flow&lt;Int&gt;
+}</code></pre>
+
+            <!-- Database -->
+            <h2 class="text-2xl font-bold mt-8 mb-4">Database</h2>
+            <pre class="mb-6"><code><span class="annotation">@Database</span>(
+    entities = [<span class="type">FavoriteEntity</span>::<span class="keyword">class</span>, <span class="type">CartEntity</span>::<span class="keyword">class</span>],
+    version = <span class="number">1</span>,
+    exportSchema = <span class="keyword">false</span>
+)
+<span class="keyword">abstract class</span> <span class="type">EcommerceDatabase</span> : RoomDatabase() {
+    <span class="keyword">abstract fun</span> <span class="function">favoriteDao</span>(): <span class="type">FavoriteDao</span>
+    <span class="keyword">abstract fun</span> <span class="function">cartDao</span>(): <span class="type">CartDao</span>
+}</code></pre>
+
+            <!-- Database Module -->
+            <h2 class="text-2xl font-bold mt-8 mb-4">Database Module</h2>
+            <pre class="mb-6"><code><span class="annotation">@Module</span>
+<span class="annotation">@InstallIn</span>(SingletonComponent::<span class="keyword">class</span>)
+<span class="keyword">object</span> <span class="type">DatabaseModule</span> {
+
+    <span class="annotation">@Provides</span>
+    <span class="annotation">@Singleton</span>
+    <span class="keyword">fun</span> <span class="function">provideDatabase</span>(
+        <span class="annotation">@ApplicationContext</span> context: Context
+    ): <span class="type">EcommerceDatabase</span> {
+        <span class="keyword">return</span> Room.databaseBuilder(
+            context,
+            <span class="type">EcommerceDatabase</span>::<span class="keyword">class</span>.java,
+            Constants.DATABASE_NAME
+        ).build()
+    }
+
+    <span class="annotation">@Provides</span>
+    <span class="keyword">fun</span> <span class="function">provideFavoriteDao</span>(db: <span class="type">EcommerceDatabase</span>): <span class="type">FavoriteDao</span> {
+        <span class="keyword">return</span> db.favoriteDao()
+    }
+}</code></pre>
+
+            <!-- Repository -->
+            <h2 class="text-2xl font-bold mt-8 mb-4">FavoriteRepository</h2>
+            <pre class="mb-6"><code><span class="keyword">interface</span> <span class="type">FavoriteRepository</span> {
+    <span class="keyword">fun</span> <span class="function">getAllFavorites</span>(): Flow&lt;List&lt;<span class="type">Product</span>&gt;&gt;
+    <span class="keyword">fun</span> <span class="function">isFavorite</span>(productId: Int): Flow&lt;Boolean&gt;
+    <span class="keyword">suspend fun</span> <span class="function">toggleFavorite</span>(product: <span class="type">Product</span>)
+}
+
+<span class="keyword">class</span> <span class="type">FavoriteRepositoryImpl</span> <span class="annotation">@Inject</span> <span class="keyword">constructor</span>(
+    <span class="keyword">private val</span> favoriteDao: <span class="type">FavoriteDao</span>
+) : <span class="type">FavoriteRepository</span> {
+
+    <span class="keyword">override fun</span> <span class="function">getAllFavorites</span>(): Flow&lt;List&lt;<span class="type">Product</span>&gt;&gt; {
+        <span class="keyword">return</span> favoriteDao.getAllFavorites().map { entities -&gt;
+            entities.map { it.toDomain() }
+        }
+    }
+
+    <span class="keyword">override fun</span> <span class="function">isFavorite</span>(productId: Int): Flow&lt;Boolean&gt; {
+        <span class="keyword">return</span> favoriteDao.isFavorite(productId)
+    }
+
+    <span class="keyword">override suspend fun</span> <span class="function">toggleFavorite</span>(product: <span class="type">Product</span>) {
+        <span class="keyword">val</span> isFav = favoriteDao.isFavorite(product.id).first()
+        <span class="keyword">if</span> (isFav) {
+            favoriteDao.removeFromFavorites(product.id)
+        } <span class="keyword">else</span> {
+            favoriteDao.addToFavorites(product.toEntity())
+        }
+    }
+}</code></pre>
+
+            <!-- Mappers -->
+            <h2 class="text-2xl font-bold mt-8 mb-4">Mappers</h2>
+            <pre class="mb-6"><code><span class="keyword">fun</span> <span class="type">FavoriteEntity</span>.<span class="function">toDomain</span>(): <span class="type">Product</span> {
+    <span class="keyword">return</span> Product(
+        id = id,
+        title = title,
+        price = price,
+        thumbnail = thumbnail,
+        <span class="comment">// Остальные поля по умолчанию</span>
+        description = <span class="string">""</span>,
+        discountPercentage = <span class="number">0.0</span>,
+        rating = <span class="number">0.0</span>,
+        stock = <span class="number">0</span>,
+        brand = <span class="string">""</span>,
+        category = <span class="string">""</span>,
+        images = emptyList()
+    )
+}
+
+<span class="keyword">fun</span> <span class="type">Product</span>.<span class="function">toEntity</span>(): <span class="type">FavoriteEntity</span> {
+    <span class="keyword">return</span> FavoriteEntity(
+        id = id,
+        title = title,
+        price = price,
+        thumbnail = thumbnail
+    )
+}</code></pre>
+
+            <!-- FavoritesViewModel -->
+            <h2 class="text-2xl font-bold mt-8 mb-4">FavoritesViewModel</h2>
+            <pre class="mb-6"><code><span class="annotation">@HiltViewModel</span>
+<span class="keyword">class</span> <span class="type">FavoritesViewModel</span> <span class="annotation">@Inject</span> <span class="keyword">constructor</span>(
+    <span class="keyword">private val</span> favoriteRepository: <span class="type">FavoriteRepository</span>
+) : ViewModel() {
+
+    <span class="keyword">val</span> favorites: StateFlow&lt;List&lt;<span class="type">Product</span>&gt;&gt; = favoriteRepository
+        .getAllFavorites()
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(<span class="number">5000</span>),
+            initialValue = emptyList()
+        )
+
+    <span class="keyword">fun</span> <span class="function">removeFromFavorites</span>(product: <span class="type">Product</span>) {
+        viewModelScope.launch {
+            favoriteRepository.toggleFavorite(product)
+        }
+    }
+}</code></pre>
+
+            <!-- FavoriteButton -->
+            <h2 class="text-2xl font-bold mt-8 mb-4">FavoriteButton</h2>
+            <pre class="mb-6"><code><span class="annotation">@Composable</span>
+<span class="keyword">fun</span> <span class="function">FavoriteButton</span>(
+    isFavorite: Boolean,
+    onToggle: () -&gt; Unit,
+    modifier: Modifier = Modifier
+) {
+    <span class="function">IconButton</span>(
+        onClick = onToggle,
+        modifier = modifier
+    ) {
+        <span class="function">Icon</span>(
+            imageVector = <span class="keyword">if</span> (isFavorite)
+                Icons.Filled.Favorite
+            <span class="keyword">else</span>
+                Icons.Outlined.FavoriteBorder,
+            contentDescription = <span class="keyword">if</span> (isFavorite) <span class="string">"Убрать из избранного"</span> <span class="keyword">else</span> <span class="string">"Добавить в избранное"</span>,
+            tint = <span class="keyword">if</span> (isFavorite) Color.Red <span class="keyword">else</span> Color.Gray
+        )
+    }
+}</code></pre>
+
+            <!-- FavoritesScreen -->
+            <h2 class="text-2xl font-bold mt-8 mb-4">FavoritesScreen</h2>
+            <pre class="mb-6"><code><span class="annotation">@Composable</span>
+<span class="keyword">fun</span> <span class="function">FavoritesScreen</span>(
+    viewModel: <span class="type">FavoritesViewModel</span> = hiltViewModel(),
+    onProductClick: (Int) -&gt; Unit
+) {
+    <span class="keyword">val</span> favorites <span class="keyword">by</span> viewModel.favorites.collectAsStateWithLifecycle()
+
+    <span class="function">Scaffold</span>(
+        topBar = {
+            <span class="function">TopAppBar</span>(
+                title = { <span class="function">Text</span>(<span class="string">"Избранное"</span>) }
+            )
+        }
+    ) { paddingValues -&gt;
+        <span class="keyword">if</span> (favorites.isEmpty()) {
+            <span class="function">EmptyFavorites</span>(Modifier.padding(paddingValues))
+        } <span class="keyword">else</span> {
+            <span class="function">LazyColumn</span>(
+                contentPadding = paddingValues,
+                modifier = Modifier.fillMaxSize()
+            ) {
+                items(
+                    items = favorites,
+                    key = { it.id }
+                ) { product -&gt;
+                    <span class="function">FavoriteItem</span>(
+                        product = product,
+                        onProductClick = { onProductClick(product.id) },
+                        onRemove = { viewModel.removeFromFavorites(product) }
+                    )
+                }
+            }
+        }
+    }
+}
+
+<span class="annotation">@Composable</span>
+<span class="keyword">fun</span> <span class="function">EmptyFavorites</span>(modifier: Modifier = Modifier) {
+    <span class="function">Column</span>(
+        modifier = modifier.fillMaxSize(),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
+        <span class="function">Icon</span>(
+            imageVector = Icons.Outlined.FavoriteBorder,
+            contentDescription = <span class="keyword">null</span>,
+            modifier = Modifier.size(<span class="number">80</span>.dp),
+            tint = Color.Gray
+        )
+        <span class="function">Spacer</span>(modifier = Modifier.height(<span class="number">16</span>.dp))
+        <span class="function">Text</span>(
+            text = <span class="string">"Нет избранных товаров"</span>,
+            style = MaterialTheme.typography.bodyLarge,
+            color = Color.Gray
+        )
+    }
+}</code></pre>
+
+            <!-- FavoriteItem -->
+            <h2 class="text-2xl font-bold mt-8 mb-4">FavoriteItem с Swipe to Delete</h2>
+            <pre class="mb-6"><code><span class="annotation">@OptIn</span>(ExperimentalMaterial3Api::<span class="keyword">class</span>)
+<span class="annotation">@Composable</span>
+<span class="keyword">fun</span> <span class="function">FavoriteItem</span>(
+    product: <span class="type">Product</span>,
+    onProductClick: () -&gt; Unit,
+    onRemove: () -&gt; Unit
+) {
+    <span class="keyword">val</span> dismissState = rememberSwipeToDismissBoxState(
+        confirmValueChange = { value -&gt;
+            <span class="keyword">if</span> (value == SwipeToDismissBoxValue.EndToStart) {
+                onRemove()
+                <span class="keyword">true</span>
+            } <span class="keyword">else</span> <span class="keyword">false</span>
+        }
+    )
+
+    <span class="function">SwipeToDismissBox</span>(
+        state = dismissState,
+        backgroundContent = {
+            <span class="function">Box</span>(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(Color.Red)
+                    .padding(horizontal = <span class="number">16</span>.dp),
+                contentAlignment = Alignment.CenterEnd
+            ) {
+                <span class="function">Icon</span>(
+                    imageVector = Icons.Default.Delete,
+                    contentDescription = <span class="string">"Удалить"</span>,
+                    tint = Color.White
+                )
+            }
+        }
+    ) {
+        <span class="function">Card</span>(
+            modifier = Modifier
+                .fillMaxWidth()
+                .clickable { onProductClick() }
+        ) {
+            <span class="function">Row</span>(
+                modifier = Modifier.padding(<span class="number">12</span>.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                <span class="function">AsyncImage</span>(
+                    model = product.thumbnail,
+                    contentDescription = <span class="keyword">null</span>,
+                    modifier = Modifier
+                        .size(<span class="number">80</span>.dp)
+                        .clip(RoundedCornerShape(<span class="number">8</span>.dp))
+                )
+
+                <span class="function">Spacer</span>(modifier = Modifier.width(<span class="number">12</span>.dp))
+
+                <span class="function">Column</span>(modifier = Modifier.weight(<span class="number">1f</span>)) {
+                    <span class="function">Text</span>(
+                        text = product.title,
+                        style = MaterialTheme.typography.titleMedium
+                    )
+                    <span class="function">Text</span>(
+                        text = <span class="string">"$${product.price}"</span>,
+                        style = MaterialTheme.typography.bodyLarge,
+                        color = MaterialTheme.colorScheme.primary
+                    )
+                }
+            }
+        }
+    }
+}</code></pre>
+
+            <!-- Итоги -->
+            <div class="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-xl p-6 mb-8">
+                <h3 class="font-semibold text-green-900 dark:text-green-100 mb-3">Что мы создали</h3>
+                <ul class="text-green-800 dark:text-green-200 space-y-2">
+                    <li>• Room Entity и DAO для избранного</li>
+                    <li>• FavoriteRepository с Flow</li>
+                    <li>• FavoriteButton компонент</li>
+                    <li>• FavoritesScreen со списком</li>
+                    <li>• Swipe to Delete для удаления</li>
+                </ul>
+            </div>
+
+        </div>
+
+        <div class="flex justify-between items-center mt-12 pt-8 border-t border-zinc-200 dark:border-zinc-800">
+            <a href="07-search.html" class="text-green-500 hover:underline">&larr; Поиск</a>
+            <a href="../index.html" class="text-green-500 hover:underline">Оглавление</a>
+            <a href="09-cart.html" class="text-green-500 hover:underline">Корзина &rarr;</a>
+        </div>
+    </div>
+</body>
+</html>
