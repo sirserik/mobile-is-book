@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Глава 6: Детали товара | SwiftUI E-Commerce</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'media',
+            theme: { extend: { colors: { primary: '#007AFF' } } }
+        }
+    </script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/vs2015.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/swift.min.js"></script>
+    <style>
+        ::-webkit-scrollbar { width: 6px; }
+        pre code { font-size: 14px; line-height: 1.6; }
+    </style>
+</head>
+<body class="bg-white dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100">
+    <div class="min-h-screen">
+        <header class="sticky top-0 z-40 bg-white/80 dark:bg-zinc-950/80 backdrop-blur-md border-b border-zinc-200 dark:border-zinc-800">
+            <div class="max-w-4xl mx-auto px-6 py-4 flex items-center justify-between">
+                <a href="../index.html" class="flex items-center gap-2 text-zinc-600 dark:text-zinc-400 hover:text-primary transition-colors">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                    </svg>
+                    Оглавление
+                </a>
+                <span class="text-sm text-zinc-500">Глава 6</span>
+            </div>
+        </header>
+
+        <main class="max-w-4xl mx-auto px-6 py-12">
+            <article class="prose prose-zinc dark:prose-invert max-w-none">
+                <span class="text-sm font-semibold text-primary uppercase tracking-wider">Глава 6</span>
+                <h1 class="text-4xl font-bold mt-2 mb-8">Детали товара</h1>
+
+                <div class="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-xl p-6 mb-8">
+                    <h3 class="text-lg font-semibold text-blue-800 dark:text-blue-300 mb-2">🎯 Цель главы</h3>
+                    <p class="text-blue-700 dark:text-blue-400">
+                        Создать детальную страницу товара с галереей изображений, TabView и кнопкой добавления в корзину.
+                    </p>
+                </div>
+
+                <h2 class="text-2xl font-bold mt-12 mb-4">ImageSlider</h2>
+                <pre><code class="language-swift rounded-xl">// Features/Products/Views/Components/ImageSlider.swift
+import SwiftUI
+
+struct ImageSlider: View {
+    let images: [String]
+    @State private var currentIndex = 0
+
+    var body: some View {
+        VStack(spacing: 12) {
+            // Слайдер
+            TabView(selection: $currentIndex) {
+                ForEach(images.indices, id: \.self) { index in
+                    AsyncImage(url: URL(string: images[index])) { phase in
+                        switch phase {
+                        case .empty:
+                            Rectangle()
+                                .fill(Color.gray.opacity(0.2))
+                                .overlay(ProgressView())
+                        case .success(let image):
+                            image
+                                .resizable()
+                                .aspectRatio(contentMode: .fit)
+                        case .failure:
+                            Rectangle()
+                                .fill(Color.gray.opacity(0.2))
+                                .overlay(
+                                    Image(systemName: "photo")
+                                        .font(.largeTitle)
+                                        .foregroundColor(.gray)
+                                )
+                        @unknown default:
+                            EmptyView()
+                        }
+                    }
+                    .tag(index)
+                }
+            }
+            .tabViewStyle(.page(indexDisplayMode: .never))
+            .frame(height: 300)
+
+            // Индикаторы
+            HStack(spacing: 8) {
+                ForEach(images.indices, id: \.self) { index in
+                    Circle()
+                        .fill(index == currentIndex ? Color.blue : Color.gray.opacity(0.5))
+                        .frame(width: 8, height: 8)
+                        .scaleEffect(index == currentIndex ? 1.2 : 1)
+                        .animation(.spring(), value: currentIndex)
+                }
+            }
+        }
+    }
+}</code></pre>
+
+                <h2 class="text-2xl font-bold mt-12 mb-4">ProductDetailView</h2>
+                <pre><code class="language-swift rounded-xl">// Features/Products/Views/ProductDetailView.swift
+import SwiftUI
+
+struct ProductDetailView: View {
+    let product: Product
+    @Environment(CartManager.self) private var cart
+    @Environment(FavoritesManager.self) private var favorites
+    @State private var showAddedToCart = false
+
+    var body: some View {
+        ScrollView {
+            VStack(alignment: .leading, spacing: 0) {
+                // Галерея изображений
+                ImageSlider(images: product.images.isEmpty ? [product.thumbnail] : product.images)
+
+                VStack(alignment: .leading, spacing: 16) {
+                    // Бренд и название
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text(product.brand.uppercased())
+                            .font(.caption)
+                            .fontWeight(.semibold)
+                            .foregroundColor(.secondary)
+
+                        Text(product.title)
+                            .font(.title2)
+                            .fontWeight(.bold)
+                    }
+
+                    // Цена и скидка
+                    HStack(alignment: .bottom, spacing: 8) {
+                        Text(product.formattedPrice)
+                            .font(.title)
+                            .fontWeight(.bold)
+                            .foregroundColor(.blue)
+
+                        if product.discountPercentage > 0 {
+                            Text(String(format: "$%.2f", product.price))
+                                .font(.subheadline)
+                                .strikethrough()
+                                .foregroundColor(.secondary)
+
+                            Text("-\(Int(product.discountPercentage))%")
+                                .font(.caption)
+                                .fontWeight(.bold)
+                                .foregroundColor(.white)
+                                .padding(.horizontal, 8)
+                                .padding(.vertical, 4)
+                                .background(Color.red)
+                                .cornerRadius(4)
+                        }
+                    }
+
+                    // Рейтинг и наличие
+                    HStack(spacing: 16) {
+                        // Рейтинг
+                        HStack(spacing: 4) {
+                            ForEach(0..<5) { index in
+                                Image(systemName: index < Int(product.rating) ? "star.fill" : "star")
+                                    .font(.caption)
+                                    .foregroundColor(.yellow)
+                            }
+                            Text(String(format: "%.1f", product.rating))
+                                .font(.caption)
+                                .foregroundColor(.secondary)
+                        }
+
+                        // Наличие
+                        HStack(spacing: 4) {
+                            Circle()
+                                .fill(product.stock > 0 ? Color.green : Color.red)
+                                .frame(width: 8, height: 8)
+                            Text(product.stock > 0 ? "В наличии (\(product.stock))" : "Нет в наличии")
+                                .font(.caption)
+                                .foregroundColor(.secondary)
+                        }
+                    }
+
+                    Divider()
+
+                    // Описание
+                    VStack(alignment: .leading, spacing: 8) {
+                        Text("Описание")
+                            .font(.headline)
+
+                        Text(product.description)
+                            .font(.body)
+                            .foregroundColor(.secondary)
+                    }
+
+                    // Категория
+                    HStack {
+                        Text("Категория:")
+                            .foregroundColor(.secondary)
+                        Text(product.category.capitalized)
+                            .fontWeight(.medium)
+                    }
+                    .font(.subheadline)
+                }
+                .padding()
+            }
+        }
+        .safeAreaInset(edge: .bottom) {
+            bottomBar
+        }
+        .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            ToolbarItem(placement: .navigationBarTrailing) {
+                Button {
+                    favorites.toggle(product)
+                } label: {
+                    Image(systemName: favorites.contains(product) ? "heart.fill" : "heart")
+                        .foregroundColor(favorites.contains(product) ? .red : .primary)
+                }
+            }
+        }
+        .overlay {
+            if showAddedToCart {
+                addedToCartOverlay
+            }
+        }
+    }
+
+    // MARK: - Bottom Bar
+
+    private var bottomBar: some View {
+        HStack(spacing: 16) {
+            VStack(alignment: .leading, spacing: 2) {
+                Text("Итого")
+                    .font(.caption)
+                    .foregroundColor(.secondary)
+                Text(String(format: "$%.2f", product.discountedPrice))
+                    .font(.title3)
+                    .fontWeight(.bold)
+            }
+
+            Button {
+                cart.add(product)
+                showAddedToCartAnimation()
+            } label: {
+                HStack {
+                    Image(systemName: "cart.badge.plus")
+                    Text("В корзину")
+                }
+                .font(.headline)
+                .foregroundColor(.white)
+                .frame(maxWidth: .infinity)
+                .padding()
+                .background(Color.blue)
+                .cornerRadius(12)
+            }
+        }
+        .padding()
+        .background(.ultraThinMaterial)
+    }
+
+    // MARK: - Added to Cart Overlay
+
+    private var addedToCartOverlay: some View {
+        VStack {
+            HStack {
+                Image(systemName: "checkmark.circle.fill")
+                    .font(.title2)
+                Text("Добавлено в корзину")
+                    .font(.headline)
+            }
+            .foregroundColor(.white)
+            .padding()
+            .background(Color.green)
+            .cornerRadius(12)
+            .shadow(radius: 10)
+        }
+        .transition(.move(edge: .top).combined(with: .opacity))
+    }
+
+    private func showAddedToCartAnimation() {
+        withAnimation(.spring()) {
+            showAddedToCart = true
+        }
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
+            withAnimation(.spring()) {
+                showAddedToCart = false
+            }
+        }
+    }
+}</code></pre>
+
+                <h2 class="text-2xl font-bold mt-12 mb-4">🏋️ Задания</h2>
+                <div class="bg-zinc-50 dark:bg-zinc-900 rounded-xl p-6 border border-zinc-200 dark:border-zinc-800">
+                    <ol class="space-y-4 text-zinc-600 dark:text-zinc-400">
+                        <li><strong>1.</strong> Добавьте возможность увеличения изображения по тапу (fullscreen)</li>
+                        <li><strong>2.</strong> Реализуйте выбор количества товара перед добавлением в корзину</li>
+                        <li><strong>3.</strong> Добавьте кнопку "Поделиться" с ShareLink</li>
+                    </ol>
+                </div>
+
+                <!-- Navigation -->
+                <div class="flex justify-between items-center mt-16 pt-8 border-t border-zinc-200 dark:border-zinc-800">
+                    <a href="05-product-list.html" class="flex items-center gap-2 text-zinc-600 dark:text-zinc-400 hover:text-primary transition-colors">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                        </svg>
+                        Глава 5: Список
+                    </a>
+                    <a href="07-search.html" class="flex items-center gap-2 px-6 py-3 bg-primary text-white rounded-xl hover:bg-blue-600 transition-colors">
+                        Глава 7: Поиск
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                        </svg>
+                    </a>
+                </div>
+            </article>
+        </main>
+    </div>
+
+    <script>hljs.highlightAll();</script>
+</body>
+</html>

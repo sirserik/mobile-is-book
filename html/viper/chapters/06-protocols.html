@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Глава 06: Протоколы | iOS Book</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'media',
+            theme: { extend: { colors: { primary: '#007AFF' } } }
+        }
+    </script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
+</head>
+<body class="bg-white dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100">
+    <button id="menuBtn" class="lg:hidden fixed top-4 left-4 z-50 p-3 bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-xl shadow-lg">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+        </svg>
+    </button>
+
+    <div class="flex min-h-screen">
+        <aside id="sidebar" class="fixed inset-y-0 left-0 w-72 bg-zinc-50 dark:bg-zinc-900 border-r border-zinc-200 dark:border-zinc-800 flex flex-col z-40 transform -translate-x-full lg:translate-x-0 transition-transform duration-300">
+            <div class="p-5 border-b border-zinc-200 dark:border-zinc-800">
+                <a href="../index.html" class="flex items-center gap-3 text-lg font-semibold hover:text-primary transition-colors">
+                    <div class="w-9 h-9 bg-primary rounded-lg flex items-center justify-center">
+                        <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/>
+                        </svg>
+                    </div>
+                    iOS Book
+                </a>
+            </div>
+            <nav class="flex-1 overflow-y-auto p-4">
+                <div class="space-y-6">
+                    <div>
+                        <h3 class="px-3 mb-2 text-xs font-semibold uppercase tracking-wider text-zinc-400">Введение</h3>
+                        <a href="00-introduction.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">Введение</a>
+                    </div>
+                    <div>
+                        <h3 class="px-3 mb-2 text-xs font-semibold uppercase tracking-wider text-zinc-400">Основы Swift</h3>
+                        <div class="space-y-1">
+                            <a href="01-xcode.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">1. Xcode</a>
+                            <a href="02-swift-basics.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">2. Основы Swift</a>
+                            <a href="03-control-flow.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">3. Control Flow</a>
+                            <a href="04-functions.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">4. Функции</a>
+                            <a href="05-oop.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">5. ООП</a>
+                            <a href="06-protocols.html" class="block px-3 py-2 text-sm text-white bg-primary rounded-lg">6. Протоколы</a>
+                            <a href="07-optionals.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">7. Optionals</a>
+                            <a href="08-memory.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">8. Память</a>
+                            <a href="09-generics.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">9. Generics</a>
+                            <a href="10-concurrency.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">10. Concurrency</a>
+                        </div>
+                    </div>
+                    <div>
+                        <h3 class="px-3 mb-2 text-xs font-semibold uppercase tracking-wider text-zinc-400">UIKit</h3>
+                        <div class="space-y-1">
+                            <a href="11-uikit-basics.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">11. UIKit</a>
+                            <a href="12-programmatic-ui.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">12. Programmatic UI</a>
+                        </div>
+                    </div>
+                    <div>
+                        <h3 class="px-3 mb-2 text-xs font-semibold uppercase tracking-wider text-zinc-400">Архитектура</h3>
+                        <div class="space-y-1">
+                            <a href="13-viper.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">13. VIPER</a>
+                            <a href="14-project-setup.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">14. Project Setup</a>
+                        </div>
+                    </div>
+                    <div>
+                        <h3 class="px-3 mb-2 text-xs font-semibold uppercase tracking-wider text-zinc-400">Практика</h3>
+                        <div class="space-y-1">
+                            <a href="15-authentication.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">15. Auth</a>
+                            <a href="16-products.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">16. Products</a>
+                            <a href="17-cart.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">17. Cart</a>
+                            <a href="18-favorites.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">18. Favorites</a>
+                            <a href="19-orders.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">19. Orders</a>
+                            <a href="20-profile.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">20. Profile</a>
+                        </div>
+                    </div>
+                    <div>
+                        <h3 class="px-3 mb-2 text-xs font-semibold uppercase tracking-wider text-zinc-400">Дополнительно</h3>
+                        <a href="21-reusable-views.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">21. Reusable Views</a>
+                    </div>
+                </div>
+            </nav>
+        </aside>
+
+        <div id="overlay" class="fixed inset-0 bg-black/50 z-30 lg:hidden hidden" onclick="closeSidebar()"></div>
+
+        <main class="flex-1 lg:ml-72">
+            <article class="max-w-3xl mx-auto px-6 sm:px-8 lg:px-12 py-12 lg:py-16">
+                <header class="mb-12 pb-8 border-b border-zinc-200 dark:border-zinc-800">
+                    <span class="text-sm font-semibold uppercase tracking-wider text-primary">Глава 06</span>
+                    <h1 class="text-3xl sm:text-4xl font-bold mt-2 mb-4">Протоколы</h1>
+                    <p class="text-lg text-zinc-600 dark:text-zinc-400">Protocol-oriented programming</p>
+                </header>
+
+                <div class="prose prose-zinc dark:prose-invert max-w-none">
+
+                    <!-- Введение -->
+                    <section class="mb-12">
+                        <h2 class="text-2xl font-bold mb-4">Что такое протокол?</h2>
+                        <p class="text-zinc-600 dark:text-zinc-400 mb-4">
+                            <strong>Протокол</strong> — это контракт, определяющий набор методов и свойств, которые должен реализовать тип. В отличие от наследования, тип может принять множество протоколов.
+                        </p>
+
+                        <div class="p-4 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-xl mb-6">
+                            <p class="text-blue-800 dark:text-blue-200">
+                                <strong>💡 Protocol-Oriented Programming:</strong> Apple рекомендует начинать проектирование с протоколов, а не с классов. Это делает код более гибким и тестируемым.
+                            </p>
+                        </div>
+                    </section>
+
+                    <!-- Объявление протокола -->
+                    <section class="mb-12">
+                        <h2 class="text-2xl font-bold mb-4">Объявление протокола</h2>
+
+                        <div class="bg-zinc-900 rounded-xl p-4 mb-6">
+                            <div class="flex items-center gap-2 mb-3">
+                                <div class="w-3 h-3 rounded-full bg-red-500"></div>
+                                <div class="w-3 h-3 rounded-full bg-yellow-500"></div>
+                                <div class="w-3 h-3 rounded-full bg-green-500"></div>
+                                <span class="text-zinc-400 text-sm ml-2">Swift</span>
+                            </div>
+                            <pre class="text-sm overflow-x-auto"><code class="language-swift"><span class="text-pink-400">protocol</span> <span class="text-cyan-400">Drawable</span> {
+    <span class="text-zinc-500">// Обязательные свойства</span>
+    <span class="text-pink-400">var</span> color: <span class="text-cyan-400">String</span> { <span class="text-pink-400">get set</span> }
+    <span class="text-pink-400">var</span> area: <span class="text-cyan-400">Double</span> { <span class="text-pink-400">get</span> }  <span class="text-zinc-500">// Только для чтения</span>
+
+    <span class="text-zinc-500">// Обязательные методы</span>
+    <span class="text-pink-400">func</span> <span class="text-blue-300">draw</span>()
+    <span class="text-pink-400">mutating func</span> <span class="text-blue-300">resize</span>(by factor: <span class="text-cyan-400">Double</span>)
+}
+
+<span class="text-zinc-500">// Реализация протокола</span>
+<span class="text-pink-400">struct</span> <span class="text-cyan-400">Rectangle</span>: <span class="text-cyan-400">Drawable</span> {
+    <span class="text-pink-400">var</span> color: <span class="text-cyan-400">String</span>
+    <span class="text-pink-400">var</span> width: <span class="text-cyan-400">Double</span>
+    <span class="text-pink-400">var</span> height: <span class="text-cyan-400">Double</span>
+
+    <span class="text-pink-400">var</span> area: <span class="text-cyan-400">Double</span> {
+        width * height
+    }
+
+    <span class="text-pink-400">func</span> <span class="text-blue-300">draw</span>() {
+        <span class="text-yellow-400">print</span>(<span class="text-green-400">"Рисую прямоугольник \(</span>width<span class="text-green-400">)x\(</span>height<span class="text-green-400">) цвета \(</span>color<span class="text-green-400">)"</span>)
+    }
+
+    <span class="text-pink-400">mutating func</span> <span class="text-blue-300">resize</span>(by factor: <span class="text-cyan-400">Double</span>) {
+        width *= factor
+        height *= factor
+    }
+}
+
+<span class="text-pink-400">var</span> <span class="text-blue-300">rect</span> = Rectangle(color: <span class="text-green-400">"синий"</span>, width: <span class="text-orange-400">10</span>, height: <span class="text-orange-400">5</span>)
+rect.draw()  <span class="text-zinc-500">// "Рисую прямоугольник 10.0x5.0 цвета синий"</span></code></pre>
+                        </div>
+                    </section>
+
+                    <!-- Множественные протоколы -->
+                    <section class="mb-12">
+                        <h2 class="text-2xl font-bold mb-4">Множественные протоколы</h2>
+                        <p class="text-zinc-600 dark:text-zinc-400 mb-4">
+                            Тип может принять несколько протоколов — это мощнее, чем одиночное наследование.
+                        </p>
+
+                        <div class="bg-zinc-900 rounded-xl p-4 mb-6">
+                            <pre class="text-sm overflow-x-auto"><code class="language-swift"><span class="text-pink-400">protocol</span> <span class="text-cyan-400">Identifiable</span> {
+    <span class="text-pink-400">var</span> id: <span class="text-cyan-400">String</span> { <span class="text-pink-400">get</span> }
+}
+
+<span class="text-pink-400">protocol</span> <span class="text-cyan-400">Named</span> {
+    <span class="text-pink-400">var</span> name: <span class="text-cyan-400">String</span> { <span class="text-pink-400">get set</span> }
+}
+
+<span class="text-pink-400">protocol</span> <span class="text-cyan-400">Describable</span> {
+    <span class="text-pink-400">func</span> <span class="text-blue-300">describe</span>() -> <span class="text-cyan-400">String</span>
+}
+
+<span class="text-zinc-500">// Принимаем все три протокола</span>
+<span class="text-pink-400">struct</span> <span class="text-cyan-400">Product</span>: <span class="text-cyan-400">Identifiable</span>, <span class="text-cyan-400">Named</span>, <span class="text-cyan-400">Describable</span> {
+    <span class="text-pink-400">let</span> id: <span class="text-cyan-400">String</span>
+    <span class="text-pink-400">var</span> name: <span class="text-cyan-400">String</span>
+    <span class="text-pink-400">var</span> price: <span class="text-cyan-400">Double</span>
+
+    <span class="text-pink-400">func</span> <span class="text-blue-300">describe</span>() -> <span class="text-cyan-400">String</span> {
+        <span class="text-green-400">"\(</span>name<span class="text-green-400">) (ID: \(</span>id<span class="text-green-400">) — $\(</span>price<span class="text-green-400">))"</span>
+    }
+}</code></pre>
+                        </div>
+                    </section>
+
+                    <!-- Protocol Extensions -->
+                    <section class="mb-12">
+                        <h2 class="text-2xl font-bold mb-4">Protocol Extensions</h2>
+                        <p class="text-zinc-600 dark:text-zinc-400 mb-4">
+                            Расширения протоколов позволяют добавить реализацию по умолчанию.
+                        </p>
+
+                        <div class="bg-zinc-900 rounded-xl p-4 mb-6">
+                            <pre class="text-sm overflow-x-auto"><code class="language-swift"><span class="text-pink-400">protocol</span> <span class="text-cyan-400">Greetable</span> {
+    <span class="text-pink-400">var</span> name: <span class="text-cyan-400">String</span> { <span class="text-pink-400">get</span> }
+    <span class="text-pink-400">func</span> <span class="text-blue-300">greet</span>() -> <span class="text-cyan-400">String</span>
+}
+
+<span class="text-zinc-500">// Реализация по умолчанию</span>
+<span class="text-pink-400">extension</span> <span class="text-cyan-400">Greetable</span> {
+    <span class="text-pink-400">func</span> <span class="text-blue-300">greet</span>() -> <span class="text-cyan-400">String</span> {
+        <span class="text-green-400">"Привет, \(</span>name<span class="text-green-400">)!"</span>
+    }
+
+    <span class="text-zinc-500">// Дополнительный метод</span>
+    <span class="text-pink-400">func</span> <span class="text-blue-300">formalGreet</span>() -> <span class="text-cyan-400">String</span> {
+        <span class="text-green-400">"Здравствуйте, \(</span>name<span class="text-green-400">)!"</span>
+    }
+}
+
+<span class="text-pink-400">struct</span> <span class="text-cyan-400">User</span>: <span class="text-cyan-400">Greetable</span> {
+    <span class="text-pink-400">let</span> name: <span class="text-cyan-400">String</span>
+    <span class="text-zinc-500">// greet() уже реализован по умолчанию!</span>
+}
+
+<span class="text-pink-400">let</span> <span class="text-blue-300">user</span> = User(name: <span class="text-green-400">"Анна"</span>)
+user.greet()        <span class="text-zinc-500">// "Привет, Анна!"</span>
+user.formalGreet()  <span class="text-zinc-500">// "Здравствуйте, Анна!"</span></code></pre>
+                        </div>
+                    </section>
+
+                    <!-- Протоколы в iOS -->
+                    <section class="mb-12">
+                        <h2 class="text-2xl font-bold mb-4">Встроенные протоколы Swift</h2>
+
+                        <div class="space-y-6">
+                            <div class="p-5 border border-zinc-200 dark:border-zinc-700 rounded-xl">
+                                <h3 class="font-semibold text-lg mb-2 text-primary">Equatable</h3>
+                                <p class="text-zinc-600 dark:text-zinc-400 mb-3">Позволяет сравнивать объекты с помощью ==</p>
+                                <div class="bg-zinc-900 rounded-lg p-3">
+                                    <pre class="text-sm overflow-x-auto"><code class="language-swift"><span class="text-pink-400">struct</span> <span class="text-cyan-400">Point</span>: <span class="text-cyan-400">Equatable</span> {
+    <span class="text-pink-400">var</span> x: <span class="text-cyan-400">Int</span>, y: <span class="text-cyan-400">Int</span>
+}
+Point(x: <span class="text-orange-400">1</span>, y: <span class="text-orange-400">2</span>) == Point(x: <span class="text-orange-400">1</span>, y: <span class="text-orange-400">2</span>)  <span class="text-zinc-500">// true</span></code></pre>
+                                </div>
+                            </div>
+
+                            <div class="p-5 border border-zinc-200 dark:border-zinc-700 rounded-xl">
+                                <h3 class="font-semibold text-lg mb-2 text-primary">Hashable</h3>
+                                <p class="text-zinc-600 dark:text-zinc-400 mb-3">Позволяет использовать в Set и как ключ Dictionary</p>
+                                <div class="bg-zinc-900 rounded-lg p-3">
+                                    <pre class="text-sm overflow-x-auto"><code class="language-swift"><span class="text-pink-400">struct</span> <span class="text-cyan-400">User</span>: <span class="text-cyan-400">Hashable</span> {
+    <span class="text-pink-400">let</span> id: <span class="text-cyan-400">Int</span>
+    <span class="text-pink-400">var</span> name: <span class="text-cyan-400">String</span>
+}
+<span class="text-pink-400">var</span> <span class="text-blue-300">users</span>: <span class="text-cyan-400">Set</span>&lt;User&gt; = []  <span class="text-zinc-500">// Работает!</span></code></pre>
+                                </div>
+                            </div>
+
+                            <div class="p-5 border border-zinc-200 dark:border-zinc-700 rounded-xl">
+                                <h3 class="font-semibold text-lg mb-2 text-primary">Codable</h3>
+                                <p class="text-zinc-600 dark:text-zinc-400 mb-3">Encodable + Decodable для JSON сериализации</p>
+                                <div class="bg-zinc-900 rounded-lg p-3">
+                                    <pre class="text-sm overflow-x-auto"><code class="language-swift"><span class="text-pink-400">struct</span> <span class="text-cyan-400">Product</span>: <span class="text-cyan-400">Codable</span> {
+    <span class="text-pink-400">let</span> id: <span class="text-cyan-400">Int</span>
+    <span class="text-pink-400">let</span> name: <span class="text-cyan-400">String</span>
+    <span class="text-pink-400">let</span> price: <span class="text-cyan-400">Double</span>
+}
+
+<span class="text-zinc-500">// Декодирование JSON</span>
+<span class="text-pink-400">let</span> <span class="text-blue-300">json</span> = <span class="text-green-400">"""
+{"id": 1, "name": "iPhone", "price": 999.0}
+"""</span>.data(using: .utf8)!
+
+<span class="text-pink-400">let</span> <span class="text-blue-300">product</span> = <span class="text-pink-400">try</span> <span class="text-cyan-400">JSONDecoder</span>().decode(Product.self, from: json)</code></pre>
+                                </div>
+                            </div>
+
+                            <div class="p-5 border border-zinc-200 dark:border-zinc-700 rounded-xl">
+                                <h3 class="font-semibold text-lg mb-2 text-primary">Comparable</h3>
+                                <p class="text-zinc-600 dark:text-zinc-400 mb-3">Позволяет сравнивать (&lt;, &gt;, &lt;=, &gt;=) и сортировать</p>
+                                <div class="bg-zinc-900 rounded-lg p-3">
+                                    <pre class="text-sm overflow-x-auto"><code class="language-swift"><span class="text-pink-400">struct</span> <span class="text-cyan-400">Score</span>: <span class="text-cyan-400">Comparable</span> {
+    <span class="text-pink-400">let</span> value: <span class="text-cyan-400">Int</span>
+
+    <span class="text-pink-400">static func</span> < (lhs: Score, rhs: Score) -> <span class="text-cyan-400">Bool</span> {
+        lhs.value < rhs.value
+    }
+}
+
+[Score(value: <span class="text-orange-400">80</span>), Score(value: <span class="text-orange-400">95</span>)].<span class="text-yellow-400">sorted</span>()</code></pre>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Protocol as Type -->
+                    <section class="mb-12">
+                        <h2 class="text-2xl font-bold mb-4">Протокол как тип</h2>
+                        <p class="text-zinc-600 dark:text-zinc-400 mb-4">
+                            Протоколы можно использовать как тип для переменных, параметров и возвращаемых значений.
+                        </p>
+
+                        <div class="bg-zinc-900 rounded-xl p-4 mb-6">
+                            <pre class="text-sm overflow-x-auto"><code class="language-swift"><span class="text-pink-400">protocol</span> <span class="text-cyan-400">PaymentMethod</span> {
+    <span class="text-pink-400">func</span> <span class="text-blue-300">pay</span>(amount: <span class="text-cyan-400">Double</span>)
+}
+
+<span class="text-pink-400">struct</span> <span class="text-cyan-400">CreditCard</span>: <span class="text-cyan-400">PaymentMethod</span> {
+    <span class="text-pink-400">func</span> <span class="text-blue-300">pay</span>(amount: <span class="text-cyan-400">Double</span>) {
+        <span class="text-yellow-400">print</span>(<span class="text-green-400">"Оплата картой: $\(</span>amount<span class="text-green-400">)"</span>)
+    }
+}
+
+<span class="text-pink-400">struct</span> <span class="text-cyan-400">ApplePay</span>: <span class="text-cyan-400">PaymentMethod</span> {
+    <span class="text-pink-400">func</span> <span class="text-blue-300">pay</span>(amount: <span class="text-cyan-400">Double</span>) {
+        <span class="text-yellow-400">print</span>(<span class="text-green-400">"Оплата Apple Pay: $\(</span>amount<span class="text-green-400">)"</span>)
+    }
+}
+
+<span class="text-zinc-500">// Функция принимает любой PaymentMethod</span>
+<span class="text-pink-400">func</span> <span class="text-blue-300">checkout</span>(total: <span class="text-cyan-400">Double</span>, method: <span class="text-cyan-400">PaymentMethod</span>) {
+    method.pay(amount: total)
+}
+
+checkout(total: <span class="text-orange-400">99.99</span>, method: CreditCard())
+checkout(total: <span class="text-orange-400">49.99</span>, method: ApplePay())</code></pre>
+                        </div>
+                    </section>
+
+                    <!-- Delegation Pattern -->
+                    <section class="mb-12">
+                        <h2 class="text-2xl font-bold mb-4">Паттерн Delegation</h2>
+                        <p class="text-zinc-600 dark:text-zinc-400 mb-4">
+                            Один из самых важных паттернов в iOS, основанный на протоколах.
+                        </p>
+
+                        <div class="bg-zinc-900 rounded-xl p-4 mb-6">
+                            <pre class="text-sm overflow-x-auto"><code class="language-swift"><span class="text-zinc-500">// 1. Определяем протокол делегата</span>
+<span class="text-pink-400">protocol</span> <span class="text-cyan-400">DownloadDelegate</span>: <span class="text-cyan-400">AnyObject</span> {
+    <span class="text-pink-400">func</span> <span class="text-blue-300">downloadDidStart</span>()
+    <span class="text-pink-400">func</span> <span class="text-blue-300">downloadDidFinish</span>(data: <span class="text-cyan-400">Data</span>)
+    <span class="text-pink-400">func</span> <span class="text-blue-300">downloadDidFail</span>(error: <span class="text-cyan-400">Error</span>)
+}
+
+<span class="text-zinc-500">// 2. Класс с делегатом</span>
+<span class="text-pink-400">class</span> <span class="text-cyan-400">Downloader</span> {
+    <span class="text-pink-400">weak var</span> delegate: <span class="text-cyan-400">DownloadDelegate</span>?  <span class="text-zinc-500">// weak для избежания retain cycle</span>
+
+    <span class="text-pink-400">func</span> <span class="text-blue-300">startDownload</span>(url: <span class="text-cyan-400">URL</span>) {
+        delegate?.<span class="text-yellow-400">downloadDidStart</span>()
+
+        <span class="text-zinc-500">// Симуляция загрузки...</span>
+        <span class="text-cyan-400">DispatchQueue</span>.main.<span class="text-yellow-400">asyncAfter</span>(deadline: .now() + <span class="text-orange-400">2</span>) {
+            <span class="text-pink-400">let</span> data = <span class="text-cyan-400">Data</span>()
+            <span class="text-pink-400">self</span>.delegate?.<span class="text-yellow-400">downloadDidFinish</span>(data: data)
+        }
+    }
+}
+
+<span class="text-zinc-500">// 3. Реализация делегата</span>
+<span class="text-pink-400">class</span> <span class="text-cyan-400">ViewController</span>: <span class="text-cyan-400">DownloadDelegate</span> {
+    <span class="text-pink-400">let</span> downloader = Downloader()
+
+    <span class="text-pink-400">func</span> <span class="text-blue-300">viewDidLoad</span>() {
+        downloader.delegate = <span class="text-pink-400">self</span>
+        downloader.startDownload(url: <span class="text-cyan-400">URL</span>(string: <span class="text-green-400">"..."</span>)!)
+    }
+
+    <span class="text-pink-400">func</span> <span class="text-blue-300">downloadDidStart</span>() {
+        <span class="text-yellow-400">print</span>(<span class="text-green-400">"Загрузка началась..."</span>)
+    }
+
+    <span class="text-pink-400">func</span> <span class="text-blue-300">downloadDidFinish</span>(data: <span class="text-cyan-400">Data</span>) {
+        <span class="text-yellow-400">print</span>(<span class="text-green-400">"Загрузка завершена!"</span>)
+    }
+
+    <span class="text-pink-400">func</span> <span class="text-blue-300">downloadDidFail</span>(error: <span class="text-cyan-400">Error</span>) {
+        <span class="text-yellow-400">print</span>(<span class="text-green-400">"Ошибка: \(</span>error<span class="text-green-400">)"</span>)
+    }
+}</code></pre>
+                        </div>
+
+                        <div class="p-4 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-xl">
+                            <p class="text-amber-800 dark:text-amber-200">
+                                <strong>⚠️ AnyObject:</strong> Добавьте <code>: AnyObject</code> к протоколу делегата, чтобы ограничить его только классами. Это позволяет использовать <code>weak</code>.
+                            </p>
+                        </div>
+                    </section>
+
+                    <!-- Итоги -->
+                    <section class="mb-8">
+                        <div class="p-6 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-2xl">
+                            <h3 class="font-semibold text-green-800 dark:text-green-200 mb-3">✅ Что вы узнали</h3>
+                            <ul class="space-y-2 text-green-700 dark:text-green-300">
+                                <li>• Как объявлять протоколы с свойствами и методами</li>
+                                <li>• Принятие множества протоколов одним типом</li>
+                                <li>• Protocol Extensions с реализацией по умолчанию</li>
+                                <li>• Встроенные протоколы: Equatable, Hashable, Codable</li>
+                                <li>• Паттерн Delegation</li>
+                            </ul>
+                        </div>
+                    </section>
+
+                    <section>
+                        <div class="p-6 bg-primary/10 border border-primary/20 rounded-2xl">
+                            <h3 class="font-semibold text-primary mb-3">📚 Следующий шаг</h3>
+                            <p class="text-zinc-600 dark:text-zinc-400">
+                                В следующей главе мы изучим Optionals — механизм безопасной работы с отсутствующими значениями в Swift.
+                            </p>
+                        </div>
+                    </section>
+
+                </div>
+
+                <nav class="flex justify-between gap-4 mt-16 pt-8 border-t border-zinc-200 dark:border-zinc-800">
+                    <a href="05-oop.html" class="flex items-center gap-3 px-5 py-3 bg-zinc-100 dark:bg-zinc-800 hover:bg-primary hover:text-white rounded-xl transition-colors">
+                        <span class="text-xl">←</span>
+                        <span class="font-medium">Предыдущая</span>
+                    </a>
+                    <a href="07-optionals.html" class="flex items-center gap-3 px-5 py-3 bg-zinc-100 dark:bg-zinc-800 hover:bg-primary hover:text-white rounded-xl transition-colors ml-auto">
+                        <span class="font-medium">Следующая</span>
+                        <span class="text-xl">→</span>
+                    </a>
+                </nav>
+            </article>
+        </main>
+    </div>
+
+    <script>
+        const menuBtn = document.getElementById('menuBtn');
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('overlay');
+        menuBtn.addEventListener('click', () => {
+            sidebar.classList.toggle('-translate-x-full');
+            overlay.classList.toggle('hidden');
+        });
+        function closeSidebar() {
+            sidebar.classList.add('-translate-x-full');
+            overlay.classList.add('hidden');
+        }
+    </script>
+</body>
+</html>

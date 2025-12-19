@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Глава 9: Корзина | SwiftUI E-Commerce</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'media',
+            theme: { extend: { colors: { primary: '#007AFF' } } }
+        }
+    </script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/vs2015.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/swift.min.js"></script>
+    <style>
+        ::-webkit-scrollbar { width: 6px; }
+        pre code { font-size: 14px; line-height: 1.6; }
+    </style>
+</head>
+<body class="bg-white dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100">
+    <div class="min-h-screen">
+        <header class="sticky top-0 z-40 bg-white/80 dark:bg-zinc-950/80 backdrop-blur-md border-b border-zinc-200 dark:border-zinc-800">
+            <div class="max-w-4xl mx-auto px-6 py-4 flex items-center justify-between">
+                <a href="../index.html" class="flex items-center gap-2 text-zinc-600 dark:text-zinc-400 hover:text-primary transition-colors">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                    </svg>
+                    Оглавление
+                </a>
+                <span class="text-sm text-zinc-500">Глава 9</span>
+            </div>
+        </header>
+
+        <main class="max-w-4xl mx-auto px-6 py-12">
+            <article class="prose prose-zinc dark:prose-invert max-w-none">
+                <span class="text-sm font-semibold text-primary uppercase tracking-wider">Глава 9</span>
+                <h1 class="text-4xl font-bold mt-2 mb-8">Корзина</h1>
+
+                <div class="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-xl p-6 mb-8">
+                    <h3 class="text-lg font-semibold text-blue-800 dark:text-blue-300 mb-2">🎯 Цель главы</h3>
+                    <p class="text-blue-700 dark:text-blue-400">
+                        Создать корзину покупок с управлением количеством, подсчётом суммы и badge на иконке.
+                    </p>
+                </div>
+
+                <h2 class="text-2xl font-bold mt-12 mb-4">CartItem модель</h2>
+                <pre><code class="language-swift rounded-xl">// Features/Cart/Models/CartItem.swift
+import Foundation
+
+struct CartItem: Identifiable, Codable {
+    let id: UUID
+    let product: Product
+    var quantity: Int
+
+    init(product: Product, quantity: Int = 1) {
+        self.id = UUID()
+        self.product = product
+        self.quantity = quantity
+    }
+
+    var totalPrice: Double {
+        product.discountedPrice * Double(quantity)
+    }
+}</code></pre>
+
+                <h2 class="text-2xl font-bold mt-12 mb-4">CartManager</h2>
+                <pre><code class="language-swift rounded-xl">// Shared/Managers/CartManager.swift
+import Foundation
+import Observation
+
+@Observable
+final class CartManager {
+    private(set) var items: [CartItem] = []
+
+    // MARK: - Computed Properties
+
+    var totalItems: Int {
+        items.reduce(0) { $0 + $1.quantity }
+    }
+
+    var totalPrice: Double {
+        items.reduce(0) { $0 + $1.totalPrice }
+    }
+
+    var isEmpty: Bool {
+        items.isEmpty
+    }
+
+    // MARK: - Methods
+
+    func add(_ product: Product) {
+        if let index = items.firstIndex(where: { $0.product.id == product.id }) {
+            items[index].quantity += 1
+        } else {
+            items.append(CartItem(product: product))
+        }
+    }
+
+    func remove(_ product: Product) {
+        items.removeAll { $0.product.id == product.id }
+    }
+
+    func updateQuantity(for product: Product, quantity: Int) {
+        guard let index = items.firstIndex(where: { $0.product.id == product.id }) else {
+            return
+        }
+
+        if quantity <= 0 {
+            items.remove(at: index)
+        } else {
+            items[index].quantity = quantity
+        }
+    }
+
+    func increment(_ product: Product) {
+        if let index = items.firstIndex(where: { $0.product.id == product.id }) {
+            items[index].quantity += 1
+        }
+    }
+
+    func decrement(_ product: Product) {
+        guard let index = items.firstIndex(where: { $0.product.id == product.id }) else {
+            return
+        }
+
+        if items[index].quantity > 1 {
+            items[index].quantity -= 1
+        } else {
+            items.remove(at: index)
+        }
+    }
+
+    func clear() {
+        items.removeAll()
+    }
+
+    func contains(_ product: Product) -> Bool {
+        items.contains { $0.product.id == product.id }
+    }
+}</code></pre>
+
+                <h2 class="text-2xl font-bold mt-12 mb-4">CartView</h2>
+                <pre><code class="language-swift rounded-xl">// Features/Cart/Views/CartView.swift
+import SwiftUI
+
+struct CartView: View {
+    @Environment(CartManager.self) private var cart
+    @State private var showCheckout = false
+
+    var body: some View {
+        NavigationStack {
+            Group {
+                if cart.isEmpty {
+                    emptyState
+                } else {
+                    cartContent
+                }
+            }
+            .navigationTitle("Корзина")
+            .toolbar {
+                if !cart.isEmpty {
+                    ToolbarItem(placement: .navigationBarTrailing) {
+                        Button("Очистить", role: .destructive) {
+                            withAnimation {
+                                cart.clear()
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private var emptyState: some View {
+        VStack(spacing: 16) {
+            Image(systemName: "cart")
+                .font(.system(size: 60))
+                .foregroundColor(.secondary)
+
+            Text("Корзина пуста")
+                .font(.headline)
+
+            Text("Добавьте товары для оформления заказа")
+                .font(.subheadline)
+                .foregroundColor(.secondary)
+        }
+    }
+
+    private var cartContent: some View {
+        VStack(spacing: 0) {
+            List {
+                ForEach(cart.items) { item in
+                    CartItemRow(item: item)
+                }
+                .onDelete(perform: delete)
+            }
+            .listStyle(.plain)
+
+            // Bottom summary
+            VStack(spacing: 16) {
+                HStack {
+                    Text("Итого (\(cart.totalItems) товаров)")
+                        .foregroundColor(.secondary)
+                    Spacer()
+                    Text(String(format: "$%.2f", cart.totalPrice))
+                        .font(.title2)
+                        .fontWeight(.bold)
+                }
+
+                Button {
+                    showCheckout = true
+                } label: {
+                    Text("Оформить заказ")
+                        .font(.headline)
+                        .foregroundColor(.white)
+                        .frame(maxWidth: .infinity)
+                        .padding()
+                        .background(Color.blue)
+                        .cornerRadius(12)
+                }
+            }
+            .padding()
+            .background(Color(.systemBackground))
+            .shadow(color: .black.opacity(0.1), radius: 10, x: 0, y: -5)
+        }
+        .sheet(isPresented: $showCheckout) {
+            CheckoutView()
+        }
+    }
+
+    private func delete(at offsets: IndexSet) {
+        for index in offsets {
+            let item = cart.items[index]
+            cart.remove(item.product)
+        }
+    }
+}</code></pre>
+
+                <h2 class="text-2xl font-bold mt-12 mb-4">CartItemRow</h2>
+                <pre><code class="language-swift rounded-xl">struct CartItemRow: View {
+    let item: CartItem
+    @Environment(CartManager.self) private var cart
+
+    var body: some View {
+        HStack(spacing: 12) {
+            // Image
+            AsyncImage(url: URL(string: item.product.thumbnail)) { image in
+                image.resizable().aspectRatio(contentMode: .fill)
+            } placeholder: {
+                Color.gray.opacity(0.2)
+            }
+            .frame(width: 80, height: 80)
+            .cornerRadius(8)
+
+            // Info
+            VStack(alignment: .leading, spacing: 4) {
+                Text(item.product.title)
+                    .font(.subheadline)
+                    .fontWeight(.medium)
+                    .lineLimit(2)
+
+                Text(String(format: "$%.2f", item.product.discountedPrice))
+                    .font(.caption)
+                    .foregroundColor(.secondary)
+
+                // Quantity stepper
+                HStack(spacing: 12) {
+                    Button {
+                        cart.decrement(item.product)
+                    } label: {
+                        Image(systemName: "minus.circle.fill")
+                            .font(.title2)
+                            .foregroundColor(.blue)
+                    }
+
+                    Text("\(item.quantity)")
+                        .font(.headline)
+                        .frame(minWidth: 30)
+
+                    Button {
+                        cart.increment(item.product)
+                    } label: {
+                        Image(systemName: "plus.circle.fill")
+                            .font(.title2)
+                            .foregroundColor(.blue)
+                    }
+                }
+            }
+
+            Spacer()
+
+            // Total
+            Text(String(format: "$%.2f", item.totalPrice))
+                .font(.headline)
+                .foregroundColor(.blue)
+        }
+        .padding(.vertical, 8)
+    }
+}</code></pre>
+
+                <h2 class="text-2xl font-bold mt-12 mb-4">CartBadgeView</h2>
+                <pre><code class="language-swift rounded-xl">struct CartBadgeView: View {
+    @Environment(CartManager.self) private var cart
+
+    var body: some View {
+        ZStack(alignment: .topTrailing) {
+            Image(systemName: "cart")
+                .font(.title2)
+
+            if cart.totalItems > 0 {
+                Text("\(min(cart.totalItems, 99))")
+                    .font(.caption2)
+                    .fontWeight(.bold)
+                    .foregroundColor(.white)
+                    .padding(4)
+                    .background(Color.red)
+                    .clipShape(Circle())
+                    .offset(x: 10, y: -10)
+            }
+        }
+    }
+}</code></pre>
+
+                <h2 class="text-2xl font-bold mt-12 mb-4">🏋️ Задания</h2>
+                <div class="bg-zinc-50 dark:bg-zinc-900 rounded-xl p-6 border border-zinc-200 dark:border-zinc-800">
+                    <ol class="space-y-4 text-zinc-600 dark:text-zinc-400">
+                        <li><strong>1.</strong> Добавьте сохранение корзины в UserDefaults</li>
+                        <li><strong>2.</strong> Реализуйте swipe-to-delete для удаления товаров</li>
+                        <li><strong>3.</strong> Добавьте промокоды со скидкой на заказ</li>
+                    </ol>
+                </div>
+
+                <!-- Navigation -->
+                <div class="flex justify-between items-center mt-16 pt-8 border-t border-zinc-200 dark:border-zinc-800">
+                    <a href="08-favorites.html" class="flex items-center gap-2 text-zinc-600 dark:text-zinc-400 hover:text-primary transition-colors">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                        </svg>
+                        Глава 8: Избранное
+                    </a>
+                    <a href="10-navigation.html" class="flex items-center gap-2 px-6 py-3 bg-primary text-white rounded-xl hover:bg-blue-600 transition-colors">
+                        Глава 10: Навигация
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                        </svg>
+                    </a>
+                </div>
+            </article>
+        </main>
+    </div>
+
+    <script>hljs.highlightAll();</script>
+</body>
+</html>

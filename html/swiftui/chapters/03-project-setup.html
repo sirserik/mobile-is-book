@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Глава 3: Настройка проекта | SwiftUI E-Commerce</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'media',
+            theme: { extend: { colors: { primary: '#007AFF' } } }
+        }
+    </script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/vs2015.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/swift.min.js"></script>
+    <style>
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 3px; }
+        pre code { font-size: 14px; line-height: 1.6; }
+    </style>
+</head>
+<body class="bg-white dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100">
+    <div class="min-h-screen">
+        <header class="sticky top-0 z-40 bg-white/80 dark:bg-zinc-950/80 backdrop-blur-md border-b border-zinc-200 dark:border-zinc-800">
+            <div class="max-w-4xl mx-auto px-6 py-4 flex items-center justify-between">
+                <a href="../index.html" class="flex items-center gap-2 text-zinc-600 dark:text-zinc-400 hover:text-primary transition-colors">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                    </svg>
+                    Оглавление
+                </a>
+                <span class="text-sm text-zinc-500">Глава 3</span>
+            </div>
+        </header>
+
+        <main class="max-w-4xl mx-auto px-6 py-12">
+            <article class="prose prose-zinc dark:prose-invert max-w-none">
+                <span class="text-sm font-semibold text-primary uppercase tracking-wider">Глава 3</span>
+                <h1 class="text-4xl font-bold mt-2 mb-8">Настройка проекта</h1>
+
+                <div class="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-xl p-6 mb-8">
+                    <h3 class="text-lg font-semibold text-blue-800 dark:text-blue-300 mb-2">🎯 Цель главы</h3>
+                    <p class="text-blue-700 dark:text-blue-400">
+                        Создать проект в Xcode, настроить структуру папок и подключить необходимые зависимости через SPM.
+                    </p>
+                </div>
+
+                <h2 class="text-2xl font-bold mt-12 mb-4">Создание проекта</h2>
+                <ol class="space-y-4 text-zinc-600 dark:text-zinc-400">
+                    <li><strong>1.</strong> Откройте Xcode → File → New → Project</li>
+                    <li><strong>2.</strong> Выберите iOS → App</li>
+                    <li><strong>3.</strong> Заполните:
+                        <ul class="mt-2 ml-6 space-y-1">
+                            <li>• Product Name: <code class="bg-zinc-100 dark:bg-zinc-800 px-2 py-1 rounded">Shopping</code></li>
+                            <li>• Team: Ваш Apple ID</li>
+                            <li>• Organization Identifier: <code class="bg-zinc-100 dark:bg-zinc-800 px-2 py-1 rounded">com.yourname</code></li>
+                            <li>• Interface: <strong>SwiftUI</strong></li>
+                            <li>• Language: Swift</li>
+                        </ul>
+                    </li>
+                    <li><strong>4.</strong> Снимите галочки с Core Data и Tests (добавим позже)</li>
+                </ol>
+
+                <h2 class="text-2xl font-bold mt-12 mb-4">Структура папок</h2>
+                <p class="text-zinc-600 dark:text-zinc-400 mb-4">
+                    Организуем проект по модулям MVVM:
+                </p>
+
+                <div class="bg-zinc-100 dark:bg-zinc-900 rounded-xl p-6 font-mono text-sm">
+<pre class="whitespace-pre text-zinc-800 dark:text-zinc-200">
+Shopping/
+├── ShoppingApp.swift          # Точка входа
+├── ContentView.swift          # Главный View
+│
+├── Core/
+│   ├── Network/
+│   │   ├── NetworkManager.swift
+│   │   ├── Endpoint.swift
+│   │   └── NetworkError.swift
+│   └── Extensions/
+│       ├── View+Extensions.swift
+│       └── Color+Extensions.swift
+│
+├── Features/
+│   ├── Products/
+│   │   ├── Models/
+│   │   │   └── Product.swift
+│   │   ├── ViewModels/
+│   │   │   └── ProductViewModel.swift
+│   │   └── Views/
+│   │       ├── ProductListView.swift
+│   │       ├── ProductDetailView.swift
+│   │       └── Components/
+│   │           └── ProductCard.swift
+│   │
+│   ├── Cart/
+│   │   ├── Models/
+│   │   ├── ViewModels/
+│   │   └── Views/
+│   │
+│   └── Favorites/
+│       ├── Models/
+│       ├── ViewModels/
+│       └── Views/
+│
+├── Shared/
+│   ├── Components/
+│   │   ├── LoadingView.swift
+│   │   └── ErrorView.swift
+│   └── Managers/
+│       ├── CartManager.swift
+│       └── FavoritesManager.swift
+│
+└── Resources/
+    └── Assets.xcassets
+</pre>
+                </div>
+
+                <h2 class="text-2xl font-bold mt-12 mb-4">Создание папок в Xcode</h2>
+                <ol class="space-y-2 text-zinc-600 dark:text-zinc-400">
+                    <li><strong>1.</strong> ПКМ на папке Shopping → New Group</li>
+                    <li><strong>2.</strong> Создайте: Core, Features, Shared, Resources</li>
+                    <li><strong>3.</strong> Внутри Features создайте: Products, Cart, Favorites</li>
+                    <li><strong>4.</strong> В каждой feature создайте: Models, ViewModels, Views</li>
+                </ol>
+
+                <h2 class="text-2xl font-bold mt-12 mb-4">Swift Package Manager (SPM)</h2>
+                <p class="text-zinc-600 dark:text-zinc-400 mb-4">
+                    Для нашего проекта понадобятся пакеты для загрузки изображений и работы с ключами:
+                </p>
+
+                <ol class="space-y-2 text-zinc-600 dark:text-zinc-400 mb-6">
+                    <li><strong>1.</strong> File → Add Package Dependencies...</li>
+                    <li><strong>2.</strong> Вставьте URL пакета и нажмите Add Package</li>
+                </ol>
+
+                <h3 class="text-xl font-semibold mt-8 mb-4">Рекомендуемые пакеты</h3>
+                <div class="overflow-hidden border border-zinc-200 dark:border-zinc-800 rounded-xl">
+                    <table class="w-full text-sm">
+                        <thead class="bg-zinc-50 dark:bg-zinc-900">
+                            <tr>
+                                <th class="px-4 py-3 text-left font-semibold">Пакет</th>
+                                <th class="px-4 py-3 text-left font-semibold">Назначение</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-zinc-200 dark:divide-zinc-800">
+                            <tr class="hover:bg-zinc-50 dark:hover:bg-zinc-900/50">
+                                <td class="px-4 py-3"><a href="https://github.com/kean/Nuke" class="text-primary hover:underline">Nuke</a></td>
+                                <td class="px-4 py-3 text-zinc-500">Быстрая загрузка изображений с кэшированием</td>
+                            </tr>
+                            <tr class="hover:bg-zinc-50 dark:hover:bg-zinc-900/50">
+                                <td class="px-4 py-3"><a href="https://github.com/kishikawakatsumi/KeychainAccess" class="text-primary hover:underline">KeychainAccess</a></td>
+                                <td class="px-4 py-3 text-zinc-500">Безопасное хранение токенов</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-xl p-4 my-6">
+                    <p class="text-green-800 dark:text-green-300">
+                        <strong>💡 Совет:</strong> В нашем проекте мы будем использовать встроенный AsyncImage, поэтому Nuke опционален. Но для production-приложений рекомендуется.
+                    </p>
+                </div>
+
+                <h2 class="text-2xl font-bold mt-12 mb-4">Настройка App Entry Point</h2>
+                <pre><code class="language-swift rounded-xl">// ShoppingApp.swift
+import SwiftUI
+
+@main
+struct ShoppingApp: App {
+    // Глобальные менеджеры
+    @State private var cartManager = CartManager()
+    @State private var favoritesManager = FavoritesManager()
+
+    var body: some Scene {
+        WindowGroup {
+            ContentView()
+                .environment(cartManager)
+                .environment(favoritesManager)
+        }
+    }
+}</code></pre>
+
+                <h2 class="text-2xl font-bold mt-12 mb-4">Базовые модели</h2>
+                <pre><code class="language-swift rounded-xl">// Features/Products/Models/Product.swift
+import Foundation
+
+struct Product: Identifiable, Codable, Hashable {
+    let id: Int
+    let title: String
+    let description: String
+    let price: Double
+    let discountPercentage: Double
+    let rating: Double
+    let stock: Int
+    let brand: String
+    let category: String
+    let thumbnail: String
+    let images: [String]
+
+    // Вычисляемые свойства
+    var discountedPrice: Double {
+        price * (1 - discountPercentage / 100)
+    }
+
+    var formattedPrice: String {
+        String(format: "$%.2f", price)
+    }
+}
+
+struct ProductResponse: Codable {
+    let products: [Product]
+    let total: Int
+    let skip: Int
+    let limit: Int
+}</code></pre>
+
+                <h2 class="text-2xl font-bold mt-12 mb-4">Info.plist настройки</h2>
+                <p class="text-zinc-600 dark:text-zinc-400 mb-4">
+                    Добавьте в Info.plist разрешение на сетевые запросы (если используете HTTP):
+                </p>
+
+                <pre><code class="language-xml rounded-xl">&lt;key&gt;NSAppTransportSecurity&lt;/key&gt;
+&lt;dict&gt;
+    &lt;key&gt;NSAllowsArbitraryLoads&lt;/key&gt;
+    &lt;true/&gt;
+&lt;/dict&gt;</code></pre>
+
+                <div class="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-xl p-4 my-6">
+                    <p class="text-yellow-800 dark:text-yellow-300">
+                        <strong>⚠️ Важно:</strong> В production используйте только HTTPS. DummyJSON API поддерживает HTTPS, поэтому эта настройка не обязательна.
+                    </p>
+                </div>
+
+                <h2 class="text-2xl font-bold mt-12 mb-4">Git инициализация</h2>
+                <pre><code class="language-bash rounded-xl"># Инициализировать репозиторий
+cd Shopping
+git init
+
+# Создать .gitignore
+cat > .gitignore << 'EOF'
+# Xcode
+*.xcuserdata
+*.xcworkspace
+DerivedData/
+.build/
+
+# Swift Package Manager
+.swiftpm/
+Packages/
+
+# CocoaPods (если используется)
+Pods/
+
+# Secrets
+*.plist.secrets
+EOF
+
+# Первый коммит
+git add .
+git commit -m "Initial project setup"</code></pre>
+
+                <h2 class="text-2xl font-bold mt-12 mb-4">✅ Результат</h2>
+                <p class="text-zinc-600 dark:text-zinc-400">
+                    У вас должен быть настроенный проект со структурой папок MVVM, готовый к разработке.
+                </p>
+
+                <!-- Navigation -->
+                <div class="flex justify-between items-center mt-16 pt-8 border-t border-zinc-200 dark:border-zinc-800">
+                    <a href="02-mvvm.html" class="flex items-center gap-2 text-zinc-600 dark:text-zinc-400 hover:text-primary transition-colors">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                        </svg>
+                        Глава 2: MVVM
+                    </a>
+                    <a href="04-api-layer.html" class="flex items-center gap-2 px-6 py-3 bg-primary text-white rounded-xl hover:bg-blue-600 transition-colors">
+                        Глава 4: API Layer
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                        </svg>
+                    </a>
+                </div>
+            </article>
+        </main>
+    </div>
+
+    <script>hljs.highlightAll();</script>
+</body>
+</html>

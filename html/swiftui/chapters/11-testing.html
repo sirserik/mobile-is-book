@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Глава 11: Тестирование | SwiftUI E-Commerce</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'media',
+            theme: { extend: { colors: { primary: '#007AFF' } } }
+        }
+    </script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/vs2015.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/swift.min.js"></script>
+    <style>
+        ::-webkit-scrollbar { width: 6px; }
+        pre code { font-size: 14px; line-height: 1.6; }
+    </style>
+</head>
+<body class="bg-white dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100">
+    <div class="min-h-screen">
+        <header class="sticky top-0 z-40 bg-white/80 dark:bg-zinc-950/80 backdrop-blur-md border-b border-zinc-200 dark:border-zinc-800">
+            <div class="max-w-4xl mx-auto px-6 py-4 flex items-center justify-between">
+                <a href="../index.html" class="flex items-center gap-2 text-zinc-600 dark:text-zinc-400 hover:text-primary transition-colors">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                    </svg>
+                    Оглавление
+                </a>
+                <span class="text-sm text-zinc-500">Глава 11</span>
+            </div>
+        </header>
+
+        <main class="max-w-4xl mx-auto px-6 py-12">
+            <article class="prose prose-zinc dark:prose-invert max-w-none">
+                <span class="text-sm font-semibold text-primary uppercase tracking-wider">Глава 11</span>
+                <h1 class="text-4xl font-bold mt-2 mb-8">Тестирование</h1>
+
+                <div class="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-xl p-6 mb-8">
+                    <h3 class="text-lg font-semibold text-blue-800 dark:text-blue-300 mb-2">🎯 Цель главы</h3>
+                    <p class="text-blue-700 dark:text-blue-400">
+                        Написать Unit Tests для ViewModel и Services, UI Tests для основных сценариев.
+                    </p>
+                </div>
+
+                <h2 class="text-2xl font-bold mt-12 mb-4">Добавление Test Target</h2>
+                <ol class="space-y-2 text-zinc-600 dark:text-zinc-400 mb-6">
+                    <li><strong>1.</strong> File → New → Target</li>
+                    <li><strong>2.</strong> Выберите Unit Testing Bundle → ShoppingTests</li>
+                    <li><strong>3.</strong> Повторите для UI Testing Bundle → ShoppingUITests</li>
+                </ol>
+
+                <h2 class="text-2xl font-bold mt-12 mb-4">Mock Service</h2>
+                <pre><code class="language-swift rounded-xl">// Tests/Mocks/MockProductService.swift
+import Foundation
+@testable import Shopping
+
+final class MockProductService: ProductServiceProtocol {
+    var products: [Product] = []
+    var shouldThrowError = false
+    var errorToThrow: Error = NetworkError.noData
+
+    func fetchProducts() async throws -> [Product] {
+        if shouldThrowError {
+            throw errorToThrow
+        }
+        return products
+    }
+
+    func fetchProduct(id: Int) async throws -> Product {
+        guard let product = products.first(where: { $0.id == id }) else {
+            throw NetworkError.noData
+        }
+        return product
+    }
+
+    func searchProducts(query: String) async throws -> [Product] {
+        return products.filter {
+            $0.title.localizedCaseInsensitiveContains(query)
+        }
+    }
+
+    func fetchCategories() async throws -> [String] {
+        return ["smartphones", "laptops"]
+    }
+}</code></pre>
+
+                <h2 class="text-2xl font-bold mt-12 mb-4">Unit Tests для ViewModel</h2>
+                <pre><code class="language-swift rounded-xl">// ShoppingTests/ProductViewModelTests.swift
+import XCTest
+@testable import Shopping
+
+@MainActor
+final class ProductViewModelTests: XCTestCase {
+    var sut: ProductViewModel!
+    var mockService: MockProductService!
+
+    override func setUp() {
+        super.setUp()
+        mockService = MockProductService()
+        sut = ProductViewModel(service: mockService)
+    }
+
+    override func tearDown() {
+        sut = nil
+        mockService = nil
+        super.tearDown()
+    }
+
+    // MARK: - Tests
+
+    func testFetchProducts_Success() async {
+        // Given
+        mockService.products = [.mock, .mock2]
+
+        // When
+        await sut.fetchProducts()
+
+        // Then
+        XCTAssertEqual(sut.products.count, 2)
+        XCTAssertFalse(sut.isLoading)
+        XCTAssertNil(sut.errorMessage)
+    }
+
+    func testFetchProducts_Failure() async {
+        // Given
+        mockService.shouldThrowError = true
+        mockService.errorToThrow = NetworkError.serverError(500)
+
+        // When
+        await sut.fetchProducts()
+
+        // Then
+        XCTAssertTrue(sut.products.isEmpty)
+        XCTAssertFalse(sut.isLoading)
+        XCTAssertNotNil(sut.errorMessage)
+    }
+
+    func testFilteredProducts_EmptySearch() async {
+        // Given
+        mockService.products = [.mock, .mock2]
+        await sut.fetchProducts()
+
+        // When
+        sut.searchText = ""
+
+        // Then
+        XCTAssertEqual(sut.filteredProducts.count, 2)
+    }
+
+    func testFilteredProducts_WithSearchText() async {
+        // Given
+        mockService.products = [
+            Product.mock(title: "iPhone"),
+            Product.mock(title: "MacBook")
+        ]
+        await sut.fetchProducts()
+
+        // When
+        sut.searchText = "iPhone"
+
+        // Then
+        XCTAssertEqual(sut.filteredProducts.count, 1)
+        XCTAssertEqual(sut.filteredProducts.first?.title, "iPhone")
+    }
+}</code></pre>
+
+                <h2 class="text-2xl font-bold mt-12 mb-4">Unit Tests для CartManager</h2>
+                <pre><code class="language-swift rounded-xl">// ShoppingTests/CartManagerTests.swift
+import XCTest
+@testable import Shopping
+
+final class CartManagerTests: XCTestCase {
+    var sut: CartManager!
+
+    override func setUp() {
+        super.setUp()
+        sut = CartManager()
+    }
+
+    override func tearDown() {
+        sut = nil
+        super.tearDown()
+    }
+
+    func testAddProduct() {
+        // Given
+        let product = Product.mock
+
+        // When
+        sut.add(product)
+
+        // Then
+        XCTAssertEqual(sut.items.count, 1)
+        XCTAssertEqual(sut.totalItems, 1)
+    }
+
+    func testAddSameProductTwice_IncreasesQuantity() {
+        // Given
+        let product = Product.mock
+
+        // When
+        sut.add(product)
+        sut.add(product)
+
+        // Then
+        XCTAssertEqual(sut.items.count, 1)
+        XCTAssertEqual(sut.totalItems, 2)
+        XCTAssertEqual(sut.items.first?.quantity, 2)
+    }
+
+    func testRemoveProduct() {
+        // Given
+        let product = Product.mock
+        sut.add(product)
+
+        // When
+        sut.remove(product)
+
+        // Then
+        XCTAssertTrue(sut.items.isEmpty)
+    }
+
+    func testTotalPrice() {
+        // Given
+        let product1 = Product.mock(price: 100, discountPercentage: 0)
+        let product2 = Product.mock(price: 50, discountPercentage: 10) // 45
+
+        // When
+        sut.add(product1)
+        sut.add(product2)
+
+        // Then
+        XCTAssertEqual(sut.totalPrice, 145, accuracy: 0.01)
+    }
+
+    func testClear() {
+        // Given
+        sut.add(.mock)
+        sut.add(.mock2)
+
+        // When
+        sut.clear()
+
+        // Then
+        XCTAssertTrue(sut.isEmpty)
+    }
+}</code></pre>
+
+                <h2 class="text-2xl font-bold mt-12 mb-4">UI Tests</h2>
+                <pre><code class="language-swift rounded-xl">// ShoppingUITests/ProductListUITests.swift
+import XCTest
+
+final class ProductListUITests: XCTestCase {
+    var app: XCUIApplication!
+
+    override func setUp() {
+        super.setUp()
+        continueAfterFailure = false
+        app = XCUIApplication()
+        app.launchArguments = ["--uitesting"]
+        app.launch()
+    }
+
+    func testProductListLoads() {
+        // Given the app is launched
+
+        // Then products should be visible
+        let productCell = app.collectionViews.cells.firstMatch
+        XCTAssertTrue(productCell.waitForExistence(timeout: 5))
+    }
+
+    func testNavigateToProductDetail() {
+        // Given
+        let productCell = app.collectionViews.cells.firstMatch
+        XCTAssertTrue(productCell.waitForExistence(timeout: 5))
+
+        // When
+        productCell.tap()
+
+        // Then
+        let addToCartButton = app.buttons["В корзину"]
+        XCTAssertTrue(addToCartButton.waitForExistence(timeout: 2))
+    }
+
+    func testAddToCart() {
+        // Given
+        let productCell = app.collectionViews.cells.firstMatch
+        XCTAssertTrue(productCell.waitForExistence(timeout: 5))
+        productCell.tap()
+
+        // When
+        let addButton = app.buttons["В корзину"]
+        XCTAssertTrue(addButton.waitForExistence(timeout: 2))
+        addButton.tap()
+
+        // Then
+        let successMessage = app.staticTexts["Добавлено в корзину"]
+        XCTAssertTrue(successMessage.waitForExistence(timeout: 2))
+    }
+
+    func testSearch() {
+        // Given
+        let searchTab = app.tabBars.buttons["Поиск"]
+        searchTab.tap()
+
+        // When
+        let searchField = app.searchFields.firstMatch
+        XCTAssertTrue(searchField.waitForExistence(timeout: 2))
+        searchField.tap()
+        searchField.typeText("iPhone")
+
+        // Then
+        let searchResult = app.cells.firstMatch
+        XCTAssertTrue(searchResult.waitForExistence(timeout: 3))
+    }
+}</code></pre>
+
+                <h2 class="text-2xl font-bold mt-12 mb-4">Запуск тестов</h2>
+                <pre><code class="language-bash rounded-xl"># Все unit тесты
+xcodebuild test -scheme Shopping -destination 'platform=iOS Simulator,name=iPhone 15'
+
+# Только UI тесты
+xcodebuild test -scheme Shopping -destination 'platform=iOS Simulator,name=iPhone 15' -only-testing:ShoppingUITests
+
+# С покрытием кода
+xcodebuild test -scheme Shopping -enableCodeCoverage YES</code></pre>
+
+                <h2 class="text-2xl font-bold mt-12 mb-4">🏋️ Задания</h2>
+                <div class="bg-zinc-50 dark:bg-zinc-900 rounded-xl p-6 border border-zinc-200 dark:border-zinc-800">
+                    <ol class="space-y-4 text-zinc-600 dark:text-zinc-400">
+                        <li><strong>1.</strong> Напишите тесты для FavoritesManager (add, remove, toggle, persistence)</li>
+                        <li><strong>2.</strong> Добавьте UI тест для полного checkout flow</li>
+                        <li><strong>3.</strong> Достигните 80%+ code coverage для ViewModels</li>
+                    </ol>
+                </div>
+
+                <!-- Navigation -->
+                <div class="flex justify-between items-center mt-16 pt-8 border-t border-zinc-200 dark:border-zinc-800">
+                    <a href="10-navigation.html" class="flex items-center gap-2 text-zinc-600 dark:text-zinc-400 hover:text-primary transition-colors">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                        </svg>
+                        Глава 10: Навигация
+                    </a>
+                    <a href="12-final.html" class="flex items-center gap-2 px-6 py-3 bg-primary text-white rounded-xl hover:bg-blue-600 transition-colors">
+                        Глава 12: Финал
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                        </svg>
+                    </a>
+                </div>
+            </article>
+        </main>
+    </div>
+
+    <script>hljs.highlightAll();</script>
+</body>
+</html>

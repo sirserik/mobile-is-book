@@ -1,0 +1,808 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Глава 02: Основы Swift | iOS Book</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'media',
+            theme: { extend: { colors: { primary: '#007AFF' } } }
+        }
+    </script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
+</head>
+<body class="bg-white dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100">
+    <button id="menuBtn" class="lg:hidden fixed top-4 left-4 z-50 p-3 bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-xl shadow-lg">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+        </svg>
+    </button>
+
+    <div class="flex min-h-screen">
+        <aside id="sidebar" class="fixed inset-y-0 left-0 w-72 bg-zinc-50 dark:bg-zinc-900 border-r border-zinc-200 dark:border-zinc-800 flex flex-col z-40 transform -translate-x-full lg:translate-x-0 transition-transform duration-300">
+            <div class="p-5 border-b border-zinc-200 dark:border-zinc-800">
+                <a href="../index.html" class="flex items-center gap-3 text-lg font-semibold hover:text-primary transition-colors">
+                    <div class="w-9 h-9 bg-primary rounded-lg flex items-center justify-center">
+                        <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/>
+                        </svg>
+                    </div>
+                    iOS Book
+                </a>
+            </div>
+            <nav class="flex-1 overflow-y-auto p-4">
+                <div class="space-y-6">
+                    <div>
+                        <h3 class="px-3 mb-2 text-xs font-semibold uppercase tracking-wider text-zinc-400">Введение</h3>
+                        <a href="00-introduction.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">Введение</a>
+                    </div>
+                    <div>
+                        <h3 class="px-3 mb-2 text-xs font-semibold uppercase tracking-wider text-zinc-400">Основы Swift</h3>
+                        <div class="space-y-1">
+                            <a href="01-xcode.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">1. Xcode</a>
+                            <a href="02-swift-basics.html" class="block px-3 py-2 text-sm text-white bg-primary rounded-lg">2. Основы Swift</a>
+                            <a href="03-control-flow.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">3. Control Flow</a>
+                            <a href="04-functions.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">4. Функции</a>
+                            <a href="05-oop.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">5. ООП</a>
+                            <a href="06-protocols.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">6. Протоколы</a>
+                            <a href="07-optionals.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">7. Optionals</a>
+                            <a href="08-memory.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">8. Память</a>
+                            <a href="09-generics.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">9. Generics</a>
+                            <a href="10-concurrency.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">10. Concurrency</a>
+                        </div>
+                    </div>
+                    <div>
+                        <h3 class="px-3 mb-2 text-xs font-semibold uppercase tracking-wider text-zinc-400">UIKit</h3>
+                        <div class="space-y-1">
+                            <a href="11-uikit-basics.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">11. UIKit</a>
+                            <a href="12-programmatic-ui.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">12. Programmatic UI</a>
+                        </div>
+                    </div>
+                    <div>
+                        <h3 class="px-3 mb-2 text-xs font-semibold uppercase tracking-wider text-zinc-400">Архитектура</h3>
+                        <div class="space-y-1">
+                            <a href="13-viper.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">13. VIPER</a>
+                            <a href="14-project-setup.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">14. Project Setup</a>
+                        </div>
+                    </div>
+                    <div>
+                        <h3 class="px-3 mb-2 text-xs font-semibold uppercase tracking-wider text-zinc-400">Практика</h3>
+                        <div class="space-y-1">
+                            <a href="15-authentication.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">15. Auth</a>
+                            <a href="16-products.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">16. Products</a>
+                            <a href="17-cart.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">17. Cart</a>
+                            <a href="18-favorites.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">18. Favorites</a>
+                            <a href="19-orders.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">19. Orders</a>
+                            <a href="20-profile.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">20. Profile</a>
+                        </div>
+                    </div>
+                    <div>
+                        <h3 class="px-3 mb-2 text-xs font-semibold uppercase tracking-wider text-zinc-400">Дополнительно</h3>
+                        <a href="21-reusable-views.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">21. Reusable Views</a>
+                    </div>
+                </div>
+            </nav>
+        </aside>
+
+        <div id="overlay" class="fixed inset-0 bg-black/50 z-30 lg:hidden hidden" onclick="closeSidebar()"></div>
+
+        <main class="flex-1 lg:ml-72">
+            <article class="max-w-3xl mx-auto px-6 sm:px-8 lg:px-12 py-12 lg:py-16">
+                <header class="mb-12 pb-8 border-b border-zinc-200 dark:border-zinc-800">
+                    <span class="text-sm font-semibold uppercase tracking-wider text-primary">Глава 02</span>
+                    <h1 class="text-3xl sm:text-4xl font-bold mt-2 mb-4">Основы Swift</h1>
+                    <p class="text-lg text-zinc-600 dark:text-zinc-400">Переменные, типы данных и операторы</p>
+                </header>
+
+                <div class="prose prose-zinc dark:prose-invert max-w-none">
+
+                    <!-- Введение -->
+                    <section class="mb-12">
+                        <h2 class="text-2xl font-bold mb-4">Что такое Swift?</h2>
+                        <p class="text-zinc-600 dark:text-zinc-400 mb-4">
+                            <strong>Swift</strong> — это мощный и интуитивно понятный язык программирования, созданный Apple в 2014 году. Он разработан для безопасности, производительности и современного подхода к программированию.
+                        </p>
+                        <div class="grid md:grid-cols-3 gap-4 mt-6">
+                            <div class="p-4 bg-zinc-50 dark:bg-zinc-800/50 rounded-xl text-center">
+                                <div class="text-3xl mb-2">🛡️</div>
+                                <h4 class="font-semibold">Безопасность</h4>
+                                <p class="text-sm text-zinc-500">Защита от типичных ошибок</p>
+                            </div>
+                            <div class="p-4 bg-zinc-50 dark:bg-zinc-800/50 rounded-xl text-center">
+                                <div class="text-3xl mb-2">⚡</div>
+                                <h4 class="font-semibold">Скорость</h4>
+                                <p class="text-sm text-zinc-500">Производительность на уровне C</p>
+                            </div>
+                            <div class="p-4 bg-zinc-50 dark:bg-zinc-800/50 rounded-xl text-center">
+                                <div class="text-3xl mb-2">✨</div>
+                                <h4 class="font-semibold">Выразительность</h4>
+                                <p class="text-sm text-zinc-500">Чистый и понятный синтаксис</p>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Переменные и константы -->
+                    <section class="mb-12">
+                        <h2 class="text-2xl font-bold mb-4">Переменные и константы</h2>
+
+                        <p class="text-zinc-600 dark:text-zinc-400 mb-4">
+                            В Swift есть два способа хранить данные: <strong>переменные</strong> (var) и <strong>константы</strong> (let).
+                        </p>
+
+                        <div class="bg-zinc-900 rounded-xl p-4 mb-6">
+                            <div class="flex items-center gap-2 mb-3">
+                                <div class="w-3 h-3 rounded-full bg-red-500"></div>
+                                <div class="w-3 h-3 rounded-full bg-yellow-500"></div>
+                                <div class="w-3 h-3 rounded-full bg-green-500"></div>
+                                <span class="text-zinc-400 text-sm ml-2">Swift</span>
+                            </div>
+                            <pre class="text-sm overflow-x-auto"><code class="language-swift"><span class="text-pink-400">var</span> <span class="text-blue-300">name</span> = <span class="text-green-400">"Алексей"</span>    <span class="text-zinc-500">// переменная — можно изменить</span>
+<span class="text-pink-400">let</span> <span class="text-blue-300">birthYear</span> = <span class="text-orange-400">1995</span>      <span class="text-zinc-500">// константа — нельзя изменить</span>
+
+name = <span class="text-green-400">"Александр"</span>          <span class="text-zinc-500">// ✅ OK</span>
+<span class="text-zinc-500">// birthYear = 1996          // ❌ Ошибка компиляции!</span></code></pre>
+                        </div>
+
+                        <div class="p-4 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-xl">
+                            <p class="text-amber-800 dark:text-amber-200">
+                                <strong>💡 Совет:</strong> Всегда используйте <code class="bg-amber-200/50 dark:bg-amber-800/50 px-1 rounded">let</code>, если значение не будет меняться. Это делает код безопаснее и понятнее.
+                            </p>
+                        </div>
+                    </section>
+
+                    <!-- Типы данных -->
+                    <section class="mb-12">
+                        <h2 class="text-2xl font-bold mb-4">Основные типы данных</h2>
+
+                        <div class="overflow-x-auto mb-6">
+                            <table class="w-full text-left">
+                                <thead>
+                                    <tr class="border-b border-zinc-200 dark:border-zinc-700">
+                                        <th class="py-3 pr-4 font-semibold">Тип</th>
+                                        <th class="py-3 pr-4 font-semibold">Описание</th>
+                                        <th class="py-3 font-semibold">Пример</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="text-zinc-600 dark:text-zinc-400">
+                                    <tr class="border-b border-zinc-100 dark:border-zinc-800">
+                                        <td class="py-3 pr-4"><code class="text-pink-500">Int</code></td>
+                                        <td class="py-3 pr-4">Целые числа</td>
+                                        <td><code>42</code>, <code>-17</code></td>
+                                    </tr>
+                                    <tr class="border-b border-zinc-100 dark:border-zinc-800">
+                                        <td class="py-3 pr-4"><code class="text-pink-500">Double</code></td>
+                                        <td class="py-3 pr-4">Числа с плавающей точкой</td>
+                                        <td><code>3.14159</code></td>
+                                    </tr>
+                                    <tr class="border-b border-zinc-100 dark:border-zinc-800">
+                                        <td class="py-3 pr-4"><code class="text-pink-500">String</code></td>
+                                        <td class="py-3 pr-4">Текст</td>
+                                        <td><code>"Привет!"</code></td>
+                                    </tr>
+                                    <tr class="border-b border-zinc-100 dark:border-zinc-800">
+                                        <td class="py-3 pr-4"><code class="text-pink-500">Bool</code></td>
+                                        <td class="py-3 pr-4">Логический (true/false)</td>
+                                        <td><code>true</code></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="py-3 pr-4"><code class="text-pink-500">Character</code></td>
+                                        <td class="py-3 pr-4">Один символ</td>
+                                        <td><code>"A"</code></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="bg-zinc-900 rounded-xl p-4 mb-6">
+                            <pre class="text-sm overflow-x-auto"><code class="language-swift"><span class="text-zinc-500">// Явное указание типа</span>
+<span class="text-pink-400">let</span> <span class="text-blue-300">age</span>: <span class="text-cyan-400">Int</span> = <span class="text-orange-400">25</span>
+<span class="text-pink-400">let</span> <span class="text-blue-300">price</span>: <span class="text-cyan-400">Double</span> = <span class="text-orange-400">99.99</span>
+<span class="text-pink-400">let</span> <span class="text-blue-300">message</span>: <span class="text-cyan-400">String</span> = <span class="text-green-400">"Hello, Swift!"</span>
+<span class="text-pink-400">let</span> <span class="text-blue-300">isActive</span>: <span class="text-cyan-400">Bool</span> = <span class="text-orange-400">true</span>
+
+<span class="text-zinc-500">// Type Inference — Swift сам определяет тип</span>
+<span class="text-pink-400">let</span> <span class="text-blue-300">count</span> = <span class="text-orange-400">10</span>              <span class="text-zinc-500">// Int</span>
+<span class="text-pink-400">let</span> <span class="text-blue-300">temperature</span> = <span class="text-orange-400">36.6</span>     <span class="text-zinc-500">// Double</span>
+<span class="text-pink-400">let</span> <span class="text-blue-300">greeting</span> = <span class="text-green-400">"Привет"</span>     <span class="text-zinc-500">// String</span></code></pre>
+                        </div>
+                    </section>
+
+                    <!-- Строки -->
+                    <section class="mb-12">
+                        <h2 class="text-2xl font-bold mb-4">Работа со строками</h2>
+
+                        <div class="bg-zinc-900 rounded-xl p-4 mb-6">
+                            <pre class="text-sm overflow-x-auto"><code class="language-swift"><span class="text-zinc-500">// Создание строк</span>
+<span class="text-pink-400">let</span> <span class="text-blue-300">firstName</span> = <span class="text-green-400">"Анна"</span>
+<span class="text-pink-400">let</span> <span class="text-blue-300">lastName</span> = <span class="text-green-400">"Иванова"</span>
+
+<span class="text-zinc-500">// Конкатенация (объединение)</span>
+<span class="text-pink-400">let</span> <span class="text-blue-300">fullName</span> = firstName + <span class="text-green-400">" "</span> + lastName
+<span class="text-zinc-500">// "Анна Иванова"</span>
+
+<span class="text-zinc-500">// Интерполяция строк (рекомендуется)</span>
+<span class="text-pink-400">let</span> <span class="text-blue-300">age</span> = <span class="text-orange-400">28</span>
+<span class="text-pink-400">let</span> <span class="text-blue-300">intro</span> = <span class="text-green-400">"Меня зовут \(</span>fullName<span class="text-green-400">), мне \(</span>age<span class="text-green-400">) лет"</span>
+<span class="text-zinc-500">// "Меня зовут Анна Иванова, мне 28 лет"</span>
+
+<span class="text-zinc-500">// Многострочные строки</span>
+<span class="text-pink-400">let</span> <span class="text-blue-300">poem</span> = <span class="text-green-400">"""
+    Строка первая
+    Строка вторая
+    Строка третья
+    """</span></code></pre>
+                        </div>
+
+                        <h3 class="text-xl font-semibold mb-3">Полезные методы String</h3>
+                        <div class="bg-zinc-900 rounded-xl p-4">
+                            <pre class="text-sm overflow-x-auto"><code class="language-swift"><span class="text-pink-400">let</span> <span class="text-blue-300">text</span> = <span class="text-green-400">"Hello, World!"</span>
+
+text.<span class="text-yellow-400">count</span>                  <span class="text-zinc-500">// 13 — количество символов</span>
+text.<span class="text-yellow-400">isEmpty</span>                <span class="text-zinc-500">// false — пустая ли строка</span>
+text.<span class="text-yellow-400">uppercased</span>()           <span class="text-zinc-500">// "HELLO, WORLD!"</span>
+text.<span class="text-yellow-400">lowercased</span>()           <span class="text-zinc-500">// "hello, world!"</span>
+text.<span class="text-yellow-400">contains</span>(<span class="text-green-400">"World"</span>)      <span class="text-zinc-500">// true</span>
+text.<span class="text-yellow-400">hasPrefix</span>(<span class="text-green-400">"Hello"</span>)     <span class="text-zinc-500">// true</span>
+text.<span class="text-yellow-400">hasSuffix</span>(<span class="text-green-400">"!"</span>)         <span class="text-zinc-500">// true</span></code></pre>
+                        </div>
+                    </section>
+
+                    <!-- Коллекции -->
+                    <section class="mb-12">
+                        <h2 class="text-2xl font-bold mb-4">Коллекции</h2>
+
+                        <h3 class="text-xl font-semibold mb-3">Array (Массив)</h3>
+                        <p class="text-zinc-600 dark:text-zinc-400 mb-4">Упорядоченная коллекция элементов одного типа.</p>
+
+                        <div class="bg-zinc-900 rounded-xl p-4 mb-6">
+                            <pre class="text-sm overflow-x-auto"><code class="language-swift"><span class="text-zinc-500">// Создание массива</span>
+<span class="text-pink-400">var</span> <span class="text-blue-300">fruits</span> = [<span class="text-green-400">"Яблоко"</span>, <span class="text-green-400">"Банан"</span>, <span class="text-green-400">"Апельсин"</span>]
+<span class="text-pink-400">var</span> <span class="text-blue-300">numbers</span>: [<span class="text-cyan-400">Int</span>] = [<span class="text-orange-400">1</span>, <span class="text-orange-400">2</span>, <span class="text-orange-400">3</span>, <span class="text-orange-400">4</span>, <span class="text-orange-400">5</span>]
+<span class="text-pink-400">var</span> <span class="text-blue-300">emptyArray</span>: [<span class="text-cyan-400">String</span>] = []
+
+<span class="text-zinc-500">// Доступ к элементам (индекс начинается с 0)</span>
+fruits[<span class="text-orange-400">0</span>]                    <span class="text-zinc-500">// "Яблоко"</span>
+fruits[<span class="text-orange-400">2</span>]                    <span class="text-zinc-500">// "Апельсин"</span>
+
+<span class="text-zinc-500">// Изменение массива</span>
+fruits.<span class="text-yellow-400">append</span>(<span class="text-green-400">"Груша"</span>)      <span class="text-zinc-500">// Добавить в конец</span>
+fruits.<span class="text-yellow-400">insert</span>(<span class="text-green-400">"Манго"</span>, at: <span class="text-orange-400">1</span>) <span class="text-zinc-500">// Вставить по индексу</span>
+fruits.<span class="text-yellow-400">remove</span>(at: <span class="text-orange-400">0</span>)        <span class="text-zinc-500">// Удалить по индексу</span>
+
+<span class="text-zinc-500">// Свойства</span>
+fruits.<span class="text-yellow-400">count</span>                 <span class="text-zinc-500">// Количество элементов</span>
+fruits.<span class="text-yellow-400">isEmpty</span>               <span class="text-zinc-500">// Пустой ли массив</span>
+fruits.<span class="text-yellow-400">first</span>                 <span class="text-zinc-500">// Первый элемент (Optional)</span>
+fruits.<span class="text-yellow-400">last</span>                  <span class="text-zinc-500">// Последний элемент (Optional)</span></code></pre>
+                        </div>
+
+                        <h3 class="text-xl font-semibold mb-3">Dictionary (Словарь)</h3>
+                        <p class="text-zinc-600 dark:text-zinc-400 mb-4">Коллекция пар ключ-значение.</p>
+
+                        <div class="bg-zinc-900 rounded-xl p-4 mb-6">
+                            <pre class="text-sm overflow-x-auto"><code class="language-swift"><span class="text-zinc-500">// Создание словаря</span>
+<span class="text-pink-400">var</span> <span class="text-blue-300">person</span>: [<span class="text-cyan-400">String</span>: <span class="text-cyan-400">Any</span>] = [
+    <span class="text-green-400">"name"</span>: <span class="text-green-400">"Иван"</span>,
+    <span class="text-green-400">"age"</span>: <span class="text-orange-400">30</span>,
+    <span class="text-green-400">"city"</span>: <span class="text-green-400">"Москва"</span>
+]
+
+<span class="text-zinc-500">// Доступ по ключу</span>
+person[<span class="text-green-400">"name"</span>]              <span class="text-zinc-500">// "Иван" (Optional)</span>
+
+<span class="text-zinc-500">// Добавление/изменение</span>
+person[<span class="text-green-400">"email"</span>] = <span class="text-green-400">"ivan@mail.ru"</span>
+person[<span class="text-green-400">"age"</span>] = <span class="text-orange-400">31</span>
+
+<span class="text-zinc-500">// Удаление</span>
+person.<span class="text-yellow-400">removeValue</span>(forKey: <span class="text-green-400">"city"</span>)</code></pre>
+                        </div>
+
+                        <h3 class="text-xl font-semibold mb-3">Set (Множество)</h3>
+                        <p class="text-zinc-600 dark:text-zinc-400 mb-4">Неупорядоченная коллекция уникальных элементов.</p>
+
+                        <div class="bg-zinc-900 rounded-xl p-4">
+                            <pre class="text-sm overflow-x-auto"><code class="language-swift"><span class="text-pink-400">var</span> <span class="text-blue-300">colors</span>: <span class="text-cyan-400">Set</span> = [<span class="text-green-400">"Красный"</span>, <span class="text-green-400">"Синий"</span>, <span class="text-green-400">"Зелёный"</span>]
+
+colors.<span class="text-yellow-400">insert</span>(<span class="text-green-400">"Жёлтый"</span>)     <span class="text-zinc-500">// Добавить</span>
+colors.<span class="text-yellow-400">remove</span>(<span class="text-green-400">"Синий"</span>)      <span class="text-zinc-500">// Удалить</span>
+colors.<span class="text-yellow-400">contains</span>(<span class="text-green-400">"Красный"</span>)  <span class="text-zinc-500">// true — проверка наличия</span>
+
+<span class="text-zinc-500">// Дубликаты автоматически игнорируются</span>
+colors.<span class="text-yellow-400">insert</span>(<span class="text-green-400">"Красный"</span>)    <span class="text-zinc-500">// Ничего не изменится</span></code></pre>
+                        </div>
+                    </section>
+
+                    <!-- Операторы -->
+                    <section class="mb-12">
+                        <h2 class="text-2xl font-bold mb-4">Операторы</h2>
+
+                        <h3 class="text-xl font-semibold mb-3">Арифметические операторы</h3>
+                        <div class="bg-zinc-900 rounded-xl p-4 mb-6">
+                            <pre class="text-sm overflow-x-auto"><code class="language-swift"><span class="text-pink-400">let</span> <span class="text-blue-300">a</span> = <span class="text-orange-400">10</span>, <span class="text-blue-300">b</span> = <span class="text-orange-400">3</span>
+
+a + b      <span class="text-zinc-500">// 13 — сложение</span>
+a - b      <span class="text-zinc-500">// 7  — вычитание</span>
+a * b      <span class="text-zinc-500">// 30 — умножение</span>
+a / b      <span class="text-zinc-500">// 3  — деление (целочисленное)</span>
+a % b      <span class="text-zinc-500">// 1  — остаток от деления</span>
+
+<span class="text-pink-400">var</span> <span class="text-blue-300">x</span> = <span class="text-orange-400">5</span>
+x += <span class="text-orange-400">3</span>      <span class="text-zinc-500">// x = 8</span>
+x -= <span class="text-orange-400">2</span>      <span class="text-zinc-500">// x = 6</span>
+x *= <span class="text-orange-400">2</span>      <span class="text-zinc-500">// x = 12</span></code></pre>
+                        </div>
+
+                        <h3 class="text-xl font-semibold mb-3">Операторы сравнения</h3>
+                        <div class="bg-zinc-900 rounded-xl p-4 mb-6">
+                            <pre class="text-sm overflow-x-auto"><code class="language-swift"><span class="text-orange-400">5</span> == <span class="text-orange-400">5</span>     <span class="text-zinc-500">// true  — равно</span>
+<span class="text-orange-400">5</span> != <span class="text-orange-400">3</span>     <span class="text-zinc-500">// true  — не равно</span>
+<span class="text-orange-400">5</span> > <span class="text-orange-400">3</span>      <span class="text-zinc-500">// true  — больше</span>
+<span class="text-orange-400">5</span> < <span class="text-orange-400">3</span>      <span class="text-zinc-500">// false — меньше</span>
+<span class="text-orange-400">5</span> >= <span class="text-orange-400">5</span>     <span class="text-zinc-500">// true  — больше или равно</span>
+<span class="text-orange-400">5</span> <= <span class="text-orange-400">3</span>     <span class="text-zinc-500">// false — меньше или равно</span></code></pre>
+                        </div>
+
+                        <h3 class="text-xl font-semibold mb-3">Логические операторы</h3>
+                        <div class="bg-zinc-900 rounded-xl p-4">
+                            <pre class="text-sm overflow-x-auto"><code class="language-swift"><span class="text-pink-400">let</span> <span class="text-blue-300">isAdult</span> = <span class="text-orange-400">true</span>
+<span class="text-pink-400">let</span> <span class="text-blue-300">hasLicense</span> = <span class="text-orange-400">false</span>
+
+!isAdult              <span class="text-zinc-500">// false — НЕ (инверсия)</span>
+isAdult && hasLicense <span class="text-zinc-500">// false — И (оба true)</span>
+isAdult || hasLicense <span class="text-zinc-500">// true  — ИЛИ (хотя бы один true)</span></code></pre>
+                        </div>
+                    </section>
+
+                    <!-- Type Alias и Tuple -->
+                    <section class="mb-12">
+                        <h2 class="text-2xl font-bold mb-4">Дополнительные типы</h2>
+
+                        <h3 class="text-xl font-semibold mb-3">Tuple (Кортеж)</h3>
+                        <p class="text-zinc-600 dark:text-zinc-400 mb-4">Группировка нескольких значений в одно составное значение.</p>
+
+                        <div class="bg-zinc-900 rounded-xl p-4 mb-6">
+                            <pre class="text-sm overflow-x-auto"><code class="language-swift"><span class="text-zinc-500">// Создание кортежа</span>
+<span class="text-pink-400">let</span> <span class="text-blue-300">coordinates</span> = (<span class="text-orange-400">55.75</span>, <span class="text-orange-400">37.62</span>)
+<span class="text-pink-400">let</span> <span class="text-blue-300">person</span> = (name: <span class="text-green-400">"Мария"</span>, age: <span class="text-orange-400">25</span>)
+
+<span class="text-zinc-500">// Доступ к элементам</span>
+coordinates.<span class="text-orange-400">0</span>         <span class="text-zinc-500">// 55.75</span>
+coordinates.<span class="text-orange-400">1</span>         <span class="text-zinc-500">// 37.62</span>
+person.name           <span class="text-zinc-500">// "Мария"</span>
+person.age            <span class="text-zinc-500">// 25</span>
+
+<span class="text-zinc-500">// Декомпозиция</span>
+<span class="text-pink-400">let</span> (lat, lon) = coordinates
+<span class="text-yellow-400">print</span>(<span class="text-green-400">"Широта: \(</span>lat<span class="text-green-400">), Долгота: \(</span>lon<span class="text-green-400">)"</span>)</code></pre>
+                        </div>
+
+                        <h3 class="text-xl font-semibold mb-3">Type Alias</h3>
+                        <p class="text-zinc-600 dark:text-zinc-400 mb-4">Создание альтернативного имени для существующего типа.</p>
+
+                        <div class="bg-zinc-900 rounded-xl p-4">
+                            <pre class="text-sm overflow-x-auto"><code class="language-swift"><span class="text-pink-400">typealias</span> <span class="text-cyan-400">UserID</span> = <span class="text-cyan-400">Int</span>
+<span class="text-pink-400">typealias</span> <span class="text-cyan-400">Coordinates</span> = (<span class="text-cyan-400">Double</span>, <span class="text-cyan-400">Double</span>)
+
+<span class="text-pink-400">let</span> <span class="text-blue-300">userId</span>: <span class="text-cyan-400">UserID</span> = <span class="text-orange-400">12345</span>
+<span class="text-pink-400">let</span> <span class="text-blue-300">location</span>: <span class="text-cyan-400">Coordinates</span> = (<span class="text-orange-400">55.75</span>, <span class="text-orange-400">37.62</span>)</code></pre>
+                        </div>
+                    </section>
+
+                    <!-- Проектирование данных -->
+                    <section class="mb-12">
+                        <h2 class="text-2xl font-bold mb-4">Проектирование данных: как понять какие свойства создавать</h2>
+
+                        <div class="p-5 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-xl mb-6">
+                            <p class="text-amber-800 dark:text-amber-200">
+                                <strong>Это ключевой навык!</strong> Умение правильно определить какие данные нужны вашему приложению — основа всей разработки. Без этого понимания вы будете постоянно переписывать код.
+                            </p>
+                        </div>
+
+                        <h3 class="text-xl font-semibold mb-3">Шаг 1: Анализ предметной области</h3>
+                        <p class="text-zinc-600 dark:text-zinc-400 mb-4">
+                            Прежде чем писать код, нужно понять <strong>что</strong> ваше приложение должно делать и <strong>с какими данными</strong> работать. Задайте себе вопросы:
+                        </p>
+
+                        <div class="grid md:grid-cols-2 gap-4 mb-6">
+                            <div class="p-4 bg-zinc-50 dark:bg-zinc-800/50 rounded-xl">
+                                <h4 class="font-semibold text-primary mb-2">Что отображается на экране?</h4>
+                                <p class="text-sm text-zinc-600 dark:text-zinc-400">Каждый элемент UI требует данных. Если на экране есть имя — нужна переменная для имени.</p>
+                            </div>
+                            <div class="p-4 bg-zinc-50 dark:bg-zinc-800/50 rounded-xl">
+                                <h4 class="font-semibold text-primary mb-2">Что пользователь может изменить?</h4>
+                                <p class="text-sm text-zinc-600 dark:text-zinc-400">Изменяемые данные = <code>var</code>. Неизменяемые = <code>let</code>.</p>
+                            </div>
+                            <div class="p-4 bg-zinc-50 dark:bg-zinc-800/50 rounded-xl">
+                                <h4 class="font-semibold text-primary mb-2">Какие данные приходят с сервера?</h4>
+                                <p class="text-sm text-zinc-600 dark:text-zinc-400">API определяет структуру данных. Посмотрите JSON — это ваша модель.</p>
+                            </div>
+                            <div class="p-4 bg-zinc-50 dark:bg-zinc-800/50 rounded-xl">
+                                <h4 class="font-semibold text-primary mb-2">Что нужно сохранить?</h4>
+                                <p class="text-sm text-zinc-600 dark:text-zinc-400">Данные для хранения требуют моделей с Codable.</p>
+                            </div>
+                        </div>
+
+                        <h3 class="text-xl font-semibold mb-3">Шаг 2: Выделение сущностей</h3>
+                        <p class="text-zinc-600 dark:text-zinc-400 mb-4">
+                            <strong>Сущность</strong> — это объект реального мира, который ваше приложение моделирует. В интернет-магазине это:
+                        </p>
+
+                        <div class="bg-zinc-900 rounded-xl p-4 mb-6">
+                            <pre class="text-sm overflow-x-auto"><code class="language-swift"><span class="text-zinc-500">// Выделяем сущности из описания задачи:</span>
+<span class="text-zinc-500">// "Интернет-магазин, где пользователи просматривают товары,</span>
+<span class="text-zinc-500">// добавляют в корзину и оформляют заказы"</span>
+
+<span class="text-zinc-500">// Сущности:</span>
+<span class="text-zinc-500">// 1. Пользователь (User)</span>
+<span class="text-zinc-500">// 2. Товар (Product)</span>
+<span class="text-zinc-500">// 3. Корзина (Cart) / Элемент корзины (CartItem)</span>
+<span class="text-zinc-500">// 4. Заказ (Order)</span></code></pre>
+                        </div>
+
+                        <h3 class="text-xl font-semibold mb-3">Шаг 3: Определение свойств сущности</h3>
+                        <p class="text-zinc-600 dark:text-zinc-400 mb-4">
+                            Для каждой сущности задайте вопрос: <strong>"Что нужно знать об этом объекте?"</strong>
+                        </p>
+
+                        <div class="bg-zinc-900 rounded-xl p-4 mb-6">
+                            <pre class="text-sm overflow-x-auto"><code class="language-swift"><span class="text-zinc-500">// Товар (Product) — что о нём нужно знать?</span>
+
+<span class="text-pink-400">struct</span> <span class="text-cyan-400">Product</span> {
+    <span class="text-zinc-500">// ИДЕНТИФИКАЦИЯ — как отличить один товар от другого?</span>
+    <span class="text-pink-400">let</span> id: <span class="text-cyan-400">String</span>              <span class="text-zinc-500">// уникальный идентификатор</span>
+
+    <span class="text-zinc-500">// ОТОБРАЖЕНИЕ — что показать пользователю?</span>
+    <span class="text-pink-400">let</span> name: <span class="text-cyan-400">String</span>            <span class="text-zinc-500">// название товара</span>
+    <span class="text-pink-400">let</span> description: <span class="text-cyan-400">String</span>     <span class="text-zinc-500">// описание</span>
+    <span class="text-pink-400">let</span> imageURL: <span class="text-cyan-400">String</span>        <span class="text-zinc-500">// фото товара</span>
+
+    <span class="text-zinc-500">// ЦЕНА И ПОКУПКА — что нужно для продажи?</span>
+    <span class="text-pink-400">let</span> price: <span class="text-cyan-400">Double</span>           <span class="text-zinc-500">// цена</span>
+    <span class="text-pink-400">let</span> originalPrice: <span class="text-cyan-400">Double</span>?  <span class="text-zinc-500">// цена до скидки (может не быть)</span>
+    <span class="text-pink-400">var</span> quantity: <span class="text-cyan-400">Int</span>           <span class="text-zinc-500">// количество на складе (меняется!)</span>
+
+    <span class="text-zinc-500">// КАТЕГОРИЗАЦИЯ — как организовать товары?</span>
+    <span class="text-pink-400">let</span> category: <span class="text-cyan-400">String</span>        <span class="text-zinc-500">// категория</span>
+    <span class="text-pink-400">let</span> brand: <span class="text-cyan-400">String</span>?          <span class="text-zinc-500">// бренд (не у всех товаров есть)</span>
+
+    <span class="text-zinc-500">// МЕТАДАННЫЕ — служебная информация</span>
+    <span class="text-pink-400">let</span> createdAt: <span class="text-cyan-400">Date</span>         <span class="text-zinc-500">// когда добавлен</span>
+    <span class="text-pink-400">var</span> rating: <span class="text-cyan-400">Double</span>          <span class="text-zinc-500">// рейтинг (меняется от отзывов)</span>
+}</code></pre>
+                        </div>
+
+                        <h3 class="text-xl font-semibold mb-3">Как выбрать тип данных?</h3>
+
+                        <div class="overflow-x-auto mb-6">
+                            <table class="w-full text-left text-sm">
+                                <thead>
+                                    <tr class="border-b border-zinc-200 dark:border-zinc-700">
+                                        <th class="py-3 pr-4 font-semibold">Что храним</th>
+                                        <th class="py-3 pr-4 font-semibold">Тип</th>
+                                        <th class="py-3 font-semibold">Почему</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="text-zinc-600 dark:text-zinc-400">
+                                    <tr class="border-b border-zinc-100 dark:border-zinc-800">
+                                        <td class="py-3 pr-4">ID, название, описание</td>
+                                        <td class="py-3 pr-4"><code class="text-pink-500">String</code></td>
+                                        <td>Текстовые данные</td>
+                                    </tr>
+                                    <tr class="border-b border-zinc-100 dark:border-zinc-800">
+                                        <td class="py-3 pr-4">Цена, рейтинг</td>
+                                        <td class="py-3 pr-4"><code class="text-pink-500">Double</code></td>
+                                        <td>Дробные числа</td>
+                                    </tr>
+                                    <tr class="border-b border-zinc-100 dark:border-zinc-800">
+                                        <td class="py-3 pr-4">Количество, возраст</td>
+                                        <td class="py-3 pr-4"><code class="text-pink-500">Int</code></td>
+                                        <td>Целые числа (нельзя купить 2.5 товара)</td>
+                                    </tr>
+                                    <tr class="border-b border-zinc-100 dark:border-zinc-800">
+                                        <td class="py-3 pr-4">Флаги: в наличии, активен</td>
+                                        <td class="py-3 pr-4"><code class="text-pink-500">Bool</code></td>
+                                        <td>Да/нет, true/false</td>
+                                    </tr>
+                                    <tr class="border-b border-zinc-100 dark:border-zinc-800">
+                                        <td class="py-3 pr-4">Дата создания, обновления</td>
+                                        <td class="py-3 pr-4"><code class="text-pink-500">Date</code></td>
+                                        <td>Работа с датами и временем</td>
+                                    </tr>
+                                    <tr class="border-b border-zinc-100 dark:border-zinc-800">
+                                        <td class="py-3 pr-4">Необязательные поля</td>
+                                        <td class="py-3 pr-4"><code class="text-pink-500">Type?</code></td>
+                                        <td>Optional — может отсутствовать</td>
+                                    </tr>
+                                    <tr class="border-b border-zinc-100 dark:border-zinc-800">
+                                        <td class="py-3 pr-4">Список (товары, изображения)</td>
+                                        <td class="py-3 pr-4"><code class="text-pink-500">[Type]</code></td>
+                                        <td>Массив элементов</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="py-3 pr-4">Статус (новый, доставлен)</td>
+                                        <td class="py-3 pr-4"><code class="text-pink-500">enum</code></td>
+                                        <td>Фиксированный набор значений</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <h3 class="text-xl font-semibold mb-3">let vs var: правило принятия решения</h3>
+
+                        <div class="bg-zinc-900 rounded-xl p-4 mb-6">
+                            <pre class="text-sm overflow-x-auto"><code class="language-swift"><span class="text-zinc-500">// Задайте вопрос: "Будет ли это значение меняться</span>
+<span class="text-zinc-500">// на протяжении жизни объекта?"</span>
+
+<span class="text-pink-400">struct</span> <span class="text-cyan-400">User</span> {
+    <span class="text-pink-400">let</span> id: <span class="text-cyan-400">String</span>           <span class="text-zinc-500">// let — ID никогда не меняется</span>
+    <span class="text-pink-400">let</span> email: <span class="text-cyan-400">String</span>        <span class="text-zinc-500">// let — email обычно не меняют</span>
+    <span class="text-pink-400">let</span> createdAt: <span class="text-cyan-400">Date</span>      <span class="text-zinc-500">// let — дата регистрации фиксирована</span>
+
+    <span class="text-pink-400">var</span> name: <span class="text-cyan-400">String</span>         <span class="text-zinc-500">// var — пользователь может сменить имя</span>
+    <span class="text-pink-400">var</span> phone: <span class="text-cyan-400">String</span>?       <span class="text-zinc-500">// var — телефон можно добавить позже</span>
+    <span class="text-pink-400">var</span> avatarURL: <span class="text-cyan-400">String</span>?   <span class="text-zinc-500">// var — аватар можно обновить</span>
+}
+
+<span class="text-pink-400">struct</span> <span class="text-cyan-400">CartItem</span> {
+    <span class="text-pink-400">let</span> productId: <span class="text-cyan-400">String</span>    <span class="text-zinc-500">// let — какой товар (не меняется)</span>
+    <span class="text-pink-400">let</span> productName: <span class="text-cyan-400">String</span>  <span class="text-zinc-500">// let — название на момент добавления</span>
+    <span class="text-pink-400">let</span> price: <span class="text-cyan-400">Double</span>        <span class="text-zinc-500">// let — цена фиксируется при добавлении</span>
+
+    <span class="text-pink-400">var</span> quantity: <span class="text-cyan-400">Int</span>        <span class="text-zinc-500">// var — количество можно изменить</span>
+}</code></pre>
+                        </div>
+
+                        <h3 class="text-xl font-semibold mb-3">Вычисляемые свойства (Computed Properties)</h3>
+                        <p class="text-zinc-600 dark:text-zinc-400 mb-4">
+                            Некоторые данные не нужно хранить — их можно <strong>вычислить</strong> из других свойств. Это экономит память и гарантирует актуальность.
+                        </p>
+
+                        <div class="bg-zinc-900 rounded-xl p-4 mb-6">
+                            <pre class="text-sm overflow-x-auto"><code class="language-swift"><span class="text-pink-400">struct</span> <span class="text-cyan-400">Product</span> {
+    <span class="text-pink-400">let</span> name: <span class="text-cyan-400">String</span>
+    <span class="text-pink-400">let</span> price: <span class="text-cyan-400">Double</span>
+    <span class="text-pink-400">let</span> originalPrice: <span class="text-cyan-400">Double</span>?
+    <span class="text-pink-400">let</span> quantity: <span class="text-cyan-400">Int</span>
+
+    <span class="text-zinc-500">// ВЫЧИСЛЯЕМЫЕ свойства — не храним, а вычисляем</span>
+
+    <span class="text-zinc-500">// Есть ли скидка? Вычисляем из наличия originalPrice</span>
+    <span class="text-pink-400">var</span> hasDiscount: <span class="text-cyan-400">Bool</span> {
+        originalPrice != <span class="text-pink-400">nil</span> && originalPrice! > price
+    }
+
+    <span class="text-zinc-500">// Размер скидки в процентах</span>
+    <span class="text-pink-400">var</span> discountPercent: <span class="text-cyan-400">Int</span>? {
+        <span class="text-pink-400">guard let</span> original = originalPrice, original > price <span class="text-pink-400">else</span> {
+            <span class="text-pink-400">return nil</span>
+        }
+        <span class="text-pink-400">return</span> <span class="text-cyan-400">Int</span>(((original - price) / original) * <span class="text-orange-400">100</span>)
+    }
+
+    <span class="text-zinc-500">// В наличии? Вычисляем из количества</span>
+    <span class="text-pink-400">var</span> isInStock: <span class="text-cyan-400">Bool</span> {
+        quantity > <span class="text-orange-400">0</span>
+    }
+
+    <span class="text-zinc-500">// Форматированная цена для отображения</span>
+    <span class="text-pink-400">var</span> formattedPrice: <span class="text-cyan-400">String</span> {
+        <span class="text-cyan-400">String</span>(format: <span class="text-green-400">"%.0f ₸"</span>, price)
+    }
+}
+
+<span class="text-zinc-500">// Использование:</span>
+<span class="text-pink-400">let</span> product = <span class="text-cyan-400">Product</span>(
+    name: <span class="text-green-400">"iPhone"</span>,
+    price: <span class="text-orange-400">450000</span>,
+    originalPrice: <span class="text-orange-400">500000</span>,
+    quantity: <span class="text-orange-400">5</span>
+)
+
+product.hasDiscount      <span class="text-zinc-500">// true</span>
+product.discountPercent  <span class="text-zinc-500">// 10</span>
+product.isInStock        <span class="text-zinc-500">// true</span>
+product.formattedPrice   <span class="text-zinc-500">// "450000 ₸"</span></code></pre>
+                        </div>
+
+                        <h3 class="text-xl font-semibold mb-3">Практический пример: от ТЗ к коду</h3>
+                        <p class="text-zinc-600 dark:text-zinc-400 mb-4">
+                            Представим, что вы получили задание: <em>"Сделать экран заказа. Показать номер заказа, список товаров, адрес доставки, статус и общую сумму."</em>
+                        </p>
+
+                        <div class="bg-zinc-900 rounded-xl p-4 mb-6">
+                            <pre class="text-sm overflow-x-auto"><code class="language-swift"><span class="text-zinc-500">// Шаг 1: Выделяем данные из ТЗ</span>
+<span class="text-zinc-500">// - номер заказа → String (или Int)</span>
+<span class="text-zinc-500">// - список товаров → [OrderItem]</span>
+<span class="text-zinc-500">// - адрес доставки → отдельная структура Address</span>
+<span class="text-zinc-500">// - статус → enum (фиксированный набор: новый, в пути, доставлен)</span>
+<span class="text-zinc-500">// - общая сумма → вычисляемое свойство (сумма товаров)</span>
+
+<span class="text-zinc-500">// Шаг 2: Создаём вспомогательные типы</span>
+
+<span class="text-pink-400">enum</span> <span class="text-cyan-400">OrderStatus</span>: <span class="text-cyan-400">String</span> {
+    <span class="text-pink-400">case</span> pending = <span class="text-green-400">"pending"</span>
+    <span class="text-pink-400">case</span> processing = <span class="text-green-400">"processing"</span>
+    <span class="text-pink-400">case</span> shipped = <span class="text-green-400">"shipped"</span>
+    <span class="text-pink-400">case</span> delivered = <span class="text-green-400">"delivered"</span>
+    <span class="text-pink-400">case</span> cancelled = <span class="text-green-400">"cancelled"</span>
+
+    <span class="text-zinc-500">// Текст для отображения пользователю</span>
+    <span class="text-pink-400">var</span> displayName: <span class="text-cyan-400">String</span> {
+        <span class="text-pink-400">switch self</span> {
+        <span class="text-pink-400">case</span> .pending: <span class="text-pink-400">return</span> <span class="text-green-400">"Ожидает подтверждения"</span>
+        <span class="text-pink-400">case</span> .processing: <span class="text-pink-400">return</span> <span class="text-green-400">"Собирается"</span>
+        <span class="text-pink-400">case</span> .shipped: <span class="text-pink-400">return</span> <span class="text-green-400">"В пути"</span>
+        <span class="text-pink-400">case</span> .delivered: <span class="text-pink-400">return</span> <span class="text-green-400">"Доставлен"</span>
+        <span class="text-pink-400">case</span> .cancelled: <span class="text-pink-400">return</span> <span class="text-green-400">"Отменён"</span>
+        }
+    }
+}
+
+<span class="text-pink-400">struct</span> <span class="text-cyan-400">Address</span> {
+    <span class="text-pink-400">let</span> city: <span class="text-cyan-400">String</span>
+    <span class="text-pink-400">let</span> street: <span class="text-cyan-400">String</span>
+    <span class="text-pink-400">let</span> building: <span class="text-cyan-400">String</span>
+    <span class="text-pink-400">let</span> apartment: <span class="text-cyan-400">String</span>?      <span class="text-zinc-500">// не у всех есть квартира</span>
+
+    <span class="text-pink-400">var</span> formatted: <span class="text-cyan-400">String</span> {
+        <span class="text-pink-400">var</span> result = <span class="text-green-400">"\(city), \(street), д. \(building)"</span>
+        <span class="text-pink-400">if let</span> apt = apartment {
+            result += <span class="text-green-400">", кв. \(apt)"</span>
+        }
+        <span class="text-pink-400">return</span> result
+    }
+}
+
+<span class="text-pink-400">struct</span> <span class="text-cyan-400">OrderItem</span> {
+    <span class="text-pink-400">let</span> productId: <span class="text-cyan-400">String</span>
+    <span class="text-pink-400">let</span> productName: <span class="text-cyan-400">String</span>
+    <span class="text-pink-400">let</span> price: <span class="text-cyan-400">Double</span>
+    <span class="text-pink-400">let</span> quantity: <span class="text-cyan-400">Int</span>
+
+    <span class="text-pink-400">var</span> totalPrice: <span class="text-cyan-400">Double</span> {
+        price * <span class="text-cyan-400">Double</span>(quantity)
+    }
+}
+
+<span class="text-zinc-500">// Шаг 3: Собираем основную модель</span>
+
+<span class="text-pink-400">struct</span> <span class="text-cyan-400">Order</span> {
+    <span class="text-pink-400">let</span> id: <span class="text-cyan-400">String</span>               <span class="text-zinc-500">// уникальный номер</span>
+    <span class="text-pink-400">let</span> items: [<span class="text-cyan-400">OrderItem</span>]       <span class="text-zinc-500">// товары в заказе</span>
+    <span class="text-pink-400">let</span> address: <span class="text-cyan-400">Address</span>         <span class="text-zinc-500">// куда доставлять</span>
+    <span class="text-pink-400">var</span> status: <span class="text-cyan-400">OrderStatus</span>      <span class="text-zinc-500">// var — статус меняется!</span>
+    <span class="text-pink-400">let</span> createdAt: <span class="text-cyan-400">Date</span>          <span class="text-zinc-500">// когда создан</span>
+
+    <span class="text-zinc-500">// Вычисляемые свойства</span>
+    <span class="text-pink-400">var</span> totalAmount: <span class="text-cyan-400">Double</span> {
+        items.reduce(<span class="text-orange-400">0</span>) { $0 + $1.totalPrice }
+    }
+
+    <span class="text-pink-400">var</span> formattedTotal: <span class="text-cyan-400">String</span> {
+        <span class="text-cyan-400">String</span>(format: <span class="text-green-400">"%.0f ₸"</span>, totalAmount)
+    }
+
+    <span class="text-pink-400">var</span> itemsCount: <span class="text-cyan-400">Int</span> {
+        items.reduce(<span class="text-orange-400">0</span>) { $0 + $1.quantity }
+    }
+
+    <span class="text-pink-400">var</span> orderNumber: <span class="text-cyan-400">String</span> {
+        <span class="text-green-400">"#\(id.prefix(8).uppercased())"</span>
+    }
+}</code></pre>
+                        </div>
+
+                        <h3 class="text-xl font-semibold mb-3">Чек-лист: правильно ли я спроектировал данные?</h3>
+
+                        <div class="space-y-3 mb-6">
+                            <div class="flex items-start gap-3 p-3 bg-zinc-50 dark:bg-zinc-800/50 rounded-lg">
+                                <span class="text-green-500 text-xl">✓</span>
+                                <div>
+                                    <strong>Все данные с экрана учтены?</strong>
+                                    <p class="text-sm text-zinc-500">Пройдитесь по макету — каждый элемент UI должен иметь источник данных.</p>
+                                </div>
+                            </div>
+                            <div class="flex items-start gap-3 p-3 bg-zinc-50 dark:bg-zinc-800/50 rounded-lg">
+                                <span class="text-green-500 text-xl">✓</span>
+                                <div>
+                                    <strong>Типы данных соответствуют значениям?</strong>
+                                    <p class="text-sm text-zinc-500">Цена — Double, количество — Int, флаги — Bool.</p>
+                                </div>
+                            </div>
+                            <div class="flex items-start gap-3 p-3 bg-zinc-50 dark:bg-zinc-800/50 rounded-lg">
+                                <span class="text-green-500 text-xl">✓</span>
+                                <div>
+                                    <strong>Optional только там где нужно?</strong>
+                                    <p class="text-sm text-zinc-500">Используйте ? только если значение реально может отсутствовать.</p>
+                                </div>
+                            </div>
+                            <div class="flex items-start gap-3 p-3 bg-zinc-50 dark:bg-zinc-800/50 rounded-lg">
+                                <span class="text-green-500 text-xl">✓</span>
+                                <div>
+                                    <strong>let/var выбраны осознанно?</strong>
+                                    <p class="text-sm text-zinc-500">По умолчанию let. Используйте var только если значение будет меняться.</p>
+                                </div>
+                            </div>
+                            <div class="flex items-start gap-3 p-3 bg-zinc-50 dark:bg-zinc-800/50 rounded-lg">
+                                <span class="text-green-500 text-xl">✓</span>
+                                <div>
+                                    <strong>Вычисляемые свойства вместо дублирования?</strong>
+                                    <p class="text-sm text-zinc-500">Если значение можно вычислить — не храните его отдельно.</p>
+                                </div>
+                            </div>
+                            <div class="flex items-start gap-3 p-3 bg-zinc-50 dark:bg-zinc-800/50 rounded-lg">
+                                <span class="text-green-500 text-xl">✓</span>
+                                <div>
+                                    <strong>Сложные структуры разбиты на части?</strong>
+                                    <p class="text-sm text-zinc-500">Address, OrderItem — отдельные структуры, а не всё в одной.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="p-5 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-xl">
+                            <h4 class="font-semibold text-blue-800 dark:text-blue-200 mb-2">Главный принцип</h4>
+                            <p class="text-blue-700 dark:text-blue-300">
+                                Модель данных должна отражать <strong>реальность вашего приложения</strong>. Если в реальном мире у товара есть цена — в модели должна быть цена. Если заказ может быть в разных статусах — нужен enum со статусами. Код должен быть понятен человеку, который читает его впервые.
+                            </p>
+                        </div>
+                    </section>
+
+                    <!-- Итоги -->
+                    <section class="mb-8">
+                        <div class="p-6 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-2xl">
+                            <h3 class="font-semibold text-green-800 dark:text-green-200 mb-3">Что вы узнали</h3>
+                            <ul class="space-y-2 text-green-700 dark:text-green-300">
+                                <li>• Разницу между <code>var</code> и <code>let</code></li>
+                                <li>• Основные типы данных: Int, Double, String, Bool</li>
+                                <li>• Работу со строками и интерполяцию</li>
+                                <li>• Коллекции: Array, Dictionary, Set</li>
+                                <li>• Арифметические, сравнительные и логические операторы</li>
+                                <li>• <strong>Как анализировать задачу и проектировать модели данных</strong></li>
+                                <li>• <strong>Когда использовать вычисляемые свойства</strong></li>
+                            </ul>
+                        </div>
+                    </section>
+
+                    <section>
+                        <div class="p-6 bg-primary/10 border border-primary/20 rounded-2xl">
+                            <h3 class="font-semibold text-primary mb-3">📚 Следующий шаг</h3>
+                            <p class="text-zinc-600 dark:text-zinc-400">
+                                В следующей главе мы изучим управление потоком выполнения — условные операторы if/else, switch и циклы for/while.
+                            </p>
+                        </div>
+                    </section>
+
+                </div>
+
+                <nav class="flex justify-between gap-4 mt-16 pt-8 border-t border-zinc-200 dark:border-zinc-800">
+                    <a href="01-xcode.html" class="flex items-center gap-3 px-5 py-3 bg-zinc-100 dark:bg-zinc-800 hover:bg-primary hover:text-white rounded-xl transition-colors">
+                        <span class="text-xl">←</span>
+                        <span class="font-medium">Предыдущая</span>
+                    </a>
+                    <a href="03-control-flow.html" class="flex items-center gap-3 px-5 py-3 bg-zinc-100 dark:bg-zinc-800 hover:bg-primary hover:text-white rounded-xl transition-colors ml-auto">
+                        <span class="font-medium">Следующая</span>
+                        <span class="text-xl">→</span>
+                    </a>
+                </nav>
+            </article>
+        </main>
+    </div>
+
+    <script>
+        const menuBtn = document.getElementById('menuBtn');
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('overlay');
+        menuBtn.addEventListener('click', () => {
+            sidebar.classList.toggle('-translate-x-full');
+            overlay.classList.toggle('hidden');
+        });
+        function closeSidebar() {
+            sidebar.classList.add('-translate-x-full');
+            overlay.classList.add('hidden');
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Глава 10: Навигация | SwiftUI E-Commerce</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'media',
+            theme: { extend: { colors: { primary: '#007AFF' } } }
+        }
+    </script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/vs2015.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/swift.min.js"></script>
+    <style>
+        ::-webkit-scrollbar { width: 6px; }
+        pre code { font-size: 14px; line-height: 1.6; }
+    </style>
+</head>
+<body class="bg-white dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100">
+    <div class="min-h-screen">
+        <header class="sticky top-0 z-40 bg-white/80 dark:bg-zinc-950/80 backdrop-blur-md border-b border-zinc-200 dark:border-zinc-800">
+            <div class="max-w-4xl mx-auto px-6 py-4 flex items-center justify-between">
+                <a href="../index.html" class="flex items-center gap-2 text-zinc-600 dark:text-zinc-400 hover:text-primary transition-colors">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                    </svg>
+                    Оглавление
+                </a>
+                <span class="text-sm text-zinc-500">Глава 10</span>
+            </div>
+        </header>
+
+        <main class="max-w-4xl mx-auto px-6 py-12">
+            <article class="prose prose-zinc dark:prose-invert max-w-none">
+                <span class="text-sm font-semibold text-primary uppercase tracking-wider">Глава 10</span>
+                <h1 class="text-4xl font-bold mt-2 mb-8">Навигация</h1>
+
+                <div class="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-xl p-6 mb-8">
+                    <h3 class="text-lg font-semibold text-blue-800 dark:text-blue-300 mb-2">🎯 Цель главы</h3>
+                    <p class="text-blue-700 dark:text-blue-400">
+                        Реализовать программную навигацию с NavigationStack, TabView и Router паттерном.
+                    </p>
+                </div>
+
+                <h2 class="text-2xl font-bold mt-12 mb-4">TabView</h2>
+                <pre><code class="language-swift rounded-xl">// ContentView.swift
+import SwiftUI
+
+struct ContentView: View {
+    @State private var selectedTab = 0
+    @Environment(CartManager.self) private var cart
+
+    var body: some View {
+        TabView(selection: $selectedTab) {
+            ProductListView()
+                .tabItem {
+                    Label("Товары", systemImage: "square.grid.2x2")
+                }
+                .tag(0)
+
+            SearchView()
+                .tabItem {
+                    Label("Поиск", systemImage: "magnifyingglass")
+                }
+                .tag(1)
+
+            FavoritesView()
+                .tabItem {
+                    Label("Избранное", systemImage: "heart")
+                }
+                .tag(2)
+
+            CartView()
+                .tabItem {
+                    Label("Корзина", systemImage: "cart")
+                }
+                .badge(cart.totalItems > 0 ? "\(cart.totalItems)" : nil)
+                .tag(3)
+        }
+    }
+}</code></pre>
+
+                <h2 class="text-2xl font-bold mt-12 mb-4">NavigationStack (iOS 16+)</h2>
+                <pre><code class="language-swift rounded-xl">struct ProductListView: View {
+    @State private var path = NavigationPath()
+
+    var body: some View {
+        NavigationStack(path: $path) {
+            List(products) { product in
+                NavigationLink(value: product) {
+                    ProductRow(product: product)
+                }
+            }
+            .navigationDestination(for: Product.self) { product in
+                ProductDetailView(product: product)
+            }
+            .navigationDestination(for: Category.self) { category in
+                CategoryView(category: category)
+            }
+        }
+    }
+
+    // Программная навигация
+    func navigateToProduct(_ product: Product) {
+        path.append(product)
+    }
+
+    func popToRoot() {
+        path.removeLast(path.count)
+    }
+}</code></pre>
+
+                <h2 class="text-2xl font-bold mt-12 mb-4">Router паттерн</h2>
+                <pre><code class="language-swift rounded-xl">// Core/Navigation/Router.swift
+import SwiftUI
+import Observation
+
+enum Route: Hashable {
+    case productDetail(Product)
+    case category(String)
+    case cart
+    case checkout
+    case orderSuccess(orderId: String)
+}
+
+@Observable
+final class Router {
+    var path = NavigationPath()
+
+    func navigate(to route: Route) {
+        path.append(route)
+    }
+
+    func pop() {
+        guard !path.isEmpty else { return }
+        path.removeLast()
+    }
+
+    func popToRoot() {
+        path.removeLast(path.count)
+    }
+}
+
+// Использование
+struct ProductListView: View {
+    @Environment(Router.self) private var router
+
+    var body: some View {
+        @Bindable var router = router
+
+        NavigationStack(path: $router.path) {
+            List(products) { product in
+                Button {
+                    router.navigate(to: .productDetail(product))
+                } label: {
+                    ProductRow(product: product)
+                }
+            }
+            .navigationDestination(for: Route.self) { route in
+                switch route {
+                case .productDetail(let product):
+                    ProductDetailView(product: product)
+                case .category(let name):
+                    CategoryView(categoryName: name)
+                case .cart:
+                    CartView()
+                case .checkout:
+                    CheckoutView()
+                case .orderSuccess(let orderId):
+                    OrderSuccessView(orderId: orderId)
+                }
+            }
+        }
+    }
+}</code></pre>
+
+                <h2 class="text-2xl font-bold mt-12 mb-4">Deep Linking</h2>
+                <pre><code class="language-swift rounded-xl">// ShoppingApp.swift
+@main
+struct ShoppingApp: App {
+    @State private var router = Router()
+
+    var body: some Scene {
+        WindowGroup {
+            ContentView()
+                .environment(router)
+                .onOpenURL { url in
+                    handleDeepLink(url)
+                }
+        }
+    }
+
+    private func handleDeepLink(_ url: URL) {
+        // shopping://product/123
+        guard let components = URLComponents(url: url, resolvingAgainstBaseURL: true),
+              let host = components.host else {
+            return
+        }
+
+        switch host {
+        case "product":
+            if let idString = components.path.split(separator: "/").first,
+               let id = Int(idString) {
+                // Загрузить продукт и перейти
+                Task {
+                    if let product = try? await ProductService().fetchProduct(id: id) {
+                        router.navigate(to: .productDetail(product))
+                    }
+                }
+            }
+        case "cart":
+            // Переключить на tab корзины
+            break
+        default:
+            break
+        }
+    }
+}</code></pre>
+
+                <h2 class="text-2xl font-bold mt-12 mb-4">Sheet & FullScreenCover</h2>
+                <pre><code class="language-swift rounded-xl">struct ProductDetailView: View {
+    @State private var showImageGallery = false
+    @State private var showCheckout = false
+
+    var body: some View {
+        VStack {
+            // Content
+        }
+        // Полноэкранная галерея
+        .fullScreenCover(isPresented: $showImageGallery) {
+            ImageGalleryView(images: product.images)
+        }
+        // Sheet для оформления
+        .sheet(isPresented: $showCheckout) {
+            CheckoutView()
+                .presentationDetents([.medium, .large])
+                .presentationDragIndicator(.visible)
+        }
+    }
+}</code></pre>
+
+                <h2 class="text-2xl font-bold mt-12 mb-4">🏋️ Задания</h2>
+                <div class="bg-zinc-50 dark:bg-zinc-900 rounded-xl p-6 border border-zinc-200 dark:border-zinc-800">
+                    <ol class="space-y-4 text-zinc-600 dark:text-zinc-400">
+                        <li><strong>1.</strong> Реализуйте сохранение состояния навигации при сворачивании приложения</li>
+                        <li><strong>2.</strong> Добавьте deep link для открытия категории (shopping://category/smartphones)</li>
+                        <li><strong>3.</strong> Реализуйте custom transition анимацию между экранами</li>
+                    </ol>
+                </div>
+
+                <!-- Navigation -->
+                <div class="flex justify-between items-center mt-16 pt-8 border-t border-zinc-200 dark:border-zinc-800">
+                    <a href="09-cart.html" class="flex items-center gap-2 text-zinc-600 dark:text-zinc-400 hover:text-primary transition-colors">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                        </svg>
+                        Глава 9: Корзина
+                    </a>
+                    <a href="11-testing.html" class="flex items-center gap-2 px-6 py-3 bg-primary text-white rounded-xl hover:bg-blue-600 transition-colors">
+                        Глава 11: Тесты
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                        </svg>
+                    </a>
+                </div>
+            </article>
+        </main>
+    </div>
+
+    <script>hljs.highlightAll();</script>
+</body>
+</html>

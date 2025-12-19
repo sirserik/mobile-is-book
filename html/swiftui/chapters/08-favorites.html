@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Глава 8: Избранное | SwiftUI E-Commerce</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'media',
+            theme: { extend: { colors: { primary: '#007AFF' } } }
+        }
+    </script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/vs2015.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/swift.min.js"></script>
+    <style>
+        ::-webkit-scrollbar { width: 6px; }
+        pre code { font-size: 14px; line-height: 1.6; }
+    </style>
+</head>
+<body class="bg-white dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100">
+    <div class="min-h-screen">
+        <header class="sticky top-0 z-40 bg-white/80 dark:bg-zinc-950/80 backdrop-blur-md border-b border-zinc-200 dark:border-zinc-800">
+            <div class="max-w-4xl mx-auto px-6 py-4 flex items-center justify-between">
+                <a href="../index.html" class="flex items-center gap-2 text-zinc-600 dark:text-zinc-400 hover:text-primary transition-colors">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                    </svg>
+                    Оглавление
+                </a>
+                <span class="text-sm text-zinc-500">Глава 8</span>
+            </div>
+        </header>
+
+        <main class="max-w-4xl mx-auto px-6 py-12">
+            <article class="prose prose-zinc dark:prose-invert max-w-none">
+                <span class="text-sm font-semibold text-primary uppercase tracking-wider">Глава 8</span>
+                <h1 class="text-4xl font-bold mt-2 mb-8">Избранное</h1>
+
+                <div class="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-xl p-6 mb-8">
+                    <h3 class="text-lg font-semibold text-blue-800 dark:text-blue-300 mb-2">🎯 Цель главы</h3>
+                    <p class="text-blue-700 dark:text-blue-400">
+                        Создать менеджер избранных товаров с сохранением в UserDefaults и @AppStorage.
+                    </p>
+                </div>
+
+                <h2 class="text-2xl font-bold mt-12 mb-4">FavoritesManager</h2>
+                <pre><code class="language-swift rounded-xl">// Shared/Managers/FavoritesManager.swift
+import Foundation
+import Observation
+
+@Observable
+final class FavoritesManager {
+    private let key = "favorites"
+    private(set) var favorites: [Product] = []
+
+    init() {
+        load()
+    }
+
+    // MARK: - Public Methods
+
+    func add(_ product: Product) {
+        guard !contains(product) else { return }
+        favorites.append(product)
+        save()
+    }
+
+    func remove(_ product: Product) {
+        favorites.removeAll { $0.id == product.id }
+        save()
+    }
+
+    func toggle(_ product: Product) {
+        if contains(product) {
+            remove(product)
+        } else {
+            add(product)
+        }
+    }
+
+    func contains(_ product: Product) -> Bool {
+        favorites.contains { $0.id == product.id }
+    }
+
+    // MARK: - Persistence
+
+    private func save() {
+        if let data = try? JSONEncoder().encode(favorites) {
+            UserDefaults.standard.set(data, forKey: key)
+        }
+    }
+
+    private func load() {
+        guard let data = UserDefaults.standard.data(forKey: key),
+              let decoded = try? JSONDecoder().decode([Product].self, from: data) else {
+            return
+        }
+        favorites = decoded
+    }
+}</code></pre>
+
+                <h2 class="text-2xl font-bold mt-12 mb-4">Регистрация в App</h2>
+                <pre><code class="language-swift rounded-xl">// ShoppingApp.swift
+@main
+struct ShoppingApp: App {
+    @State private var favoritesManager = FavoritesManager()
+
+    var body: some Scene {
+        WindowGroup {
+            ContentView()
+                .environment(favoritesManager)
+        }
+    }
+}</code></pre>
+
+                <h2 class="text-2xl font-bold mt-12 mb-4">FavoritesView</h2>
+                <pre><code class="language-swift rounded-xl">// Features/Favorites/Views/FavoritesView.swift
+import SwiftUI
+
+struct FavoritesView: View {
+    @Environment(FavoritesManager.self) private var manager
+
+    var body: some View {
+        NavigationStack {
+            Group {
+                if manager.favorites.isEmpty {
+                    emptyState
+                } else {
+                    favoritesList
+                }
+            }
+            .navigationTitle("Избранное")
+        }
+    }
+
+    private var emptyState: some View {
+        VStack(spacing: 16) {
+            Image(systemName: "heart.slash")
+                .font(.system(size: 60))
+                .foregroundColor(.secondary)
+
+            Text("Список избранного пуст")
+                .font(.headline)
+
+            Text("Добавляйте товары, нажимая на сердечко")
+                .font(.subheadline)
+                .foregroundColor(.secondary)
+                .multilineTextAlignment(.center)
+        }
+        .padding()
+    }
+
+    private var favoritesList: some View {
+        List {
+            ForEach(manager.favorites) { product in
+                NavigationLink(value: product) {
+                    FavoriteRow(product: product)
+                }
+            }
+            .onDelete(perform: delete)
+        }
+        .navigationDestination(for: Product.self) { product in
+            ProductDetailView(product: product)
+        }
+        .toolbar {
+            EditButton()
+        }
+    }
+
+    private func delete(at offsets: IndexSet) {
+        for index in offsets {
+            let product = manager.favorites[index]
+            manager.remove(product)
+        }
+    }
+}
+
+struct FavoriteRow: View {
+    let product: Product
+    @Environment(FavoritesManager.self) private var favorites
+
+    var body: some View {
+        HStack(spacing: 12) {
+            AsyncImage(url: URL(string: product.thumbnail)) { image in
+                image.resizable().aspectRatio(contentMode: .fill)
+            } placeholder: {
+                Color.gray.opacity(0.2)
+            }
+            .frame(width: 80, height: 80)
+            .cornerRadius(8)
+
+            VStack(alignment: .leading, spacing: 6) {
+                Text(product.title)
+                    .font(.headline)
+                    .lineLimit(2)
+
+                Text(product.brand)
+                    .font(.caption)
+                    .foregroundColor(.secondary)
+
+                Text(product.formattedPrice)
+                    .font(.subheadline)
+                    .fontWeight(.bold)
+                    .foregroundColor(.blue)
+            }
+
+            Spacer()
+
+            Button {
+                withAnimation {
+                    favorites.remove(product)
+                }
+            } label: {
+                Image(systemName: "heart.fill")
+                    .foregroundColor(.red)
+            }
+        }
+        .padding(.vertical, 4)
+    }
+}</code></pre>
+
+                <h2 class="text-2xl font-bold mt-12 mb-4">Использование @AppStorage</h2>
+                <p class="text-zinc-600 dark:text-zinc-400 mb-4">
+                    Для простых значений можно использовать <code class="bg-zinc-100 dark:bg-zinc-800 px-2 py-1 rounded">@AppStorage</code> напрямую:
+                </p>
+
+                <pre><code class="language-swift rounded-xl">// Хранение ID избранных товаров
+struct FavoritesStorage {
+    @AppStorage("favoriteIds") private var idsData: Data = Data()
+
+    var ids: Set<Int> {
+        get {
+            (try? JSONDecoder().decode(Set<Int>.self, from: idsData)) ?? []
+        }
+        set {
+            idsData = (try? JSONEncoder().encode(newValue)) ?? Data()
+        }
+    }
+
+    mutating func toggle(_ id: Int) {
+        if ids.contains(id) {
+            ids.remove(id)
+        } else {
+            ids.insert(id)
+        }
+    }
+}</code></pre>
+
+                <h2 class="text-2xl font-bold mt-12 mb-4">Кнопка избранного</h2>
+                <pre><code class="language-swift rounded-xl">struct FavoriteButton: View {
+    let product: Product
+    @Environment(FavoritesManager.self) private var favorites
+
+    var body: some View {
+        Button {
+            withAnimation(.spring(response: 0.3, dampingFraction: 0.6)) {
+                favorites.toggle(product)
+            }
+        } label: {
+            Image(systemName: favorites.contains(product) ? "heart.fill" : "heart")
+                .font(.title2)
+                .foregroundColor(favorites.contains(product) ? .red : .gray)
+                .scaleEffect(favorites.contains(product) ? 1.2 : 1)
+        }
+        .sensoryFeedback(.impact(flexibility: .soft), trigger: favorites.contains(product))
+    }
+}</code></pre>
+
+                <h2 class="text-2xl font-bold mt-12 mb-4">🏋️ Задания</h2>
+                <div class="bg-zinc-50 dark:bg-zinc-900 rounded-xl p-6 border border-zinc-200 dark:border-zinc-800">
+                    <ol class="space-y-4 text-zinc-600 dark:text-zinc-400">
+                        <li><strong>1.</strong> Добавьте сортировку избранного (по дате добавления, цене, названию)</li>
+                        <li><strong>2.</strong> Реализуйте "Добавить всё в корзину" для избранного</li>
+                        <li><strong>3.</strong> Добавьте возможность создания списков желаний (Wishlist)</li>
+                    </ol>
+                </div>
+
+                <!-- Navigation -->
+                <div class="flex justify-between items-center mt-16 pt-8 border-t border-zinc-200 dark:border-zinc-800">
+                    <a href="07-search.html" class="flex items-center gap-2 text-zinc-600 dark:text-zinc-400 hover:text-primary transition-colors">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                        </svg>
+                        Глава 7: Поиск
+                    </a>
+                    <a href="09-cart.html" class="flex items-center gap-2 px-6 py-3 bg-primary text-white rounded-xl hover:bg-blue-600 transition-colors">
+                        Глава 9: Корзина
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                        </svg>
+                    </a>
+                </div>
+            </article>
+        </main>
+    </div>
+
+    <script>hljs.highlightAll();</script>
+</body>
+</html>

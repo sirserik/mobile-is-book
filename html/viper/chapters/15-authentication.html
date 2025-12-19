@@ -1,0 +1,1078 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Глава 15: Authentication | iOS Book</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'media',
+            theme: { extend: { colors: { primary: '#007AFF' } } }
+        }
+    </script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
+</head>
+<body class="bg-white dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100">
+    <button id="menuBtn" class="lg:hidden fixed top-4 left-4 z-50 p-3 bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-xl shadow-lg">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+        </svg>
+    </button>
+
+    <div class="flex min-h-screen">
+        <aside id="sidebar" class="fixed inset-y-0 left-0 w-72 bg-zinc-50 dark:bg-zinc-900 border-r border-zinc-200 dark:border-zinc-800 flex flex-col z-40 transform -translate-x-full lg:translate-x-0 transition-transform duration-300">
+            <div class="p-5 border-b border-zinc-200 dark:border-zinc-800">
+                <a href="../index.html" class="flex items-center gap-3 text-lg font-semibold hover:text-primary transition-colors">
+                    <div class="w-9 h-9 bg-primary rounded-lg flex items-center justify-center">
+                        <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/>
+                        </svg>
+                    </div>
+                    iOS Book
+                </a>
+            </div>
+            <nav class="flex-1 overflow-y-auto p-4">
+                <div class="space-y-6">
+                    <div>
+                        <h3 class="px-3 mb-2 text-xs font-semibold uppercase tracking-wider text-zinc-400">Введение</h3>
+                        <a href="00-introduction.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">Введение</a>
+                    </div>
+                    <div>
+                        <h3 class="px-3 mb-2 text-xs font-semibold uppercase tracking-wider text-zinc-400">Основы Swift</h3>
+                        <div class="space-y-1">
+                            <a href="01-xcode.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">1. Xcode</a>
+                            <a href="02-swift-basics.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">2. Основы Swift</a>
+                            <a href="03-control-flow.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">3. Control Flow</a>
+                            <a href="04-functions.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">4. Функции</a>
+                            <a href="05-oop.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">5. ООП</a>
+                            <a href="06-protocols.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">6. Протоколы</a>
+                            <a href="07-optionals.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">7. Optionals</a>
+                            <a href="08-memory.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">8. Память</a>
+                            <a href="09-generics.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">9. Generics</a>
+                            <a href="10-concurrency.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">10. Concurrency</a>
+                        </div>
+                    </div>
+                    <div>
+                        <h3 class="px-3 mb-2 text-xs font-semibold uppercase tracking-wider text-zinc-400">UIKit</h3>
+                        <div class="space-y-1">
+                            <a href="11-uikit-basics.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">11. UIKit</a>
+                            <a href="12-programmatic-ui.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">12. Programmatic UI</a>
+                        </div>
+                    </div>
+                    <div>
+                        <h3 class="px-3 mb-2 text-xs font-semibold uppercase tracking-wider text-zinc-400">Архитектура</h3>
+                        <div class="space-y-1">
+                            <a href="13-viper.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">13. VIPER</a>
+                            <a href="14-project-setup.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">14. Project Setup</a>
+                        </div>
+                    </div>
+                    <div>
+                        <h3 class="px-3 mb-2 text-xs font-semibold uppercase tracking-wider text-zinc-400">Практика</h3>
+                        <div class="space-y-1">
+                            <a href="15-authentication.html" class="block px-3 py-2 text-sm text-white bg-primary rounded-lg">15. Auth</a>
+                            <a href="16-products.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">16. Products</a>
+                            <a href="17-cart.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">17. Cart</a>
+                            <a href="18-favorites.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">18. Favorites</a>
+                            <a href="19-orders.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">19. Orders</a>
+                            <a href="20-profile.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">20. Profile</a>
+                        </div>
+                    </div>
+                    <div>
+                        <h3 class="px-3 mb-2 text-xs font-semibold uppercase tracking-wider text-zinc-400">Дополнительно</h3>
+                        <a href="21-reusable-views.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">21. Reusable Views</a>
+                    </div>
+                </div>
+            </nav>
+        </aside>
+
+        <div id="overlay" class="fixed inset-0 bg-black/50 z-30 lg:hidden hidden" onclick="closeSidebar()"></div>
+
+        <main class="flex-1 lg:ml-72">
+            <article class="max-w-3xl mx-auto px-6 sm:px-8 lg:px-12 py-12 lg:py-16">
+                <header class="mb-12 pb-8 border-b border-zinc-200 dark:border-zinc-800">
+                    <span class="text-sm font-semibold uppercase tracking-wider text-primary">Глава 15</span>
+                    <h1 class="text-3xl sm:text-4xl font-bold mt-2 mb-4">Authentication</h1>
+                    <p class="text-lg text-zinc-600 dark:text-zinc-400">Firebase Auth, Google Sign-In</p>
+                </header>
+
+                <div class="prose prose-zinc dark:prose-invert max-w-none">
+                    <!-- Введение -->
+                    <p class="text-lg leading-relaxed mb-8">
+                        Аутентификация — критически важный модуль любого приложения. В этой главе мы создадим
+                        полноценную систему авторизации с login, registration и восстановлением пароля,
+                        используя Firebase Authentication и архитектуру VIPER.
+                    </p>
+
+                    <!-- Структура модуля Auth -->
+                    <h2 class="text-2xl font-bold mt-12 mb-6">Структура модуля Auth</h2>
+
+                    <p class="mb-6">Модуль аутентификации будет состоять из нескольких экранов:</p>
+
+                    <div class="bg-zinc-900 rounded-xl p-6 mb-8 font-mono text-sm overflow-x-auto">
+<pre class="text-green-400">
+Auth/
+├── Login/
+│   ├── LoginViewController.swift
+│   ├── LoginPresenter.swift
+│   ├── LoginInteractor.swift
+│   ├── LoginRouter.swift
+│   └── LoginProtocols.swift
+├── Register/
+│   ├── RegisterViewController.swift
+│   ├── RegisterPresenter.swift
+│   ├── RegisterInteractor.swift
+│   ├── RegisterRouter.swift
+│   └── RegisterProtocols.swift
+├── ForgotPassword/
+│   ├── ForgotPasswordViewController.swift
+│   └── ... (VIPER components)
+└── Services/
+    └── AuthService.swift
+</pre>
+                    </div>
+
+                    <!-- Firebase Setup -->
+                    <h2 class="text-2xl font-bold mt-12 mb-6">Настройка Firebase</h2>
+
+                    <h3 class="text-xl font-semibold mt-8 mb-4">Добавление Firebase SDK</h3>
+
+                    <p class="mb-4">Добавьте Firebase через SPM:</p>
+
+                    <div class="bg-zinc-900 rounded-xl p-6 mb-6 font-mono text-sm overflow-x-auto">
+<pre class="text-zinc-300">
+<span class="text-zinc-500">// Package Dependencies</span>
+<span class="text-green-400">https://github.com/firebase/firebase-ios-sdk</span>
+
+<span class="text-zinc-500">// Выберите следующие библиотеки:</span>
+- FirebaseAuth
+- FirebaseFirestore
+</pre>
+                    </div>
+
+                    <h3 class="text-xl font-semibold mt-8 mb-4">Инициализация Firebase</h3>
+
+                    <div class="bg-zinc-900 rounded-xl p-6 mb-8 font-mono text-sm overflow-x-auto">
+<pre class="text-zinc-300">
+<span class="text-zinc-500">// AppDelegate.swift</span>
+<span class="text-pink-400">import</span> <span class="text-cyan-400">UIKit</span>
+<span class="text-pink-400">import</span> <span class="text-cyan-400">Firebase</span>
+
+<span class="text-pink-400">@main</span>
+<span class="text-pink-400">class</span> <span class="text-cyan-400">AppDelegate</span>: <span class="text-cyan-400">UIResponder</span>, <span class="text-cyan-400">UIApplicationDelegate</span> {
+
+    <span class="text-pink-400">func</span> <span class="text-yellow-300">application</span>(
+        <span class="text-purple-400">_</span> application: <span class="text-cyan-400">UIApplication</span>,
+        didFinishLaunchingWithOptions launchOptions: [<span class="text-cyan-400">UIApplication</span>.<span class="text-cyan-400">LaunchOptionsKey</span>: <span class="text-cyan-400">Any</span>]?
+    ) -> <span class="text-cyan-400">Bool</span> {
+
+        <span class="text-cyan-400">FirebaseApp</span>.<span class="text-yellow-300">configure</span>()
+
+        <span class="text-pink-400">return true</span>
+    }
+}
+</pre>
+                    </div>
+
+                    <div class="p-6 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-2xl mb-8">
+                        <h4 class="font-semibold text-amber-600 dark:text-amber-400 mb-2">Важно</h4>
+                        <p class="text-zinc-600 dark:text-zinc-400">
+                            Не забудьте скачать <code>GoogleService-Info.plist</code> из Firebase Console
+                            и добавить его в проект.
+                        </p>
+                    </div>
+
+                    <!-- AuthService -->
+                    <h2 class="text-2xl font-bold mt-12 mb-6">AuthService</h2>
+
+                    <p class="mb-4">
+                        Создадим сервис для работы с Firebase Auth, который будет использоваться
+                        всеми модулями аутентификации:
+                    </p>
+
+                    <div class="bg-zinc-900 rounded-xl p-6 mb-8 font-mono text-sm overflow-x-auto">
+<pre class="text-zinc-300">
+<span class="text-zinc-500">// AuthService.swift</span>
+<span class="text-pink-400">import</span> <span class="text-cyan-400">Foundation</span>
+<span class="text-pink-400">import</span> <span class="text-cyan-400">FirebaseAuth</span>
+
+<span class="text-pink-400">protocol</span> <span class="text-cyan-400">AuthServiceProtocol</span> {
+    <span class="text-pink-400">var</span> currentUser: <span class="text-cyan-400">User</span>? { <span class="text-pink-400">get</span> }
+    <span class="text-pink-400">var</span> isLoggedIn: <span class="text-cyan-400">Bool</span> { <span class="text-pink-400">get</span> }
+
+    <span class="text-pink-400">func</span> <span class="text-yellow-300">login</span>(email: <span class="text-cyan-400">String</span>, password: <span class="text-cyan-400">String</span>) <span class="text-pink-400">async throws</span> -> <span class="text-cyan-400">User</span>
+    <span class="text-pink-400">func</span> <span class="text-yellow-300">register</span>(email: <span class="text-cyan-400">String</span>, password: <span class="text-cyan-400">String</span>, name: <span class="text-cyan-400">String</span>) <span class="text-pink-400">async throws</span> -> <span class="text-cyan-400">User</span>
+    <span class="text-pink-400">func</span> <span class="text-yellow-300">logout</span>() <span class="text-pink-400">throws</span>
+    <span class="text-pink-400">func</span> <span class="text-yellow-300">resetPassword</span>(email: <span class="text-cyan-400">String</span>) <span class="text-pink-400">async throws</span>
+}
+
+<span class="text-pink-400">final class</span> <span class="text-cyan-400">AuthService</span>: <span class="text-cyan-400">AuthServiceProtocol</span> {
+
+    <span class="text-pink-400">static let</span> shared = <span class="text-cyan-400">AuthService</span>()
+
+    <span class="text-pink-400">private let</span> auth = <span class="text-cyan-400">Auth</span>.<span class="text-yellow-300">auth</span>()
+
+    <span class="text-pink-400">var</span> currentUser: <span class="text-cyan-400">User</span>? {
+        <span class="text-pink-400">guard let</span> firebaseUser = auth.currentUser <span class="text-pink-400">else</span> { <span class="text-pink-400">return nil</span> }
+        <span class="text-pink-400">return</span> <span class="text-cyan-400">User</span>(
+            id: firebaseUser.uid,
+            email: firebaseUser.email ?? <span class="text-green-400">""</span>,
+            name: firebaseUser.displayName ?? <span class="text-green-400">""</span>
+        )
+    }
+
+    <span class="text-pink-400">var</span> isLoggedIn: <span class="text-cyan-400">Bool</span> {
+        auth.currentUser != <span class="text-pink-400">nil</span>
+    }
+
+    <span class="text-pink-400">func</span> <span class="text-yellow-300">login</span>(email: <span class="text-cyan-400">String</span>, password: <span class="text-cyan-400">String</span>) <span class="text-pink-400">async throws</span> -> <span class="text-cyan-400">User</span> {
+        <span class="text-pink-400">let</span> result = <span class="text-pink-400">try await</span> auth.<span class="text-yellow-300">signIn</span>(withEmail: email, password: password)
+        <span class="text-pink-400">let</span> firebaseUser = result.user
+
+        <span class="text-pink-400">return</span> <span class="text-cyan-400">User</span>(
+            id: firebaseUser.uid,
+            email: firebaseUser.email ?? <span class="text-green-400">""</span>,
+            name: firebaseUser.displayName ?? <span class="text-green-400">""</span>
+        )
+    }
+
+    <span class="text-pink-400">func</span> <span class="text-yellow-300">register</span>(email: <span class="text-cyan-400">String</span>, password: <span class="text-cyan-400">String</span>, name: <span class="text-cyan-400">String</span>) <span class="text-pink-400">async throws</span> -> <span class="text-cyan-400">User</span> {
+        <span class="text-pink-400">let</span> result = <span class="text-pink-400">try await</span> auth.<span class="text-yellow-300">createUser</span>(withEmail: email, password: password)
+        <span class="text-pink-400">let</span> firebaseUser = result.user
+
+        <span class="text-zinc-500">// Обновляем displayName</span>
+        <span class="text-pink-400">let</span> changeRequest = firebaseUser.<span class="text-yellow-300">createProfileChangeRequest</span>()
+        changeRequest.displayName = name
+        <span class="text-pink-400">try await</span> changeRequest.<span class="text-yellow-300">commitChanges</span>()
+
+        <span class="text-pink-400">return</span> <span class="text-cyan-400">User</span>(
+            id: firebaseUser.uid,
+            email: firebaseUser.email ?? <span class="text-green-400">""</span>,
+            name: name
+        )
+    }
+
+    <span class="text-pink-400">func</span> <span class="text-yellow-300">logout</span>() <span class="text-pink-400">throws</span> {
+        <span class="text-pink-400">try</span> auth.<span class="text-yellow-300">signOut</span>()
+    }
+
+    <span class="text-pink-400">func</span> <span class="text-yellow-300">resetPassword</span>(email: <span class="text-cyan-400">String</span>) <span class="text-pink-400">async throws</span> {
+        <span class="text-pink-400">try await</span> auth.<span class="text-yellow-300">sendPasswordReset</span>(withEmail: email)
+    }
+}
+</pre>
+                    </div>
+
+                    <!-- Login Protocols -->
+                    <h2 class="text-2xl font-bold mt-12 mb-6">Login Module - Протоколы</h2>
+
+                    <div class="bg-zinc-900 rounded-xl p-6 mb-8 font-mono text-sm overflow-x-auto">
+<pre class="text-zinc-300">
+<span class="text-zinc-500">// LoginProtocols.swift</span>
+<span class="text-pink-400">import</span> <span class="text-cyan-400">UIKit</span>
+
+<span class="text-zinc-500">// MARK: - View</span>
+<span class="text-pink-400">protocol</span> <span class="text-cyan-400">LoginViewProtocol</span>: <span class="text-cyan-400">AnyObject</span> {
+    <span class="text-pink-400">var</span> presenter: <span class="text-cyan-400">LoginPresenterProtocol</span>? { <span class="text-pink-400">get set</span> }
+
+    <span class="text-pink-400">func</span> <span class="text-yellow-300">showLoading</span>()
+    <span class="text-pink-400">func</span> <span class="text-yellow-300">hideLoading</span>()
+    <span class="text-pink-400">func</span> <span class="text-yellow-300">showError</span>(<span class="text-purple-400">_</span> message: <span class="text-cyan-400">String</span>)
+    <span class="text-pink-400">func</span> <span class="text-yellow-300">showValidationError</span>(field: <span class="text-cyan-400">LoginField</span>, message: <span class="text-cyan-400">String</span>)
+    <span class="text-pink-400">func</span> <span class="text-yellow-300">clearValidationErrors</span>()
+}
+
+<span class="text-pink-400">enum</span> <span class="text-cyan-400">LoginField</span> {
+    <span class="text-pink-400">case</span> email
+    <span class="text-pink-400">case</span> password
+}
+
+<span class="text-zinc-500">// MARK: - Presenter</span>
+<span class="text-pink-400">protocol</span> <span class="text-cyan-400">LoginPresenterProtocol</span>: <span class="text-cyan-400">AnyObject</span> {
+    <span class="text-pink-400">var</span> view: <span class="text-cyan-400">LoginViewProtocol</span>? { <span class="text-pink-400">get set</span> }
+    <span class="text-pink-400">var</span> interactor: <span class="text-cyan-400">LoginInteractorInputProtocol</span>? { <span class="text-pink-400">get set</span> }
+    <span class="text-pink-400">var</span> router: <span class="text-cyan-400">LoginRouterProtocol</span>? { <span class="text-pink-400">get set</span> }
+
+    <span class="text-pink-400">func</span> <span class="text-yellow-300">loginTapped</span>(email: <span class="text-cyan-400">String</span>, password: <span class="text-cyan-400">String</span>)
+    <span class="text-pink-400">func</span> <span class="text-yellow-300">registerTapped</span>()
+    <span class="text-pink-400">func</span> <span class="text-yellow-300">forgotPasswordTapped</span>()
+}
+
+<span class="text-zinc-500">// MARK: - Interactor</span>
+<span class="text-pink-400">protocol</span> <span class="text-cyan-400">LoginInteractorInputProtocol</span>: <span class="text-cyan-400">AnyObject</span> {
+    <span class="text-pink-400">var</span> presenter: <span class="text-cyan-400">LoginInteractorOutputProtocol</span>? { <span class="text-pink-400">get set</span> }
+
+    <span class="text-pink-400">func</span> <span class="text-yellow-300">login</span>(email: <span class="text-cyan-400">String</span>, password: <span class="text-cyan-400">String</span>)
+}
+
+<span class="text-pink-400">protocol</span> <span class="text-cyan-400">LoginInteractorOutputProtocol</span>: <span class="text-cyan-400">AnyObject</span> {
+    <span class="text-pink-400">func</span> <span class="text-yellow-300">loginSuccess</span>(user: <span class="text-cyan-400">User</span>)
+    <span class="text-pink-400">func</span> <span class="text-yellow-300">loginFailed</span>(error: <span class="text-cyan-400">Error</span>)
+}
+
+<span class="text-zinc-500">// MARK: - Router</span>
+<span class="text-pink-400">protocol</span> <span class="text-cyan-400">LoginRouterProtocol</span>: <span class="text-cyan-400">AnyObject</span> {
+    <span class="text-pink-400">static func</span> <span class="text-yellow-300">createModule</span>() -> <span class="text-cyan-400">UIViewController</span>
+
+    <span class="text-pink-400">func</span> <span class="text-yellow-300">navigateToRegister</span>()
+    <span class="text-pink-400">func</span> <span class="text-yellow-300">navigateToForgotPassword</span>()
+    <span class="text-pink-400">func</span> <span class="text-yellow-300">navigateToMain</span>()
+}
+</pre>
+                    </div>
+
+                    <!-- Login View -->
+                    <h2 class="text-2xl font-bold mt-12 mb-6">LoginViewController</h2>
+
+                    <div class="bg-zinc-900 rounded-xl p-6 mb-8 font-mono text-sm overflow-x-auto">
+<pre class="text-zinc-300">
+<span class="text-zinc-500">// LoginViewController.swift</span>
+<span class="text-pink-400">import</span> <span class="text-cyan-400">UIKit</span>
+<span class="text-pink-400">import</span> <span class="text-cyan-400">SnapKit</span>
+
+<span class="text-pink-400">final class</span> <span class="text-cyan-400">LoginViewController</span>: <span class="text-cyan-400">UIViewController</span> {
+
+    <span class="text-pink-400">var</span> presenter: <span class="text-cyan-400">LoginPresenterProtocol</span>?
+
+    <span class="text-zinc-500">// MARK: - UI Elements</span>
+
+    <span class="text-pink-400">private let</span> logoImageView: <span class="text-cyan-400">UIImageView</span> = {
+        <span class="text-pink-400">let</span> iv = <span class="text-cyan-400">UIImageView</span>()
+        iv.image = <span class="text-cyan-400">UIImage</span>(systemName: <span class="text-green-400">"cart.fill"</span>)
+        iv.tintColor = .<span class="text-purple-400">systemBlue</span>
+        iv.contentMode = .scaleAspectFit
+        <span class="text-pink-400">return</span> iv
+    }()
+
+    <span class="text-pink-400">private let</span> titleLabel: <span class="text-cyan-400">UILabel</span> = {
+        <span class="text-pink-400">let</span> label = <span class="text-cyan-400">UILabel</span>()
+        label.text = <span class="text-green-400">"Добро пожаловать"</span>
+        label.font = .<span class="text-yellow-300">systemFont</span>(ofSize: <span class="text-purple-400">28</span>, weight: .bold)
+        label.textAlignment = .center
+        <span class="text-pink-400">return</span> label
+    }()
+
+    <span class="text-pink-400">private let</span> emailTextField: <span class="text-cyan-400">UITextField</span> = {
+        <span class="text-pink-400">let</span> tf = <span class="text-cyan-400">UITextField</span>()
+        tf.placeholder = <span class="text-green-400">"Email"</span>
+        tf.borderStyle = .roundedRect
+        tf.keyboardType = .emailAddress
+        tf.autocapitalizationType = .none
+        tf.autocorrectionType = .no
+        <span class="text-pink-400">return</span> tf
+    }()
+
+    <span class="text-pink-400">private let</span> emailErrorLabel: <span class="text-cyan-400">UILabel</span> = {
+        <span class="text-pink-400">let</span> label = <span class="text-cyan-400">UILabel</span>()
+        label.textColor = .<span class="text-purple-400">systemRed</span>
+        label.font = .<span class="text-yellow-300">systemFont</span>(ofSize: <span class="text-purple-400">12</span>)
+        label.isHidden = <span class="text-pink-400">true</span>
+        <span class="text-pink-400">return</span> label
+    }()
+
+    <span class="text-pink-400">private let</span> passwordTextField: <span class="text-cyan-400">UITextField</span> = {
+        <span class="text-pink-400">let</span> tf = <span class="text-cyan-400">UITextField</span>()
+        tf.placeholder = <span class="text-green-400">"Пароль"</span>
+        tf.borderStyle = .roundedRect
+        tf.isSecureTextEntry = <span class="text-pink-400">true</span>
+        <span class="text-pink-400">return</span> tf
+    }()
+
+    <span class="text-pink-400">private let</span> passwordErrorLabel: <span class="text-cyan-400">UILabel</span> = {
+        <span class="text-pink-400">let</span> label = <span class="text-cyan-400">UILabel</span>()
+        label.textColor = .<span class="text-purple-400">systemRed</span>
+        label.font = .<span class="text-yellow-300">systemFont</span>(ofSize: <span class="text-purple-400">12</span>)
+        label.isHidden = <span class="text-pink-400">true</span>
+        <span class="text-pink-400">return</span> label
+    }()
+
+    <span class="text-pink-400">private let</span> loginButton: <span class="text-cyan-400">UIButton</span> = {
+        <span class="text-pink-400">let</span> button = <span class="text-cyan-400">UIButton</span>(type: .system)
+        button.<span class="text-yellow-300">setTitle</span>(<span class="text-green-400">"Войти"</span>, for: .normal)
+        button.<span class="text-yellow-300">setTitleColor</span>(.white, for: .normal)
+        button.titleLabel?.font = .<span class="text-yellow-300">systemFont</span>(ofSize: <span class="text-purple-400">16</span>, weight: .semibold)
+        button.backgroundColor = .<span class="text-purple-400">systemBlue</span>
+        button.layer.cornerRadius = <span class="text-purple-400">12</span>
+        <span class="text-pink-400">return</span> button
+    }()
+
+    <span class="text-pink-400">private let</span> forgotPasswordButton: <span class="text-cyan-400">UIButton</span> = {
+        <span class="text-pink-400">let</span> button = <span class="text-cyan-400">UIButton</span>(type: .system)
+        button.<span class="text-yellow-300">setTitle</span>(<span class="text-green-400">"Забыли пароль?"</span>, for: .normal)
+        button.titleLabel?.font = .<span class="text-yellow-300">systemFont</span>(ofSize: <span class="text-purple-400">14</span>)
+        <span class="text-pink-400">return</span> button
+    }()
+
+    <span class="text-pink-400">private let</span> registerButton: <span class="text-cyan-400">UIButton</span> = {
+        <span class="text-pink-400">let</span> button = <span class="text-cyan-400">UIButton</span>(type: .system)
+        button.<span class="text-yellow-300">setTitle</span>(<span class="text-green-400">"Нет аккаунта? Зарегистрироваться"</span>, for: .normal)
+        button.titleLabel?.font = .<span class="text-yellow-300">systemFont</span>(ofSize: <span class="text-purple-400">14</span>)
+        <span class="text-pink-400">return</span> button
+    }()
+
+    <span class="text-pink-400">private let</span> activityIndicator: <span class="text-cyan-400">UIActivityIndicatorView</span> = {
+        <span class="text-pink-400">let</span> indicator = <span class="text-cyan-400">UIActivityIndicatorView</span>(style: .large)
+        indicator.hidesWhenStopped = <span class="text-pink-400">true</span>
+        <span class="text-pink-400">return</span> indicator
+    }()
+
+    <span class="text-zinc-500">// MARK: - Lifecycle</span>
+
+    <span class="text-pink-400">override func</span> <span class="text-yellow-300">viewDidLoad</span>() {
+        <span class="text-pink-400">super</span>.<span class="text-yellow-300">viewDidLoad</span>()
+        <span class="text-yellow-300">setupUI</span>()
+        <span class="text-yellow-300">setupActions</span>()
+    }
+
+    <span class="text-zinc-500">// MARK: - Setup</span>
+
+    <span class="text-pink-400">private func</span> <span class="text-yellow-300">setupUI</span>() {
+        view.backgroundColor = .<span class="text-purple-400">systemBackground</span>
+
+        view.<span class="text-yellow-300">addSubview</span>(logoImageView)
+        view.<span class="text-yellow-300">addSubview</span>(titleLabel)
+        view.<span class="text-yellow-300">addSubview</span>(emailTextField)
+        view.<span class="text-yellow-300">addSubview</span>(emailErrorLabel)
+        view.<span class="text-yellow-300">addSubview</span>(passwordTextField)
+        view.<span class="text-yellow-300">addSubview</span>(passwordErrorLabel)
+        view.<span class="text-yellow-300">addSubview</span>(loginButton)
+        view.<span class="text-yellow-300">addSubview</span>(forgotPasswordButton)
+        view.<span class="text-yellow-300">addSubview</span>(registerButton)
+        view.<span class="text-yellow-300">addSubview</span>(activityIndicator)
+
+        logoImageView.snp.<span class="text-yellow-300">makeConstraints</span> { make <span class="text-pink-400">in</span>
+            make.top.equalTo(view.safeAreaLayoutGuide).offset(<span class="text-purple-400">60</span>)
+            make.centerX.equalToSuperview()
+            make.size.equalTo(<span class="text-purple-400">80</span>)
+        }
+
+        titleLabel.snp.<span class="text-yellow-300">makeConstraints</span> { make <span class="text-pink-400">in</span>
+            make.top.equalTo(logoImageView.snp.bottom).offset(<span class="text-purple-400">24</span>)
+            make.leading.trailing.equalToSuperview().inset(<span class="text-purple-400">24</span>)
+        }
+
+        emailTextField.snp.<span class="text-yellow-300">makeConstraints</span> { make <span class="text-pink-400">in</span>
+            make.top.equalTo(titleLabel.snp.bottom).offset(<span class="text-purple-400">40</span>)
+            make.leading.trailing.equalToSuperview().inset(<span class="text-purple-400">24</span>)
+            make.height.equalTo(<span class="text-purple-400">50</span>)
+        }
+
+        emailErrorLabel.snp.<span class="text-yellow-300">makeConstraints</span> { make <span class="text-pink-400">in</span>
+            make.top.equalTo(emailTextField.snp.bottom).offset(<span class="text-purple-400">4</span>)
+            make.leading.trailing.equalTo(emailTextField)
+        }
+
+        passwordTextField.snp.<span class="text-yellow-300">makeConstraints</span> { make <span class="text-pink-400">in</span>
+            make.top.equalTo(emailErrorLabel.snp.bottom).offset(<span class="text-purple-400">16</span>)
+            make.leading.trailing.equalToSuperview().inset(<span class="text-purple-400">24</span>)
+            make.height.equalTo(<span class="text-purple-400">50</span>)
+        }
+
+        passwordErrorLabel.snp.<span class="text-yellow-300">makeConstraints</span> { make <span class="text-pink-400">in</span>
+            make.top.equalTo(passwordTextField.snp.bottom).offset(<span class="text-purple-400">4</span>)
+            make.leading.trailing.equalTo(passwordTextField)
+        }
+
+        loginButton.snp.<span class="text-yellow-300">makeConstraints</span> { make <span class="text-pink-400">in</span>
+            make.top.equalTo(passwordErrorLabel.snp.bottom).offset(<span class="text-purple-400">32</span>)
+            make.leading.trailing.equalToSuperview().inset(<span class="text-purple-400">24</span>)
+            make.height.equalTo(<span class="text-purple-400">50</span>)
+        }
+
+        forgotPasswordButton.snp.<span class="text-yellow-300">makeConstraints</span> { make <span class="text-pink-400">in</span>
+            make.top.equalTo(loginButton.snp.bottom).offset(<span class="text-purple-400">16</span>)
+            make.centerX.equalToSuperview()
+        }
+
+        registerButton.snp.<span class="text-yellow-300">makeConstraints</span> { make <span class="text-pink-400">in</span>
+            make.bottom.equalTo(view.safeAreaLayoutGuide).offset(-<span class="text-purple-400">24</span>)
+            make.centerX.equalToSuperview()
+        }
+
+        activityIndicator.snp.<span class="text-yellow-300">makeConstraints</span> { make <span class="text-pink-400">in</span>
+            make.center.equalToSuperview()
+        }
+    }
+
+    <span class="text-pink-400">private func</span> <span class="text-yellow-300">setupActions</span>() {
+        loginButton.<span class="text-yellow-300">addTarget</span>(<span class="text-pink-400">self</span>, action: <span class="text-pink-400">#selector</span>(loginTapped), for: .touchUpInside)
+        registerButton.<span class="text-yellow-300">addTarget</span>(<span class="text-pink-400">self</span>, action: <span class="text-pink-400">#selector</span>(registerTapped), for: .touchUpInside)
+        forgotPasswordButton.<span class="text-yellow-300">addTarget</span>(<span class="text-pink-400">self</span>, action: <span class="text-pink-400">#selector</span>(forgotPasswordTapped), for: .touchUpInside)
+    }
+
+    <span class="text-zinc-500">// MARK: - Actions</span>
+
+    <span class="text-pink-400">@objc private func</span> <span class="text-yellow-300">loginTapped</span>() {
+        presenter?.<span class="text-yellow-300">loginTapped</span>(
+            email: emailTextField.text ?? <span class="text-green-400">""</span>,
+            password: passwordTextField.text ?? <span class="text-green-400">""</span>
+        )
+    }
+
+    <span class="text-pink-400">@objc private func</span> <span class="text-yellow-300">registerTapped</span>() {
+        presenter?.<span class="text-yellow-300">registerTapped</span>()
+    }
+
+    <span class="text-pink-400">@objc private func</span> <span class="text-yellow-300">forgotPasswordTapped</span>() {
+        presenter?.<span class="text-yellow-300">forgotPasswordTapped</span>()
+    }
+}
+
+<span class="text-zinc-500">// MARK: - LoginViewProtocol</span>
+
+<span class="text-pink-400">extension</span> <span class="text-cyan-400">LoginViewController</span>: <span class="text-cyan-400">LoginViewProtocol</span> {
+
+    <span class="text-pink-400">func</span> <span class="text-yellow-300">showLoading</span>() {
+        activityIndicator.<span class="text-yellow-300">startAnimating</span>()
+        loginButton.isEnabled = <span class="text-pink-400">false</span>
+        loginButton.alpha = <span class="text-purple-400">0.5</span>
+    }
+
+    <span class="text-pink-400">func</span> <span class="text-yellow-300">hideLoading</span>() {
+        activityIndicator.<span class="text-yellow-300">stopAnimating</span>()
+        loginButton.isEnabled = <span class="text-pink-400">true</span>
+        loginButton.alpha = <span class="text-purple-400">1.0</span>
+    }
+
+    <span class="text-pink-400">func</span> <span class="text-yellow-300">showError</span>(<span class="text-purple-400">_</span> message: <span class="text-cyan-400">String</span>) {
+        <span class="text-pink-400">let</span> alert = <span class="text-cyan-400">UIAlertController</span>(
+            title: <span class="text-green-400">"Ошибка"</span>,
+            message: message,
+            preferredStyle: .alert
+        )
+        alert.<span class="text-yellow-300">addAction</span>(<span class="text-cyan-400">UIAlertAction</span>(title: <span class="text-green-400">"OK"</span>, style: .default))
+        <span class="text-yellow-300">present</span>(alert, animated: <span class="text-pink-400">true</span>)
+    }
+
+    <span class="text-pink-400">func</span> <span class="text-yellow-300">showValidationError</span>(field: <span class="text-cyan-400">LoginField</span>, message: <span class="text-cyan-400">String</span>) {
+        <span class="text-pink-400">switch</span> field {
+        <span class="text-pink-400">case</span> .email:
+            emailErrorLabel.text = message
+            emailErrorLabel.isHidden = <span class="text-pink-400">false</span>
+            emailTextField.layer.borderColor = <span class="text-cyan-400">UIColor</span>.systemRed.cgColor
+            emailTextField.layer.borderWidth = <span class="text-purple-400">1</span>
+        <span class="text-pink-400">case</span> .password:
+            passwordErrorLabel.text = message
+            passwordErrorLabel.isHidden = <span class="text-pink-400">false</span>
+            passwordTextField.layer.borderColor = <span class="text-cyan-400">UIColor</span>.systemRed.cgColor
+            passwordTextField.layer.borderWidth = <span class="text-purple-400">1</span>
+        }
+    }
+
+    <span class="text-pink-400">func</span> <span class="text-yellow-300">clearValidationErrors</span>() {
+        emailErrorLabel.isHidden = <span class="text-pink-400">true</span>
+        passwordErrorLabel.isHidden = <span class="text-pink-400">true</span>
+        emailTextField.layer.borderWidth = <span class="text-purple-400">0</span>
+        passwordTextField.layer.borderWidth = <span class="text-purple-400">0</span>
+    }
+}
+</pre>
+                    </div>
+
+                    <!-- Login Presenter -->
+                    <h2 class="text-2xl font-bold mt-12 mb-6">LoginPresenter</h2>
+
+                    <div class="bg-zinc-900 rounded-xl p-6 mb-8 font-mono text-sm overflow-x-auto">
+<pre class="text-zinc-300">
+<span class="text-zinc-500">// LoginPresenter.swift</span>
+<span class="text-pink-400">import</span> <span class="text-cyan-400">Foundation</span>
+
+<span class="text-pink-400">final class</span> <span class="text-cyan-400">LoginPresenter</span>: <span class="text-cyan-400">LoginPresenterProtocol</span> {
+
+    <span class="text-pink-400">weak var</span> view: <span class="text-cyan-400">LoginViewProtocol</span>?
+    <span class="text-pink-400">var</span> interactor: <span class="text-cyan-400">LoginInteractorInputProtocol</span>?
+    <span class="text-pink-400">var</span> router: <span class="text-cyan-400">LoginRouterProtocol</span>?
+
+    <span class="text-pink-400">func</span> <span class="text-yellow-300">loginTapped</span>(email: <span class="text-cyan-400">String</span>, password: <span class="text-cyan-400">String</span>) {
+        view?.<span class="text-yellow-300">clearValidationErrors</span>()
+
+        <span class="text-zinc-500">// Валидация</span>
+        <span class="text-pink-400">var</span> isValid = <span class="text-pink-400">true</span>
+
+        <span class="text-pink-400">if</span> email.isEmpty {
+            view?.<span class="text-yellow-300">showValidationError</span>(field: .email, message: <span class="text-green-400">"Введите email"</span>)
+            isValid = <span class="text-pink-400">false</span>
+        } <span class="text-pink-400">else if</span> !<span class="text-yellow-300">isValidEmail</span>(email) {
+            view?.<span class="text-yellow-300">showValidationError</span>(field: .email, message: <span class="text-green-400">"Некорректный email"</span>)
+            isValid = <span class="text-pink-400">false</span>
+        }
+
+        <span class="text-pink-400">if</span> password.isEmpty {
+            view?.<span class="text-yellow-300">showValidationError</span>(field: .password, message: <span class="text-green-400">"Введите пароль"</span>)
+            isValid = <span class="text-pink-400">false</span>
+        } <span class="text-pink-400">else if</span> password.count < <span class="text-purple-400">6</span> {
+            view?.<span class="text-yellow-300">showValidationError</span>(field: .password, message: <span class="text-green-400">"Минимум 6 символов"</span>)
+            isValid = <span class="text-pink-400">false</span>
+        }
+
+        <span class="text-pink-400">guard</span> isValid <span class="text-pink-400">else</span> { <span class="text-pink-400">return</span> }
+
+        view?.<span class="text-yellow-300">showLoading</span>()
+        interactor?.<span class="text-yellow-300">login</span>(email: email, password: password)
+    }
+
+    <span class="text-pink-400">func</span> <span class="text-yellow-300">registerTapped</span>() {
+        router?.<span class="text-yellow-300">navigateToRegister</span>()
+    }
+
+    <span class="text-pink-400">func</span> <span class="text-yellow-300">forgotPasswordTapped</span>() {
+        router?.<span class="text-yellow-300">navigateToForgotPassword</span>()
+    }
+
+    <span class="text-pink-400">private func</span> <span class="text-yellow-300">isValidEmail</span>(<span class="text-purple-400">_</span> email: <span class="text-cyan-400">String</span>) -> <span class="text-cyan-400">Bool</span> {
+        <span class="text-pink-400">let</span> emailRegex = <span class="text-green-400">"[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,64}"</span>
+        <span class="text-pink-400">let</span> predicate = <span class="text-cyan-400">NSPredicate</span>(format: <span class="text-green-400">"SELF MATCHES %@"</span>, emailRegex)
+        <span class="text-pink-400">return</span> predicate.<span class="text-yellow-300">evaluate</span>(with: email)
+    }
+}
+
+<span class="text-zinc-500">// MARK: - LoginInteractorOutputProtocol</span>
+
+<span class="text-pink-400">extension</span> <span class="text-cyan-400">LoginPresenter</span>: <span class="text-cyan-400">LoginInteractorOutputProtocol</span> {
+
+    <span class="text-pink-400">func</span> <span class="text-yellow-300">loginSuccess</span>(user: <span class="text-cyan-400">User</span>) {
+        view?.<span class="text-yellow-300">hideLoading</span>()
+        router?.<span class="text-yellow-300">navigateToMain</span>()
+    }
+
+    <span class="text-pink-400">func</span> <span class="text-yellow-300">loginFailed</span>(error: <span class="text-cyan-400">Error</span>) {
+        view?.<span class="text-yellow-300">hideLoading</span>()
+        view?.<span class="text-yellow-300">showError</span>(<span class="text-yellow-300">mapError</span>(error))
+    }
+
+    <span class="text-pink-400">private func</span> <span class="text-yellow-300">mapError</span>(<span class="text-purple-400">_</span> error: <span class="text-cyan-400">Error</span>) -> <span class="text-cyan-400">String</span> {
+        <span class="text-pink-400">let</span> nsError = error <span class="text-pink-400">as</span> <span class="text-cyan-400">NSError</span>
+
+        <span class="text-pink-400">switch</span> nsError.code {
+        <span class="text-pink-400">case</span> <span class="text-purple-400">17009</span>: <span class="text-zinc-500">// wrongPassword</span>
+            <span class="text-pink-400">return</span> <span class="text-green-400">"Неверный пароль"</span>
+        <span class="text-pink-400">case</span> <span class="text-purple-400">17011</span>: <span class="text-zinc-500">// userNotFound</span>
+            <span class="text-pink-400">return</span> <span class="text-green-400">"Пользователь не найден"</span>
+        <span class="text-pink-400">case</span> <span class="text-purple-400">17008</span>: <span class="text-zinc-500">// invalidEmail</span>
+            <span class="text-pink-400">return</span> <span class="text-green-400">"Некорректный email"</span>
+        <span class="text-pink-400">case</span> <span class="text-purple-400">17010</span>: <span class="text-zinc-500">// userDisabled</span>
+            <span class="text-pink-400">return</span> <span class="text-green-400">"Аккаунт заблокирован"</span>
+        <span class="text-pink-400">default</span>:
+            <span class="text-pink-400">return</span> <span class="text-green-400">"Произошла ошибка. Попробуйте позже."</span>
+        }
+    }
+}
+</pre>
+                    </div>
+
+                    <!-- Login Interactor -->
+                    <h2 class="text-2xl font-bold mt-12 mb-6">LoginInteractor</h2>
+
+                    <div class="bg-zinc-900 rounded-xl p-6 mb-8 font-mono text-sm overflow-x-auto">
+<pre class="text-zinc-300">
+<span class="text-zinc-500">// LoginInteractor.swift</span>
+<span class="text-pink-400">import</span> <span class="text-cyan-400">Foundation</span>
+
+<span class="text-pink-400">final class</span> <span class="text-cyan-400">LoginInteractor</span>: <span class="text-cyan-400">LoginInteractorInputProtocol</span> {
+
+    <span class="text-pink-400">weak var</span> presenter: <span class="text-cyan-400">LoginInteractorOutputProtocol</span>?
+    <span class="text-pink-400">private let</span> authService: <span class="text-cyan-400">AuthServiceProtocol</span>
+
+    <span class="text-pink-400">init</span>(authService: <span class="text-cyan-400">AuthServiceProtocol</span> = <span class="text-cyan-400">AuthService</span>.shared) {
+        <span class="text-pink-400">self</span>.authService = authService
+    }
+
+    <span class="text-pink-400">func</span> <span class="text-yellow-300">login</span>(email: <span class="text-cyan-400">String</span>, password: <span class="text-cyan-400">String</span>) {
+        <span class="text-cyan-400">Task</span> {
+            <span class="text-pink-400">do</span> {
+                <span class="text-pink-400">let</span> user = <span class="text-pink-400">try await</span> authService.<span class="text-yellow-300">login</span>(email: email, password: password)
+
+                <span class="text-pink-400">await</span> <span class="text-cyan-400">MainActor</span>.<span class="text-yellow-300">run</span> {
+                    presenter?.<span class="text-yellow-300">loginSuccess</span>(user: user)
+                }
+            } <span class="text-pink-400">catch</span> {
+                <span class="text-pink-400">await</span> <span class="text-cyan-400">MainActor</span>.<span class="text-yellow-300">run</span> {
+                    presenter?.<span class="text-yellow-300">loginFailed</span>(error: error)
+                }
+            }
+        }
+    }
+}
+</pre>
+                    </div>
+
+                    <!-- Login Router -->
+                    <h2 class="text-2xl font-bold mt-12 mb-6">LoginRouter</h2>
+
+                    <div class="bg-zinc-900 rounded-xl p-6 mb-8 font-mono text-sm overflow-x-auto">
+<pre class="text-zinc-300">
+<span class="text-zinc-500">// LoginRouter.swift</span>
+<span class="text-pink-400">import</span> <span class="text-cyan-400">UIKit</span>
+
+<span class="text-pink-400">final class</span> <span class="text-cyan-400">LoginRouter</span>: <span class="text-cyan-400">LoginRouterProtocol</span> {
+
+    <span class="text-pink-400">weak var</span> viewController: <span class="text-cyan-400">UIViewController</span>?
+
+    <span class="text-pink-400">static func</span> <span class="text-yellow-300">createModule</span>() -> <span class="text-cyan-400">UIViewController</span> {
+        <span class="text-pink-400">let</span> view = <span class="text-cyan-400">LoginViewController</span>()
+        <span class="text-pink-400">let</span> presenter = <span class="text-cyan-400">LoginPresenter</span>()
+        <span class="text-pink-400">let</span> interactor = <span class="text-cyan-400">LoginInteractor</span>()
+        <span class="text-pink-400">let</span> router = <span class="text-cyan-400">LoginRouter</span>()
+
+        view.presenter = presenter
+        presenter.view = view
+        presenter.interactor = interactor
+        presenter.router = router
+        interactor.presenter = presenter
+        router.viewController = view
+
+        <span class="text-pink-400">return</span> view
+    }
+
+    <span class="text-pink-400">func</span> <span class="text-yellow-300">navigateToRegister</span>() {
+        <span class="text-pink-400">let</span> registerVC = <span class="text-cyan-400">RegisterRouter</span>.<span class="text-yellow-300">createModule</span>()
+        viewController?.navigationController?.<span class="text-yellow-300">pushViewController</span>(registerVC, animated: <span class="text-pink-400">true</span>)
+    }
+
+    <span class="text-pink-400">func</span> <span class="text-yellow-300">navigateToForgotPassword</span>() {
+        <span class="text-pink-400">let</span> forgotVC = <span class="text-cyan-400">ForgotPasswordRouter</span>.<span class="text-yellow-300">createModule</span>()
+        viewController?.navigationController?.<span class="text-yellow-300">pushViewController</span>(forgotVC, animated: <span class="text-pink-400">true</span>)
+    }
+
+    <span class="text-pink-400">func</span> <span class="text-yellow-300">navigateToMain</span>() {
+        <span class="text-pink-400">guard let</span> window = viewController?.view.window <span class="text-pink-400">else</span> { <span class="text-pink-400">return</span> }
+
+        <span class="text-pink-400">let</span> mainTabBar = <span class="text-cyan-400">MainTabBarController</span>()
+
+        <span class="text-cyan-400">UIView</span>.<span class="text-yellow-300">transition</span>(
+            with: window,
+            duration: <span class="text-purple-400">0.3</span>,
+            options: .transitionCrossDissolve,
+            animations: {
+                window.rootViewController = mainTabBar
+            }
+        )
+    }
+}
+</pre>
+                    </div>
+
+                    <!-- Register Module -->
+                    <h2 class="text-2xl font-bold mt-12 mb-6">Register Module</h2>
+
+                    <p class="mb-4">
+                        Модуль регистрации аналогичен Login, но с дополнительными полями:
+                    </p>
+
+                    <div class="bg-zinc-900 rounded-xl p-6 mb-8 font-mono text-sm overflow-x-auto">
+<pre class="text-zinc-300">
+<span class="text-zinc-500">// RegisterViewController.swift (ключевые отличия)</span>
+<span class="text-pink-400">final class</span> <span class="text-cyan-400">RegisterViewController</span>: <span class="text-cyan-400">UIViewController</span> {
+
+    <span class="text-pink-400">var</span> presenter: <span class="text-cyan-400">RegisterPresenterProtocol</span>?
+
+    <span class="text-pink-400">private let</span> nameTextField: <span class="text-cyan-400">UITextField</span> = {
+        <span class="text-pink-400">let</span> tf = <span class="text-cyan-400">UITextField</span>()
+        tf.placeholder = <span class="text-green-400">"Имя"</span>
+        tf.borderStyle = .roundedRect
+        tf.autocapitalizationType = .words
+        <span class="text-pink-400">return</span> tf
+    }()
+
+    <span class="text-pink-400">private let</span> emailTextField: <span class="text-cyan-400">UITextField</span> = { ... }()
+    <span class="text-pink-400">private let</span> passwordTextField: <span class="text-cyan-400">UITextField</span> = { ... }()
+
+    <span class="text-pink-400">private let</span> confirmPasswordTextField: <span class="text-cyan-400">UITextField</span> = {
+        <span class="text-pink-400">let</span> tf = <span class="text-cyan-400">UITextField</span>()
+        tf.placeholder = <span class="text-green-400">"Подтвердите пароль"</span>
+        tf.borderStyle = .roundedRect
+        tf.isSecureTextEntry = <span class="text-pink-400">true</span>
+        <span class="text-pink-400">return</span> tf
+    }()
+
+    <span class="text-pink-400">private let</span> registerButton: <span class="text-cyan-400">UIButton</span> = {
+        <span class="text-pink-400">let</span> button = <span class="text-cyan-400">UIButton</span>(type: .system)
+        button.<span class="text-yellow-300">setTitle</span>(<span class="text-green-400">"Зарегистрироваться"</span>, for: .normal)
+        button.<span class="text-yellow-300">setTitleColor</span>(.white, for: .normal)
+        button.backgroundColor = .<span class="text-purple-400">systemBlue</span>
+        button.layer.cornerRadius = <span class="text-purple-400">12</span>
+        <span class="text-pink-400">return</span> button
+    }()
+
+    <span class="text-pink-400">@objc private func</span> <span class="text-yellow-300">registerTapped</span>() {
+        presenter?.<span class="text-yellow-300">registerTapped</span>(
+            name: nameTextField.text ?? <span class="text-green-400">""</span>,
+            email: emailTextField.text ?? <span class="text-green-400">""</span>,
+            password: passwordTextField.text ?? <span class="text-green-400">""</span>,
+            confirmPassword: confirmPasswordTextField.text ?? <span class="text-green-400">""</span>
+        )
+    }
+}
+</pre>
+                    </div>
+
+                    <!-- Presenter Validation -->
+                    <h3 class="text-xl font-semibold mt-8 mb-4">Валидация в RegisterPresenter</h3>
+
+                    <div class="bg-zinc-900 rounded-xl p-6 mb-8 font-mono text-sm overflow-x-auto">
+<pre class="text-zinc-300">
+<span class="text-zinc-500">// RegisterPresenter.swift</span>
+<span class="text-pink-400">func</span> <span class="text-yellow-300">registerTapped</span>(
+    name: <span class="text-cyan-400">String</span>,
+    email: <span class="text-cyan-400">String</span>,
+    password: <span class="text-cyan-400">String</span>,
+    confirmPassword: <span class="text-cyan-400">String</span>
+) {
+    view?.<span class="text-yellow-300">clearValidationErrors</span>()
+
+    <span class="text-pink-400">var</span> isValid = <span class="text-pink-400">true</span>
+
+    <span class="text-zinc-500">// Проверка имени</span>
+    <span class="text-pink-400">if</span> name.isEmpty {
+        view?.<span class="text-yellow-300">showValidationError</span>(field: .name, message: <span class="text-green-400">"Введите имя"</span>)
+        isValid = <span class="text-pink-400">false</span>
+    } <span class="text-pink-400">else if</span> name.count < <span class="text-purple-400">2</span> {
+        view?.<span class="text-yellow-300">showValidationError</span>(field: .name, message: <span class="text-green-400">"Минимум 2 символа"</span>)
+        isValid = <span class="text-pink-400">false</span>
+    }
+
+    <span class="text-zinc-500">// Проверка email</span>
+    <span class="text-pink-400">if</span> !<span class="text-yellow-300">isValidEmail</span>(email) {
+        view?.<span class="text-yellow-300">showValidationError</span>(field: .email, message: <span class="text-green-400">"Некорректный email"</span>)
+        isValid = <span class="text-pink-400">false</span>
+    }
+
+    <span class="text-zinc-500">// Проверка пароля</span>
+    <span class="text-pink-400">if</span> password.count < <span class="text-purple-400">6</span> {
+        view?.<span class="text-yellow-300">showValidationError</span>(field: .password, message: <span class="text-green-400">"Минимум 6 символов"</span>)
+        isValid = <span class="text-pink-400">false</span>
+    }
+
+    <span class="text-zinc-500">// Проверка совпадения паролей</span>
+    <span class="text-pink-400">if</span> password != confirmPassword {
+        view?.<span class="text-yellow-300">showValidationError</span>(field: .confirmPassword, message: <span class="text-green-400">"Пароли не совпадают"</span>)
+        isValid = <span class="text-pink-400">false</span>
+    }
+
+    <span class="text-pink-400">guard</span> isValid <span class="text-pink-400">else</span> { <span class="text-pink-400">return</span> }
+
+    view?.<span class="text-yellow-300">showLoading</span>()
+    interactor?.<span class="text-yellow-300">register</span>(name: name, email: email, password: password)
+}
+</pre>
+                    </div>
+
+                    <!-- Google Sign-In -->
+                    <h2 class="text-2xl font-bold mt-12 mb-6">Google Sign-In</h2>
+
+                    <p class="mb-4">Добавим возможность входа через Google:</p>
+
+                    <h3 class="text-xl font-semibold mt-8 mb-4">Настройка Google Sign-In SDK</h3>
+
+                    <div class="bg-zinc-900 rounded-xl p-6 mb-6 font-mono text-sm overflow-x-auto">
+<pre class="text-zinc-300">
+<span class="text-zinc-500">// Package Dependencies</span>
+<span class="text-green-400">https://github.com/google/GoogleSignIn-iOS</span>
+</pre>
+                    </div>
+
+                    <h3 class="text-xl font-semibold mt-8 mb-4">Расширение AuthService</h3>
+
+                    <div class="bg-zinc-900 rounded-xl p-6 mb-8 font-mono text-sm overflow-x-auto">
+<pre class="text-zinc-300">
+<span class="text-zinc-500">// AuthService+Google.swift</span>
+<span class="text-pink-400">import</span> <span class="text-cyan-400">GoogleSignIn</span>
+<span class="text-pink-400">import</span> <span class="text-cyan-400">FirebaseAuth</span>
+
+<span class="text-pink-400">extension</span> <span class="text-cyan-400">AuthService</span> {
+
+    <span class="text-pink-400">func</span> <span class="text-yellow-300">signInWithGoogle</span>(presenting: <span class="text-cyan-400">UIViewController</span>) <span class="text-pink-400">async throws</span> -> <span class="text-cyan-400">User</span> {
+        <span class="text-zinc-500">// Получаем clientID из Firebase</span>
+        <span class="text-pink-400">guard let</span> clientID = <span class="text-cyan-400">FirebaseApp</span>.app()?.options.clientID <span class="text-pink-400">else</span> {
+            <span class="text-pink-400">throw</span> <span class="text-cyan-400">AuthError</span>.configurationError
+        }
+
+        <span class="text-zinc-500">// Конфигурация Google Sign-In</span>
+        <span class="text-pink-400">let</span> config = <span class="text-cyan-400">GIDConfiguration</span>(clientID: clientID)
+        <span class="text-cyan-400">GIDSignIn</span>.sharedInstance.configuration = config
+
+        <span class="text-zinc-500">// Выполняем вход</span>
+        <span class="text-pink-400">let</span> result = <span class="text-pink-400">try await</span> <span class="text-cyan-400">GIDSignIn</span>.sharedInstance.<span class="text-yellow-300">signIn</span>(withPresenting: presenting)
+
+        <span class="text-pink-400">guard let</span> idToken = result.user.idToken?.tokenString <span class="text-pink-400">else</span> {
+            <span class="text-pink-400">throw</span> <span class="text-cyan-400">AuthError</span>.tokenError
+        }
+
+        <span class="text-zinc-500">// Создаем credential для Firebase</span>
+        <span class="text-pink-400">let</span> credential = <span class="text-cyan-400">GoogleAuthProvider</span>.<span class="text-yellow-300">credential</span>(
+            withIDToken: idToken,
+            accessToken: result.user.accessToken.tokenString
+        )
+
+        <span class="text-zinc-500">// Авторизуемся в Firebase</span>
+        <span class="text-pink-400">let</span> authResult = <span class="text-pink-400">try await</span> auth.<span class="text-yellow-300">signIn</span>(with: credential)
+        <span class="text-pink-400">let</span> firebaseUser = authResult.user
+
+        <span class="text-pink-400">return</span> <span class="text-cyan-400">User</span>(
+            id: firebaseUser.uid,
+            email: firebaseUser.email ?? <span class="text-green-400">""</span>,
+            name: firebaseUser.displayName ?? <span class="text-green-400">""</span>
+        )
+    }
+}
+
+<span class="text-pink-400">enum</span> <span class="text-cyan-400">AuthError</span>: <span class="text-cyan-400">Error</span> {
+    <span class="text-pink-400">case</span> configurationError
+    <span class="text-pink-400">case</span> tokenError
+}
+</pre>
+                    </div>
+
+                    <!-- Google Sign-In Button -->
+                    <h3 class="text-xl font-semibold mt-8 mb-4">Кнопка Google Sign-In</h3>
+
+                    <div class="bg-zinc-900 rounded-xl p-6 mb-8 font-mono text-sm overflow-x-auto">
+<pre class="text-zinc-300">
+<span class="text-zinc-500">// В LoginViewController</span>
+<span class="text-pink-400">private let</span> googleButton: <span class="text-cyan-400">UIButton</span> = {
+    <span class="text-pink-400">let</span> button = <span class="text-cyan-400">UIButton</span>(type: .system)
+    button.<span class="text-yellow-300">setTitle</span>(<span class="text-green-400">"  Войти через Google"</span>, for: .normal)
+    button.<span class="text-yellow-300">setImage</span>(<span class="text-cyan-400">UIImage</span>(named: <span class="text-green-400">"google_logo"</span>), for: .normal)
+    button.<span class="text-yellow-300">setTitleColor</span>(.label, for: .normal)
+    button.backgroundColor = .<span class="text-purple-400">systemBackground</span>
+    button.layer.cornerRadius = <span class="text-purple-400">12</span>
+    button.layer.borderWidth = <span class="text-purple-400">1</span>
+    button.layer.borderColor = <span class="text-cyan-400">UIColor</span>.systemGray4.cgColor
+    <span class="text-pink-400">return</span> button
+}()
+
+<span class="text-pink-400">@objc private func</span> <span class="text-yellow-300">googleSignInTapped</span>() {
+    presenter?.<span class="text-yellow-300">googleSignInTapped</span>()
+}
+
+<span class="text-zinc-500">// В LoginPresenter</span>
+<span class="text-pink-400">func</span> <span class="text-yellow-300">googleSignInTapped</span>() {
+    <span class="text-pink-400">guard let</span> vc = view <span class="text-pink-400">as?</span> <span class="text-cyan-400">UIViewController</span> <span class="text-pink-400">else</span> { <span class="text-pink-400">return</span> }
+    view?.<span class="text-yellow-300">showLoading</span>()
+    interactor?.<span class="text-yellow-300">signInWithGoogle</span>(presenting: vc)
+}
+</pre>
+                    </div>
+
+                    <!-- SceneDelegate Integration -->
+                    <h2 class="text-2xl font-bold mt-12 mb-6">Интеграция с SceneDelegate</h2>
+
+                    <div class="bg-zinc-900 rounded-xl p-6 mb-8 font-mono text-sm overflow-x-auto">
+<pre class="text-zinc-300">
+<span class="text-zinc-500">// SceneDelegate.swift</span>
+<span class="text-pink-400">import</span> <span class="text-cyan-400">UIKit</span>
+
+<span class="text-pink-400">class</span> <span class="text-cyan-400">SceneDelegate</span>: <span class="text-cyan-400">UIResponder</span>, <span class="text-cyan-400">UIWindowSceneDelegate</span> {
+
+    <span class="text-pink-400">var</span> window: <span class="text-cyan-400">UIWindow</span>?
+
+    <span class="text-pink-400">func</span> <span class="text-yellow-300">scene</span>(
+        <span class="text-purple-400">_</span> scene: <span class="text-cyan-400">UIScene</span>,
+        willConnectTo session: <span class="text-cyan-400">UISceneSession</span>,
+        options: <span class="text-cyan-400">UIScene</span>.<span class="text-cyan-400">ConnectionOptions</span>
+    ) {
+        <span class="text-pink-400">guard let</span> windowScene = scene <span class="text-pink-400">as?</span> <span class="text-cyan-400">UIWindowScene</span> <span class="text-pink-400">else</span> { <span class="text-pink-400">return</span> }
+
+        window = <span class="text-cyan-400">UIWindow</span>(windowScene: windowScene)
+
+        <span class="text-zinc-500">// Проверяем авторизацию</span>
+        <span class="text-pink-400">if</span> <span class="text-cyan-400">AuthService</span>.shared.isLoggedIn {
+            window?.rootViewController = <span class="text-cyan-400">MainTabBarController</span>()
+        } <span class="text-pink-400">else</span> {
+            <span class="text-pink-400">let</span> loginVC = <span class="text-cyan-400">LoginRouter</span>.<span class="text-yellow-300">createModule</span>()
+            <span class="text-pink-400">let</span> navController = <span class="text-cyan-400">UINavigationController</span>(rootViewController: loginVC)
+            window?.rootViewController = navController
+        }
+
+        window?.<span class="text-yellow-300">makeKeyAndVisible</span>()
+    }
+}
+</pre>
+                    </div>
+
+                    <!-- Summary -->
+                    <div class="mt-16 p-8 bg-gradient-to-br from-primary/10 to-purple-500/10 rounded-2xl border border-primary/20">
+                        <h3 class="text-xl font-bold mb-6">Что вы узнали</h3>
+                        <div class="grid gap-4">
+                            <div class="flex items-start gap-3">
+                                <div class="w-6 h-6 bg-primary/20 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                                    <svg class="w-3 h-3 text-primary" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                                    </svg>
+                                </div>
+                                <p class="text-zinc-600 dark:text-zinc-400">Настройка Firebase Authentication в iOS приложении</p>
+                            </div>
+                            <div class="flex items-start gap-3">
+                                <div class="w-6 h-6 bg-primary/20 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                                    <svg class="w-3 h-3 text-primary" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                                    </svg>
+                                </div>
+                                <p class="text-zinc-600 dark:text-zinc-400">Создание AuthService как singleton для работы с авторизацией</p>
+                            </div>
+                            <div class="flex items-start gap-3">
+                                <div class="w-6 h-6 bg-primary/20 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                                    <svg class="w-3 h-3 text-primary" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                                    </svg>
+                                </div>
+                                <p class="text-zinc-600 dark:text-zinc-400">Реализация Login/Register модулей в VIPER архитектуре</p>
+                            </div>
+                            <div class="flex items-start gap-3">
+                                <div class="w-6 h-6 bg-primary/20 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                                    <svg class="w-3 h-3 text-primary" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                                    </svg>
+                                </div>
+                                <p class="text-zinc-600 dark:text-zinc-400">Валидация форм и обработка ошибок авторизации</p>
+                            </div>
+                            <div class="flex items-start gap-3">
+                                <div class="w-6 h-6 bg-primary/20 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                                    <svg class="w-3 h-3 text-primary" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                                    </svg>
+                                </div>
+                                <p class="text-zinc-600 dark:text-zinc-400">Интеграция Google Sign-In с Firebase</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Next Chapter Preview -->
+                    <div class="mt-8 p-6 bg-zinc-100 dark:bg-zinc-800/50 rounded-2xl">
+                        <h4 class="font-semibold mb-2">Следующая глава</h4>
+                        <p class="text-zinc-600 dark:text-zinc-400">
+                            В следующей главе мы создадим модуль каталога продуктов — научимся загружать
+                            товары из Firestore, отображать их в коллекции и реализуем фильтрацию и поиск.
+                        </p>
+                    </div>
+                </div>
+
+                <nav class="flex justify-between gap-4 mt-16 pt-8 border-t border-zinc-200 dark:border-zinc-800">
+                    <a href="14-project-setup.html" class="flex items-center gap-3 px-5 py-3 bg-zinc-100 dark:bg-zinc-800 hover:bg-primary hover:text-white rounded-xl transition-colors">
+                        <span class="text-xl">←</span>
+                        <span class="font-medium">Предыдущая</span>
+                    </a>
+                    <a href="16-products.html" class="flex items-center gap-3 px-5 py-3 bg-zinc-100 dark:bg-zinc-800 hover:bg-primary hover:text-white rounded-xl transition-colors ml-auto">
+                        <span class="font-medium">Следующая</span>
+                        <span class="text-xl">→</span>
+                    </a>
+                </nav>
+            </article>
+        </main>
+    </div>
+
+    <script>
+        const menuBtn = document.getElementById('menuBtn');
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('overlay');
+        menuBtn.addEventListener('click', () => {
+            sidebar.classList.toggle('-translate-x-full');
+            overlay.classList.toggle('hidden');
+        });
+        function closeSidebar() {
+            sidebar.classList.add('-translate-x-full');
+            overlay.classList.add('hidden');
+        }
+    </script>
+</body>
+</html>

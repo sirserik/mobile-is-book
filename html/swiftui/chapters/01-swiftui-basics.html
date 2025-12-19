@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Глава 1: Основы SwiftUI | SwiftUI E-Commerce</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'media',
+            theme: { extend: { colors: { primary: '#007AFF' } } }
+        }
+    </script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/vs2015.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/swift.min.js"></script>
+    <style>
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 3px; }
+        pre code { font-size: 14px; line-height: 1.6; }
+    </style>
+</head>
+<body class="bg-white dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100">
+    <div class="min-h-screen">
+        <!-- Header -->
+        <header class="sticky top-0 z-40 bg-white/80 dark:bg-zinc-950/80 backdrop-blur-md border-b border-zinc-200 dark:border-zinc-800">
+            <div class="max-w-4xl mx-auto px-6 py-4 flex items-center justify-between">
+                <a href="../index.html" class="flex items-center gap-2 text-zinc-600 dark:text-zinc-400 hover:text-primary transition-colors">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                    </svg>
+                    Оглавление
+                </a>
+                <span class="text-sm text-zinc-500">Глава 1</span>
+            </div>
+        </header>
+
+        <!-- Content -->
+        <main class="max-w-4xl mx-auto px-6 py-12">
+            <article class="prose prose-zinc dark:prose-invert max-w-none">
+                <span class="text-sm font-semibold text-primary uppercase tracking-wider">Глава 1</span>
+                <h1 class="text-4xl font-bold mt-2 mb-8">Основы SwiftUI</h1>
+
+                <div class="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-xl p-6 mb-8">
+                    <h3 class="text-lg font-semibold text-blue-800 dark:text-blue-300 mb-2">🎯 Цель главы</h3>
+                    <p class="text-blue-700 dark:text-blue-400">
+                        Изучить базовые концепции SwiftUI: View, модификаторы, @State, @Binding и понять декларативный подход к построению интерфейсов.
+                    </p>
+                </div>
+
+                <h2 class="text-2xl font-bold mt-12 mb-4">Что такое SwiftUI?</h2>
+                <p class="text-zinc-600 dark:text-zinc-400 leading-relaxed">
+                    <strong>SwiftUI</strong> — это декларативный UI-фреймворк от Apple, представленный в 2019 году. В отличие от императивного UIKit, где вы описываете <em>как</em> создать интерфейс шаг за шагом, в SwiftUI вы описываете <em>что</em> должно быть показано.
+                </p>
+
+                <div class="grid md:grid-cols-2 gap-4 my-8">
+                    <div class="bg-red-50 dark:bg-red-900/20 rounded-xl p-4 border border-red-200 dark:border-red-800">
+                        <h4 class="font-semibold text-red-800 dark:text-red-300 mb-2">UIKit (Императивный)</h4>
+                        <pre><code class="language-swift text-sm">let label = UILabel()
+label.text = "Hello"
+label.textColor = .blue
+label.font = .boldSystemFont(ofSize: 20)
+view.addSubview(label)</code></pre>
+                    </div>
+                    <div class="bg-green-50 dark:bg-green-900/20 rounded-xl p-4 border border-green-200 dark:border-green-800">
+                        <h4 class="font-semibold text-green-800 dark:text-green-300 mb-2">SwiftUI (Декларативный)</h4>
+                        <pre><code class="language-swift text-sm">Text("Hello")
+    .foregroundColor(.blue)
+    .font(.system(size: 20, weight: .bold))</code></pre>
+                    </div>
+                </div>
+
+                <h2 class="text-2xl font-bold mt-12 mb-4">View — основа всего</h2>
+                <p class="text-zinc-600 dark:text-zinc-400 mb-4">
+                    В SwiftUI все компоненты UI являются <code class="bg-zinc-100 dark:bg-zinc-800 px-2 py-1 rounded">View</code>. View — это протокол, который требует свойство <code class="bg-zinc-100 dark:bg-zinc-800 px-2 py-1 rounded">body</code>.
+                </p>
+
+                <pre><code class="language-swift rounded-xl">import SwiftUI
+
+struct ContentView: View {
+    var body: some View {
+        Text("Привет, SwiftUI!")
+    }
+}</code></pre>
+
+                <h2 class="text-2xl font-bold mt-12 mb-4">Модификаторы</h2>
+                <p class="text-zinc-600 dark:text-zinc-400 mb-4">
+                    Модификаторы изменяют внешний вид и поведение View. Они возвращают новый View, что позволяет их цепочить.
+                </p>
+
+                <pre><code class="language-swift rounded-xl">Text("Продукт")
+    .font(.title)                    // Размер шрифта
+    .fontWeight(.bold)               // Жирность
+    .foregroundColor(.primary)       // Цвет текста
+    .padding()                       // Отступы
+    .background(Color.blue)          // Фон
+    .cornerRadius(10)                // Скругление</code></pre>
+
+                <div class="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-xl p-4 my-6">
+                    <p class="text-yellow-800 dark:text-yellow-300">
+                        <strong>⚠️ Важно:</strong> Порядок модификаторов имеет значение! <code>padding().background()</code> и <code>background().padding()</code> дадут разный результат.
+                    </p>
+                </div>
+
+                <h2 class="text-2xl font-bold mt-12 mb-4">@State — локальное состояние</h2>
+                <p class="text-zinc-600 dark:text-zinc-400 mb-4">
+                    <code class="bg-zinc-100 dark:bg-zinc-800 px-2 py-1 rounded">@State</code> — property wrapper для хранения локального состояния View. При изменении @State, View автоматически перерисовывается.
+                </p>
+
+                <pre><code class="language-swift rounded-xl">struct CounterView: View {
+    @State private var count = 0
+
+    var body: some View {
+        VStack(spacing: 20) {
+            Text("Счётчик: \(count)")
+                .font(.largeTitle)
+
+            HStack(spacing: 20) {
+                Button("−") { count -= 1 }
+                Button("+") { count += 1 }
+            }
+            .font(.title)
+        }
+    }
+}</code></pre>
+
+                <h2 class="text-2xl font-bold mt-12 mb-4">@Binding — двусторонняя связь</h2>
+                <p class="text-zinc-600 dark:text-zinc-400 mb-4">
+                    <code class="bg-zinc-100 dark:bg-zinc-800 px-2 py-1 rounded">@Binding</code> позволяет дочернему View изменять состояние родителя. Передаётся через <code>$</code> префикс.
+                </p>
+
+                <pre><code class="language-swift rounded-xl">// Родительский View
+struct ParentView: View {
+    @State private var isOn = false
+
+    var body: some View {
+        ToggleRow(isOn: $isOn)  // Передаём binding через $
+    }
+}
+
+// Дочерний View
+struct ToggleRow: View {
+    @Binding var isOn: Bool  // Получаем binding
+
+    var body: some View {
+        Toggle("Включить", isOn: $isOn)
+    }
+}</code></pre>
+
+                <h2 class="text-2xl font-bold mt-12 mb-4">Основные компоненты</h2>
+
+                <h3 class="text-xl font-semibold mt-8 mb-4">Контейнеры</h3>
+                <pre><code class="language-swift rounded-xl">// Вертикальный стек
+VStack(alignment: .leading, spacing: 10) {
+    Text("Первый")
+    Text("Второй")
+}
+
+// Горизонтальный стек
+HStack(spacing: 20) {
+    Image(systemName: "star")
+    Text("Рейтинг")
+}
+
+// Наложение
+ZStack {
+    Color.blue
+    Text("Поверх")
+}</code></pre>
+
+                <h3 class="text-xl font-semibold mt-8 mb-4">Списки</h3>
+                <pre><code class="language-swift rounded-xl">struct Product: Identifiable {
+    let id = UUID()
+    let name: String
+    let price: Double
+}
+
+struct ProductListView: View {
+    let products = [
+        Product(name: "iPhone", price: 999),
+        Product(name: "MacBook", price: 1999)
+    ]
+
+    var body: some View {
+        List(products) { product in
+            HStack {
+                Text(product.name)
+                Spacer()
+                Text("$\(product.price, specifier: "%.0f")")
+            }
+        }
+    }
+}</code></pre>
+
+                <h3 class="text-xl font-semibold mt-8 mb-4">Изображения</h3>
+                <pre><code class="language-swift rounded-xl">// SF Symbols
+Image(systemName: "cart.fill")
+    .font(.largeTitle)
+    .foregroundColor(.blue)
+
+// Из Assets
+Image("product-image")
+    .resizable()
+    .aspectRatio(contentMode: .fit)
+    .frame(width: 200, height: 200)
+
+// Асинхронная загрузка
+AsyncImage(url: URL(string: "https://...")) { image in
+    image.resizable().aspectRatio(contentMode: .fit)
+} placeholder: {
+    ProgressView()
+}</code></pre>
+
+                <h2 class="text-2xl font-bold mt-12 mb-4">Практика: Карточка товара</h2>
+                <p class="text-zinc-600 dark:text-zinc-400 mb-4">
+                    Создадим простую карточку товара, используя изученные концепции:
+                </p>
+
+                <pre><code class="language-swift rounded-xl">struct ProductCard: View {
+    let name: String
+    let price: Double
+    let imageURL: String
+
+    @State private var isFavorite = false
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            // Изображение
+            AsyncImage(url: URL(string: imageURL)) { image in
+                image
+                    .resizable()
+                    .aspectRatio(contentMode: .fill)
+            } placeholder: {
+                Color.gray.opacity(0.3)
+            }
+            .frame(height: 150)
+            .clipped()
+
+            // Контент
+            VStack(alignment: .leading, spacing: 4) {
+                Text(name)
+                    .font(.headline)
+                    .lineLimit(2)
+
+                HStack {
+                    Text("$\(price, specifier: "%.2f")")
+                        .font(.subheadline)
+                        .fontWeight(.bold)
+                        .foregroundColor(.blue)
+
+                    Spacer()
+
+                    Button {
+                        isFavorite.toggle()
+                    } label: {
+                        Image(systemName: isFavorite ? "heart.fill" : "heart")
+                            .foregroundColor(isFavorite ? .red : .gray)
+                    }
+                }
+            }
+            .padding(.horizontal, 12)
+            .padding(.bottom, 12)
+        }
+        .background(Color.white)
+        .cornerRadius(12)
+        .shadow(radius: 4)
+    }
+}</code></pre>
+
+                <h2 class="text-2xl font-bold mt-12 mb-4">🏋️ Задания</h2>
+                <div class="bg-zinc-50 dark:bg-zinc-900 rounded-xl p-6 border border-zinc-200 dark:border-zinc-800">
+                    <ol class="space-y-4 text-zinc-600 dark:text-zinc-400">
+                        <li><strong>1.</strong> Создайте View с кнопкой "Добавить в корзину", которая увеличивает счётчик при нажатии</li>
+                        <li><strong>2.</strong> Добавьте анимацию при изменении состояния избранного (.animation(.spring()))</li>
+                        <li><strong>3.</strong> Создайте сетку из 4 карточек товаров используя LazyVGrid</li>
+                    </ol>
+                </div>
+
+                <!-- Navigation -->
+                <div class="flex justify-between items-center mt-16 pt-8 border-t border-zinc-200 dark:border-zinc-800">
+                    <a href="00-introduction.html" class="flex items-center gap-2 text-zinc-600 dark:text-zinc-400 hover:text-primary transition-colors">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                        </svg>
+                        Введение
+                    </a>
+                    <a href="02-mvvm.html" class="flex items-center gap-2 px-6 py-3 bg-primary text-white rounded-xl hover:bg-blue-600 transition-colors">
+                        Глава 2: MVVM
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                        </svg>
+                    </a>
+                </div>
+            </article>
+        </main>
+    </div>
+
+    <script>hljs.highlightAll();</script>
+</body>
+</html>

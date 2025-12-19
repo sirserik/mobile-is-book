@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Практические задания | SwiftUI E-Commerce</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'media',
+            theme: { extend: { colors: { primary: '#007AFF' } } }
+        }
+    </script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/vs2015.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/swift.min.js"></script>
+    <style>
+        pre code { font-size: 13px; line-height: 1.5; }
+        .quiz-option { cursor: pointer; transition: all 0.2s; }
+        .quiz-option:hover { transform: translateX(4px); }
+        .quiz-option.correct { background-color: rgb(34 197 94 / 0.2) !important; border-color: rgb(34 197 94) !important; }
+        .quiz-option.incorrect { background-color: rgb(239 68 68 / 0.2) !important; border-color: rgb(239 68 68) !important; }
+        .solution { display: none; }
+        .solution.show { display: block; }
+    </style>
+</head>
+<body class="bg-white dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100">
+    <div class="min-h-screen">
+        <!-- Header -->
+        <header class="sticky top-0 z-40 bg-white/80 dark:bg-zinc-950/80 backdrop-blur-md border-b border-zinc-200 dark:border-zinc-800">
+            <div class="max-w-4xl mx-auto px-6 py-4 flex items-center justify-between">
+                <a href="../index.html" class="flex items-center gap-2 text-zinc-600 dark:text-zinc-400 hover:text-primary transition-colors">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                    </svg>
+                    Оглавление
+                </a>
+                <div class="flex items-center gap-3">
+                    <span id="score" class="px-3 py-1 bg-primary/10 text-primary rounded-full text-sm font-medium">0 / 0</span>
+                    <span class="text-sm text-zinc-500">Задания</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Content -->
+        <main class="max-w-4xl mx-auto px-6 py-12">
+            <h1 class="text-4xl font-bold mb-4 bg-gradient-to-r from-green-500 to-teal-600 bg-clip-text text-transparent">
+                Практические задания
+            </h1>
+            <p class="text-lg text-zinc-600 dark:text-zinc-400 mb-8">
+                Проверьте свои знания Swift и SwiftUI
+            </p>
+
+            <!-- Quiz Section -->
+            <section class="mb-16">
+                <h2 class="text-2xl font-bold mb-6 flex items-center gap-3">
+                    <span class="w-10 h-10 bg-purple-100 dark:bg-purple-900/30 rounded-lg flex items-center justify-center">
+                        <svg class="w-5 h-5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                    </span>
+                    Тесты на понимание
+                </h2>
+
+                <!-- Quiz 1 -->
+                <div class="quiz mb-8 p-6 bg-zinc-50 dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-zinc-800" data-quiz="1">
+                    <h3 class="font-bold text-lg mb-4">1. Что выведет этот код?</h3>
+                    <pre class="mb-4"><code class="language-swift">let x = 10
+var y = x
+y = 20
+print(x)</code></pre>
+                    <div class="space-y-2">
+                        <div class="quiz-option p-3 border border-zinc-200 dark:border-zinc-700 rounded-lg" data-correct="true" onclick="checkAnswer(this)">
+                            <span class="font-mono">10</span>
+                        </div>
+                        <div class="quiz-option p-3 border border-zinc-200 dark:border-zinc-700 rounded-lg" onclick="checkAnswer(this)">
+                            <span class="font-mono">20</span>
+                        </div>
+                        <div class="quiz-option p-3 border border-zinc-200 dark:border-zinc-700 rounded-lg" onclick="checkAnswer(this)">
+                            <span class="font-mono">Ошибка компиляции</span>
+                        </div>
+                    </div>
+                    <div class="solution mt-4 p-4 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg">
+                        <p class="font-medium text-green-800 dark:text-green-300">Правильно!</p>
+                        <p class="text-green-700 dark:text-green-400 text-sm mt-1">В Swift Int - это value type (struct). При <code>var y = x</code> создаётся копия. Изменение y не влияет на x.</p>
+                    </div>
+                </div>
+
+                <!-- Quiz 2 -->
+                <div class="quiz mb-8 p-6 bg-zinc-50 dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-zinc-800" data-quiz="2">
+                    <h3 class="font-bold text-lg mb-4">2. Какой тип у переменной name?</h3>
+                    <pre class="mb-4"><code class="language-swift">var name: String? = "John"</code></pre>
+                    <div class="space-y-2">
+                        <div class="quiz-option p-3 border border-zinc-200 dark:border-zinc-700 rounded-lg" onclick="checkAnswer(this)">
+                            <span class="font-mono">String</span>
+                        </div>
+                        <div class="quiz-option p-3 border border-zinc-200 dark:border-zinc-700 rounded-lg" data-correct="true" onclick="checkAnswer(this)">
+                            <span class="font-mono">Optional&lt;String&gt;</span> или <span class="font-mono">String?</span>
+                        </div>
+                        <div class="quiz-option p-3 border border-zinc-200 dark:border-zinc-700 rounded-lg" onclick="checkAnswer(this)">
+                            <span class="font-mono">Any</span>
+                        </div>
+                    </div>
+                    <div class="solution mt-4 p-4 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg">
+                        <p class="font-medium text-green-800 dark:text-green-300">Правильно!</p>
+                        <p class="text-green-700 dark:text-green-400 text-sm mt-1"><code>String?</code> - это синтаксический сахар для <code>Optional&lt;String&gt;</code>. Значение может быть либо String, либо nil.</p>
+                    </div>
+                </div>
+
+                <!-- Quiz 3 -->
+                <div class="quiz mb-8 p-6 bg-zinc-50 dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-zinc-800" data-quiz="3">
+                    <h3 class="font-bold text-lg mb-4">3. Что делает @State в SwiftUI?</h3>
+                    <div class="space-y-2">
+                        <div class="quiz-option p-3 border border-zinc-200 dark:border-zinc-700 rounded-lg" onclick="checkAnswer(this)">
+                            <span>Делает переменную глобальной</span>
+                        </div>
+                        <div class="quiz-option p-3 border border-zinc-200 dark:border-zinc-700 rounded-lg" data-correct="true" onclick="checkAnswer(this)">
+                            <span>Создаёт реактивное состояние, при изменении которого View перерисовывается</span>
+                        </div>
+                        <div class="quiz-option p-3 border border-zinc-200 dark:border-zinc-700 rounded-lg" onclick="checkAnswer(this)">
+                            <span>Сохраняет значение в UserDefaults</span>
+                        </div>
+                    </div>
+                    <div class="solution mt-4 p-4 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg">
+                        <p class="font-medium text-green-800 dark:text-green-300">Правильно!</p>
+                        <p class="text-green-700 dark:text-green-400 text-sm mt-1">@State создаёт source of truth для View. При изменении значения SwiftUI автоматически перерисовывает View.</p>
+                    </div>
+                </div>
+
+                <!-- Quiz 4 -->
+                <div class="quiz mb-8 p-6 bg-zinc-50 dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-zinc-800" data-quiz="4">
+                    <h3 class="font-bold text-lg mb-4">4. Что означает $text в SwiftUI?</h3>
+                    <pre class="mb-4"><code class="language-swift">@State private var text = ""
+TextField("Введите", text: $text)</code></pre>
+                    <div class="space-y-2">
+                        <div class="quiz-option p-3 border border-zinc-200 dark:border-zinc-700 rounded-lg" onclick="checkAnswer(this)">
+                            <span>Значение переменной text</span>
+                        </div>
+                        <div class="quiz-option p-3 border border-zinc-200 dark:border-zinc-700 rounded-lg" data-correct="true" onclick="checkAnswer(this)">
+                            <span>Binding к переменной text (двусторонняя связь)</span>
+                        </div>
+                        <div class="quiz-option p-3 border border-zinc-200 dark:border-zinc-700 rounded-lg" onclick="checkAnswer(this)">
+                            <span>Шаблонная строка (string interpolation)</span>
+                        </div>
+                    </div>
+                    <div class="solution mt-4 p-4 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg">
+                        <p class="font-medium text-green-800 dark:text-green-300">Правильно!</p>
+                        <p class="text-green-700 dark:text-green-400 text-sm mt-1">$ создаёт Binding - двустороннюю связь между @State и компонентом. TextField может как читать, так и изменять значение.</p>
+                    </div>
+                </div>
+
+                <!-- Quiz 5 -->
+                <div class="quiz mb-8 p-6 bg-zinc-50 dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-zinc-800" data-quiz="5">
+                    <h3 class="font-bold text-lg mb-4">5. Что произойдёт при выполнении этого кода?</h3>
+                    <pre class="mb-4"><code class="language-swift">let user: User? = nil
+print(user!.name)</code></pre>
+                    <div class="space-y-2">
+                        <div class="quiz-option p-3 border border-zinc-200 dark:border-zinc-700 rounded-lg" onclick="checkAnswer(this)">
+                            <span>Выведет nil</span>
+                        </div>
+                        <div class="quiz-option p-3 border border-zinc-200 dark:border-zinc-700 rounded-lg" onclick="checkAnswer(this)">
+                            <span>Выведет пустую строку</span>
+                        </div>
+                        <div class="quiz-option p-3 border border-zinc-200 dark:border-zinc-700 rounded-lg" data-correct="true" onclick="checkAnswer(this)">
+                            <span>Приложение упадёт (crash)</span>
+                        </div>
+                    </div>
+                    <div class="solution mt-4 p-4 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg">
+                        <p class="font-medium text-green-800 dark:text-green-300">Правильно!</p>
+                        <p class="text-green-700 dark:text-green-400 text-sm mt-1">Force unwrap (!) вызывает crash если значение равно nil. Используйте if let, guard let или ?? вместо !</p>
+                    </div>
+                </div>
+
+                <!-- Quiz 6 -->
+                <div class="quiz mb-8 p-6 bg-zinc-50 dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-zinc-800" data-quiz="6">
+                    <h3 class="font-bold text-lg mb-4">6. В чём разница между struct и class?</h3>
+                    <div class="space-y-2">
+                        <div class="quiz-option p-3 border border-zinc-200 dark:border-zinc-700 rounded-lg" data-correct="true" onclick="checkAnswer(this)">
+                            <span>struct - value type (копируется), class - reference type (ссылка)</span>
+                        </div>
+                        <div class="quiz-option p-3 border border-zinc-200 dark:border-zinc-700 rounded-lg" onclick="checkAnswer(this)">
+                            <span>struct быстрее, class медленнее</span>
+                        </div>
+                        <div class="quiz-option p-3 border border-zinc-200 dark:border-zinc-700 rounded-lg" onclick="checkAnswer(this)">
+                            <span>Никакой разницы, это синонимы</span>
+                        </div>
+                    </div>
+                    <div class="solution mt-4 p-4 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg">
+                        <p class="font-medium text-green-800 dark:text-green-300">Правильно!</p>
+                        <p class="text-green-700 dark:text-green-400 text-sm mt-1">При присваивании struct копируется целиком, а class передаётся по ссылке. Изменение копии struct не влияет на оригинал.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Coding Challenges -->
+            <section class="mb-16">
+                <h2 class="text-2xl font-bold mb-6 flex items-center gap-3">
+                    <span class="w-10 h-10 bg-orange-100 dark:bg-orange-900/30 rounded-lg flex items-center justify-center">
+                        <svg class="w-5 h-5 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/>
+                        </svg>
+                    </span>
+                    Задачи на код
+                </h2>
+
+                <!-- Challenge 1 -->
+                <div class="challenge mb-8 p-6 bg-zinc-50 dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-zinc-800">
+                    <div class="flex items-center gap-2 mb-2">
+                        <span class="px-2 py-1 bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 rounded text-xs font-medium">Лёгкая</span>
+                    </div>
+                    <h3 class="font-bold text-lg mb-4">Задача 1: Безопасное извлечение</h3>
+                    <p class="text-zinc-600 dark:text-zinc-400 mb-4">
+                        Перепишите код так, чтобы он не падал при nil:
+                    </p>
+                    <pre class="mb-4"><code class="language-swift">func greet(name: String?) {
+    print("Hello, \(name!)")
+}</code></pre>
+                    <button onclick="toggleSolution(this)" class="px-4 py-2 bg-primary text-white rounded-lg hover:bg-blue-600 transition-colors">
+                        Показать решение
+                    </button>
+                    <div class="solution mt-4 p-4 bg-zinc-100 dark:bg-zinc-800 rounded-lg">
+                        <pre><code class="language-swift">// Вариант 1: if let
+func greet(name: String?) {
+    if let name = name {
+        print("Hello, \(name)")
+    } else {
+        print("Hello, Guest")
+    }
+}
+
+// Вариант 2: nil coalescing
+func greet(name: String?) {
+    print("Hello, \(name ?? "Guest")")
+}
+
+// Вариант 3: guard
+func greet(name: String?) {
+    guard let name = name else {
+        print("Hello, Guest")
+        return
+    }
+    print("Hello, \(name)")
+}</code></pre>
+                    </div>
+                </div>
+
+                <!-- Challenge 2 -->
+                <div class="challenge mb-8 p-6 bg-zinc-50 dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-zinc-800">
+                    <div class="flex items-center gap-2 mb-2">
+                        <span class="px-2 py-1 bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-400 rounded text-xs font-medium">Средняя</span>
+                    </div>
+                    <h3 class="font-bold text-lg mb-4">Задача 2: Создать модель Product</h3>
+                    <p class="text-zinc-600 dark:text-zinc-400 mb-4">
+                        Создайте struct Product с полями: id, title, price, description (опциональное).
+                        Добавьте computed property formattedPrice.
+                    </p>
+                    <button onclick="toggleSolution(this)" class="px-4 py-2 bg-primary text-white rounded-lg hover:bg-blue-600 transition-colors">
+                        Показать решение
+                    </button>
+                    <div class="solution mt-4 p-4 bg-zinc-100 dark:bg-zinc-800 rounded-lg">
+                        <pre><code class="language-swift">struct Product: Identifiable, Codable {
+    let id: Int
+    let title: String
+    let price: Double
+    let description: String?
+
+    var formattedPrice: String {
+        String(format: "$%.2f", price)
+    }
+}
+
+// Использование
+let product = Product(
+    id: 1,
+    title: "iPhone 15",
+    price: 999.99,
+    description: nil
+)
+print(product.formattedPrice)  // "$999.99"</code></pre>
+                    </div>
+                </div>
+
+                <!-- Challenge 3 -->
+                <div class="challenge mb-8 p-6 bg-zinc-50 dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-zinc-800">
+                    <div class="flex items-center gap-2 mb-2">
+                        <span class="px-2 py-1 bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-400 rounded text-xs font-medium">Средняя</span>
+                    </div>
+                    <h3 class="font-bold text-lg mb-4">Задача 3: Счётчик с @State</h3>
+                    <p class="text-zinc-600 dark:text-zinc-400 mb-4">
+                        Создайте View со счётчиком: кнопки +/- и отображение текущего значения.
+                    </p>
+                    <button onclick="toggleSolution(this)" class="px-4 py-2 bg-primary text-white rounded-lg hover:bg-blue-600 transition-colors">
+                        Показать решение
+                    </button>
+                    <div class="solution mt-4 p-4 bg-zinc-100 dark:bg-zinc-800 rounded-lg">
+                        <pre><code class="language-swift">struct CounterView: View {
+    @State private var count = 0
+
+    var body: some View {
+        HStack(spacing: 20) {
+            Button("-") {
+                count -= 1
+            }
+            .font(.title)
+            .frame(width: 44, height: 44)
+            .background(Color.red.opacity(0.2))
+            .clipShape(Circle())
+
+            Text("\(count)")
+                .font(.largeTitle)
+                .frame(width: 60)
+
+            Button("+") {
+                count += 1
+            }
+            .font(.title)
+            .frame(width: 44, height: 44)
+            .background(Color.green.opacity(0.2))
+            .clipShape(Circle())
+        }
+    }
+}</code></pre>
+                    </div>
+                </div>
+
+                <!-- Challenge 4 -->
+                <div class="challenge mb-8 p-6 bg-zinc-50 dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-zinc-800">
+                    <div class="flex items-center gap-2 mb-2">
+                        <span class="px-2 py-1 bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400 rounded text-xs font-medium">Сложная</span>
+                    </div>
+                    <h3 class="font-bold text-lg mb-4">Задача 4: ViewModel для списка товаров</h3>
+                    <p class="text-zinc-600 dark:text-zinc-400 mb-4">
+                        Создайте @Observable ViewModel для загрузки товаров с API.
+                        Должны быть: массив products, флаг isLoading, метод loadProducts().
+                    </p>
+                    <button onclick="toggleSolution(this)" class="px-4 py-2 bg-primary text-white rounded-lg hover:bg-blue-600 transition-colors">
+                        Показать решение
+                    </button>
+                    <div class="solution mt-4 p-4 bg-zinc-100 dark:bg-zinc-800 rounded-lg">
+                        <pre><code class="language-swift">@Observable
+class ProductsViewModel {
+    var products: [Product] = []
+    var isLoading = false
+    var errorMessage: String?
+
+    func loadProducts() async {
+        isLoading = true
+        errorMessage = nil
+
+        do {
+            let url = URL(string: "https://dummyjson.com/products")!
+            let (data, _) = try await URLSession.shared.data(from: url)
+            let response = try JSONDecoder().decode(ProductsResponse.self, from: data)
+            products = response.products
+        } catch {
+            errorMessage = error.localizedDescription
+        }
+
+        isLoading = false
+    }
+}
+
+struct ProductsResponse: Codable {
+    let products: [Product]
+}
+
+// Использование во View
+struct ProductsView: View {
+    @State private var viewModel = ProductsViewModel()
+
+    var body: some View {
+        List(viewModel.products) { product in
+            Text(product.title)
+        }
+        .overlay {
+            if viewModel.isLoading {
+                ProgressView()
+            }
+        }
+        .task {
+            await viewModel.loadProducts()
+        }
+    }
+}</code></pre>
+                    </div>
+                </div>
+
+                <!-- Challenge 5 -->
+                <div class="challenge mb-8 p-6 bg-zinc-50 dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-zinc-800">
+                    <div class="flex items-center gap-2 mb-2">
+                        <span class="px-2 py-1 bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400 rounded text-xs font-medium">Сложная</span>
+                    </div>
+                    <h3 class="font-bold text-lg mb-4">Задача 5: Корзина покупок</h3>
+                    <p class="text-zinc-600 dark:text-zinc-400 mb-4">
+                        Создайте CartManager с методами add, remove, clear и computed property total.
+                    </p>
+                    <button onclick="toggleSolution(this)" class="px-4 py-2 bg-primary text-white rounded-lg hover:bg-blue-600 transition-colors">
+                        Показать решение
+                    </button>
+                    <div class="solution mt-4 p-4 bg-zinc-100 dark:bg-zinc-800 rounded-lg">
+                        <pre><code class="language-swift">@Observable
+class CartManager {
+    var items: [CartItem] = []
+
+    var total: Double {
+        items.reduce(0) { $0 + $1.product.price * Double($1.quantity) }
+    }
+
+    var itemCount: Int {
+        items.reduce(0) { $0 + $1.quantity }
+    }
+
+    func add(_ product: Product) {
+        if let index = items.firstIndex(where: { $0.product.id == product.id }) {
+            items[index].quantity += 1
+        } else {
+            items.append(CartItem(product: product, quantity: 1))
+        }
+    }
+
+    func remove(_ product: Product) {
+        if let index = items.firstIndex(where: { $0.product.id == product.id }) {
+            if items[index].quantity > 1 {
+                items[index].quantity -= 1
+            } else {
+                items.remove(at: index)
+            }
+        }
+    }
+
+    func clear() {
+        items.removeAll()
+    }
+}
+
+struct CartItem: Identifiable {
+    let id = UUID()
+    let product: Product
+    var quantity: Int
+}</code></pre>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Mini Projects -->
+            <section class="mb-16">
+                <h2 class="text-2xl font-bold mb-6 flex items-center gap-3">
+                    <span class="w-10 h-10 bg-blue-100 dark:bg-blue-900/30 rounded-lg flex items-center justify-center">
+                        <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
+                        </svg>
+                    </span>
+                    Мини-проекты
+                </h2>
+
+                <div class="grid md:grid-cols-2 gap-4">
+                    <div class="p-6 bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 rounded-2xl border border-blue-200 dark:border-blue-800">
+                        <h3 class="font-bold text-lg mb-2">Todo App</h3>
+                        <p class="text-zinc-600 dark:text-zinc-400 text-sm mb-4">
+                            Создайте приложение для списка дел с добавлением, удалением и отметкой выполненных задач.
+                        </p>
+                        <ul class="text-sm text-zinc-500 space-y-1">
+                            <li>&#8226; @State для списка задач</li>
+                            <li>&#8226; TextField для ввода</li>
+                            <li>&#8226; List с ForEach</li>
+                            <li>&#8226; Swipe to delete</li>
+                        </ul>
+                    </div>
+
+                    <div class="p-6 bg-gradient-to-br from-green-50 to-teal-50 dark:from-green-900/20 dark:to-teal-900/20 rounded-2xl border border-green-200 dark:border-green-800">
+                        <h3 class="font-bold text-lg mb-2">Weather App</h3>
+                        <p class="text-zinc-600 dark:text-zinc-400 text-sm mb-4">
+                            Приложение погоды с загрузкой данных из API и красивым интерфейсом.
+                        </p>
+                        <ul class="text-sm text-zinc-500 space-y-1">
+                            <li>&#8226; Async/await для API</li>
+                            <li>&#8226; @Observable ViewModel</li>
+                            <li>&#8226; Обработка loading/error</li>
+                            <li>&#8226; Красивый UI с SF Symbols</li>
+                        </ul>
+                    </div>
+
+                    <div class="p-6 bg-gradient-to-br from-purple-50 to-pink-50 dark:from-purple-900/20 dark:to-pink-900/20 rounded-2xl border border-purple-200 dark:border-purple-800">
+                        <h3 class="font-bold text-lg mb-2">Notes App</h3>
+                        <p class="text-zinc-600 dark:text-zinc-400 text-sm mb-4">
+                            Заметки с сохранением в UserDefaults или SwiftData.
+                        </p>
+                        <ul class="text-sm text-zinc-500 space-y-1">
+                            <li>&#8226; CRUD операции</li>
+                            <li>&#8226; @AppStorage или SwiftData</li>
+                            <li>&#8226; NavigationStack</li>
+                            <li>&#8226; Поиск по заметкам</li>
+                        </ul>
+                    </div>
+
+                    <div class="p-6 bg-gradient-to-br from-orange-50 to-red-50 dark:from-orange-900/20 dark:to-red-900/20 rounded-2xl border border-orange-200 dark:border-orange-800">
+                        <h3 class="font-bold text-lg mb-2">Timer App</h3>
+                        <p class="text-zinc-600 dark:text-zinc-400 text-sm mb-4">
+                            Таймер с обратным отсчётом и уведомлениями.
+                        </p>
+                        <ul class="text-sm text-zinc-500 space-y-1">
+                            <li>&#8226; Timer publisher</li>
+                            <li>&#8226; Круговой прогресс</li>
+                            <li>&#8226; Анимации</li>
+                            <li>&#8226; Звуковые уведомления</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Navigation -->
+            <div class="flex justify-between items-center mt-16 pt-8 border-t border-zinc-200 dark:border-zinc-800">
+                <a href="../index.html" class="flex items-center gap-2 text-zinc-600 dark:text-zinc-400 hover:text-primary transition-colors">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                    </svg>
+                    Оглавление
+                </a>
+                <a href="common-mistakes.html" class="flex items-center gap-2 px-6 py-3 bg-primary text-white rounded-xl hover:bg-blue-600 transition-colors">
+                    Частые ошибки
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                    </svg>
+                </a>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        hljs.highlightAll();
+
+        let correct = 0;
+        let total = 0;
+
+        function updateScore() {
+            document.getElementById('score').textContent = `${correct} / ${total}`;
+        }
+
+        function checkAnswer(element) {
+            const quiz = element.closest('.quiz');
+            if (quiz.classList.contains('answered')) return;
+
+            quiz.classList.add('answered');
+            total++;
+
+            const options = quiz.querySelectorAll('.quiz-option');
+            options.forEach(opt => {
+                opt.style.pointerEvents = 'none';
+                if (opt.dataset.correct === 'true') {
+                    opt.classList.add('correct');
+                }
+            });
+
+            if (element.dataset.correct === 'true') {
+                correct++;
+                element.classList.add('correct');
+            } else {
+                element.classList.add('incorrect');
+            }
+
+            quiz.querySelector('.solution').classList.add('show');
+            updateScore();
+        }
+
+        function toggleSolution(button) {
+            const solution = button.nextElementSibling;
+            solution.classList.toggle('show');
+            button.textContent = solution.classList.contains('show') ? 'Скрыть решение' : 'Показать решение';
+            hljs.highlightAll();
+        }
+    </script>
+</body>
+</html>

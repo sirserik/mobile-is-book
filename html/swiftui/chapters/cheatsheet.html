@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Шпаргалка Swift vs JS/PHP | SwiftUI E-Commerce</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'media',
+            theme: { extend: { colors: { primary: '#007AFF' } } }
+        }
+    </script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/vs2015.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/swift.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/javascript.min.js"></script>
+    <style>
+        pre code { font-size: 13px; line-height: 1.5; }
+        .cheat-card { transition: transform 0.2s; }
+        .cheat-card:hover { transform: translateY(-2px); }
+        @media print {
+            .no-print { display: none; }
+            body { font-size: 12px; }
+        }
+    </style>
+</head>
+<body class="bg-white dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100">
+    <div class="min-h-screen">
+        <!-- Header -->
+        <header class="sticky top-0 z-40 bg-white/80 dark:bg-zinc-950/80 backdrop-blur-md border-b border-zinc-200 dark:border-zinc-800 no-print">
+            <div class="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
+                <a href="../index.html" class="flex items-center gap-2 text-zinc-600 dark:text-zinc-400 hover:text-primary transition-colors">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                    </svg>
+                    Оглавление
+                </a>
+                <div class="flex items-center gap-4">
+                    <button onclick="window.print()" class="flex items-center gap-2 px-4 py-2 bg-zinc-100 dark:bg-zinc-800 rounded-lg hover:bg-zinc-200 dark:hover:bg-zinc-700 transition-colors">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/>
+                        </svg>
+                        Печать
+                    </button>
+                    <span class="text-sm text-zinc-500">Шпаргалка</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Content -->
+        <main class="max-w-6xl mx-auto px-6 py-12">
+            <h1 class="text-4xl font-bold mb-4 bg-gradient-to-r from-orange-500 to-red-600 bg-clip-text text-transparent">
+                Шпаргалка: Swift vs JavaScript
+            </h1>
+            <p class="text-lg text-zinc-600 dark:text-zinc-400 mb-8">
+                Быстрая справка для разработчиков, переходящих с JS/PHP на Swift
+            </p>
+
+            <!-- Variables & Constants -->
+            <section class="mb-12">
+                <h2 class="text-2xl font-bold mb-6 flex items-center gap-3">
+                    <span class="w-10 h-10 bg-blue-100 dark:bg-blue-900/30 rounded-lg flex items-center justify-center text-blue-600">1</span>
+                    Переменные и константы
+                </h2>
+                <div class="grid md:grid-cols-2 gap-4">
+                    <div class="cheat-card bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-xl p-4">
+                        <h4 class="font-bold text-yellow-800 dark:text-yellow-300 mb-3">JavaScript</h4>
+                        <pre><code class="language-javascript">let name = "John"       // можно изменить
+const age = 25          // константа
+var old = "устарело"    // не используйте</code></pre>
+                    </div>
+                    <div class="cheat-card bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-xl p-4">
+                        <h4 class="font-bold text-green-800 dark:text-green-300 mb-3">Swift</h4>
+                        <pre><code class="language-swift">var name = "John"       // можно изменить
+let age = 25            // константа (НАОБОРОТ!)
+// Предпочитайте let когда возможно</code></pre>
+                    </div>
+                </div>
+                <div class="mt-3 p-3 bg-amber-50 dark:bg-amber-900/20 border border-amber-300 dark:border-amber-700 rounded-lg">
+                    <span class="font-bold text-amber-700 dark:text-amber-400">Внимание:</span>
+                    <span class="text-amber-600 dark:text-amber-300">В Swift <code class="bg-amber-200 dark:bg-amber-800 px-1 rounded">let</code> = константа, <code class="bg-amber-200 dark:bg-amber-800 px-1 rounded">var</code> = переменная. Наоборот от JS!</span>
+                </div>
+            </section>
+
+            <!-- Types -->
+            <section class="mb-12">
+                <h2 class="text-2xl font-bold mb-6 flex items-center gap-3">
+                    <span class="w-10 h-10 bg-purple-100 dark:bg-purple-900/30 rounded-lg flex items-center justify-center text-purple-600">2</span>
+                    Типы данных
+                </h2>
+                <div class="overflow-x-auto">
+                    <table class="w-full border border-zinc-200 dark:border-zinc-700 rounded-xl overflow-hidden">
+                        <thead class="bg-zinc-100 dark:bg-zinc-800">
+                            <tr>
+                                <th class="px-4 py-3 text-left">Тип</th>
+                                <th class="px-4 py-3 text-left">JavaScript</th>
+                                <th class="px-4 py-3 text-left">Swift</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-zinc-200 dark:divide-zinc-700">
+                            <tr>
+                                <td class="px-4 py-3 font-medium">Строка</td>
+                                <td class="px-4 py-3 font-mono text-sm">"hello" или 'hello'</td>
+                                <td class="px-4 py-3 font-mono text-sm">"hello" <span class="text-zinc-400">(только ")</span></td>
+                            </tr>
+                            <tr>
+                                <td class="px-4 py-3 font-medium">Число</td>
+                                <td class="px-4 py-3 font-mono text-sm">42, 3.14 <span class="text-zinc-400">(всё number)</span></td>
+                                <td class="px-4 py-3 font-mono text-sm">Int, Double, Float</td>
+                            </tr>
+                            <tr>
+                                <td class="px-4 py-3 font-medium">Булево</td>
+                                <td class="px-4 py-3 font-mono text-sm">true / false</td>
+                                <td class="px-4 py-3 font-mono text-sm">true / false <span class="text-zinc-400">(Bool)</span></td>
+                            </tr>
+                            <tr>
+                                <td class="px-4 py-3 font-medium">Массив</td>
+                                <td class="px-4 py-3 font-mono text-sm">[1, "два", true]</td>
+                                <td class="px-4 py-3 font-mono text-sm">[1, 2, 3] <span class="text-zinc-400">(один тип!)</span></td>
+                            </tr>
+                            <tr>
+                                <td class="px-4 py-3 font-medium">Объект/Словарь</td>
+                                <td class="px-4 py-3 font-mono text-sm">{name: "John"}</td>
+                                <td class="px-4 py-3 font-mono text-sm">["name": "John"]</td>
+                            </tr>
+                            <tr>
+                                <td class="px-4 py-3 font-medium">Null/Nil</td>
+                                <td class="px-4 py-3 font-mono text-sm">null, undefined</td>
+                                <td class="px-4 py-3 font-mono text-sm">nil <span class="text-zinc-400">(только Optional)</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Optionals -->
+            <section class="mb-12">
+                <h2 class="text-2xl font-bold mb-6 flex items-center gap-3">
+                    <span class="w-10 h-10 bg-red-100 dark:bg-red-900/30 rounded-lg flex items-center justify-center text-red-600">3</span>
+                    Optionals (nil-безопасность)
+                </h2>
+                <div class="bg-zinc-50 dark:bg-zinc-900 rounded-xl p-6 border border-zinc-200 dark:border-zinc-800">
+                    <pre><code class="language-swift">// Объявление Optional
+var name: String? = nil        // Может быть nil
+var age: Int = 25              // НЕ может быть nil
+
+// Безопасное извлечение
+if let unwrapped = name {
+    print(unwrapped)           // Есть значение
+}
+
+// Optional chaining
+let length = name?.count       // nil если name = nil
+
+// Значение по умолчанию
+let displayName = name ?? "Гость"
+
+// Force unwrap (опасно!)
+let forced = name!             // Крэш если nil</code></pre>
+                </div>
+                <div class="grid sm:grid-cols-3 gap-3 mt-4">
+                    <div class="p-3 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg text-center">
+                        <code class="text-green-700 dark:text-green-300">if let</code>
+                        <p class="text-xs text-green-600 dark:text-green-400 mt-1">Безопасно</p>
+                    </div>
+                    <div class="p-3 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg text-center">
+                        <code class="text-blue-700 dark:text-blue-300">??</code>
+                        <p class="text-xs text-blue-600 dark:text-blue-400 mt-1">Значение по умолчанию</p>
+                    </div>
+                    <div class="p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg text-center">
+                        <code class="text-red-700 dark:text-red-300">!</code>
+                        <p class="text-xs text-red-600 dark:text-red-400 mt-1">Опасно! Крэш</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Functions -->
+            <section class="mb-12">
+                <h2 class="text-2xl font-bold mb-6 flex items-center gap-3">
+                    <span class="w-10 h-10 bg-indigo-100 dark:bg-indigo-900/30 rounded-lg flex items-center justify-center text-indigo-600">4</span>
+                    Функции
+                </h2>
+                <div class="space-y-4">
+                    <div class="cheat-card bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-xl p-4">
+                        <h4 class="font-bold text-yellow-800 dark:text-yellow-300 mb-3">JavaScript</h4>
+                        <pre><code class="language-javascript">// Обычная функция
+function greet(name) {
+    return "Hello, " + name
+}
+
+// Arrow function
+const greet = (name) => "Hello, " + name
+
+// Async
+async function fetchData() {
+    const data = await fetch(url)
+    return data.json()
+}</code></pre>
+                    </div>
+                    <div class="cheat-card bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-xl p-4">
+                        <h4 class="font-bold text-green-800 dark:text-green-300 mb-3">Swift</h4>
+                        <pre><code class="language-swift">// Обычная функция
+func greet(name: String) -> String {
+    return "Hello, \(name)"
+}
+
+// Closure (как arrow function)
+let greet = { (name: String) -> String in
+    "Hello, \(name)"
+}
+
+// Async
+func fetchData() async throws -> Data {
+    let data = try await URLSession.shared.data(from: url)
+    return data
+}</code></pre>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Collections -->
+            <section class="mb-12">
+                <h2 class="text-2xl font-bold mb-6 flex items-center gap-3">
+                    <span class="w-10 h-10 bg-teal-100 dark:bg-teal-900/30 rounded-lg flex items-center justify-center text-teal-600">5</span>
+                    Работа с коллекциями
+                </h2>
+                <div class="bg-zinc-50 dark:bg-zinc-900 rounded-xl p-6 border border-zinc-200 dark:border-zinc-800">
+                    <pre><code class="language-swift">let numbers = [1, 2, 3, 4, 5]
+
+// Map - преобразование
+let doubled = numbers.map { $0 * 2 }        // [2, 4, 6, 8, 10]
+
+// Filter - фильтрация
+let even = numbers.filter { $0 % 2 == 0 }   // [2, 4]
+
+// Reduce - свёртка
+let sum = numbers.reduce(0, +)              // 15
+
+// ForEach - перебор
+numbers.forEach { print($0) }
+
+// First/Last
+let first = numbers.first                    // Optional(1)
+let last = numbers.last                      // Optional(5)
+
+// Contains
+let hasThree = numbers.contains(3)           // true
+
+// Sorted
+let sorted = numbers.sorted(by: >)           // [5, 4, 3, 2, 1]</code></pre>
+                </div>
+                <div class="mt-4 p-4 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg">
+                    <p class="font-medium text-blue-800 dark:text-blue-300">$0, $1, $2...</p>
+                    <p class="text-sm text-blue-600 dark:text-blue-400 mt-1">Сокращённые имена параметров в замыканиях. <code>$0</code> = первый параметр, <code>$1</code> = второй и т.д.</p>
+                </div>
+            </section>
+
+            <!-- Control Flow -->
+            <section class="mb-12">
+                <h2 class="text-2xl font-bold mb-6 flex items-center gap-3">
+                    <span class="w-10 h-10 bg-orange-100 dark:bg-orange-900/30 rounded-lg flex items-center justify-center text-orange-600">6</span>
+                    Условия и циклы
+                </h2>
+                <div class="grid md:grid-cols-2 gap-4">
+                    <div class="cheat-card bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl p-4">
+                        <h4 class="font-bold mb-3">If / Else</h4>
+                        <pre><code class="language-swift">if age >= 18 {
+    print("Взрослый")
+} else if age >= 13 {
+    print("Подросток")
+} else {
+    print("Ребёнок")
+}
+
+// Без скобок вокруг условия!</code></pre>
+                    </div>
+                    <div class="cheat-card bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl p-4">
+                        <h4 class="font-bold mb-3">Switch</h4>
+                        <pre><code class="language-swift">switch status {
+case "active":
+    print("Активен")
+case "pending", "review":
+    print("В процессе")
+default:
+    print("Неизвестно")
+}
+// Не нужен break!</code></pre>
+                    </div>
+                    <div class="cheat-card bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl p-4">
+                        <h4 class="font-bold mb-3">For Loop</h4>
+                        <pre><code class="language-swift">// По диапазону
+for i in 0..<5 { }      // 0,1,2,3,4
+for i in 0...5 { }      // 0,1,2,3,4,5
+
+// По массиву
+for item in items { }
+
+// С индексом
+for (i, item) in items.enumerated() { }</code></pre>
+                    </div>
+                    <div class="cheat-card bg-zinc-50 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-xl p-4">
+                        <h4 class="font-bold mb-3">Guard</h4>
+                        <pre><code class="language-swift">// Early return
+guard let user = user else {
+    return  // Выход если nil
+}
+// user теперь не Optional!
+
+guard age >= 18 else {
+    throw Error.underage
+}</code></pre>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Structs & Classes -->
+            <section class="mb-12">
+                <h2 class="text-2xl font-bold mb-6 flex items-center gap-3">
+                    <span class="w-10 h-10 bg-pink-100 dark:bg-pink-900/30 rounded-lg flex items-center justify-center text-pink-600">7</span>
+                    Struct vs Class
+                </h2>
+                <div class="grid md:grid-cols-2 gap-4">
+                    <div class="cheat-card bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-xl p-4">
+                        <h4 class="font-bold text-blue-800 dark:text-blue-300 mb-3">Struct (Value Type)</h4>
+                        <pre><code class="language-swift">struct Product {
+    var name: String
+    var price: Double
+
+    func formatted() -> String {
+        "\(name): $\(price)"
+    }
+}
+
+var a = Product(name: "iPhone", price: 999)
+var b = a           // Копия!
+b.name = "iPad"
+print(a.name)       // "iPhone" (не изменился)</code></pre>
+                        <p class="text-sm text-blue-600 dark:text-blue-400 mt-3">Используйте для данных: Product, User, Order</p>
+                    </div>
+                    <div class="cheat-card bg-purple-50 dark:bg-purple-900/20 border border-purple-200 dark:border-purple-800 rounded-xl p-4">
+                        <h4 class="font-bold text-purple-800 dark:text-purple-300 mb-3">Class (Reference Type)</h4>
+                        <pre><code class="language-swift">class CartManager {
+    var items: [Product] = []
+
+    func add(_ product: Product) {
+        items.append(product)
+    }
+}
+
+let a = CartManager()
+let b = a           // Ссылка!
+b.items.append(product)
+print(a.items.count) // Изменился!</code></pre>
+                        <p class="text-sm text-purple-600 dark:text-purple-400 mt-3">Используйте для сервисов: Manager, ViewModel</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SwiftUI Property Wrappers -->
+            <section class="mb-12">
+                <h2 class="text-2xl font-bold mb-6 flex items-center gap-3">
+                    <span class="w-10 h-10 bg-cyan-100 dark:bg-cyan-900/30 rounded-lg flex items-center justify-center text-cyan-600">8</span>
+                    SwiftUI Property Wrappers
+                </h2>
+                <div class="overflow-x-auto">
+                    <table class="w-full border border-zinc-200 dark:border-zinc-700 rounded-xl overflow-hidden">
+                        <thead class="bg-zinc-100 dark:bg-zinc-800">
+                            <tr>
+                                <th class="px-4 py-3 text-left">Wrapper</th>
+                                <th class="px-4 py-3 text-left">Назначение</th>
+                                <th class="px-4 py-3 text-left">Аналог в React</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-zinc-200 dark:divide-zinc-700">
+                            <tr>
+                                <td class="px-4 py-3 font-mono text-primary">@State</td>
+                                <td class="px-4 py-3">Локальное состояние View</td>
+                                <td class="px-4 py-3 text-zinc-500">useState()</td>
+                            </tr>
+                            <tr>
+                                <td class="px-4 py-3 font-mono text-primary">@Binding</td>
+                                <td class="px-4 py-3">Связь с родительским @State</td>
+                                <td class="px-4 py-3 text-zinc-500">props + onChange</td>
+                            </tr>
+                            <tr>
+                                <td class="px-4 py-3 font-mono text-primary">@Observable</td>
+                                <td class="px-4 py-3">Класс с реактивными свойствами</td>
+                                <td class="px-4 py-3 text-zinc-500">MobX observable</td>
+                            </tr>
+                            <tr>
+                                <td class="px-4 py-3 font-mono text-primary">@Environment</td>
+                                <td class="px-4 py-3">Глобальные значения (тема, locale)</td>
+                                <td class="px-4 py-3 text-zinc-500">useContext()</td>
+                            </tr>
+                            <tr>
+                                <td class="px-4 py-3 font-mono text-primary">@AppStorage</td>
+                                <td class="px-4 py-3">Сохранение в UserDefaults</td>
+                                <td class="px-4 py-3 text-zinc-500">localStorage + useState</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="mt-4 bg-zinc-50 dark:bg-zinc-900 rounded-xl p-4 border border-zinc-200 dark:border-zinc-800">
+                    <pre><code class="language-swift">struct CounterView: View {
+    @State private var count = 0          // Локальное состояние
+
+    var body: some View {
+        Button("Count: \(count)") {
+            count += 1                     // UI обновится автоматически
+        }
+    }
+}
+
+@Observable
+class CartViewModel {
+    var items: [Product] = []             // Реактивное свойство
+    var total: Double { items.reduce(0) { $0 + $1.price } }
+}</code></pre>
+                </div>
+            </section>
+
+            <!-- String Interpolation -->
+            <section class="mb-12">
+                <h2 class="text-2xl font-bold mb-6 flex items-center gap-3">
+                    <span class="w-10 h-10 bg-lime-100 dark:bg-lime-900/30 rounded-lg flex items-center justify-center text-lime-600">9</span>
+                    Строки и интерполяция
+                </h2>
+                <div class="grid md:grid-cols-2 gap-4">
+                    <div class="cheat-card bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-xl p-4">
+                        <h4 class="font-bold text-yellow-800 dark:text-yellow-300 mb-3">JavaScript</h4>
+                        <pre><code class="language-javascript">const name = "John"
+const age = 25
+
+// Template literal
+const msg = `Hello, ${name}! Age: ${age}`
+
+// Конкатенация
+const msg2 = "Hello, " + name</code></pre>
+                    </div>
+                    <div class="cheat-card bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-xl p-4">
+                        <h4 class="font-bold text-green-800 dark:text-green-300 mb-3">Swift</h4>
+                        <pre><code class="language-swift">let name = "John"
+let age = 25
+
+// String interpolation
+let msg = "Hello, \(name)! Age: \(age)"
+
+// Многострочная
+let text = """
+    Первая строка
+    Вторая строка
+    """</code></pre>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Error Handling -->
+            <section class="mb-12">
+                <h2 class="text-2xl font-bold mb-6 flex items-center gap-3">
+                    <span class="w-10 h-10 bg-red-100 dark:bg-red-900/30 rounded-lg flex items-center justify-center text-red-600">10</span>
+                    Обработка ошибок
+                </h2>
+                <div class="space-y-4">
+                    <div class="cheat-card bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-xl p-4">
+                        <h4 class="font-bold text-yellow-800 dark:text-yellow-300 mb-3">JavaScript</h4>
+                        <pre><code class="language-javascript">try {
+    const data = await fetch(url)
+    const json = await data.json()
+} catch (error) {
+    console.error(error)
+}</code></pre>
+                    </div>
+                    <div class="cheat-card bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-xl p-4">
+                        <h4 class="font-bold text-green-800 dark:text-green-300 mb-3">Swift</h4>
+                        <pre><code class="language-swift">do {
+    let data = try await URLSession.shared.data(from: url)
+    let products = try JSONDecoder().decode([Product].self, from: data)
+} catch {
+    print(error)
+}
+
+// Или с optional result
+let data = try? await fetchData()   // nil если ошибка
+
+// Игнорировать ошибку (опасно)
+let data = try! await fetchData()   // Крэш если ошибка</code></pre>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Quick Reference Card -->
+            <section class="mb-12">
+                <h2 class="text-2xl font-bold mb-6">Быстрая справка</h2>
+                <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <div class="p-4 bg-zinc-50 dark:bg-zinc-900 rounded-xl border border-zinc-200 dark:border-zinc-800">
+                        <h4 class="font-bold mb-2">Вывод в консоль</h4>
+                        <code class="text-sm">print("Hello")</code>
+                    </div>
+                    <div class="p-4 bg-zinc-50 dark:bg-zinc-900 rounded-xl border border-zinc-200 dark:border-zinc-800">
+                        <h4 class="font-bold mb-2">Длина строки</h4>
+                        <code class="text-sm">str.count</code>
+                    </div>
+                    <div class="p-4 bg-zinc-50 dark:bg-zinc-900 rounded-xl border border-zinc-200 dark:border-zinc-800">
+                        <h4 class="font-bold mb-2">Длина массива</h4>
+                        <code class="text-sm">array.count</code>
+                    </div>
+                    <div class="p-4 bg-zinc-50 dark:bg-zinc-900 rounded-xl border border-zinc-200 dark:border-zinc-800">
+                        <h4 class="font-bold mb-2">Добавить в массив</h4>
+                        <code class="text-sm">array.append(item)</code>
+                    </div>
+                    <div class="p-4 bg-zinc-50 dark:bg-zinc-900 rounded-xl border border-zinc-200 dark:border-zinc-800">
+                        <h4 class="font-bold mb-2">Удалить из массива</h4>
+                        <code class="text-sm">array.remove(at: 0)</code>
+                    </div>
+                    <div class="p-4 bg-zinc-50 dark:bg-zinc-900 rounded-xl border border-zinc-200 dark:border-zinc-800">
+                        <h4 class="font-bold mb-2">Проверка пустоты</h4>
+                        <code class="text-sm">array.isEmpty</code>
+                    </div>
+                    <div class="p-4 bg-zinc-50 dark:bg-zinc-900 rounded-xl border border-zinc-200 dark:border-zinc-800">
+                        <h4 class="font-bold mb-2">Случайное число</h4>
+                        <code class="text-sm">Int.random(in: 1...10)</code>
+                    </div>
+                    <div class="p-4 bg-zinc-50 dark:bg-zinc-900 rounded-xl border border-zinc-200 dark:border-zinc-800">
+                        <h4 class="font-bold mb-2">Тернарный оператор</h4>
+                        <code class="text-sm">age >= 18 ? "Yes" : "No"</code>
+                    </div>
+                    <div class="p-4 bg-zinc-50 dark:bg-zinc-900 rounded-xl border border-zinc-200 dark:border-zinc-800">
+                        <h4 class="font-bold mb-2">Типо-проверка</h4>
+                        <code class="text-sm">value is String</code>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Navigation -->
+            <div class="flex justify-between items-center mt-16 pt-8 border-t border-zinc-200 dark:border-zinc-800 no-print">
+                <a href="../index.html" class="flex items-center gap-2 text-zinc-600 dark:text-zinc-400 hover:text-primary transition-colors">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                    </svg>
+                    Оглавление
+                </a>
+                <a href="00a-swift-for-developers.html" class="flex items-center gap-2 px-6 py-3 bg-primary text-white rounded-xl hover:bg-blue-600 transition-colors">
+                    Swift для JS/PHP
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                    </svg>
+                </a>
+            </div>
+        </main>
+    </div>
+
+    <script>hljs.highlightAll();</script>
+</body>
+</html>

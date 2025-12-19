@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Частые ошибки новичков | SwiftUI E-Commerce</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'media',
+            theme: { extend: { colors: { primary: '#007AFF' } } }
+        }
+    </script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/vs2015.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/swift.min.js"></script>
+    <style>
+        pre code { font-size: 13px; line-height: 1.5; }
+    </style>
+</head>
+<body class="bg-white dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100">
+    <div class="min-h-screen">
+        <!-- Header -->
+        <header class="sticky top-0 z-40 bg-white/80 dark:bg-zinc-950/80 backdrop-blur-md border-b border-zinc-200 dark:border-zinc-800">
+            <div class="max-w-4xl mx-auto px-6 py-4 flex items-center justify-between">
+                <a href="../index.html" class="flex items-center gap-2 text-zinc-600 dark:text-zinc-400 hover:text-primary transition-colors">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                    </svg>
+                    Оглавление
+                </a>
+                <span class="text-sm text-zinc-500">Частые ошибки</span>
+            </div>
+        </header>
+
+        <!-- Content -->
+        <main class="max-w-4xl mx-auto px-6 py-12">
+            <h1 class="text-4xl font-bold mb-4 bg-gradient-to-r from-red-500 to-orange-600 bg-clip-text text-transparent">
+                Частые ошибки новичков
+            </h1>
+            <p class="text-lg text-zinc-600 dark:text-zinc-400 mb-8">
+                Типичные ошибки при переходе с JavaScript/PHP на Swift и SwiftUI
+            </p>
+
+            <!-- Mistake 1: let vs var -->
+            <section class="mb-12">
+                <div class="flex items-start gap-4 mb-4">
+                    <span class="flex-shrink-0 w-12 h-12 bg-red-100 dark:bg-red-900/30 rounded-xl flex items-center justify-center text-2xl">1</span>
+                    <div>
+                        <h2 class="text-2xl font-bold">Путаница let и var</h2>
+                        <p class="text-zinc-500">В Swift let и var работают НАОБОРОТ от JavaScript</p>
+                    </div>
+                </div>
+
+                <div class="space-y-4">
+                    <div class="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-xl p-4">
+                        <div class="flex items-center gap-2 mb-3">
+                            <span class="text-red-500 text-xl">&#10060;</span>
+                            <h4 class="font-bold text-red-800 dark:text-red-300">Неправильно</h4>
+                        </div>
+                        <pre><code class="language-swift">// Думаете как в JS: let = можно изменить
+let count = 0
+count = 1  // Ошибка! Cannot assign to value: 'count' is a 'let' constant</code></pre>
+                    </div>
+
+                    <div class="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-xl p-4">
+                        <div class="flex items-center gap-2 mb-3">
+                            <span class="text-green-500 text-xl">&#9989;</span>
+                            <h4 class="font-bold text-green-800 dark:text-green-300">Правильно</h4>
+                        </div>
+                        <pre><code class="language-swift">// В Swift: var = можно изменить, let = константа
+var count = 0
+count = 1  // OK!
+
+let maxCount = 100  // Константа, нельзя изменить</code></pre>
+                    </div>
+                </div>
+
+                <div class="mt-4 p-4 bg-amber-50 dark:bg-amber-900/20 border border-amber-300 dark:border-amber-700 rounded-lg">
+                    <p class="font-medium text-amber-800 dark:text-amber-300">Запомните:</p>
+                    <p class="text-amber-700 dark:text-amber-400">Swift: <code class="bg-amber-200 dark:bg-amber-800 px-1 rounded">let</code> = const, <code class="bg-amber-200 dark:bg-amber-800 px-1 rounded">var</code> = let (в JS)</p>
+                </div>
+            </section>
+
+            <!-- Mistake 2: Force Unwrap -->
+            <section class="mb-12">
+                <div class="flex items-start gap-4 mb-4">
+                    <span class="flex-shrink-0 w-12 h-12 bg-red-100 dark:bg-red-900/30 rounded-xl flex items-center justify-center text-2xl">2</span>
+                    <div>
+                        <h2 class="text-2xl font-bold">Force Unwrap везде</h2>
+                        <p class="text-zinc-500">Использование ! для распаковки Optional приводит к крэшам</p>
+                    </div>
+                </div>
+
+                <div class="space-y-4">
+                    <div class="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-xl p-4">
+                        <div class="flex items-center gap-2 mb-3">
+                            <span class="text-red-500 text-xl">&#10060;</span>
+                            <h4 class="font-bold text-red-800 dark:text-red-300">Опасно</h4>
+                        </div>
+                        <pre><code class="language-swift">let user: User? = nil
+print(user!.name)  // КРЭШ! Fatal error: Unexpectedly found nil
+
+let text: String? = textField.text
+let length = text!.count  // Крэш если пользователь ничего не ввёл</code></pre>
+                    </div>
+
+                    <div class="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-xl p-4">
+                        <div class="flex items-center gap-2 mb-3">
+                            <span class="text-green-500 text-xl">&#9989;</span>
+                            <h4 class="font-bold text-green-800 dark:text-green-300">Безопасно</h4>
+                        </div>
+                        <pre><code class="language-swift">// Вариант 1: if let
+if let user = user {
+    print(user.name)
+}
+
+// Вариант 2: guard let (early return)
+guard let user = user else { return }
+print(user.name)
+
+// Вариант 3: значение по умолчанию
+let length = text?.count ?? 0
+
+// Вариант 4: optional chaining
+let name = user?.profile?.name  // nil если что-то в цепочке nil</code></pre>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Mistake 3: Forgetting ? in Optional -->
+            <section class="mb-12">
+                <div class="flex items-start gap-4 mb-4">
+                    <span class="flex-shrink-0 w-12 h-12 bg-red-100 dark:bg-red-900/30 rounded-xl flex items-center justify-center text-2xl">3</span>
+                    <div>
+                        <h2 class="text-2xl font-bold">Забыли ? у Optional</h2>
+                        <p class="text-zinc-500">Не указали что значение может быть nil</p>
+                    </div>
+                </div>
+
+                <div class="space-y-4">
+                    <div class="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-xl p-4">
+                        <div class="flex items-center gap-2 mb-3">
+                            <span class="text-red-500 text-xl">&#10060;</span>
+                            <h4 class="font-bold text-red-800 dark:text-red-300">Ошибка компиляции</h4>
+                        </div>
+                        <pre><code class="language-swift">struct User {
+    var name: String
+    var email: String  // Что если email не указан?
+}
+
+// Ошибка: нужно передать ВСЕ поля
+let user = User(name: "John")  // Missing argument for parameter 'email'</code></pre>
+                    </div>
+
+                    <div class="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-xl p-4">
+                        <div class="flex items-center gap-2 mb-3">
+                            <span class="text-green-500 text-xl">&#9989;</span>
+                            <h4 class="font-bold text-green-800 dark:text-green-300">Правильно</h4>
+                        </div>
+                        <pre><code class="language-swift">struct User {
+    var name: String
+    var email: String?  // Может быть nil
+}
+
+// Теперь можно создать без email
+let user = User(name: "John", email: nil)
+// или
+let user2 = User(name: "John", email: "john@example.com")</code></pre>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Mistake 4: Mutating struct in View -->
+            <section class="mb-12">
+                <div class="flex items-start gap-4 mb-4">
+                    <span class="flex-shrink-0 w-12 h-12 bg-red-100 dark:bg-red-900/30 rounded-xl flex items-center justify-center text-2xl">4</span>
+                    <div>
+                        <h2 class="text-2xl font-bold">Изменение состояния без @State</h2>
+                        <p class="text-zinc-500">View в SwiftUI - это struct, его нельзя просто изменить</p>
+                    </div>
+                </div>
+
+                <div class="space-y-4">
+                    <div class="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-xl p-4">
+                        <div class="flex items-center gap-2 mb-3">
+                            <span class="text-red-500 text-xl">&#10060;</span>
+                            <h4 class="font-bold text-red-800 dark:text-red-300">Ошибка компиляции</h4>
+                        </div>
+                        <pre><code class="language-swift">struct CounterView: View {
+    var count = 0  // Просто свойство
+
+    var body: some View {
+        Button("Count: \(count)") {
+            count += 1  // Ошибка! Cannot assign to property: 'self' is immutable
+        }
+    }
+}</code></pre>
+                    </div>
+
+                    <div class="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-xl p-4">
+                        <div class="flex items-center gap-2 mb-3">
+                            <span class="text-green-500 text-xl">&#9989;</span>
+                            <h4 class="font-bold text-green-800 dark:text-green-300">Правильно</h4>
+                        </div>
+                        <pre><code class="language-swift">struct CounterView: View {
+    @State private var count = 0  // Добавили @State!
+
+    var body: some View {
+        Button("Count: \(count)") {
+            count += 1  // Теперь работает!
+        }
+    }
+}</code></pre>
+                    </div>
+                </div>
+
+                <div class="mt-4 p-4 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg">
+                    <p class="font-medium text-blue-800 dark:text-blue-300">Правило:</p>
+                    <p class="text-blue-700 dark:text-blue-400">Если переменная должна изменяться и вызывать перерисовку UI - используйте <code class="bg-blue-200 dark:bg-blue-800 px-1 rounded">@State</code></p>
+                </div>
+            </section>
+
+            <!-- Mistake 5: Wrong Binding syntax -->
+            <section class="mb-12">
+                <div class="flex items-start gap-4 mb-4">
+                    <span class="flex-shrink-0 w-12 h-12 bg-red-100 dark:bg-red-900/30 rounded-xl flex items-center justify-center text-2xl">5</span>
+                    <div>
+                        <h2 class="text-2xl font-bold">Неправильный синтаксис Binding</h2>
+                        <p class="text-zinc-500">Забыли $ при передаче @Binding</p>
+                    </div>
+                </div>
+
+                <div class="space-y-4">
+                    <div class="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-xl p-4">
+                        <div class="flex items-center gap-2 mb-3">
+                            <span class="text-red-500 text-xl">&#10060;</span>
+                            <h4 class="font-bold text-red-800 dark:text-red-300">Ошибка</h4>
+                        </div>
+                        <pre><code class="language-swift">struct ParentView: View {
+    @State private var text = ""
+
+    var body: some View {
+        // Передаём значение, не binding
+        ChildView(text: text)  // Ошибка! Cannot convert value of type 'String' to expected argument type 'Binding&lt;String&gt;'
+    }
+}
+
+struct ChildView: View {
+    @Binding var text: String
+    // ...
+}</code></pre>
+                    </div>
+
+                    <div class="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-xl p-4">
+                        <div class="flex items-center gap-2 mb-3">
+                            <span class="text-green-500 text-xl">&#9989;</span>
+                            <h4 class="font-bold text-green-800 dark:text-green-300">Правильно</h4>
+                        </div>
+                        <pre><code class="language-swift">struct ParentView: View {
+    @State private var text = ""
+
+    var body: some View {
+        // $ создаёт binding к @State
+        ChildView(text: $text)  // Правильно!
+
+        // То же самое для стандартных компонентов
+        TextField("Введите текст", text: $text)
+        Toggle("Включить", isOn: $isEnabled)
+    }
+}</code></pre>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Mistake 6: Async in View init -->
+            <section class="mb-12">
+                <div class="flex items-start gap-4 mb-4">
+                    <span class="flex-shrink-0 w-12 h-12 bg-red-100 dark:bg-red-900/30 rounded-xl flex items-center justify-center text-2xl">6</span>
+                    <div>
+                        <h2 class="text-2xl font-bold">Асинхронный код в body</h2>
+                        <p class="text-zinc-500">Попытка вызвать async функцию напрямую в body</p>
+                    </div>
+                </div>
+
+                <div class="space-y-4">
+                    <div class="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-xl p-4">
+                        <div class="flex items-center gap-2 mb-3">
+                            <span class="text-red-500 text-xl">&#10060;</span>
+                            <h4 class="font-bold text-red-800 dark:text-red-300">Неправильно</h4>
+                        </div>
+                        <pre><code class="language-swift">struct ProductsView: View {
+    var body: some View {
+        VStack {
+            // Нельзя вызывать async напрямую
+            let products = await fetchProducts()  // Ошибка!
+        }
+    }
+}</code></pre>
+                    </div>
+
+                    <div class="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-xl p-4">
+                        <div class="flex items-center gap-2 mb-3">
+                            <span class="text-green-500 text-xl">&#9989;</span>
+                            <h4 class="font-bold text-green-800 dark:text-green-300">Правильно</h4>
+                        </div>
+                        <pre><code class="language-swift">struct ProductsView: View {
+    @State private var products: [Product] = []
+
+    var body: some View {
+        List(products) { product in
+            Text(product.title)
+        }
+        .task {  // Специальный модификатор для async
+            products = await fetchProducts()
+        }
+        // или
+        .onAppear {
+            Task {
+                products = await fetchProducts()
+            }
+        }
+    }
+}</code></pre>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Mistake 7: Comparing Optionals -->
+            <section class="mb-12">
+                <div class="flex items-start gap-4 mb-4">
+                    <span class="flex-shrink-0 w-12 h-12 bg-red-100 dark:bg-red-900/30 rounded-xl flex items-center justify-center text-2xl">7</span>
+                    <div>
+                        <h2 class="text-2xl font-bold">Сравнение Optional без распаковки</h2>
+                        <p class="text-zinc-500">Попытка использовать Optional как обычное значение</p>
+                    </div>
+                </div>
+
+                <div class="space-y-4">
+                    <div class="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-xl p-4">
+                        <div class="flex items-center gap-2 mb-3">
+                            <span class="text-red-500 text-xl">&#10060;</span>
+                            <h4 class="font-bold text-red-800 dark:text-red-300">Ошибка</h4>
+                        </div>
+                        <pre><code class="language-swift">let count: Int? = 5
+
+// Ошибка: нельзя сравнить Optional и Int напрямую
+if count > 0 {  // Value of optional type 'Int?' must be unwrapped
+    print("Positive")
+}</code></pre>
+                    </div>
+
+                    <div class="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-xl p-4">
+                        <div class="flex items-center gap-2 mb-3">
+                            <span class="text-green-500 text-xl">&#9989;</span>
+                            <h4 class="font-bold text-green-800 dark:text-green-300">Правильно</h4>
+                        </div>
+                        <pre><code class="language-swift">let count: Int? = 5
+
+// Вариант 1: if let
+if let count = count, count > 0 {
+    print("Positive")
+}
+
+// Вариант 2: nil coalescing
+if (count ?? 0) > 0 {
+    print("Positive")
+}
+
+// Вариант 3: сравнение с Optional напрямую
+if count == 5 {  // Это работает!
+    print("Five")
+}</code></pre>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Mistake 8: Missing return -->
+            <section class="mb-12">
+                <div class="flex items-start gap-4 mb-4">
+                    <span class="flex-shrink-0 w-12 h-12 bg-red-100 dark:bg-red-900/30 rounded-xl flex items-center justify-center text-2xl">8</span>
+                    <div>
+                        <h2 class="text-2xl font-bold">Забыли return в многострочной функции</h2>
+                        <p class="text-zinc-500">В однострочных функциях return не нужен, в многострочных - обязателен</p>
+                    </div>
+                </div>
+
+                <div class="space-y-4">
+                    <div class="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-xl p-4">
+                        <div class="flex items-center gap-2 mb-3">
+                            <span class="text-red-500 text-xl">&#10060;</span>
+                            <h4 class="font-bold text-red-800 dark:text-red-300">Ошибка</h4>
+                        </div>
+                        <pre><code class="language-swift">func calculateTotal(items: [Product]) -> Double {
+    let sum = items.reduce(0) { $0 + $1.price }
+    sum  // Ошибка! Missing return
+}</code></pre>
+                    </div>
+
+                    <div class="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-xl p-4">
+                        <div class="flex items-center gap-2 mb-3">
+                            <span class="text-green-500 text-xl">&#9989;</span>
+                            <h4 class="font-bold text-green-800 dark:text-green-300">Правильно</h4>
+                        </div>
+                        <pre><code class="language-swift">// Многострочная - нужен return
+func calculateTotal(items: [Product]) -> Double {
+    let sum = items.reduce(0) { $0 + $1.price }
+    return sum
+}
+
+// Однострочная - return не нужен
+func calculateTotal(items: [Product]) -> Double {
+    items.reduce(0) { $0 + $1.price }
+}</code></pre>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Mistake 9: Array type -->
+            <section class="mb-12">
+                <div class="flex items-start gap-4 mb-4">
+                    <span class="flex-shrink-0 w-12 h-12 bg-red-100 dark:bg-red-900/30 rounded-xl flex items-center justify-center text-2xl">9</span>
+                    <div>
+                        <h2 class="text-2xl font-bold">Смешанные типы в массиве</h2>
+                        <p class="text-zinc-500">В Swift массив может содержать только один тип данных</p>
+                    </div>
+                </div>
+
+                <div class="space-y-4">
+                    <div class="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-xl p-4">
+                        <div class="flex items-center gap-2 mb-3">
+                            <span class="text-red-500 text-xl">&#10060;</span>
+                            <h4 class="font-bold text-red-800 dark:text-red-300">Как в JavaScript (не работает)</h4>
+                        </div>
+                        <pre><code class="language-swift">// В JS можно: [1, "два", true, {name: "John"}]
+// В Swift нельзя:
+let mixed = [1, "два", true]  // Ошибка! Heterogeneous collection literal</code></pre>
+                    </div>
+
+                    <div class="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-xl p-4">
+                        <div class="flex items-center gap-2 mb-3">
+                            <span class="text-green-500 text-xl">&#9989;</span>
+                            <h4 class="font-bold text-green-800 dark:text-green-300">Правильно в Swift</h4>
+                        </div>
+                        <pre><code class="language-swift">// Один тип
+let numbers: [Int] = [1, 2, 3]
+let names: [String] = ["John", "Jane"]
+
+// Если ОЧЕНЬ нужны разные типы (редко!)
+let mixed: [Any] = [1, "два", true]
+
+// Лучше использовать struct
+struct Item {
+    var id: Int
+    var name: String
+    var active: Bool
+}</code></pre>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Mistake 10: @Observable vs @State -->
+            <section class="mb-12">
+                <div class="flex items-start gap-4 mb-4">
+                    <span class="flex-shrink-0 w-12 h-12 bg-red-100 dark:bg-red-900/30 rounded-xl flex items-center justify-center text-2xl">10</span>
+                    <div>
+                        <h2 class="text-2xl font-bold">Когда использовать @State vs @Observable</h2>
+                        <p class="text-zinc-500">Выбор между локальным состоянием и ViewModel</p>
+                    </div>
+                </div>
+
+                <div class="overflow-x-auto">
+                    <table class="w-full border border-zinc-200 dark:border-zinc-700 rounded-xl overflow-hidden">
+                        <thead class="bg-zinc-100 dark:bg-zinc-800">
+                            <tr>
+                                <th class="px-4 py-3 text-left">Ситуация</th>
+                                <th class="px-4 py-3 text-left">Используйте</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-zinc-200 dark:divide-zinc-700">
+                            <tr>
+                                <td class="px-4 py-3">Простое UI состояние (открыт ли popup, выбрана ли вкладка)</td>
+                                <td class="px-4 py-3 font-mono text-primary">@State</td>
+                            </tr>
+                            <tr>
+                                <td class="px-4 py-3">Состояние формы (текст input, выбранная дата)</td>
+                                <td class="px-4 py-3 font-mono text-primary">@State</td>
+                            </tr>
+                            <tr>
+                                <td class="px-4 py-3">Данные из API (список товаров, профиль пользователя)</td>
+                                <td class="px-4 py-3 font-mono text-purple-500">@Observable ViewModel</td>
+                            </tr>
+                            <tr>
+                                <td class="px-4 py-3">Бизнес-логика (корзина, избранное, авторизация)</td>
+                                <td class="px-4 py-3 font-mono text-purple-500">@Observable ViewModel</td>
+                            </tr>
+                            <tr>
+                                <td class="px-4 py-3">Состояние, которое нужно в нескольких View</td>
+                                <td class="px-4 py-3 font-mono text-purple-500">@Observable + @Environment</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="mt-4 bg-zinc-50 dark:bg-zinc-900 rounded-xl p-4 border border-zinc-200 dark:border-zinc-800">
+                    <pre><code class="language-swift">// @State - для простого локального UI
+struct ProductCard: View {
+    @State private var isExpanded = false  // Локальное состояние
+
+    var body: some View {
+        // ...
+    }
+}
+
+// @Observable - для бизнес-логики и данных
+@Observable
+class ProductsViewModel {
+    var products: [Product] = []
+    var isLoading = false
+
+    func loadProducts() async {
+        isLoading = true
+        products = try await api.fetchProducts()
+        isLoading = false
+    }
+}</code></pre>
+                </div>
+            </section>
+
+            <!-- Summary -->
+            <section class="mt-16 p-6 bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-900/20 dark:to-purple-900/20 rounded-2xl border border-blue-200 dark:border-blue-800">
+                <h2 class="text-2xl font-bold mb-4">Краткий чек-лист</h2>
+                <ul class="space-y-2 text-zinc-700 dark:text-zinc-300">
+                    <li class="flex items-start gap-2">
+                        <span class="text-green-500 mt-1">&#10003;</span>
+                        <span><code>let</code> = константа, <code>var</code> = переменная (наоборот от JS!)</span>
+                    </li>
+                    <li class="flex items-start gap-2">
+                        <span class="text-green-500 mt-1">&#10003;</span>
+                        <span>Избегайте <code>!</code> - используйте <code>if let</code>, <code>guard let</code>, <code>??</code></span>
+                    </li>
+                    <li class="flex items-start gap-2">
+                        <span class="text-green-500 mt-1">&#10003;</span>
+                        <span>Добавляйте <code>?</code> к типу если значение может быть nil</span>
+                    </li>
+                    <li class="flex items-start gap-2">
+                        <span class="text-green-500 mt-1">&#10003;</span>
+                        <span>Для изменяемого состояния View используйте <code>@State</code></span>
+                    </li>
+                    <li class="flex items-start gap-2">
+                        <span class="text-green-500 mt-1">&#10003;</span>
+                        <span>При передаче @Binding используйте <code>$</code></span>
+                    </li>
+                    <li class="flex items-start gap-2">
+                        <span class="text-green-500 mt-1">&#10003;</span>
+                        <span>Для async используйте <code>.task { }</code> или <code>Task { }</code></span>
+                    </li>
+                    <li class="flex items-start gap-2">
+                        <span class="text-green-500 mt-1">&#10003;</span>
+                        <span>Массивы могут содержать только один тип</span>
+                    </li>
+                </ul>
+            </section>
+
+            <!-- Navigation -->
+            <div class="flex justify-between items-center mt-16 pt-8 border-t border-zinc-200 dark:border-zinc-800">
+                <a href="../index.html" class="flex items-center gap-2 text-zinc-600 dark:text-zinc-400 hover:text-primary transition-colors">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                    </svg>
+                    Оглавление
+                </a>
+                <a href="cheatsheet.html" class="flex items-center gap-2 px-6 py-3 bg-primary text-white rounded-xl hover:bg-blue-600 transition-colors">
+                    Шпаргалка
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                    </svg>
+                </a>
+            </div>
+        </main>
+    </div>
+
+    <script>hljs.highlightAll();</script>
+</body>
+</html>

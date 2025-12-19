@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Введение | iOS Development Book</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'media',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#007AFF',
+                    }
+                }
+            }
+        }
+    </script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
+    <style>
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 3px; }
+    </style>
+</head>
+<body class="bg-white dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100">
+
+    <!-- Mobile Menu Button -->
+    <button id="menuBtn" class="lg:hidden fixed top-4 left-4 z-50 p-3 bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-xl shadow-lg">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+        </svg>
+    </button>
+
+    <div class="flex min-h-screen">
+        <!-- Sidebar -->
+        <aside id="sidebar" class="fixed inset-y-0 left-0 w-72 bg-zinc-50 dark:bg-zinc-900 border-r border-zinc-200 dark:border-zinc-800 flex flex-col z-40 transform -translate-x-full lg:translate-x-0 transition-transform duration-300">
+            <div class="p-5 border-b border-zinc-200 dark:border-zinc-800">
+                <a href="../index.html" class="flex items-center gap-3 text-lg font-semibold hover:text-primary transition-colors">
+                    <div class="w-9 h-9 bg-primary rounded-lg flex items-center justify-center">
+                        <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/>
+                        </svg>
+                    </div>
+                    iOS Book
+                </a>
+            </div>
+
+            <nav class="flex-1 overflow-y-auto p-4">
+                <div class="space-y-6">
+                    <div>
+                        <h3 class="px-3 mb-2 text-xs font-semibold uppercase tracking-wider text-zinc-400">Введение</h3>
+                        <a href="00-introduction.html" class="block px-3 py-2 text-sm text-white bg-primary rounded-lg">Введение</a>
+                    </div>
+                    <div>
+                        <h3 class="px-3 mb-2 text-xs font-semibold uppercase tracking-wider text-zinc-400">Основы Swift</h3>
+                        <div class="space-y-1">
+                            <a href="01-xcode.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">1. Xcode</a>
+                            <a href="02-swift-basics.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">2. Основы Swift</a>
+                            <a href="03-control-flow.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">3. Управление потоком</a>
+                            <a href="04-functions.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">4. Функции</a>
+                            <a href="05-oop.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">5. ООП</a>
+                            <a href="06-protocols.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">6. Протоколы</a>
+                            <a href="07-optionals.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">7. Optionals</a>
+                            <a href="08-memory.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">8. Память (ARC)</a>
+                            <a href="09-generics.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">9. Generics</a>
+                            <a href="10-concurrency.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">10. Concurrency</a>
+                        </div>
+                    </div>
+                    <div>
+                        <h3 class="px-3 mb-2 text-xs font-semibold uppercase tracking-wider text-zinc-400">UIKit</h3>
+                        <div class="space-y-1">
+                            <a href="11-uikit-basics.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">11. UIKit основы</a>
+                            <a href="12-programmatic-ui.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">12. Программный UI</a>
+                        </div>
+                    </div>
+                    <div>
+                        <h3 class="px-3 mb-2 text-xs font-semibold uppercase tracking-wider text-zinc-400">Архитектура</h3>
+                        <div class="space-y-1">
+                            <a href="13-viper.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">13. VIPER</a>
+                            <a href="14-project-setup.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">14. Project Setup</a>
+                        </div>
+                    </div>
+                    <div>
+                        <h3 class="px-3 mb-2 text-xs font-semibold uppercase tracking-wider text-zinc-400">Практика</h3>
+                        <div class="space-y-1">
+                            <a href="15-authentication.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">15. Authentication</a>
+                            <a href="16-products.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">16. Products</a>
+                            <a href="17-cart.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">17. Cart</a>
+                            <a href="18-favorites.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">18. Favorites</a>
+                            <a href="19-orders.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">19. Orders</a>
+                            <a href="20-profile.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">20. Profile</a>
+                        </div>
+                    </div>
+                    <div>
+                        <h3 class="px-3 mb-2 text-xs font-semibold uppercase tracking-wider text-zinc-400">Дополнительно</h3>
+                        <a href="21-reusable-views.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">21. Reusable Views</a>
+                    </div>
+                </div>
+            </nav>
+        </aside>
+
+        <!-- Overlay -->
+        <div id="overlay" class="fixed inset-0 bg-black/50 z-30 lg:hidden hidden" onclick="closeSidebar()"></div>
+
+        <!-- Main Content -->
+        <main class="flex-1 lg:ml-72">
+            <article class="max-w-3xl mx-auto px-6 sm:px-8 lg:px-12 py-12 lg:py-16">
+
+                <!-- Header -->
+                <header class="mb-12 pb-8 border-b border-zinc-200 dark:border-zinc-800">
+                    <span class="text-sm font-semibold uppercase tracking-wider text-primary">Введение</span>
+                    <h1 class="text-3xl sm:text-4xl font-bold mt-2 mb-4">iOS Разработка с нуля</h1>
+                    <p class="text-lg text-zinc-600 dark:text-zinc-400">От HTML/CSS до полноценного iOS приложения</p>
+                </header>
+
+                <!-- Content -->
+                <div class="prose prose-zinc dark:prose-invert max-w-none">
+
+                    <h2 class="text-2xl font-bold mt-12 mb-4">Для кого эта книга?</h2>
+                    <p class="text-zinc-600 dark:text-zinc-400 leading-relaxed mb-4">
+                        Эта книга написана специально для веб-разработчиков, которые знают HTML и CSS, но хотят освоить мобильную разработку под iOS. Если вы:
+                    </p>
+                    <ul class="space-y-2 mb-6 text-zinc-600 dark:text-zinc-400">
+                        <li class="flex gap-2"><span class="text-primary">•</span> Создавали веб-страницы и понимаете базовые концепции программирования</li>
+                        <li class="flex gap-2"><span class="text-primary">•</span> Хотите научиться создавать приложения для iPhone и iPad</li>
+                        <li class="flex gap-2"><span class="text-primary">•</span> Предпочитаете учиться на практике, создавая реальный проект</li>
+                        <li class="flex gap-2"><span class="text-primary">•</span> Готовы посвятить время изучению нового языка и платформы</li>
+                    </ul>
+                    <p class="text-zinc-600 dark:text-zinc-400 leading-relaxed mb-6">...то эта книга для вас!</p>
+
+                    <h2 class="text-2xl font-bold mt-12 mb-4">Что вы создадите?</h2>
+                    <p class="text-zinc-600 dark:text-zinc-400 leading-relaxed mb-6">
+                        К концу книги вы создадите полнофункциональное приложение интернет-магазина со следующими возможностями:
+                    </p>
+
+                    <div class="grid sm:grid-cols-2 gap-4 mb-8">
+                        <div class="p-4 bg-zinc-50 dark:bg-zinc-900 rounded-xl border border-zinc-200 dark:border-zinc-800">
+                            <h4 class="font-semibold text-primary mb-1">Аутентификация</h4>
+                            <p class="text-sm text-zinc-500">Вход через email и Google</p>
+                        </div>
+                        <div class="p-4 bg-zinc-50 dark:bg-zinc-900 rounded-xl border border-zinc-200 dark:border-zinc-800">
+                            <h4 class="font-semibold text-primary mb-1">Каталог товаров</h4>
+                            <p class="text-sm text-zinc-500">Просмотр и поиск продуктов</p>
+                        </div>
+                        <div class="p-4 bg-zinc-50 dark:bg-zinc-900 rounded-xl border border-zinc-200 dark:border-zinc-800">
+                            <h4 class="font-semibold text-primary mb-1">Корзина покупок</h4>
+                            <p class="text-sm text-zinc-500">Добавление и оформление заказа</p>
+                        </div>
+                        <div class="p-4 bg-zinc-50 dark:bg-zinc-900 rounded-xl border border-zinc-200 dark:border-zinc-800">
+                            <h4 class="font-semibold text-primary mb-1">Избранное</h4>
+                            <p class="text-sm text-zinc-500">Сохранение понравившихся товаров</p>
+                        </div>
+                    </div>
+
+                    <!-- Info Callout -->
+                    <div class="p-4 bg-blue-50 dark:bg-blue-900/20 border-l-4 border-primary rounded-r-xl mb-8">
+                        <h4 class="font-semibold text-primary mb-1">Профессиональная архитектура</h4>
+                        <p class="text-sm text-zinc-600 dark:text-zinc-400">Приложение будет построено на архитектуре VIPER, которую используют в крупных компаниях.</p>
+                    </div>
+
+                    <h2 class="text-2xl font-bold mt-12 mb-4">Структура книги</h2>
+                    <p class="text-zinc-600 dark:text-zinc-400 leading-relaxed mb-4">Книга разделена на <strong class="text-zinc-900 dark:text-white">4 части</strong>:</p>
+
+                    <h3 class="text-xl font-semibold mt-8 mb-3">Часть I: Основы Swift (Главы 1-10)</h3>
+                    <p class="text-zinc-600 dark:text-zinc-400 leading-relaxed mb-3">
+                        Полное изучение языка программирования Swift — от переменных до многопоточности:
+                    </p>
+                    <ul class="space-y-2 mb-6 text-zinc-600 dark:text-zinc-400">
+                        <li class="flex gap-2"><span class="text-primary">•</span> Теоретическое объяснение</li>
+                        <li class="flex gap-2"><span class="text-primary">•</span> Практические примеры</li>
+                        <li class="flex gap-2"><span class="text-primary">•</span> Упражнения для закрепления</li>
+                        <li class="flex gap-2"><span class="text-primary">•</span> Сравнение с концепциями из веб-разработки</li>
+                    </ul>
+
+                    <h3 class="text-xl font-semibold mt-8 mb-3">Часть II: UIKit (Главы 11-12)</h3>
+                    <p class="text-zinc-600 dark:text-zinc-400 leading-relaxed mb-3">
+                        Изучение фреймворка UIKit для создания пользовательских интерфейсов.
+                    </p>
+
+                    <h3 class="text-xl font-semibold mt-8 mb-3">Часть III: VIPER (Глава 13)</h3>
+                    <p class="text-zinc-600 dark:text-zinc-400 leading-relaxed mb-3">
+                        Подробное изучение архитектурного паттерна VIPER.
+                    </p>
+
+                    <h3 class="text-xl font-semibold mt-8 mb-3">Часть IV: Создание приложения (Главы 14-20)</h3>
+                    <p class="text-zinc-600 dark:text-zinc-400 leading-relaxed mb-6">
+                        Пошаговое создание приложения интернет-магазина.
+                    </p>
+
+                    <h2 class="text-2xl font-bold mt-12 mb-4">Что вам понадобится?</h2>
+                    <ol class="space-y-2 mb-6 text-zinc-600 dark:text-zinc-400 list-decimal list-inside">
+                        <li><strong class="text-zinc-900 dark:text-white">Mac с macOS</strong> (Monterey 12.0 или новее)</li>
+                        <li><strong class="text-zinc-900 dark:text-white">Xcode 15</strong> или новее (бесплатно из App Store)</li>
+                        <li><strong class="text-zinc-900 dark:text-white">Apple ID</strong> (для скачивания Xcode)</li>
+                        <li><strong class="text-zinc-900 dark:text-white">~20 ГБ</strong> свободного места на диске</li>
+                        <li><strong class="text-zinc-900 dark:text-white">Терпение и желание учиться</strong></li>
+                    </ol>
+
+                    <!-- Warning Callout -->
+                    <div class="p-4 bg-amber-50 dark:bg-amber-900/20 border-l-4 border-amber-500 rounded-r-xl mb-8">
+                        <h4 class="font-semibold text-amber-600 dark:text-amber-400 mb-1">Примечание</h4>
+                        <p class="text-sm text-zinc-600 dark:text-zinc-400">iOS разработка возможна только на компьютерах Mac. Если у вас Windows или Linux, вы можете использовать виртуальную машину macOS.</p>
+                    </div>
+
+                    <h2 class="text-2xl font-bold mt-12 mb-4">Сравнение с веб-разработкой</h2>
+                    <div class="overflow-hidden border border-zinc-200 dark:border-zinc-800 rounded-xl mb-8">
+                        <table class="w-full text-sm">
+                            <thead class="bg-zinc-50 dark:bg-zinc-900">
+                                <tr>
+                                    <th class="px-4 py-3 text-left font-semibold">Веб (HTML/CSS/JS)</th>
+                                    <th class="px-4 py-3 text-left font-semibold">iOS (Swift/UIKit)</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-zinc-200 dark:divide-zinc-800 text-zinc-600 dark:text-zinc-400">
+                                <tr><td class="px-4 py-3">HTML теги</td><td class="px-4 py-3">UIView компоненты</td></tr>
+                                <tr><td class="px-4 py-3">CSS стили</td><td class="px-4 py-3">Свойства UIView</td></tr>
+                                <tr><td class="px-4 py-3">JavaScript</td><td class="px-4 py-3">Swift</td></tr>
+                                <tr><td class="px-4 py-3">DOM</td><td class="px-4 py-3">View Hierarchy</td></tr>
+                                <tr><td class="px-4 py-3">CSS Flexbox</td><td class="px-4 py-3">Auto Layout</td></tr>
+                                <tr><td class="px-4 py-3">onclick</td><td class="px-4 py-3">@IBAction / addTarget</td></tr>
+                                <tr><td class="px-4 py-3">fetch()</td><td class="px-4 py-3">URLSession</td></tr>
+                                <tr><td class="px-4 py-3">localStorage</td><td class="px-4 py-3">UserDefaults / Realm</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <h2 class="text-2xl font-bold mt-12 mb-4">Условные обозначения</h2>
+                    <p class="text-zinc-600 dark:text-zinc-400 leading-relaxed mb-4">В книге используются следующие обозначения:</p>
+
+                    <!-- Code Block -->
+                    <div class="rounded-xl overflow-hidden mb-6">
+                        <div class="flex items-center justify-between px-4 py-2 bg-zinc-800">
+                            <span class="text-xs text-zinc-400 font-mono">Swift</span>
+                            <button onclick="copyCode(this)" class="text-xs text-zinc-400 hover:text-white transition-colors">Копировать</button>
+                        </div>
+                        <pre class="bg-zinc-900 p-4 overflow-x-auto"><code class="language-swift text-sm">// Это код на Swift — вам нужно его набрать
+let greeting = "Привет, мир!"</code></pre>
+                    </div>
+
+                    <div class="p-4 bg-blue-50 dark:bg-blue-900/20 border-l-4 border-primary rounded-r-xl mb-4">
+                        <h4 class="font-semibold text-primary mb-1">Важно</h4>
+                        <p class="text-sm text-zinc-600 dark:text-zinc-400">Блоки с таким оформлением содержат важную информацию</p>
+                    </div>
+
+                    <div class="p-4 bg-green-50 dark:bg-green-900/20 border-l-4 border-green-500 rounded-r-xl mb-4">
+                        <h4 class="font-semibold text-green-600 dark:text-green-400 mb-1">Совет</h4>
+                        <p class="text-sm text-zinc-600 dark:text-zinc-400">Полезные подсказки и лучшие практики</p>
+                    </div>
+
+                    <div class="p-4 bg-amber-50 dark:bg-amber-900/20 border-l-4 border-amber-500 rounded-r-xl mb-8">
+                        <h4 class="font-semibold text-amber-600 dark:text-amber-400 mb-1">Внимание</h4>
+                        <p class="text-sm text-zinc-600 dark:text-zinc-400">Предупреждения о возможных ошибках</p>
+                    </div>
+
+                    <h2 class="text-2xl font-bold mt-12 mb-4">Готовы начать?</h2>
+                    <p class="text-zinc-600 dark:text-zinc-400 leading-relaxed mb-4">
+                        Переходите к <a href="01-xcode.html" class="text-primary hover:underline font-medium">Главе 1: Знакомство с Xcode</a> и начните своё путешествие в мир iOS разработки!
+                    </p>
+
+                    <div class="p-4 bg-green-50 dark:bg-green-900/20 border-l-4 border-green-500 rounded-r-xl">
+                        <h4 class="font-semibold text-green-600 dark:text-green-400 mb-1">Удачи в изучении!</h4>
+                        <p class="text-sm text-zinc-600 dark:text-zinc-400">Помните: каждый профессиональный разработчик когда-то был новичком.</p>
+                    </div>
+                </div>
+
+                <!-- Navigation -->
+                <nav class="flex justify-between gap-4 mt-16 pt-8 border-t border-zinc-200 dark:border-zinc-800">
+                    <a href="../index.html" class="flex items-center gap-3 px-5 py-3 bg-zinc-100 dark:bg-zinc-800 hover:bg-primary hover:text-white rounded-xl transition-colors group">
+                        <span class="text-xl">←</span>
+                        <span class="font-medium">Оглавление</span>
+                    </a>
+                    <a href="01-xcode.html" class="flex items-center gap-3 px-5 py-3 bg-zinc-100 dark:bg-zinc-800 hover:bg-primary hover:text-white rounded-xl transition-colors group ml-auto">
+                        <span class="font-medium">Глава 1: Xcode</span>
+                        <span class="text-xl">→</span>
+                    </a>
+                </nav>
+            </article>
+        </main>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/swift.min.js"></script>
+    <script>
+        hljs.highlightAll();
+
+        // Mobile menu
+        const menuBtn = document.getElementById('menuBtn');
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('overlay');
+
+        menuBtn.addEventListener('click', () => {
+            sidebar.classList.toggle('-translate-x-full');
+            overlay.classList.toggle('hidden');
+        });
+
+        function closeSidebar() {
+            sidebar.classList.add('-translate-x-full');
+            overlay.classList.add('hidden');
+        }
+
+        // Copy code
+        function copyCode(btn) {
+            const code = btn.closest('.rounded-xl').querySelector('code').textContent;
+            navigator.clipboard.writeText(code).then(() => {
+                const original = btn.textContent;
+                btn.textContent = 'Скопировано!';
+                setTimeout(() => btn.textContent = original, 2000);
+            });
+        }
+    </script>
+</body>
+</html>

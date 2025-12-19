@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Глоссарий | SwiftUI E-Commerce</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'media',
+            theme: { extend: { colors: { primary: '#007AFF' } } }
+        }
+    </script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/vs2015.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/swift.min.js"></script>
+    <style>
+        pre code { font-size: 13px; line-height: 1.5; }
+        .term-card { scroll-margin-top: 100px; }
+    </style>
+</head>
+<body class="bg-white dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100">
+    <div class="min-h-screen">
+        <!-- Header -->
+        <header class="sticky top-0 z-40 bg-white/80 dark:bg-zinc-950/80 backdrop-blur-md border-b border-zinc-200 dark:border-zinc-800">
+            <div class="max-w-4xl mx-auto px-6 py-4 flex items-center justify-between">
+                <a href="../index.html" class="flex items-center gap-2 text-zinc-600 dark:text-zinc-400 hover:text-primary transition-colors">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                    </svg>
+                    Оглавление
+                </a>
+                <span class="text-sm text-zinc-500">Глоссарий</span>
+            </div>
+        </header>
+
+        <!-- Content -->
+        <main class="max-w-4xl mx-auto px-6 py-12">
+            <h1 class="text-4xl font-bold mb-4 bg-gradient-to-r from-indigo-500 to-purple-600 bg-clip-text text-transparent">
+                Глоссарий терминов
+            </h1>
+            <p class="text-lg text-zinc-600 dark:text-zinc-400 mb-8">
+                Словарь ключевых терминов Swift и SwiftUI с примерами
+            </p>
+
+            <!-- Quick navigation -->
+            <div class="flex flex-wrap gap-2 mb-12 p-4 bg-zinc-50 dark:bg-zinc-900 rounded-xl">
+                <a href="#swift" class="px-3 py-1 bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-400 rounded-full text-sm hover:bg-orange-200 dark:hover:bg-orange-900/50 transition-colors">Swift</a>
+                <a href="#swiftui" class="px-3 py-1 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 rounded-full text-sm hover:bg-blue-200 dark:hover:bg-blue-900/50 transition-colors">SwiftUI</a>
+                <a href="#mvvm" class="px-3 py-1 bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-400 rounded-full text-sm hover:bg-purple-200 dark:hover:bg-purple-900/50 transition-colors">MVVM</a>
+                <a href="#async" class="px-3 py-1 bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 rounded-full text-sm hover:bg-green-200 dark:hover:bg-green-900/50 transition-colors">Async</a>
+            </div>
+
+            <!-- Swift Section -->
+            <section id="swift" class="mb-16">
+                <h2 class="text-2xl font-bold mb-6 flex items-center gap-3 text-orange-600">
+                    <span class="w-10 h-10 bg-orange-100 dark:bg-orange-900/30 rounded-lg flex items-center justify-center">S</span>
+                    Swift
+                </h2>
+
+                <div class="space-y-6">
+                    <!-- Optional -->
+                    <div id="optional" class="term-card p-6 bg-zinc-50 dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-zinc-800">
+                        <h3 class="font-bold text-xl mb-2">Optional</h3>
+                        <p class="text-zinc-600 dark:text-zinc-400 mb-4">
+                            Тип, который может содержать значение или <code class="bg-zinc-200 dark:bg-zinc-700 px-1 rounded">nil</code>. Обозначается знаком <code class="bg-zinc-200 dark:bg-zinc-700 px-1 rounded">?</code> после типа.
+                        </p>
+                        <pre><code class="language-swift">var name: String? = nil     // Может быть nil
+var age: Int = 25           // НЕ может быть nil
+
+// Безопасное извлечение
+if let name = name {
+    print(name)
+}</code></pre>
+                        <p class="mt-3 text-sm text-zinc-500">
+                            <strong>Аналог в JS:</strong> нет прямого аналога, но похоже на TypeScript <code>string | null</code>
+                        </p>
+                    </div>
+
+                    <!-- Struct -->
+                    <div id="struct" class="term-card p-6 bg-zinc-50 dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-zinc-800">
+                        <h3 class="font-bold text-xl mb-2">Struct (структура)</h3>
+                        <p class="text-zinc-600 dark:text-zinc-400 mb-4">
+                            Value type - при присваивании копируется целиком. Используется для данных (Product, User).
+                        </p>
+                        <pre><code class="language-swift">struct Product {
+    let id: Int
+    var title: String
+    var price: Double
+}
+
+var a = Product(id: 1, title: "iPhone", price: 999)
+var b = a           // Создаётся КОПИЯ
+b.title = "iPad"
+print(a.title)      // "iPhone" - не изменился</code></pre>
+                    </div>
+
+                    <!-- Class -->
+                    <div id="class" class="term-card p-6 bg-zinc-50 dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-zinc-800">
+                        <h3 class="font-bold text-xl mb-2">Class (класс)</h3>
+                        <p class="text-zinc-600 dark:text-zinc-400 mb-4">
+                            Reference type - при присваивании передаётся ссылка. Используется для сервисов (Manager, ViewModel).
+                        </p>
+                        <pre><code class="language-swift">class CartManager {
+    var items: [Product] = []
+}
+
+let a = CartManager()
+let b = a           // b указывает на тот же объект
+b.items.append(product)
+print(a.items.count)  // Изменился! Та же ссылка</code></pre>
+                    </div>
+
+                    <!-- Closure -->
+                    <div id="closure" class="term-card p-6 bg-zinc-50 dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-zinc-800">
+                        <h3 class="font-bold text-xl mb-2">Closure (замыкание)</h3>
+                        <p class="text-zinc-600 dark:text-zinc-400 mb-4">
+                            Анонимная функция, которую можно передать как значение. Аналог arrow function в JS.
+                        </p>
+                        <pre><code class="language-swift">// Полный синтаксис
+let greet = { (name: String) -> String in
+    return "Hello, \(name)"
+}
+
+// Сокращённый ($0 = первый параметр)
+let numbers = [1, 2, 3]
+let doubled = numbers.map { $0 * 2 }  // [2, 4, 6]</code></pre>
+                        <p class="mt-3 text-sm text-zinc-500">
+                            <strong>Аналог в JS:</strong> <code>(name) => "Hello, " + name</code>
+                        </p>
+                    </div>
+
+                    <!-- Protocol -->
+                    <div id="protocol" class="term-card p-6 bg-zinc-50 dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-zinc-800">
+                        <h3 class="font-bold text-xl mb-2">Protocol (протокол)</h3>
+                        <p class="text-zinc-600 dark:text-zinc-400 mb-4">
+                            Контракт, определяющий какие методы и свойства должен реализовать тип. Аналог interface в TypeScript.
+                        </p>
+                        <pre><code class="language-swift">protocol Identifiable {
+    var id: Int { get }
+}
+
+struct Product: Identifiable {
+    let id: Int
+    let title: String
+}
+
+// Codable - протокол для JSON
+struct User: Codable {
+    let name: String
+}</code></pre>
+                    </div>
+
+                    <!-- Guard -->
+                    <div id="guard" class="term-card p-6 bg-zinc-50 dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-zinc-800">
+                        <h3 class="font-bold text-xl mb-2">Guard</h3>
+                        <p class="text-zinc-600 dark:text-zinc-400 mb-4">
+                            Early return - выход из функции если условие не выполняется. Делает код чище.
+                        </p>
+                        <pre><code class="language-swift">func processUser(_ user: User?) {
+    guard let user = user else {
+        print("No user")
+        return  // Обязательно выйти!
+    }
+    // Здесь user уже не Optional
+    print(user.name)
+}</code></pre>
+                    </div>
+
+                    <!-- Enum -->
+                    <div id="enum" class="term-card p-6 bg-zinc-50 dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-zinc-800">
+                        <h3 class="font-bold text-xl mb-2">Enum (перечисление)</h3>
+                        <p class="text-zinc-600 dark:text-zinc-400 mb-4">
+                            Набор именованных значений. В Swift enum мощнее чем в других языках - может иметь associated values.
+                        </p>
+                        <pre><code class="language-swift">enum LoadingState {
+    case idle
+    case loading
+    case success([Product])
+    case error(String)
+}
+
+var state = LoadingState.loading
+
+switch state {
+case .idle: print("Idle")
+case .loading: print("Loading...")
+case .success(let products): print("Got \(products.count)")
+case .error(let message): print("Error: \(message)")
+}</code></pre>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SwiftUI Section -->
+            <section id="swiftui" class="mb-16">
+                <h2 class="text-2xl font-bold mb-6 flex items-center gap-3 text-blue-600">
+                    <span class="w-10 h-10 bg-blue-100 dark:bg-blue-900/30 rounded-lg flex items-center justify-center">U</span>
+                    SwiftUI
+                </h2>
+
+                <div class="space-y-6">
+                    <!-- View -->
+                    <div id="view" class="term-card p-6 bg-zinc-50 dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-zinc-800">
+                        <h3 class="font-bold text-xl mb-2">View</h3>
+                        <p class="text-zinc-600 dark:text-zinc-400 mb-4">
+                            Протокол для UI компонентов. Каждый View должен иметь свойство <code class="bg-zinc-200 dark:bg-zinc-700 px-1 rounded">body</code>.
+                        </p>
+                        <pre><code class="language-swift">struct ProductCard: View {
+    let product: Product
+
+    var body: some View {
+        VStack {
+            Text(product.title)
+            Text(product.formattedPrice)
+        }
+    }
+}</code></pre>
+                        <p class="mt-3 text-sm text-zinc-500">
+                            <strong>Аналог в React:</strong> функциональный компонент
+                        </p>
+                    </div>
+
+                    <!-- @State -->
+                    <div id="state" class="term-card p-6 bg-zinc-50 dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-zinc-800">
+                        <h3 class="font-bold text-xl mb-2">@State</h3>
+                        <p class="text-zinc-600 dark:text-zinc-400 mb-4">
+                            Property wrapper для локального состояния View. При изменении View перерисовывается.
+                        </p>
+                        <pre><code class="language-swift">struct CounterView: View {
+    @State private var count = 0
+
+    var body: some View {
+        Button("Count: \(count)") {
+            count += 1  // UI обновится
+        }
+    }
+}</code></pre>
+                        <p class="mt-3 text-sm text-zinc-500">
+                            <strong>Аналог в React:</strong> <code>useState()</code>
+                        </p>
+                    </div>
+
+                    <!-- @Binding -->
+                    <div id="binding" class="term-card p-6 bg-zinc-50 dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-zinc-800">
+                        <h3 class="font-bold text-xl mb-2">@Binding</h3>
+                        <p class="text-zinc-600 dark:text-zinc-400 mb-4">
+                            Двусторонняя связь с родительским @State. Позволяет дочернему View изменять состояние родителя.
+                        </p>
+                        <pre><code class="language-swift">struct ToggleRow: View {
+    @Binding var isOn: Bool  // Связь с родителем
+
+    var body: some View {
+        Toggle("Enabled", isOn: $isOn)
+    }
+}
+
+struct ParentView: View {
+    @State private var enabled = false
+
+    var body: some View {
+        ToggleRow(isOn: $enabled)  // $ создаёт Binding
+    }
+}</code></pre>
+                    </div>
+
+                    <!-- @Observable -->
+                    <div id="observable" class="term-card p-6 bg-zinc-50 dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-zinc-800">
+                        <h3 class="font-bold text-xl mb-2">@Observable</h3>
+                        <p class="text-zinc-600 dark:text-zinc-400 mb-4">
+                            Макрос (iOS 17+) для создания реактивного класса. Все свойства автоматически отслеживаются.
+                        </p>
+                        <pre><code class="language-swift">@Observable
+class CartViewModel {
+    var items: [Product] = []  // Автоматически реактивно
+    var total: Double {
+        items.reduce(0) { $0 + $1.price }
+    }
+}
+
+struct CartView: View {
+    @State private var viewModel = CartViewModel()
+
+    var body: some View {
+        Text("Total: \(viewModel.total)")
+    }
+}</code></pre>
+                        <p class="mt-3 text-sm text-zinc-500">
+                            <strong>Аналог:</strong> MobX observable или Vue reactive
+                        </p>
+                    </div>
+
+                    <!-- @Environment -->
+                    <div id="environment" class="term-card p-6 bg-zinc-50 dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-zinc-800">
+                        <h3 class="font-bold text-xl mb-2">@Environment</h3>
+                        <p class="text-zinc-600 dark:text-zinc-400 mb-4">
+                            Доступ к глобальным значениям: цветовая схема, размер шрифта, dismiss action.
+                        </p>
+                        <pre><code class="language-swift">struct SettingsView: View {
+    @Environment(\.colorScheme) var colorScheme
+    @Environment(\.dismiss) var dismiss
+
+    var body: some View {
+        VStack {
+            Text(colorScheme == .dark ? "Dark" : "Light")
+            Button("Close") { dismiss() }
+        }
+    }
+}</code></pre>
+                        <p class="mt-3 text-sm text-zinc-500">
+                            <strong>Аналог в React:</strong> <code>useContext()</code>
+                        </p>
+                    </div>
+
+                    <!-- @AppStorage -->
+                    <div id="appstorage" class="term-card p-6 bg-zinc-50 dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-zinc-800">
+                        <h3 class="font-bold text-xl mb-2">@AppStorage</h3>
+                        <p class="text-zinc-600 dark:text-zinc-400 mb-4">
+                            Сохраняет значение в UserDefaults и автоматически синхронизирует с UI.
+                        </p>
+                        <pre><code class="language-swift">struct SettingsView: View {
+    @AppStorage("isDarkMode") var isDarkMode = false
+    @AppStorage("username") var username = ""
+
+    var body: some View {
+        Toggle("Dark Mode", isOn: $isDarkMode)
+        // Значение сохранится даже после закрытия приложения
+    }
+}</code></pre>
+                        <p class="mt-3 text-sm text-zinc-500">
+                            <strong>Аналог:</strong> localStorage + useState в React
+                        </p>
+                    </div>
+
+                    <!-- Modifiers -->
+                    <div id="modifiers" class="term-card p-6 bg-zinc-50 dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-zinc-800">
+                        <h3 class="font-bold text-xl mb-2">Modifiers (модификаторы)</h3>
+                        <p class="text-zinc-600 dark:text-zinc-400 mb-4">
+                            Методы для изменения внешнего вида и поведения View. Возвращают новый View.
+                        </p>
+                        <pre><code class="language-swift">Text("Hello")
+    .font(.title)           // Размер шрифта
+    .foregroundStyle(.blue) // Цвет
+    .padding()              // Отступы
+    .background(.gray)      // Фон
+    .clipShape(RoundedRectangle(cornerRadius: 10))</code></pre>
+                    </div>
+                </div>
+            </section>
+
+            <!-- MVVM Section -->
+            <section id="mvvm" class="mb-16">
+                <h2 class="text-2xl font-bold mb-6 flex items-center gap-3 text-purple-600">
+                    <span class="w-10 h-10 bg-purple-100 dark:bg-purple-900/30 rounded-lg flex items-center justify-center">M</span>
+                    MVVM
+                </h2>
+
+                <div class="space-y-6">
+                    <!-- Model -->
+                    <div id="model" class="term-card p-6 bg-zinc-50 dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-zinc-800">
+                        <h3 class="font-bold text-xl mb-2">Model (Модель)</h3>
+                        <p class="text-zinc-600 dark:text-zinc-400 mb-4">
+                            Структуры данных приложения. Обычно struct с Codable для работы с JSON.
+                        </p>
+                        <pre><code class="language-swift">struct Product: Identifiable, Codable {
+    let id: Int
+    let title: String
+    let price: Double
+    let thumbnail: String
+}
+
+struct ProductsResponse: Codable {
+    let products: [Product]
+}</code></pre>
+                    </div>
+
+                    <!-- View -->
+                    <div id="view-mvvm" class="term-card p-6 bg-zinc-50 dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-zinc-800">
+                        <h3 class="font-bold text-xl mb-2">View (Представление)</h3>
+                        <p class="text-zinc-600 dark:text-zinc-400 mb-4">
+                            UI компонент. Отображает данные из ViewModel и передаёт действия пользователя.
+                        </p>
+                        <pre><code class="language-swift">struct ProductsView: View {
+    @State private var viewModel = ProductsViewModel()
+
+    var body: some View {
+        List(viewModel.products) { product in
+            ProductRow(product: product)
+        }
+        .task {
+            await viewModel.loadProducts()
+        }
+    }
+}</code></pre>
+                    </div>
+
+                    <!-- ViewModel -->
+                    <div id="viewmodel" class="term-card p-6 bg-zinc-50 dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-zinc-800">
+                        <h3 class="font-bold text-xl mb-2">ViewModel</h3>
+                        <p class="text-zinc-600 dark:text-zinc-400 mb-4">
+                            Связующее звено между View и Model. Содержит бизнес-логику и состояние.
+                        </p>
+                        <pre><code class="language-swift">@Observable
+class ProductsViewModel {
+    var products: [Product] = []
+    var isLoading = false
+    var searchText = ""
+
+    var filteredProducts: [Product] {
+        guard !searchText.isEmpty else { return products }
+        return products.filter {
+            $0.title.localizedCaseInsensitiveContains(searchText)
+        }
+    }
+
+    func loadProducts() async {
+        isLoading = true
+        // API call...
+        isLoading = false
+    }
+}</code></pre>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Async Section -->
+            <section id="async" class="mb-16">
+                <h2 class="text-2xl font-bold mb-6 flex items-center gap-3 text-green-600">
+                    <span class="w-10 h-10 bg-green-100 dark:bg-green-900/30 rounded-lg flex items-center justify-center">A</span>
+                    Async / Await
+                </h2>
+
+                <div class="space-y-6">
+                    <!-- async/await -->
+                    <div id="async-await" class="term-card p-6 bg-zinc-50 dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-zinc-800">
+                        <h3 class="font-bold text-xl mb-2">async / await</h3>
+                        <p class="text-zinc-600 dark:text-zinc-400 mb-4">
+                            Синтаксис для асинхронного кода. Функция с async возвращает результат "в будущем".
+                        </p>
+                        <pre><code class="language-swift">// Объявление async функции
+func fetchProducts() async throws -> [Product] {
+    let (data, _) = try await URLSession.shared.data(from: url)
+    return try JSONDecoder().decode([Product].self, from: data)
+}
+
+// Вызов
+Task {
+    let products = try await fetchProducts()
+}</code></pre>
+                    </div>
+
+                    <!-- Task -->
+                    <div id="task" class="term-card p-6 bg-zinc-50 dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-zinc-800">
+                        <h3 class="font-bold text-xl mb-2">Task</h3>
+                        <p class="text-zinc-600 dark:text-zinc-400 mb-4">
+                            Контейнер для запуска асинхронного кода. Создаёт новый контекст выполнения.
+                        </p>
+                        <pre><code class="language-swift">// В обычном коде
+Button("Load") {
+    Task {
+        await viewModel.loadProducts()
+    }
+}
+
+// В SwiftUI View - лучше использовать .task
+.task {
+    await viewModel.loadProducts()
+}</code></pre>
+                    </div>
+
+                    <!-- throws/try -->
+                    <div id="throws" class="term-card p-6 bg-zinc-50 dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-zinc-800">
+                        <h3 class="font-bold text-xl mb-2">throws / try</h3>
+                        <p class="text-zinc-600 dark:text-zinc-400 mb-4">
+                            Обработка ошибок. Функция с throws может выбросить ошибку.
+                        </p>
+                        <pre><code class="language-swift">func loadData() throws -> Data {
+    // может выбросить ошибку
+}
+
+// Обработка ошибки
+do {
+    let data = try loadData()
+} catch {
+    print(error)
+}
+
+// Игнорировать ошибку (вернёт nil)
+let data = try? loadData()
+
+// Crash если ошибка (опасно!)
+let data = try! loadData()</code></pre>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Navigation -->
+            <div class="flex justify-between items-center mt-16 pt-8 border-t border-zinc-200 dark:border-zinc-800">
+                <a href="../index.html" class="flex items-center gap-2 text-zinc-600 dark:text-zinc-400 hover:text-primary transition-colors">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                    </svg>
+                    Оглавление
+                </a>
+                <a href="cheatsheet.html" class="flex items-center gap-2 px-6 py-3 bg-primary text-white rounded-xl hover:bg-blue-600 transition-colors">
+                    Шпаргалка
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                    </svg>
+                </a>
+            </div>
+        </main>
+    </div>
+
+    <script>hljs.highlightAll();</script>
+</body>
+</html>

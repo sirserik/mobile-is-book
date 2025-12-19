@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Глава 7: Поиск | SwiftUI E-Commerce</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'media',
+            theme: { extend: { colors: { primary: '#007AFF' } } }
+        }
+    </script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/vs2015.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/swift.min.js"></script>
+    <style>
+        ::-webkit-scrollbar { width: 6px; }
+        pre code { font-size: 14px; line-height: 1.6; }
+    </style>
+</head>
+<body class="bg-white dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100">
+    <div class="min-h-screen">
+        <header class="sticky top-0 z-40 bg-white/80 dark:bg-zinc-950/80 backdrop-blur-md border-b border-zinc-200 dark:border-zinc-800">
+            <div class="max-w-4xl mx-auto px-6 py-4 flex items-center justify-between">
+                <a href="../index.html" class="flex items-center gap-2 text-zinc-600 dark:text-zinc-400 hover:text-primary transition-colors">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                    </svg>
+                    Оглавление
+                </a>
+                <span class="text-sm text-zinc-500">Глава 7</span>
+            </div>
+        </header>
+
+        <main class="max-w-4xl mx-auto px-6 py-12">
+            <article class="prose prose-zinc dark:prose-invert max-w-none">
+                <span class="text-sm font-semibold text-primary uppercase tracking-wider">Глава 7</span>
+                <h1 class="text-4xl font-bold mt-2 mb-8">Поиск</h1>
+
+                <div class="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-xl p-6 mb-8">
+                    <h3 class="text-lg font-semibold text-blue-800 dark:text-blue-300 mb-2">🎯 Цель главы</h3>
+                    <p class="text-blue-700 dark:text-blue-400">
+                        Реализовать поиск товаров с использованием .searchable, debounce и API-поиска.
+                    </p>
+                </div>
+
+                <h2 class="text-2xl font-bold mt-12 mb-4">Модификатор .searchable</h2>
+                <p class="text-zinc-600 dark:text-zinc-400 mb-4">
+                    SwiftUI предоставляет встроенный модификатор для добавления строки поиска:
+                </p>
+
+                <pre><code class="language-swift rounded-xl">struct ProductListView: View {
+    @State private var viewModel = ProductViewModel()
+    @State private var searchText = ""
+
+    var body: some View {
+        NavigationStack {
+            List(viewModel.filteredProducts) { product in
+                ProductRow(product: product)
+            }
+            .navigationTitle("Товары")
+            .searchable(text: $searchText, prompt: "Поиск товаров...")
+        }
+    }
+}</code></pre>
+
+                <h2 class="text-2xl font-bold mt-12 mb-4">Локальная фильтрация</h2>
+                <pre><code class="language-swift rounded-xl">@Observable
+final class ProductViewModel {
+    var products: [Product] = []
+    var searchText = ""
+
+    // Фильтрация на стороне клиента
+    var filteredProducts: [Product] {
+        guard !searchText.isEmpty else { return products }
+
+        return products.filter { product in
+            product.title.localizedCaseInsensitiveContains(searchText) ||
+            product.brand.localizedCaseInsensitiveContains(searchText) ||
+            product.category.localizedCaseInsensitiveContains(searchText)
+        }
+    }
+}</code></pre>
+
+                <h2 class="text-2xl font-bold mt-12 mb-4">API-поиск с Debounce</h2>
+                <p class="text-zinc-600 dark:text-zinc-400 mb-4">
+                    Для API-поиска важно использовать debounce, чтобы не отправлять запрос на каждый символ:
+                </p>
+
+                <pre><code class="language-swift rounded-xl">import Combine
+
+@Observable
+final class SearchViewModel {
+    var searchText = ""
+    var products: [Product] = []
+    var isSearching = false
+
+    private let service: ProductServiceProtocol
+    private var searchTask: Task<Void, Never>?
+
+    init(service: ProductServiceProtocol = ProductService()) {
+        self.service = service
+    }
+
+    func search() {
+        // Отменяем предыдущий запрос
+        searchTask?.cancel()
+
+        guard !searchText.isEmpty else {
+            products = []
+            return
+        }
+
+        // Debounce: ждём 0.5 секунды
+        searchTask = Task {
+            try? await Task.sleep(nanoseconds: 500_000_000)
+
+            // Проверяем, что задача не отменена
+            guard !Task.isCancelled else { return }
+
+            await performSearch()
+        }
+    }
+
+    @MainActor
+    private func performSearch() async {
+        isSearching = true
+
+        do {
+            products = try await service.searchProducts(query: searchText)
+        } catch {
+            products = []
+        }
+
+        isSearching = false
+    }
+}</code></pre>
+
+                <h2 class="text-2xl font-bold mt-12 mb-4">SearchView</h2>
+                <pre><code class="language-swift rounded-xl">struct SearchView: View {
+    @State private var viewModel = SearchViewModel()
+
+    var body: some View {
+        NavigationStack {
+            Group {
+                if viewModel.searchText.isEmpty {
+                    emptyState
+                } else if viewModel.isSearching {
+                    ProgressView("Поиск...")
+                } else if viewModel.products.isEmpty {
+                    noResults
+                } else {
+                    searchResults
+                }
+            }
+            .navigationTitle("Поиск")
+            .searchable(
+                text: $viewModel.searchText,
+                prompt: "Название, бренд, категория..."
+            )
+            .onChange(of: viewModel.searchText) { _, _ in
+                viewModel.search()
+            }
+        }
+    }
+
+    private var emptyState: some View {
+        VStack(spacing: 16) {
+            Image(systemName: "magnifyingglass")
+                .font(.system(size: 60))
+                .foregroundColor(.secondary)
+
+            Text("Введите запрос для поиска")
+                .font(.headline)
+                .foregroundColor(.secondary)
+        }
+    }
+
+    private var noResults: some View {
+        VStack(spacing: 16) {
+            Image(systemName: "doc.text.magnifyingglass")
+                .font(.system(size: 60))
+                .foregroundColor(.secondary)
+
+            Text("Ничего не найдено")
+                .font(.headline)
+
+            Text("Попробуйте изменить запрос")
+                .font(.subheadline)
+                .foregroundColor(.secondary)
+        }
+    }
+
+    private var searchResults: some View {
+        List(viewModel.products) { product in
+            NavigationLink(value: product) {
+                SearchResultRow(product: product)
+            }
+        }
+        .navigationDestination(for: Product.self) { product in
+            ProductDetailView(product: product)
+        }
+    }
+}
+
+struct SearchResultRow: View {
+    let product: Product
+
+    var body: some View {
+        HStack(spacing: 12) {
+            AsyncImage(url: URL(string: product.thumbnail)) { image in
+                image.resizable().aspectRatio(contentMode: .fill)
+            } placeholder: {
+                Color.gray.opacity(0.2)
+            }
+            .frame(width: 60, height: 60)
+            .cornerRadius(8)
+
+            VStack(alignment: .leading, spacing: 4) {
+                Text(product.title)
+                    .font(.subheadline)
+                    .fontWeight(.medium)
+                    .lineLimit(2)
+
+                Text(product.brand)
+                    .font(.caption)
+                    .foregroundColor(.secondary)
+
+                Text(product.formattedPrice)
+                    .font(.subheadline)
+                    .fontWeight(.bold)
+                    .foregroundColor(.blue)
+            }
+        }
+    }
+}</code></pre>
+
+                <h2 class="text-2xl font-bold mt-12 mb-4">Search Suggestions</h2>
+                <pre><code class="language-swift rounded-xl">.searchable(text: $searchText) {
+    // Недавние поиски
+    ForEach(recentSearches, id: \.self) { term in
+        Label(term, systemImage: "clock")
+            .searchCompletion(term)
+    }
+
+    // Популярные категории
+    Section("Категории") {
+        ForEach(categories, id: \.self) { category in
+            Label(category, systemImage: "tag")
+                .searchCompletion(category)
+        }
+    }
+}</code></pre>
+
+                <h2 class="text-2xl font-bold mt-12 mb-4">🏋️ Задания</h2>
+                <div class="bg-zinc-50 dark:bg-zinc-900 rounded-xl p-6 border border-zinc-200 dark:border-zinc-800">
+                    <ol class="space-y-4 text-zinc-600 dark:text-zinc-400">
+                        <li><strong>1.</strong> Сохраняйте историю поиска в UserDefaults (последние 10 запросов)</li>
+                        <li><strong>2.</strong> Добавьте фильтрацию по категориям и ценовому диапазону</li>
+                        <li><strong>3.</strong> Реализуйте сортировку результатов (по цене, рейтингу, названию)</li>
+                    </ol>
+                </div>
+
+                <!-- Navigation -->
+                <div class="flex justify-between items-center mt-16 pt-8 border-t border-zinc-200 dark:border-zinc-800">
+                    <a href="06-product-detail.html" class="flex items-center gap-2 text-zinc-600 dark:text-zinc-400 hover:text-primary transition-colors">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                        </svg>
+                        Глава 6: Детали
+                    </a>
+                    <a href="08-favorites.html" class="flex items-center gap-2 px-6 py-3 bg-primary text-white rounded-xl hover:bg-blue-600 transition-colors">
+                        Глава 8: Избранное
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                        </svg>
+                    </a>
+                </div>
+            </article>
+        </main>
+    </div>
+
+    <script>hljs.highlightAll();</script>
+</body>
+</html>

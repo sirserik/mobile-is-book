@@ -1,0 +1,946 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Глава 16: Products | iOS Book</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'media',
+            theme: { extend: { colors: { primary: '#007AFF' } } }
+        }
+    </script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
+</head>
+<body class="bg-white dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100">
+    <button id="menuBtn" class="lg:hidden fixed top-4 left-4 z-50 p-3 bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-xl shadow-lg">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+        </svg>
+    </button>
+
+    <div class="flex min-h-screen">
+        <aside id="sidebar" class="fixed inset-y-0 left-0 w-72 bg-zinc-50 dark:bg-zinc-900 border-r border-zinc-200 dark:border-zinc-800 flex flex-col z-40 transform -translate-x-full lg:translate-x-0 transition-transform duration-300">
+            <div class="p-5 border-b border-zinc-200 dark:border-zinc-800">
+                <a href="../index.html" class="flex items-center gap-3 text-lg font-semibold hover:text-primary transition-colors">
+                    <div class="w-9 h-9 bg-primary rounded-lg flex items-center justify-center">
+                        <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/>
+                        </svg>
+                    </div>
+                    iOS Book
+                </a>
+            </div>
+            <nav class="flex-1 overflow-y-auto p-4">
+                <div class="space-y-6">
+                    <div>
+                        <h3 class="px-3 mb-2 text-xs font-semibold uppercase tracking-wider text-zinc-400">Введение</h3>
+                        <a href="00-introduction.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">Введение</a>
+                    </div>
+                    <div>
+                        <h3 class="px-3 mb-2 text-xs font-semibold uppercase tracking-wider text-zinc-400">Основы Swift</h3>
+                        <div class="space-y-1">
+                            <a href="01-xcode.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">1. Xcode</a>
+                            <a href="02-swift-basics.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">2. Основы Swift</a>
+                            <a href="03-control-flow.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">3. Control Flow</a>
+                            <a href="04-functions.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">4. Функции</a>
+                            <a href="05-oop.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">5. ООП</a>
+                            <a href="06-protocols.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">6. Протоколы</a>
+                            <a href="07-optionals.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">7. Optionals</a>
+                            <a href="08-memory.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">8. Память</a>
+                            <a href="09-generics.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">9. Generics</a>
+                            <a href="10-concurrency.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">10. Concurrency</a>
+                        </div>
+                    </div>
+                    <div>
+                        <h3 class="px-3 mb-2 text-xs font-semibold uppercase tracking-wider text-zinc-400">UIKit</h3>
+                        <div class="space-y-1">
+                            <a href="11-uikit-basics.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">11. UIKit</a>
+                            <a href="12-programmatic-ui.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">12. Programmatic UI</a>
+                        </div>
+                    </div>
+                    <div>
+                        <h3 class="px-3 mb-2 text-xs font-semibold uppercase tracking-wider text-zinc-400">Архитектура</h3>
+                        <div class="space-y-1">
+                            <a href="13-viper.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">13. VIPER</a>
+                            <a href="14-project-setup.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">14. Project Setup</a>
+                        </div>
+                    </div>
+                    <div>
+                        <h3 class="px-3 mb-2 text-xs font-semibold uppercase tracking-wider text-zinc-400">Практика</h3>
+                        <div class="space-y-1">
+                            <a href="15-authentication.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">15. Auth</a>
+                            <a href="16-products.html" class="block px-3 py-2 text-sm text-white bg-primary rounded-lg">16. Products</a>
+                            <a href="17-cart.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">17. Cart</a>
+                            <a href="18-favorites.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">18. Favorites</a>
+                            <a href="19-orders.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">19. Orders</a>
+                            <a href="20-profile.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">20. Profile</a>
+                        </div>
+                    </div>
+                    <div>
+                        <h3 class="px-3 mb-2 text-xs font-semibold uppercase tracking-wider text-zinc-400">Дополнительно</h3>
+                        <a href="21-reusable-views.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">21. Reusable Views</a>
+                    </div>
+                </div>
+            </nav>
+        </aside>
+
+        <div id="overlay" class="fixed inset-0 bg-black/50 z-30 lg:hidden hidden" onclick="closeSidebar()"></div>
+
+        <main class="flex-1 lg:ml-72">
+            <article class="max-w-3xl mx-auto px-6 sm:px-8 lg:px-12 py-12 lg:py-16">
+                <header class="mb-12 pb-8 border-b border-zinc-200 dark:border-zinc-800">
+                    <span class="text-sm font-semibold uppercase tracking-wider text-primary">Глава 16</span>
+                    <h1 class="text-3xl sm:text-4xl font-bold mt-2 mb-4">Products</h1>
+                    <p class="text-lg text-zinc-600 dark:text-zinc-400">Каталог товаров, категории</p>
+                </header>
+
+                <div class="prose prose-zinc dark:prose-invert max-w-none">
+                    <!-- Введение -->
+                    <p class="text-lg leading-relaxed mb-8">
+                        Модуль Products — сердце любого e-commerce приложения. В этой главе мы создадим
+                        каталог товаров с загрузкой из Firestore, поиском, фильтрацией по категориям
+                        и детальным просмотром товара.
+                    </p>
+
+                    <!-- Структура модуля -->
+                    <h2 class="text-2xl font-bold mt-12 mb-6">Структура модуля Products</h2>
+
+                    <div class="bg-zinc-900 rounded-xl p-6 mb-8 font-mono text-sm overflow-x-auto">
+<pre class="text-green-400">
+Products/
+├── ProductsList/
+│   ├── ProductsViewController.swift
+│   ├── ProductsPresenter.swift
+│   ├── ProductsInteractor.swift
+│   ├── ProductsRouter.swift
+│   ├── ProductsProtocols.swift
+│   └── Views/
+│       ├── ProductCell.swift
+│       └── CategoryFilterView.swift
+├── ProductDetail/
+│   ├── ProductDetailViewController.swift
+│   ├── ProductDetailPresenter.swift
+│   ├── ProductDetailInteractor.swift
+│   ├── ProductDetailRouter.swift
+│   └── ProductDetailProtocols.swift
+└── Services/
+    └── ProductService.swift
+</pre>
+                    </div>
+
+                    <!-- Product Model -->
+                    <h2 class="text-2xl font-bold mt-12 mb-6">Модель Product</h2>
+
+                    <div class="bg-zinc-900 rounded-xl p-6 mb-8 font-mono text-sm overflow-x-auto">
+<pre class="text-zinc-300">
+<span class="text-zinc-500">// Product.swift</span>
+<span class="text-pink-400">import</span> <span class="text-cyan-400">Foundation</span>
+<span class="text-pink-400">import</span> <span class="text-cyan-400">FirebaseFirestore</span>
+
+<span class="text-pink-400">struct</span> <span class="text-cyan-400">Product</span>: <span class="text-cyan-400">Identifiable</span>, <span class="text-cyan-400">Codable</span> {
+    <span class="text-pink-400">@DocumentID var</span> id: <span class="text-cyan-400">String</span>?
+    <span class="text-pink-400">let</span> name: <span class="text-cyan-400">String</span>
+    <span class="text-pink-400">let</span> description: <span class="text-cyan-400">String</span>
+    <span class="text-pink-400">let</span> price: <span class="text-cyan-400">Double</span>
+    <span class="text-pink-400">let</span> imageURL: <span class="text-cyan-400">String</span>
+    <span class="text-pink-400">let</span> category: <span class="text-cyan-400">String</span>
+    <span class="text-pink-400">let</span> stock: <span class="text-cyan-400">Int</span>
+    <span class="text-pink-400">let</span> rating: <span class="text-cyan-400">Double</span>
+    <span class="text-pink-400">let</span> reviewsCount: <span class="text-cyan-400">Int</span>
+    <span class="text-pink-400">let</span> createdAt: <span class="text-cyan-400">Date</span>
+
+    <span class="text-pink-400">var</span> formattedPrice: <span class="text-cyan-400">String</span> {
+        <span class="text-cyan-400">String</span>(format: <span class="text-green-400">"%.0f ₸"</span>, price)
+    }
+
+    <span class="text-pink-400">var</span> isInStock: <span class="text-cyan-400">Bool</span> {
+        stock > <span class="text-purple-400">0</span>
+    }
+}
+
+<span class="text-pink-400">enum</span> <span class="text-cyan-400">Category</span>: <span class="text-cyan-400">String</span>, <span class="text-cyan-400">CaseIterable</span> {
+    <span class="text-pink-400">case</span> all = <span class="text-green-400">"Все"</span>
+    <span class="text-pink-400">case</span> electronics = <span class="text-green-400">"Электроника"</span>
+    <span class="text-pink-400">case</span> clothing = <span class="text-green-400">"Одежда"</span>
+    <span class="text-pink-400">case</span> home = <span class="text-green-400">"Дом"</span>
+    <span class="text-pink-400">case</span> sports = <span class="text-green-400">"Спорт"</span>
+    <span class="text-pink-400">case</span> beauty = <span class="text-green-400">"Красота"</span>
+}
+</pre>
+                    </div>
+
+                    <!-- Product Service -->
+                    <h2 class="text-2xl font-bold mt-12 mb-6">ProductService</h2>
+
+                    <p class="mb-4">
+                        Сервис для работы с товарами через Firestore:
+                    </p>
+
+                    <div class="bg-zinc-900 rounded-xl p-6 mb-8 font-mono text-sm overflow-x-auto">
+<pre class="text-zinc-300">
+<span class="text-zinc-500">// ProductService.swift</span>
+<span class="text-pink-400">import</span> <span class="text-cyan-400">Foundation</span>
+<span class="text-pink-400">import</span> <span class="text-cyan-400">FirebaseFirestore</span>
+
+<span class="text-pink-400">protocol</span> <span class="text-cyan-400">ProductServiceProtocol</span> {
+    <span class="text-pink-400">func</span> <span class="text-yellow-300">fetchProducts</span>() <span class="text-pink-400">async throws</span> -> [<span class="text-cyan-400">Product</span>]
+    <span class="text-pink-400">func</span> <span class="text-yellow-300">fetchProducts</span>(category: <span class="text-cyan-400">String</span>) <span class="text-pink-400">async throws</span> -> [<span class="text-cyan-400">Product</span>]
+    <span class="text-pink-400">func</span> <span class="text-yellow-300">fetchProduct</span>(id: <span class="text-cyan-400">String</span>) <span class="text-pink-400">async throws</span> -> <span class="text-cyan-400">Product</span>
+    <span class="text-pink-400">func</span> <span class="text-yellow-300">searchProducts</span>(query: <span class="text-cyan-400">String</span>) <span class="text-pink-400">async throws</span> -> [<span class="text-cyan-400">Product</span>]
+}
+
+<span class="text-pink-400">final class</span> <span class="text-cyan-400">ProductService</span>: <span class="text-cyan-400">ProductServiceProtocol</span> {
+
+    <span class="text-pink-400">static let</span> shared = <span class="text-cyan-400">ProductService</span>()
+
+    <span class="text-pink-400">private let</span> db = <span class="text-cyan-400">Firestore</span>.<span class="text-yellow-300">firestore</span>()
+    <span class="text-pink-400">private let</span> collection = <span class="text-green-400">"products"</span>
+
+    <span class="text-pink-400">func</span> <span class="text-yellow-300">fetchProducts</span>() <span class="text-pink-400">async throws</span> -> [<span class="text-cyan-400">Product</span>] {
+        <span class="text-pink-400">let</span> snapshot = <span class="text-pink-400">try await</span> db.<span class="text-yellow-300">collection</span>(collection)
+            .<span class="text-yellow-300">order</span>(by: <span class="text-green-400">"createdAt"</span>, descending: <span class="text-pink-400">true</span>)
+            .<span class="text-yellow-300">getDocuments</span>()
+
+        <span class="text-pink-400">return try</span> snapshot.documents.<span class="text-yellow-300">compactMap</span> { document <span class="text-pink-400">in</span>
+            <span class="text-pink-400">try</span> document.<span class="text-yellow-300">data</span>(as: <span class="text-cyan-400">Product</span>.<span class="text-pink-400">self</span>)
+        }
+    }
+
+    <span class="text-pink-400">func</span> <span class="text-yellow-300">fetchProducts</span>(category: <span class="text-cyan-400">String</span>) <span class="text-pink-400">async throws</span> -> [<span class="text-cyan-400">Product</span>] {
+        <span class="text-pink-400">let</span> snapshot = <span class="text-pink-400">try await</span> db.<span class="text-yellow-300">collection</span>(collection)
+            .<span class="text-yellow-300">whereField</span>(<span class="text-green-400">"category"</span>, isEqualTo: category)
+            .<span class="text-yellow-300">order</span>(by: <span class="text-green-400">"createdAt"</span>, descending: <span class="text-pink-400">true</span>)
+            .<span class="text-yellow-300">getDocuments</span>()
+
+        <span class="text-pink-400">return try</span> snapshot.documents.<span class="text-yellow-300">compactMap</span> { document <span class="text-pink-400">in</span>
+            <span class="text-pink-400">try</span> document.<span class="text-yellow-300">data</span>(as: <span class="text-cyan-400">Product</span>.<span class="text-pink-400">self</span>)
+        }
+    }
+
+    <span class="text-pink-400">func</span> <span class="text-yellow-300">fetchProduct</span>(id: <span class="text-cyan-400">String</span>) <span class="text-pink-400">async throws</span> -> <span class="text-cyan-400">Product</span> {
+        <span class="text-pink-400">let</span> document = <span class="text-pink-400">try await</span> db.<span class="text-yellow-300">collection</span>(collection).<span class="text-yellow-300">document</span>(id).<span class="text-yellow-300">getDocument</span>()
+
+        <span class="text-pink-400">guard let</span> product = <span class="text-pink-400">try</span> document.<span class="text-yellow-300">data</span>(as: <span class="text-cyan-400">Product</span>.<span class="text-pink-400">self</span>) <span class="text-pink-400">else</span> {
+            <span class="text-pink-400">throw</span> <span class="text-cyan-400">ProductError</span>.notFound
+        }
+
+        <span class="text-pink-400">return</span> product
+    }
+
+    <span class="text-pink-400">func</span> <span class="text-yellow-300">searchProducts</span>(query: <span class="text-cyan-400">String</span>) <span class="text-pink-400">async throws</span> -> [<span class="text-cyan-400">Product</span>] {
+        <span class="text-zinc-500">// Firestore не поддерживает полнотекстовый поиск</span>
+        <span class="text-zinc-500">// Используем клиентскую фильтрацию или Algolia</span>
+        <span class="text-pink-400">let</span> allProducts = <span class="text-pink-400">try await</span> <span class="text-yellow-300">fetchProducts</span>()
+        <span class="text-pink-400">let</span> lowercaseQuery = query.<span class="text-yellow-300">lowercased</span>()
+
+        <span class="text-pink-400">return</span> allProducts.<span class="text-yellow-300">filter</span> { product <span class="text-pink-400">in</span>
+            product.name.<span class="text-yellow-300">lowercased</span>().<span class="text-yellow-300">contains</span>(lowercaseQuery) ||
+            product.description.<span class="text-yellow-300">lowercased</span>().<span class="text-yellow-300">contains</span>(lowercaseQuery)
+        }
+    }
+}
+
+<span class="text-pink-400">enum</span> <span class="text-cyan-400">ProductError</span>: <span class="text-cyan-400">Error</span> {
+    <span class="text-pink-400">case</span> notFound
+    <span class="text-pink-400">case</span> fetchFailed
+}
+</pre>
+                    </div>
+
+                    <!-- Products Protocols -->
+                    <h2 class="text-2xl font-bold mt-12 mb-6">Products Module - Протоколы</h2>
+
+                    <div class="bg-zinc-900 rounded-xl p-6 mb-8 font-mono text-sm overflow-x-auto">
+<pre class="text-zinc-300">
+<span class="text-zinc-500">// ProductsProtocols.swift</span>
+<span class="text-pink-400">import</span> <span class="text-cyan-400">UIKit</span>
+
+<span class="text-zinc-500">// MARK: - View</span>
+<span class="text-pink-400">protocol</span> <span class="text-cyan-400">ProductsViewProtocol</span>: <span class="text-cyan-400">AnyObject</span> {
+    <span class="text-pink-400">var</span> presenter: <span class="text-cyan-400">ProductsPresenterProtocol</span>? { <span class="text-pink-400">get set</span> }
+
+    <span class="text-pink-400">func</span> <span class="text-yellow-300">showProducts</span>(<span class="text-purple-400">_</span> products: [<span class="text-cyan-400">Product</span>])
+    <span class="text-pink-400">func</span> <span class="text-yellow-300">showLoading</span>()
+    <span class="text-pink-400">func</span> <span class="text-yellow-300">hideLoading</span>()
+    <span class="text-pink-400">func</span> <span class="text-yellow-300">showError</span>(<span class="text-purple-400">_</span> message: <span class="text-cyan-400">String</span>)
+    <span class="text-pink-400">func</span> <span class="text-yellow-300">showEmptyState</span>()
+}
+
+<span class="text-zinc-500">// MARK: - Presenter</span>
+<span class="text-pink-400">protocol</span> <span class="text-cyan-400">ProductsPresenterProtocol</span>: <span class="text-cyan-400">AnyObject</span> {
+    <span class="text-pink-400">var</span> view: <span class="text-cyan-400">ProductsViewProtocol</span>? { <span class="text-pink-400">get set</span> }
+    <span class="text-pink-400">var</span> interactor: <span class="text-cyan-400">ProductsInteractorInputProtocol</span>? { <span class="text-pink-400">get set</span> }
+    <span class="text-pink-400">var</span> router: <span class="text-cyan-400">ProductsRouterProtocol</span>? { <span class="text-pink-400">get set</span> }
+
+    <span class="text-pink-400">func</span> <span class="text-yellow-300">viewDidLoad</span>()
+    <span class="text-pink-400">func</span> <span class="text-yellow-300">didSelectProduct</span>(<span class="text-purple-400">_</span> product: <span class="text-cyan-400">Product</span>)
+    <span class="text-pink-400">func</span> <span class="text-yellow-300">didSelectCategory</span>(<span class="text-purple-400">_</span> category: <span class="text-cyan-400">Category</span>)
+    <span class="text-pink-400">func</span> <span class="text-yellow-300">searchProducts</span>(query: <span class="text-cyan-400">String</span>)
+    <span class="text-pink-400">func</span> <span class="text-yellow-300">refreshProducts</span>()
+}
+
+<span class="text-zinc-500">// MARK: - Interactor</span>
+<span class="text-pink-400">protocol</span> <span class="text-cyan-400">ProductsInteractorInputProtocol</span>: <span class="text-cyan-400">AnyObject</span> {
+    <span class="text-pink-400">var</span> presenter: <span class="text-cyan-400">ProductsInteractorOutputProtocol</span>? { <span class="text-pink-400">get set</span> }
+
+    <span class="text-pink-400">func</span> <span class="text-yellow-300">fetchProducts</span>()
+    <span class="text-pink-400">func</span> <span class="text-yellow-300">fetchProducts</span>(category: <span class="text-cyan-400">String</span>)
+    <span class="text-pink-400">func</span> <span class="text-yellow-300">searchProducts</span>(query: <span class="text-cyan-400">String</span>)
+}
+
+<span class="text-pink-400">protocol</span> <span class="text-cyan-400">ProductsInteractorOutputProtocol</span>: <span class="text-cyan-400">AnyObject</span> {
+    <span class="text-pink-400">func</span> <span class="text-yellow-300">didFetchProducts</span>(<span class="text-purple-400">_</span> products: [<span class="text-cyan-400">Product</span>])
+    <span class="text-pink-400">func</span> <span class="text-yellow-300">didFailToFetchProducts</span>(error: <span class="text-cyan-400">Error</span>)
+}
+
+<span class="text-zinc-500">// MARK: - Router</span>
+<span class="text-pink-400">protocol</span> <span class="text-cyan-400">ProductsRouterProtocol</span>: <span class="text-cyan-400">AnyObject</span> {
+    <span class="text-pink-400">static func</span> <span class="text-yellow-300">createModule</span>() -> <span class="text-cyan-400">UIViewController</span>
+
+    <span class="text-pink-400">func</span> <span class="text-yellow-300">navigateToProductDetail</span>(<span class="text-purple-400">_</span> product: <span class="text-cyan-400">Product</span>)
+}
+</pre>
+                    </div>
+
+                    <!-- ProductsViewController -->
+                    <h2 class="text-2xl font-bold mt-12 mb-6">ProductsViewController</h2>
+
+                    <div class="bg-zinc-900 rounded-xl p-6 mb-8 font-mono text-sm overflow-x-auto">
+<pre class="text-zinc-300">
+<span class="text-zinc-500">// ProductsViewController.swift</span>
+<span class="text-pink-400">import</span> <span class="text-cyan-400">UIKit</span>
+<span class="text-pink-400">import</span> <span class="text-cyan-400">SnapKit</span>
+
+<span class="text-pink-400">final class</span> <span class="text-cyan-400">ProductsViewController</span>: <span class="text-cyan-400">UIViewController</span> {
+
+    <span class="text-pink-400">var</span> presenter: <span class="text-cyan-400">ProductsPresenterProtocol</span>?
+    <span class="text-pink-400">private var</span> products: [<span class="text-cyan-400">Product</span>] = []
+
+    <span class="text-zinc-500">// MARK: - UI Elements</span>
+
+    <span class="text-pink-400">private lazy var</span> searchController: <span class="text-cyan-400">UISearchController</span> = {
+        <span class="text-pink-400">let</span> sc = <span class="text-cyan-400">UISearchController</span>(searchResultsController: <span class="text-pink-400">nil</span>)
+        sc.searchResultsUpdater = <span class="text-pink-400">self</span>
+        sc.obscuresBackgroundDuringPresentation = <span class="text-pink-400">false</span>
+        sc.searchBar.placeholder = <span class="text-green-400">"Поиск товаров..."</span>
+        <span class="text-pink-400">return</span> sc
+    }()
+
+    <span class="text-pink-400">private lazy var</span> categoryCollectionView: <span class="text-cyan-400">UICollectionView</span> = {
+        <span class="text-pink-400">let</span> layout = <span class="text-cyan-400">UICollectionViewFlowLayout</span>()
+        layout.scrollDirection = .horizontal
+        layout.minimumInteritemSpacing = <span class="text-purple-400">8</span>
+        layout.sectionInset = <span class="text-cyan-400">UIEdgeInsets</span>(top: <span class="text-purple-400">0</span>, left: <span class="text-purple-400">16</span>, bottom: <span class="text-purple-400">0</span>, right: <span class="text-purple-400">16</span>)
+
+        <span class="text-pink-400">let</span> cv = <span class="text-cyan-400">UICollectionView</span>(frame: .zero, collectionViewLayout: layout)
+        cv.<span class="text-yellow-300">register</span>(<span class="text-cyan-400">CategoryCell</span>.<span class="text-pink-400">self</span>, forCellWithReuseIdentifier: <span class="text-cyan-400">CategoryCell</span>.reuseId)
+        cv.delegate = <span class="text-pink-400">self</span>
+        cv.dataSource = <span class="text-pink-400">self</span>
+        cv.showsHorizontalScrollIndicator = <span class="text-pink-400">false</span>
+        cv.backgroundColor = .clear
+        <span class="text-pink-400">return</span> cv
+    }()
+
+    <span class="text-pink-400">private lazy var</span> collectionView: <span class="text-cyan-400">UICollectionView</span> = {
+        <span class="text-pink-400">let</span> layout = <span class="text-yellow-300">createLayout</span>()
+        <span class="text-pink-400">let</span> cv = <span class="text-cyan-400">UICollectionView</span>(frame: .zero, collectionViewLayout: layout)
+        cv.<span class="text-yellow-300">register</span>(<span class="text-cyan-400">ProductCell</span>.<span class="text-pink-400">self</span>, forCellWithReuseIdentifier: <span class="text-cyan-400">ProductCell</span>.reuseId)
+        cv.delegate = <span class="text-pink-400">self</span>
+        cv.dataSource = <span class="text-pink-400">self</span>
+        cv.backgroundColor = .<span class="text-purple-400">systemBackground</span>
+        <span class="text-pink-400">return</span> cv
+    }()
+
+    <span class="text-pink-400">private let</span> activityIndicator: <span class="text-cyan-400">UIActivityIndicatorView</span> = {
+        <span class="text-pink-400">let</span> indicator = <span class="text-cyan-400">UIActivityIndicatorView</span>(style: .large)
+        indicator.hidesWhenStopped = <span class="text-pink-400">true</span>
+        <span class="text-pink-400">return</span> indicator
+    }()
+
+    <span class="text-pink-400">private let</span> refreshControl = <span class="text-cyan-400">UIRefreshControl</span>()
+    <span class="text-pink-400">private var</span> selectedCategoryIndex = <span class="text-purple-400">0</span>
+
+    <span class="text-zinc-500">// MARK: - Lifecycle</span>
+
+    <span class="text-pink-400">override func</span> <span class="text-yellow-300">viewDidLoad</span>() {
+        <span class="text-pink-400">super</span>.<span class="text-yellow-300">viewDidLoad</span>()
+        <span class="text-yellow-300">setupUI</span>()
+        presenter?.<span class="text-yellow-300">viewDidLoad</span>()
+    }
+
+    <span class="text-zinc-500">// MARK: - Setup</span>
+
+    <span class="text-pink-400">private func</span> <span class="text-yellow-300">setupUI</span>() {
+        title = <span class="text-green-400">"Каталог"</span>
+        view.backgroundColor = .<span class="text-purple-400">systemBackground</span>
+        navigationItem.searchController = searchController
+
+        view.<span class="text-yellow-300">addSubview</span>(categoryCollectionView)
+        view.<span class="text-yellow-300">addSubview</span>(collectionView)
+        view.<span class="text-yellow-300">addSubview</span>(activityIndicator)
+
+        refreshControl.<span class="text-yellow-300">addTarget</span>(<span class="text-pink-400">self</span>, action: <span class="text-pink-400">#selector</span>(refresh), for: .valueChanged)
+        collectionView.refreshControl = refreshControl
+
+        categoryCollectionView.snp.<span class="text-yellow-300">makeConstraints</span> { make <span class="text-pink-400">in</span>
+            make.top.equalTo(view.safeAreaLayoutGuide)
+            make.leading.trailing.equalToSuperview()
+            make.height.equalTo(<span class="text-purple-400">50</span>)
+        }
+
+        collectionView.snp.<span class="text-yellow-300">makeConstraints</span> { make <span class="text-pink-400">in</span>
+            make.top.equalTo(categoryCollectionView.snp.bottom).offset(<span class="text-purple-400">8</span>)
+            make.leading.trailing.bottom.equalToSuperview()
+        }
+
+        activityIndicator.snp.<span class="text-yellow-300">makeConstraints</span> { make <span class="text-pink-400">in</span>
+            make.center.equalToSuperview()
+        }
+    }
+
+    <span class="text-pink-400">private func</span> <span class="text-yellow-300">createLayout</span>() -> <span class="text-cyan-400">UICollectionViewLayout</span> {
+        <span class="text-pink-400">let</span> itemSize = <span class="text-cyan-400">NSCollectionLayoutSize</span>(
+            widthDimension: .fractionalWidth(<span class="text-purple-400">0.5</span>),
+            heightDimension: .estimated(<span class="text-purple-400">280</span>)
+        )
+        <span class="text-pink-400">let</span> item = <span class="text-cyan-400">NSCollectionLayoutItem</span>(layoutSize: itemSize)
+        item.contentInsets = <span class="text-cyan-400">NSDirectionalEdgeInsets</span>(top: <span class="text-purple-400">8</span>, leading: <span class="text-purple-400">8</span>, bottom: <span class="text-purple-400">8</span>, trailing: <span class="text-purple-400">8</span>)
+
+        <span class="text-pink-400">let</span> groupSize = <span class="text-cyan-400">NSCollectionLayoutSize</span>(
+            widthDimension: .fractionalWidth(<span class="text-purple-400">1.0</span>),
+            heightDimension: .estimated(<span class="text-purple-400">280</span>)
+        )
+        <span class="text-pink-400">let</span> group = <span class="text-cyan-400">NSCollectionLayoutGroup</span>.<span class="text-yellow-300">horizontal</span>(
+            layoutSize: groupSize,
+            subitems: [item]
+        )
+
+        <span class="text-pink-400">let</span> section = <span class="text-cyan-400">NSCollectionLayoutSection</span>(group: group)
+        section.contentInsets = <span class="text-cyan-400">NSDirectionalEdgeInsets</span>(top: <span class="text-purple-400">8</span>, leading: <span class="text-purple-400">8</span>, bottom: <span class="text-purple-400">8</span>, trailing: <span class="text-purple-400">8</span>)
+
+        <span class="text-pink-400">return</span> <span class="text-cyan-400">UICollectionViewCompositionalLayout</span>(section: section)
+    }
+
+    <span class="text-pink-400">@objc private func</span> <span class="text-yellow-300">refresh</span>() {
+        presenter?.<span class="text-yellow-300">refreshProducts</span>()
+    }
+}
+</pre>
+                    </div>
+
+                    <!-- Collection View Extensions -->
+                    <h3 class="text-xl font-semibold mt-8 mb-4">UICollectionView Extensions</h3>
+
+                    <div class="bg-zinc-900 rounded-xl p-6 mb-8 font-mono text-sm overflow-x-auto">
+<pre class="text-zinc-300">
+<span class="text-zinc-500">// MARK: - UICollectionViewDataSource</span>
+<span class="text-pink-400">extension</span> <span class="text-cyan-400">ProductsViewController</span>: <span class="text-cyan-400">UICollectionViewDataSource</span> {
+
+    <span class="text-pink-400">func</span> <span class="text-yellow-300">collectionView</span>(
+        <span class="text-purple-400">_</span> collectionView: <span class="text-cyan-400">UICollectionView</span>,
+        numberOfItemsInSection section: <span class="text-cyan-400">Int</span>
+    ) -> <span class="text-cyan-400">Int</span> {
+        <span class="text-pink-400">if</span> collectionView == categoryCollectionView {
+            <span class="text-pink-400">return</span> <span class="text-cyan-400">Category</span>.allCases.count
+        }
+        <span class="text-pink-400">return</span> products.count
+    }
+
+    <span class="text-pink-400">func</span> <span class="text-yellow-300">collectionView</span>(
+        <span class="text-purple-400">_</span> collectionView: <span class="text-cyan-400">UICollectionView</span>,
+        cellForItemAt indexPath: <span class="text-cyan-400">IndexPath</span>
+    ) -> <span class="text-cyan-400">UICollectionViewCell</span> {
+
+        <span class="text-pink-400">if</span> collectionView == categoryCollectionView {
+            <span class="text-pink-400">let</span> cell = collectionView.<span class="text-yellow-300">dequeueReusableCell</span>(
+                withReuseIdentifier: <span class="text-cyan-400">CategoryCell</span>.reuseId,
+                for: indexPath
+            ) <span class="text-pink-400">as!</span> <span class="text-cyan-400">CategoryCell</span>
+
+            <span class="text-pink-400">let</span> category = <span class="text-cyan-400">Category</span>.allCases[indexPath.item]
+            cell.<span class="text-yellow-300">configure</span>(
+                with: category.rawValue,
+                isSelected: indexPath.item == selectedCategoryIndex
+            )
+            <span class="text-pink-400">return</span> cell
+        }
+
+        <span class="text-pink-400">let</span> cell = collectionView.<span class="text-yellow-300">dequeueReusableCell</span>(
+            withReuseIdentifier: <span class="text-cyan-400">ProductCell</span>.reuseId,
+            for: indexPath
+        ) <span class="text-pink-400">as!</span> <span class="text-cyan-400">ProductCell</span>
+
+        cell.<span class="text-yellow-300">configure</span>(with: products[indexPath.item])
+        <span class="text-pink-400">return</span> cell
+    }
+}
+
+<span class="text-zinc-500">// MARK: - UICollectionViewDelegate</span>
+<span class="text-pink-400">extension</span> <span class="text-cyan-400">ProductsViewController</span>: <span class="text-cyan-400">UICollectionViewDelegate</span> {
+
+    <span class="text-pink-400">func</span> <span class="text-yellow-300">collectionView</span>(
+        <span class="text-purple-400">_</span> collectionView: <span class="text-cyan-400">UICollectionView</span>,
+        didSelectItemAt indexPath: <span class="text-cyan-400">IndexPath</span>
+    ) {
+        <span class="text-pink-400">if</span> collectionView == categoryCollectionView {
+            selectedCategoryIndex = indexPath.item
+            categoryCollectionView.<span class="text-yellow-300">reloadData</span>()
+            <span class="text-pink-400">let</span> category = <span class="text-cyan-400">Category</span>.allCases[indexPath.item]
+            presenter?.<span class="text-yellow-300">didSelectCategory</span>(category)
+        } <span class="text-pink-400">else</span> {
+            <span class="text-pink-400">let</span> product = products[indexPath.item]
+            presenter?.<span class="text-yellow-300">didSelectProduct</span>(product)
+        }
+    }
+}
+</pre>
+                    </div>
+
+                    <!-- ProductCell -->
+                    <h2 class="text-2xl font-bold mt-12 mb-6">ProductCell</h2>
+
+                    <div class="bg-zinc-900 rounded-xl p-6 mb-8 font-mono text-sm overflow-x-auto">
+<pre class="text-zinc-300">
+<span class="text-zinc-500">// ProductCell.swift</span>
+<span class="text-pink-400">import</span> <span class="text-cyan-400">UIKit</span>
+<span class="text-pink-400">import</span> <span class="text-cyan-400">SnapKit</span>
+<span class="text-pink-400">import</span> <span class="text-cyan-400">Kingfisher</span>
+
+<span class="text-pink-400">final class</span> <span class="text-cyan-400">ProductCell</span>: <span class="text-cyan-400">UICollectionViewCell</span> {
+
+    <span class="text-pink-400">static let</span> reuseId = <span class="text-green-400">"ProductCell"</span>
+
+    <span class="text-pink-400">private let</span> imageView: <span class="text-cyan-400">UIImageView</span> = {
+        <span class="text-pink-400">let</span> iv = <span class="text-cyan-400">UIImageView</span>()
+        iv.contentMode = .scaleAspectFill
+        iv.clipsToBounds = <span class="text-pink-400">true</span>
+        iv.backgroundColor = .<span class="text-purple-400">systemGray6</span>
+        iv.layer.cornerRadius = <span class="text-purple-400">12</span>
+        <span class="text-pink-400">return</span> iv
+    }()
+
+    <span class="text-pink-400">private let</span> nameLabel: <span class="text-cyan-400">UILabel</span> = {
+        <span class="text-pink-400">let</span> label = <span class="text-cyan-400">UILabel</span>()
+        label.font = .<span class="text-yellow-300">systemFont</span>(ofSize: <span class="text-purple-400">14</span>, weight: .medium)
+        label.numberOfLines = <span class="text-purple-400">2</span>
+        <span class="text-pink-400">return</span> label
+    }()
+
+    <span class="text-pink-400">private let</span> priceLabel: <span class="text-cyan-400">UILabel</span> = {
+        <span class="text-pink-400">let</span> label = <span class="text-cyan-400">UILabel</span>()
+        label.font = .<span class="text-yellow-300">systemFont</span>(ofSize: <span class="text-purple-400">16</span>, weight: .bold)
+        label.textColor = .<span class="text-purple-400">systemBlue</span>
+        <span class="text-pink-400">return</span> label
+    }()
+
+    <span class="text-pink-400">private let</span> ratingStackView: <span class="text-cyan-400">UIStackView</span> = {
+        <span class="text-pink-400">let</span> sv = <span class="text-cyan-400">UIStackView</span>()
+        sv.axis = .horizontal
+        sv.spacing = <span class="text-purple-400">4</span>
+        sv.alignment = .center
+        <span class="text-pink-400">return</span> sv
+    }()
+
+    <span class="text-pink-400">private let</span> starImageView: <span class="text-cyan-400">UIImageView</span> = {
+        <span class="text-pink-400">let</span> iv = <span class="text-cyan-400">UIImageView</span>()
+        iv.image = <span class="text-cyan-400">UIImage</span>(systemName: <span class="text-green-400">"star.fill"</span>)
+        iv.tintColor = .<span class="text-purple-400">systemYellow</span>
+        <span class="text-pink-400">return</span> iv
+    }()
+
+    <span class="text-pink-400">private let</span> ratingLabel: <span class="text-cyan-400">UILabel</span> = {
+        <span class="text-pink-400">let</span> label = <span class="text-cyan-400">UILabel</span>()
+        label.font = .<span class="text-yellow-300">systemFont</span>(ofSize: <span class="text-purple-400">12</span>)
+        label.textColor = .<span class="text-purple-400">secondaryLabel</span>
+        <span class="text-pink-400">return</span> label
+    }()
+
+    <span class="text-pink-400">override init</span>(frame: <span class="text-cyan-400">CGRect</span>) {
+        <span class="text-pink-400">super</span>.<span class="text-pink-400">init</span>(frame: frame)
+        <span class="text-yellow-300">setupUI</span>()
+    }
+
+    <span class="text-pink-400">required init?</span>(coder: <span class="text-cyan-400">NSCoder</span>) {
+        <span class="text-pink-400">fatalError</span>(<span class="text-green-400">"init(coder:) has not been implemented"</span>)
+    }
+
+    <span class="text-pink-400">private func</span> <span class="text-yellow-300">setupUI</span>() {
+        contentView.<span class="text-yellow-300">addSubview</span>(imageView)
+        contentView.<span class="text-yellow-300">addSubview</span>(nameLabel)
+        contentView.<span class="text-yellow-300">addSubview</span>(priceLabel)
+        contentView.<span class="text-yellow-300">addSubview</span>(ratingStackView)
+
+        ratingStackView.<span class="text-yellow-300">addArrangedSubview</span>(starImageView)
+        ratingStackView.<span class="text-yellow-300">addArrangedSubview</span>(ratingLabel)
+
+        imageView.snp.<span class="text-yellow-300">makeConstraints</span> { make <span class="text-pink-400">in</span>
+            make.top.leading.trailing.equalToSuperview()
+            make.height.equalTo(<span class="text-purple-400">160</span>)
+        }
+
+        nameLabel.snp.<span class="text-yellow-300">makeConstraints</span> { make <span class="text-pink-400">in</span>
+            make.top.equalTo(imageView.snp.bottom).offset(<span class="text-purple-400">8</span>)
+            make.leading.trailing.equalToSuperview().inset(<span class="text-purple-400">4</span>)
+        }
+
+        ratingStackView.snp.<span class="text-yellow-300">makeConstraints</span> { make <span class="text-pink-400">in</span>
+            make.top.equalTo(nameLabel.snp.bottom).offset(<span class="text-purple-400">4</span>)
+            make.leading.equalToSuperview().inset(<span class="text-purple-400">4</span>)
+        }
+
+        starImageView.snp.<span class="text-yellow-300">makeConstraints</span> { make <span class="text-pink-400">in</span>
+            make.size.equalTo(<span class="text-purple-400">14</span>)
+        }
+
+        priceLabel.snp.<span class="text-yellow-300">makeConstraints</span> { make <span class="text-pink-400">in</span>
+            make.top.equalTo(ratingStackView.snp.bottom).offset(<span class="text-purple-400">4</span>)
+            make.leading.trailing.equalToSuperview().inset(<span class="text-purple-400">4</span>)
+            make.bottom.lessThanOrEqualToSuperview()
+        }
+    }
+
+    <span class="text-pink-400">func</span> <span class="text-yellow-300">configure</span>(with product: <span class="text-cyan-400">Product</span>) {
+        nameLabel.text = product.name
+        priceLabel.text = product.formattedPrice
+        ratingLabel.text = <span class="text-cyan-400">String</span>(format: <span class="text-green-400">"%.1f (%d)"</span>, product.rating, product.reviewsCount)
+
+        <span class="text-pink-400">if let</span> url = <span class="text-cyan-400">URL</span>(string: product.imageURL) {
+            imageView.kf.<span class="text-yellow-300">setImage</span>(
+                with: url,
+                placeholder: <span class="text-cyan-400">UIImage</span>(systemName: <span class="text-green-400">"photo"</span>)
+            )
+        }
+    }
+
+    <span class="text-pink-400">override func</span> <span class="text-yellow-300">prepareForReuse</span>() {
+        <span class="text-pink-400">super</span>.<span class="text-yellow-300">prepareForReuse</span>()
+        imageView.kf.<span class="text-yellow-300">cancelDownloadTask</span>()
+        imageView.image = <span class="text-pink-400">nil</span>
+    }
+}
+</pre>
+                    </div>
+
+                    <!-- Products Presenter -->
+                    <h2 class="text-2xl font-bold mt-12 mb-6">ProductsPresenter</h2>
+
+                    <div class="bg-zinc-900 rounded-xl p-6 mb-8 font-mono text-sm overflow-x-auto">
+<pre class="text-zinc-300">
+<span class="text-zinc-500">// ProductsPresenter.swift</span>
+<span class="text-pink-400">import</span> <span class="text-cyan-400">Foundation</span>
+
+<span class="text-pink-400">final class</span> <span class="text-cyan-400">ProductsPresenter</span>: <span class="text-cyan-400">ProductsPresenterProtocol</span> {
+
+    <span class="text-pink-400">weak var</span> view: <span class="text-cyan-400">ProductsViewProtocol</span>?
+    <span class="text-pink-400">var</span> interactor: <span class="text-cyan-400">ProductsInteractorInputProtocol</span>?
+    <span class="text-pink-400">var</span> router: <span class="text-cyan-400">ProductsRouterProtocol</span>?
+
+    <span class="text-pink-400">private var</span> currentCategory: <span class="text-cyan-400">Category</span> = .all
+
+    <span class="text-pink-400">func</span> <span class="text-yellow-300">viewDidLoad</span>() {
+        view?.<span class="text-yellow-300">showLoading</span>()
+        interactor?.<span class="text-yellow-300">fetchProducts</span>()
+    }
+
+    <span class="text-pink-400">func</span> <span class="text-yellow-300">didSelectProduct</span>(<span class="text-purple-400">_</span> product: <span class="text-cyan-400">Product</span>) {
+        router?.<span class="text-yellow-300">navigateToProductDetail</span>(product)
+    }
+
+    <span class="text-pink-400">func</span> <span class="text-yellow-300">didSelectCategory</span>(<span class="text-purple-400">_</span> category: <span class="text-cyan-400">Category</span>) {
+        currentCategory = category
+        view?.<span class="text-yellow-300">showLoading</span>()
+
+        <span class="text-pink-400">if</span> category == .all {
+            interactor?.<span class="text-yellow-300">fetchProducts</span>()
+        } <span class="text-pink-400">else</span> {
+            interactor?.<span class="text-yellow-300">fetchProducts</span>(category: category.rawValue)
+        }
+    }
+
+    <span class="text-pink-400">func</span> <span class="text-yellow-300">searchProducts</span>(query: <span class="text-cyan-400">String</span>) {
+        <span class="text-pink-400">if</span> query.isEmpty {
+            <span class="text-yellow-300">didSelectCategory</span>(currentCategory)
+        } <span class="text-pink-400">else</span> {
+            interactor?.<span class="text-yellow-300">searchProducts</span>(query: query)
+        }
+    }
+
+    <span class="text-pink-400">func</span> <span class="text-yellow-300">refreshProducts</span>() {
+        <span class="text-yellow-300">didSelectCategory</span>(currentCategory)
+    }
+}
+
+<span class="text-zinc-500">// MARK: - ProductsInteractorOutputProtocol</span>
+<span class="text-pink-400">extension</span> <span class="text-cyan-400">ProductsPresenter</span>: <span class="text-cyan-400">ProductsInteractorOutputProtocol</span> {
+
+    <span class="text-pink-400">func</span> <span class="text-yellow-300">didFetchProducts</span>(<span class="text-purple-400">_</span> products: [<span class="text-cyan-400">Product</span>]) {
+        view?.<span class="text-yellow-300">hideLoading</span>()
+
+        <span class="text-pink-400">if</span> products.isEmpty {
+            view?.<span class="text-yellow-300">showEmptyState</span>()
+        } <span class="text-pink-400">else</span> {
+            view?.<span class="text-yellow-300">showProducts</span>(products)
+        }
+    }
+
+    <span class="text-pink-400">func</span> <span class="text-yellow-300">didFailToFetchProducts</span>(error: <span class="text-cyan-400">Error</span>) {
+        view?.<span class="text-yellow-300">hideLoading</span>()
+        view?.<span class="text-yellow-300">showError</span>(<span class="text-green-400">"Не удалось загрузить товары"</span>)
+    }
+}
+</pre>
+                    </div>
+
+                    <!-- Product Detail -->
+                    <h2 class="text-2xl font-bold mt-12 mb-6">ProductDetailViewController</h2>
+
+                    <div class="bg-zinc-900 rounded-xl p-6 mb-8 font-mono text-sm overflow-x-auto">
+<pre class="text-zinc-300">
+<span class="text-zinc-500">// ProductDetailViewController.swift</span>
+<span class="text-pink-400">import</span> <span class="text-cyan-400">UIKit</span>
+<span class="text-pink-400">import</span> <span class="text-cyan-400">SnapKit</span>
+<span class="text-pink-400">import</span> <span class="text-cyan-400">Kingfisher</span>
+
+<span class="text-pink-400">final class</span> <span class="text-cyan-400">ProductDetailViewController</span>: <span class="text-cyan-400">UIViewController</span> {
+
+    <span class="text-pink-400">var</span> presenter: <span class="text-cyan-400">ProductDetailPresenterProtocol</span>?
+
+    <span class="text-pink-400">private let</span> scrollView = <span class="text-cyan-400">UIScrollView</span>()
+    <span class="text-pink-400">private let</span> contentView = <span class="text-cyan-400">UIView</span>()
+
+    <span class="text-pink-400">private let</span> imageView: <span class="text-cyan-400">UIImageView</span> = {
+        <span class="text-pink-400">let</span> iv = <span class="text-cyan-400">UIImageView</span>()
+        iv.contentMode = .scaleAspectFit
+        iv.backgroundColor = .<span class="text-purple-400">systemGray6</span>
+        <span class="text-pink-400">return</span> iv
+    }()
+
+    <span class="text-pink-400">private let</span> nameLabel: <span class="text-cyan-400">UILabel</span> = {
+        <span class="text-pink-400">let</span> label = <span class="text-cyan-400">UILabel</span>()
+        label.font = .<span class="text-yellow-300">systemFont</span>(ofSize: <span class="text-purple-400">24</span>, weight: .bold)
+        label.numberOfLines = <span class="text-purple-400">0</span>
+        <span class="text-pink-400">return</span> label
+    }()
+
+    <span class="text-pink-400">private let</span> priceLabel: <span class="text-cyan-400">UILabel</span> = {
+        <span class="text-pink-400">let</span> label = <span class="text-cyan-400">UILabel</span>()
+        label.font = .<span class="text-yellow-300">systemFont</span>(ofSize: <span class="text-purple-400">28</span>, weight: .bold)
+        label.textColor = .<span class="text-purple-400">systemBlue</span>
+        <span class="text-pink-400">return</span> label
+    }()
+
+    <span class="text-pink-400">private let</span> descriptionLabel: <span class="text-cyan-400">UILabel</span> = {
+        <span class="text-pink-400">let</span> label = <span class="text-cyan-400">UILabel</span>()
+        label.font = .<span class="text-yellow-300">systemFont</span>(ofSize: <span class="text-purple-400">16</span>)
+        label.textColor = .<span class="text-purple-400">secondaryLabel</span>
+        label.numberOfLines = <span class="text-purple-400">0</span>
+        <span class="text-pink-400">return</span> label
+    }()
+
+    <span class="text-pink-400">private let</span> addToCartButton: <span class="text-cyan-400">UIButton</span> = {
+        <span class="text-pink-400">let</span> button = <span class="text-cyan-400">UIButton</span>(type: .system)
+        button.<span class="text-yellow-300">setTitle</span>(<span class="text-green-400">"Добавить в корзину"</span>, for: .normal)
+        button.<span class="text-yellow-300">setTitleColor</span>(.white, for: .normal)
+        button.titleLabel?.font = .<span class="text-yellow-300">systemFont</span>(ofSize: <span class="text-purple-400">18</span>, weight: .semibold)
+        button.backgroundColor = .<span class="text-purple-400">systemBlue</span>
+        button.layer.cornerRadius = <span class="text-purple-400">14</span>
+        <span class="text-pink-400">return</span> button
+    }()
+
+    <span class="text-pink-400">private let</span> favoriteButton: <span class="text-cyan-400">UIButton</span> = {
+        <span class="text-pink-400">let</span> button = <span class="text-cyan-400">UIButton</span>(type: .system)
+        button.<span class="text-yellow-300">setImage</span>(<span class="text-cyan-400">UIImage</span>(systemName: <span class="text-green-400">"heart"</span>), for: .normal)
+        button.tintColor = .<span class="text-purple-400">systemRed</span>
+        <span class="text-pink-400">return</span> button
+    }()
+
+    <span class="text-pink-400">override func</span> <span class="text-yellow-300">viewDidLoad</span>() {
+        <span class="text-pink-400">super</span>.<span class="text-yellow-300">viewDidLoad</span>()
+        <span class="text-yellow-300">setupUI</span>()
+        <span class="text-yellow-300">setupActions</span>()
+        presenter?.<span class="text-yellow-300">viewDidLoad</span>()
+    }
+
+    <span class="text-pink-400">private func</span> <span class="text-yellow-300">setupUI</span>() {
+        view.backgroundColor = .<span class="text-purple-400">systemBackground</span>
+        navigationItem.rightBarButtonItem = <span class="text-cyan-400">UIBarButtonItem</span>(customView: favoriteButton)
+
+        view.<span class="text-yellow-300">addSubview</span>(scrollView)
+        scrollView.<span class="text-yellow-300">addSubview</span>(contentView)
+        contentView.<span class="text-yellow-300">addSubview</span>(imageView)
+        contentView.<span class="text-yellow-300">addSubview</span>(nameLabel)
+        contentView.<span class="text-yellow-300">addSubview</span>(priceLabel)
+        contentView.<span class="text-yellow-300">addSubview</span>(descriptionLabel)
+        view.<span class="text-yellow-300">addSubview</span>(addToCartButton)
+
+        scrollView.snp.<span class="text-yellow-300">makeConstraints</span> { make <span class="text-pink-400">in</span>
+            make.top.leading.trailing.equalToSuperview()
+            make.bottom.equalTo(addToCartButton.snp.top).offset(-<span class="text-purple-400">16</span>)
+        }
+
+        contentView.snp.<span class="text-yellow-300">makeConstraints</span> { make <span class="text-pink-400">in</span>
+            make.edges.equalToSuperview()
+            make.width.equalTo(scrollView)
+        }
+
+        imageView.snp.<span class="text-yellow-300">makeConstraints</span> { make <span class="text-pink-400">in</span>
+            make.top.leading.trailing.equalToSuperview()
+            make.height.equalTo(<span class="text-purple-400">300</span>)
+        }
+
+        nameLabel.snp.<span class="text-yellow-300">makeConstraints</span> { make <span class="text-pink-400">in</span>
+            make.top.equalTo(imageView.snp.bottom).offset(<span class="text-purple-400">16</span>)
+            make.leading.trailing.equalToSuperview().inset(<span class="text-purple-400">16</span>)
+        }
+
+        priceLabel.snp.<span class="text-yellow-300">makeConstraints</span> { make <span class="text-pink-400">in</span>
+            make.top.equalTo(nameLabel.snp.bottom).offset(<span class="text-purple-400">8</span>)
+            make.leading.trailing.equalToSuperview().inset(<span class="text-purple-400">16</span>)
+        }
+
+        descriptionLabel.snp.<span class="text-yellow-300">makeConstraints</span> { make <span class="text-pink-400">in</span>
+            make.top.equalTo(priceLabel.snp.bottom).offset(<span class="text-purple-400">16</span>)
+            make.leading.trailing.equalToSuperview().inset(<span class="text-purple-400">16</span>)
+            make.bottom.equalToSuperview().inset(<span class="text-purple-400">16</span>)
+        }
+
+        addToCartButton.snp.<span class="text-yellow-300">makeConstraints</span> { make <span class="text-pink-400">in</span>
+            make.leading.trailing.equalToSuperview().inset(<span class="text-purple-400">16</span>)
+            make.bottom.equalTo(view.safeAreaLayoutGuide).inset(<span class="text-purple-400">16</span>)
+            make.height.equalTo(<span class="text-purple-400">56</span>)
+        }
+    }
+
+    <span class="text-pink-400">private func</span> <span class="text-yellow-300">setupActions</span>() {
+        addToCartButton.<span class="text-yellow-300">addTarget</span>(<span class="text-pink-400">self</span>, action: <span class="text-pink-400">#selector</span>(addToCartTapped), for: .touchUpInside)
+        favoriteButton.<span class="text-yellow-300">addTarget</span>(<span class="text-pink-400">self</span>, action: <span class="text-pink-400">#selector</span>(favoriteTapped), for: .touchUpInside)
+    }
+
+    <span class="text-pink-400">@objc private func</span> <span class="text-yellow-300">addToCartTapped</span>() {
+        presenter?.<span class="text-yellow-300">addToCartTapped</span>()
+    }
+
+    <span class="text-pink-400">@objc private func</span> <span class="text-yellow-300">favoriteTapped</span>() {
+        presenter?.<span class="text-yellow-300">toggleFavorite</span>()
+    }
+}
+
+<span class="text-zinc-500">// MARK: - ProductDetailViewProtocol</span>
+<span class="text-pink-400">extension</span> <span class="text-cyan-400">ProductDetailViewController</span>: <span class="text-cyan-400">ProductDetailViewProtocol</span> {
+
+    <span class="text-pink-400">func</span> <span class="text-yellow-300">showProduct</span>(<span class="text-purple-400">_</span> product: <span class="text-cyan-400">Product</span>) {
+        nameLabel.text = product.name
+        priceLabel.text = product.formattedPrice
+        descriptionLabel.text = product.description
+
+        <span class="text-pink-400">if let</span> url = <span class="text-cyan-400">URL</span>(string: product.imageURL) {
+            imageView.kf.<span class="text-yellow-300">setImage</span>(with: url)
+        }
+    }
+
+    <span class="text-pink-400">func</span> <span class="text-yellow-300">showFavoriteState</span>(<span class="text-purple-400">_</span> isFavorite: <span class="text-cyan-400">Bool</span>) {
+        <span class="text-pink-400">let</span> imageName = isFavorite ? <span class="text-green-400">"heart.fill"</span> : <span class="text-green-400">"heart"</span>
+        favoriteButton.<span class="text-yellow-300">setImage</span>(<span class="text-cyan-400">UIImage</span>(systemName: imageName), for: .normal)
+    }
+
+    <span class="text-pink-400">func</span> <span class="text-yellow-300">showAddedToCart</span>() {
+        <span class="text-pink-400">let</span> alert = <span class="text-cyan-400">UIAlertController</span>(
+            title: <span class="text-green-400">"Готово"</span>,
+            message: <span class="text-green-400">"Товар добавлен в корзину"</span>,
+            preferredStyle: .alert
+        )
+        alert.<span class="text-yellow-300">addAction</span>(<span class="text-cyan-400">UIAlertAction</span>(title: <span class="text-green-400">"OK"</span>, style: .default))
+        <span class="text-yellow-300">present</span>(alert, animated: <span class="text-pink-400">true</span>)
+    }
+}
+</pre>
+                    </div>
+
+                    <!-- Summary -->
+                    <div class="mt-16 p-8 bg-gradient-to-br from-primary/10 to-purple-500/10 rounded-2xl border border-primary/20">
+                        <h3 class="text-xl font-bold mb-6">Что вы узнали</h3>
+                        <div class="grid gap-4">
+                            <div class="flex items-start gap-3">
+                                <div class="w-6 h-6 bg-primary/20 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                                    <svg class="w-3 h-3 text-primary" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                                    </svg>
+                                </div>
+                                <p class="text-zinc-600 dark:text-zinc-400">Загрузка и декодирование данных из Firestore</p>
+                            </div>
+                            <div class="flex items-start gap-3">
+                                <div class="w-6 h-6 bg-primary/20 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                                    <svg class="w-3 h-3 text-primary" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                                    </svg>
+                                </div>
+                                <p class="text-zinc-600 dark:text-zinc-400">UICollectionViewCompositionalLayout для сеток</p>
+                            </div>
+                            <div class="flex items-start gap-3">
+                                <div class="w-6 h-6 bg-primary/20 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                                    <svg class="w-3 h-3 text-primary" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                                    </svg>
+                                </div>
+                                <p class="text-zinc-600 dark:text-zinc-400">Фильтрация товаров по категориям</p>
+                            </div>
+                            <div class="flex items-start gap-3">
+                                <div class="w-6 h-6 bg-primary/20 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                                    <svg class="w-3 h-3 text-primary" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                                    </svg>
+                                </div>
+                                <p class="text-zinc-600 dark:text-zinc-400">Поиск с UISearchController</p>
+                            </div>
+                            <div class="flex items-start gap-3">
+                                <div class="w-6 h-6 bg-primary/20 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                                    <svg class="w-3 h-3 text-primary" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                                    </svg>
+                                </div>
+                                <p class="text-zinc-600 dark:text-zinc-400">Загрузка изображений с Kingfisher</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Next Chapter Preview -->
+                    <div class="mt-8 p-6 bg-zinc-100 dark:bg-zinc-800/50 rounded-2xl">
+                        <h4 class="font-semibold mb-2">Следующая глава</h4>
+                        <p class="text-zinc-600 dark:text-zinc-400">
+                            В следующей главе мы создадим модуль корзины — научимся добавлять товары,
+                            изменять количество и рассчитывать итоговую стоимость заказа.
+                        </p>
+                    </div>
+                </div>
+
+                <nav class="flex justify-between gap-4 mt-16 pt-8 border-t border-zinc-200 dark:border-zinc-800">
+                    <a href="15-authentication.html" class="flex items-center gap-3 px-5 py-3 bg-zinc-100 dark:bg-zinc-800 hover:bg-primary hover:text-white rounded-xl transition-colors">
+                        <span class="text-xl">←</span>
+                        <span class="font-medium">Предыдущая</span>
+                    </a>
+                    <a href="17-cart.html" class="flex items-center gap-3 px-5 py-3 bg-zinc-100 dark:bg-zinc-800 hover:bg-primary hover:text-white rounded-xl transition-colors ml-auto">
+                        <span class="font-medium">Следующая</span>
+                        <span class="text-xl">→</span>
+                    </a>
+                </nav>
+            </article>
+        </main>
+    </div>
+
+    <script>
+        const menuBtn = document.getElementById('menuBtn');
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('overlay');
+        menuBtn.addEventListener('click', () => {
+            sidebar.classList.toggle('-translate-x-full');
+            overlay.classList.toggle('hidden');
+        });
+        function closeSidebar() {
+            sidebar.classList.add('-translate-x-full');
+            overlay.classList.add('hidden');
+        }
+    </script>
+</body>
+</html>

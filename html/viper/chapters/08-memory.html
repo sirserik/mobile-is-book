@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Глава 08: Управление памятью | iOS Book</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'media',
+            theme: { extend: { colors: { primary: '#007AFF' } } }
+        }
+    </script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
+</head>
+<body class="bg-white dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100">
+    <button id="menuBtn" class="lg:hidden fixed top-4 left-4 z-50 p-3 bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-xl shadow-lg">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+        </svg>
+    </button>
+
+    <div class="flex min-h-screen">
+        <aside id="sidebar" class="fixed inset-y-0 left-0 w-72 bg-zinc-50 dark:bg-zinc-900 border-r border-zinc-200 dark:border-zinc-800 flex flex-col z-40 transform -translate-x-full lg:translate-x-0 transition-transform duration-300">
+            <div class="p-5 border-b border-zinc-200 dark:border-zinc-800">
+                <a href="../index.html" class="flex items-center gap-3 text-lg font-semibold hover:text-primary transition-colors">
+                    <div class="w-9 h-9 bg-primary rounded-lg flex items-center justify-center">
+                        <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/>
+                        </svg>
+                    </div>
+                    iOS Book
+                </a>
+            </div>
+            <nav class="flex-1 overflow-y-auto p-4">
+                <div class="space-y-6">
+                    <div>
+                        <h3 class="px-3 mb-2 text-xs font-semibold uppercase tracking-wider text-zinc-400">Введение</h3>
+                        <a href="00-introduction.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">Введение</a>
+                    </div>
+                    <div>
+                        <h3 class="px-3 mb-2 text-xs font-semibold uppercase tracking-wider text-zinc-400">Основы Swift</h3>
+                        <div class="space-y-1">
+                            <a href="01-xcode.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">1. Xcode</a>
+                            <a href="02-swift-basics.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">2. Основы Swift</a>
+                            <a href="03-control-flow.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">3. Control Flow</a>
+                            <a href="04-functions.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">4. Функции</a>
+                            <a href="05-oop.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">5. ООП</a>
+                            <a href="06-protocols.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">6. Протоколы</a>
+                            <a href="07-optionals.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">7. Optionals</a>
+                            <a href="08-memory.html" class="block px-3 py-2 text-sm text-white bg-primary rounded-lg">8. Память</a>
+                            <a href="09-generics.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">9. Generics</a>
+                            <a href="10-concurrency.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">10. Concurrency</a>
+                        </div>
+                    </div>
+                    <div>
+                        <h3 class="px-3 mb-2 text-xs font-semibold uppercase tracking-wider text-zinc-400">UIKit</h3>
+                        <div class="space-y-1">
+                            <a href="11-uikit-basics.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">11. UIKit</a>
+                            <a href="12-programmatic-ui.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">12. Programmatic UI</a>
+                        </div>
+                    </div>
+                    <div>
+                        <h3 class="px-3 mb-2 text-xs font-semibold uppercase tracking-wider text-zinc-400">Архитектура</h3>
+                        <div class="space-y-1">
+                            <a href="13-viper.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">13. VIPER</a>
+                            <a href="14-project-setup.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">14. Project Setup</a>
+                        </div>
+                    </div>
+                    <div>
+                        <h3 class="px-3 mb-2 text-xs font-semibold uppercase tracking-wider text-zinc-400">Практика</h3>
+                        <div class="space-y-1">
+                            <a href="15-authentication.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">15. Auth</a>
+                            <a href="16-products.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">16. Products</a>
+                            <a href="17-cart.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">17. Cart</a>
+                            <a href="18-favorites.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">18. Favorites</a>
+                            <a href="19-orders.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">19. Orders</a>
+                            <a href="20-profile.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">20. Profile</a>
+                        </div>
+                    </div>
+                    <div>
+                        <h3 class="px-3 mb-2 text-xs font-semibold uppercase tracking-wider text-zinc-400">Дополнительно</h3>
+                        <a href="21-reusable-views.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">21. Reusable Views</a>
+                    </div>
+                </div>
+            </nav>
+        </aside>
+
+        <div id="overlay" class="fixed inset-0 bg-black/50 z-30 lg:hidden hidden" onclick="closeSidebar()"></div>
+
+        <main class="flex-1 lg:ml-72">
+            <article class="max-w-3xl mx-auto px-6 sm:px-8 lg:px-12 py-12 lg:py-16">
+                <header class="mb-12 pb-8 border-b border-zinc-200 dark:border-zinc-800">
+                    <span class="text-sm font-semibold uppercase tracking-wider text-primary">Глава 08</span>
+                    <h1 class="text-3xl sm:text-4xl font-bold mt-2 mb-4">Управление памятью</h1>
+                    <p class="text-lg text-zinc-600 dark:text-zinc-400">ARC, strong, weak, unowned</p>
+                </header>
+
+                <div class="prose prose-zinc dark:prose-invert max-w-none">
+
+                    <!-- Введение -->
+                    <section class="mb-12">
+                        <h2 class="text-2xl font-bold mb-4">Зачем управлять памятью?</h2>
+                        <p class="text-zinc-600 dark:text-zinc-400 mb-4">
+                            Каждый раз, когда вы создаёте объект (экземпляр класса), он занимает место в памяти.
+                            Если не освобождать память от ненужных объектов, приложение будет потреблять всё больше
+                            ресурсов и в итоге крашнется. Swift решает эту проблему автоматически с помощью ARC.
+                        </p>
+
+                        <div class="p-5 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-xl mb-6">
+                            <div class="flex items-start gap-3">
+                                <span class="text-2xl">💡</span>
+                                <div>
+                                    <h4 class="font-semibold text-blue-800 dark:text-blue-200 mb-1">Важно понимать</h4>
+                                    <p class="text-blue-700 dark:text-blue-300 text-sm">
+                                        Управление памятью относится только к <strong>классам</strong> (reference types).
+                                        Структуры и enum — value types, они копируются и автоматически удаляются при выходе из scope.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- ARC -->
+                    <section class="mb-12">
+                        <h2 class="text-2xl font-bold mb-4">ARC — Automatic Reference Counting</h2>
+                        <p class="text-zinc-600 dark:text-zinc-400 mb-4">
+                            ARC автоматически считает количество ссылок на каждый объект. Когда счётчик становится 0,
+                            объект удаляется из памяти. Вам не нужно вручную вызывать dealloc или free.
+                        </p>
+
+                        <div class="bg-zinc-900 rounded-xl p-4 mb-6">
+                            <div class="text-xs text-zinc-500 mb-2 font-mono">Как работает ARC</div>
+                            <pre class="text-sm overflow-x-auto"><code><span class="text-pink-400">class</span> <span class="text-yellow-300">User</span> {
+    <span class="text-pink-400">let</span> name: <span class="text-cyan-400">String</span>
+
+    <span class="text-pink-400">init</span>(name: <span class="text-cyan-400">String</span>) {
+        <span class="text-pink-400">self</span>.name = name
+        <span class="text-cyan-400">print</span>(<span class="text-green-400">"User </span>\(name)<span class="text-green-400"> создан"</span>)
+    }
+
+    <span class="text-pink-400">deinit</span> {
+        <span class="text-cyan-400">print</span>(<span class="text-green-400">"User </span>\(name)<span class="text-green-400"> удалён из памяти"</span>)
+    }
+}
+
+<span class="text-zinc-500">// Создаём объект — счётчик ссылок = 1</span>
+<span class="text-pink-400">var</span> user1: <span class="text-cyan-400">User?</span> = <span class="text-yellow-300">User</span>(name: <span class="text-green-400">"Алиса"</span>)
+<span class="text-zinc-500">// → User Алиса создан</span>
+
+<span class="text-zinc-500">// Ещё одна ссылка на тот же объект — счётчик = 2</span>
+<span class="text-pink-400">var</span> user2 = user1
+
+<span class="text-zinc-500">// Обнуляем первую ссылку — счётчик = 1</span>
+user1 = <span class="text-pink-400">nil</span>
+
+<span class="text-zinc-500">// Обнуляем вторую ссылку — счётчик = 0, объект удаляется</span>
+user2 = <span class="text-pink-400">nil</span>
+<span class="text-zinc-500">// → User Алиса удалён из памяти</span></code></pre>
+                        </div>
+
+                        <div class="grid md:grid-cols-3 gap-4 mb-6">
+                            <div class="p-4 bg-zinc-100 dark:bg-zinc-800/50 rounded-xl text-center">
+                                <div class="text-3xl mb-2">📦</div>
+                                <div class="font-semibold mb-1">Создание</div>
+                                <div class="text-sm text-zinc-500">Счётчик = 1</div>
+                            </div>
+                            <div class="p-4 bg-zinc-100 dark:bg-zinc-800/50 rounded-xl text-center">
+                                <div class="text-3xl mb-2">🔗</div>
+                                <div class="font-semibold mb-1">Новая ссылка</div>
+                                <div class="text-sm text-zinc-500">Счётчик +1</div>
+                            </div>
+                            <div class="p-4 bg-zinc-100 dark:bg-zinc-800/50 rounded-xl text-center">
+                                <div class="text-3xl mb-2">🗑️</div>
+                                <div class="font-semibold mb-1">Счётчик = 0</div>
+                                <div class="text-sm text-zinc-500">Объект удалён</div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Strong References -->
+                    <section class="mb-12">
+                        <h2 class="text-2xl font-bold mb-4">Strong ссылки (по умолчанию)</h2>
+                        <p class="text-zinc-600 dark:text-zinc-400 mb-4">
+                            Все ссылки в Swift по умолчанию — strong (сильные). Сильная ссылка увеличивает
+                            счётчик на 1 и не позволяет объекту удалиться, пока существует.
+                        </p>
+
+                        <div class="bg-zinc-900 rounded-xl p-4 mb-6">
+                            <div class="text-xs text-zinc-500 mb-2 font-mono">Strong ссылки</div>
+                            <pre class="text-sm overflow-x-auto"><code><span class="text-pink-400">class</span> <span class="text-yellow-300">Product</span> {
+    <span class="text-pink-400">let</span> name: <span class="text-cyan-400">String</span>
+    <span class="text-pink-400">init</span>(name: <span class="text-cyan-400">String</span>) { <span class="text-pink-400">self</span>.name = name }
+}
+
+<span class="text-pink-400">class</span> <span class="text-yellow-300">CartItem</span> {
+    <span class="text-pink-400">let</span> product: <span class="text-cyan-400">Product</span>  <span class="text-zinc-500">// strong по умолчанию</span>
+    <span class="text-pink-400">var</span> quantity: <span class="text-cyan-400">Int</span>
+
+    <span class="text-pink-400">init</span>(product: <span class="text-cyan-400">Product</span>, quantity: <span class="text-cyan-400">Int</span>) {
+        <span class="text-pink-400">self</span>.product = product
+        <span class="text-pink-400">self</span>.quantity = quantity
+    }
+}
+
+<span class="text-pink-400">let</span> iphone = <span class="text-yellow-300">Product</span>(name: <span class="text-green-400">"iPhone"</span>)
+<span class="text-pink-400">let</span> cartItem = <span class="text-yellow-300">CartItem</span>(product: iphone, quantity: <span class="text-purple-400">1</span>)
+
+<span class="text-zinc-500">// iPhone не будет удалён, пока существует cartItem,</span>
+<span class="text-zinc-500">// потому что cartItem.product — strong ссылка на него</span></code></pre>
+                        </div>
+                    </section>
+
+                    <!-- Retain Cycle -->
+                    <section class="mb-12">
+                        <h2 class="text-2xl font-bold mb-4">Проблема: Retain Cycle</h2>
+                        <p class="text-zinc-600 dark:text-zinc-400 mb-4">
+                            Когда два объекта ссылаются друг на друга strong ссылками, возникает retain cycle
+                            (цикл удержания). Оба объекта никогда не будут удалены — это утечка памяти!
+                        </p>
+
+                        <div class="p-5 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-xl mb-6">
+                            <div class="flex items-start gap-3">
+                                <span class="text-2xl">⚠️</span>
+                                <div>
+                                    <h4 class="font-semibold text-red-800 dark:text-red-200 mb-1">Memory Leak!</h4>
+                                    <p class="text-red-700 dark:text-red-300 text-sm">
+                                        Retain cycles — одна из самых частых причин утечек памяти в iOS приложениях.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-zinc-900 rounded-xl p-4 mb-6">
+                            <div class="text-xs text-zinc-500 mb-2 font-mono">❌ Retain Cycle — плохо!</div>
+                            <pre class="text-sm overflow-x-auto"><code><span class="text-pink-400">class</span> <span class="text-yellow-300">Person</span> {
+    <span class="text-pink-400">let</span> name: <span class="text-cyan-400">String</span>
+    <span class="text-pink-400">var</span> apartment: <span class="text-cyan-400">Apartment?</span>  <span class="text-zinc-500">// strong</span>
+
+    <span class="text-pink-400">init</span>(name: <span class="text-cyan-400">String</span>) { <span class="text-pink-400">self</span>.name = name }
+    <span class="text-pink-400">deinit</span> { <span class="text-cyan-400">print</span>(<span class="text-green-400">"</span>\(name)<span class="text-green-400"> освобождён"</span>) }
+}
+
+<span class="text-pink-400">class</span> <span class="text-yellow-300">Apartment</span> {
+    <span class="text-pink-400">let</span> unit: <span class="text-cyan-400">String</span>
+    <span class="text-pink-400">var</span> tenant: <span class="text-cyan-400">Person?</span>  <span class="text-zinc-500">// strong — проблема!</span>
+
+    <span class="text-pink-400">init</span>(unit: <span class="text-cyan-400">String</span>) { <span class="text-pink-400">self</span>.unit = unit }
+    <span class="text-pink-400">deinit</span> { <span class="text-cyan-400">print</span>(<span class="text-green-400">"Apartment </span>\(unit)<span class="text-green-400"> освобождена"</span>) }
+}
+
+<span class="text-pink-400">var</span> john: <span class="text-cyan-400">Person?</span> = <span class="text-yellow-300">Person</span>(name: <span class="text-green-400">"John"</span>)
+<span class="text-pink-400">var</span> apt: <span class="text-cyan-400">Apartment?</span> = <span class="text-yellow-300">Apartment</span>(unit: <span class="text-green-400">"4A"</span>)
+
+<span class="text-zinc-500">// Создаём цикл</span>
+john?.apartment = apt
+apt?.tenant = john
+
+<span class="text-zinc-500">// Обнуляем внешние ссылки</span>
+john = <span class="text-pink-400">nil</span>
+apt = <span class="text-pink-400">nil</span>
+
+<span class="text-zinc-500">// ❌ deinit НЕ вызовется! Оба объекта остаются в памяти навсегда</span>
+<span class="text-zinc-500">// Person → Apartment (strong)</span>
+<span class="text-zinc-500">// Apartment → Person (strong)</span></code></pre>
+                        </div>
+
+                        <div class="flex justify-center mb-6">
+                            <div class="inline-flex items-center gap-4 p-4 bg-zinc-100 dark:bg-zinc-800 rounded-xl">
+                                <div class="text-center">
+                                    <div class="w-16 h-16 bg-blue-500 rounded-lg flex items-center justify-center text-white font-bold">Person</div>
+                                </div>
+                                <div class="flex flex-col gap-1">
+                                    <span class="text-xs text-zinc-500">strong →</span>
+                                    <span class="text-xs text-zinc-500">← strong</span>
+                                </div>
+                                <div class="text-center">
+                                    <div class="w-16 h-16 bg-green-500 rounded-lg flex items-center justify-center text-white font-bold">Apt</div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Weak References -->
+                    <section class="mb-12">
+                        <h2 class="text-2xl font-bold mb-4">Weak ссылки</h2>
+                        <p class="text-zinc-600 dark:text-zinc-400 mb-4">
+                            <code class="bg-zinc-200 dark:bg-zinc-700 px-1 rounded">weak</code> ссылка не увеличивает счётчик.
+                            Она автоматически становится nil, когда объект удаляется. Поэтому weak всегда Optional и var.
+                        </p>
+
+                        <div class="bg-zinc-900 rounded-xl p-4 mb-6">
+                            <div class="text-xs text-zinc-500 mb-2 font-mono">✅ Решение с weak</div>
+                            <pre class="text-sm overflow-x-auto"><code><span class="text-pink-400">class</span> <span class="text-yellow-300">Person</span> {
+    <span class="text-pink-400">let</span> name: <span class="text-cyan-400">String</span>
+    <span class="text-pink-400">var</span> apartment: <span class="text-cyan-400">Apartment?</span>
+
+    <span class="text-pink-400">init</span>(name: <span class="text-cyan-400">String</span>) { <span class="text-pink-400">self</span>.name = name }
+    <span class="text-pink-400">deinit</span> { <span class="text-cyan-400">print</span>(<span class="text-green-400">"</span>\(name)<span class="text-green-400"> освобождён"</span>) }
+}
+
+<span class="text-pink-400">class</span> <span class="text-yellow-300">Apartment</span> {
+    <span class="text-pink-400">let</span> unit: <span class="text-cyan-400">String</span>
+    <span class="text-pink-400">weak var</span> tenant: <span class="text-cyan-400">Person?</span>  <span class="text-zinc-500">// ✅ weak!</span>
+
+    <span class="text-pink-400">init</span>(unit: <span class="text-cyan-400">String</span>) { <span class="text-pink-400">self</span>.unit = unit }
+    <span class="text-pink-400">deinit</span> { <span class="text-cyan-400">print</span>(<span class="text-green-400">"Apartment </span>\(unit)<span class="text-green-400"> освобождена"</span>) }
+}
+
+<span class="text-pink-400">var</span> john: <span class="text-cyan-400">Person?</span> = <span class="text-yellow-300">Person</span>(name: <span class="text-green-400">"John"</span>)
+<span class="text-pink-400">var</span> apt: <span class="text-cyan-400">Apartment?</span> = <span class="text-yellow-300">Apartment</span>(unit: <span class="text-green-400">"4A"</span>)
+
+john?.apartment = apt
+apt?.tenant = john
+
+john = <span class="text-pink-400">nil</span>
+<span class="text-zinc-500">// → "John освобождён" ✅</span>
+<span class="text-zinc-500">// apt?.tenant автоматически стал nil</span>
+
+apt = <span class="text-pink-400">nil</span>
+<span class="text-zinc-500">// → "Apartment 4A освобождена" ✅</span></code></pre>
+                        </div>
+
+                        <div class="p-5 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-xl mb-6">
+                            <div class="flex items-start gap-3">
+                                <span class="text-2xl">✅</span>
+                                <div>
+                                    <h4 class="font-semibold text-green-800 dark:text-green-200 mb-1">Когда использовать weak</h4>
+                                    <ul class="text-green-700 dark:text-green-300 text-sm space-y-1">
+                                        <li>• Делегаты (delegate)</li>
+                                        <li>• Обратные ссылки (child → parent)</li>
+                                        <li>• Когда объект может быть удалён независимо</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Unowned References -->
+                    <section class="mb-12">
+                        <h2 class="text-2xl font-bold mb-4">Unowned ссылки</h2>
+                        <p class="text-zinc-600 dark:text-zinc-400 mb-4">
+                            <code class="bg-zinc-200 dark:bg-zinc-700 px-1 rounded">unowned</code> похож на weak — не увеличивает счётчик.
+                            Но в отличие от weak, не становится nil. Если объект удалён, а вы обращаетесь к unowned — краш!
+                        </p>
+
+                        <div class="bg-zinc-900 rounded-xl p-4 mb-6">
+                            <div class="text-xs text-zinc-500 mb-2 font-mono">Unowned — когда гарантированно существует</div>
+                            <pre class="text-sm overflow-x-auto"><code><span class="text-pink-400">class</span> <span class="text-yellow-300">Customer</span> {
+    <span class="text-pink-400">let</span> name: <span class="text-cyan-400">String</span>
+    <span class="text-pink-400">var</span> card: <span class="text-cyan-400">CreditCard?</span>
+
+    <span class="text-pink-400">init</span>(name: <span class="text-cyan-400">String</span>) { <span class="text-pink-400">self</span>.name = name }
+    <span class="text-pink-400">deinit</span> { <span class="text-cyan-400">print</span>(<span class="text-green-400">"</span>\(name)<span class="text-green-400"> удалён"</span>) }
+}
+
+<span class="text-pink-400">class</span> <span class="text-yellow-300">CreditCard</span> {
+    <span class="text-pink-400">let</span> number: <span class="text-cyan-400">String</span>
+    <span class="text-pink-400">unowned let</span> owner: <span class="text-cyan-400">Customer</span>  <span class="text-zinc-500">// ✅ unowned</span>
+
+    <span class="text-pink-400">init</span>(number: <span class="text-cyan-400">String</span>, owner: <span class="text-cyan-400">Customer</span>) {
+        <span class="text-pink-400">self</span>.number = number
+        <span class="text-pink-400">self</span>.owner = owner
+    }
+    <span class="text-pink-400">deinit</span> { <span class="text-cyan-400">print</span>(<span class="text-green-400">"Карта </span>\(number)<span class="text-green-400"> удалена"</span>) }
+}
+
+<span class="text-pink-400">var</span> customer: <span class="text-cyan-400">Customer?</span> = <span class="text-yellow-300">Customer</span>(name: <span class="text-green-400">"Анна"</span>)
+customer?.card = <span class="text-yellow-300">CreditCard</span>(number: <span class="text-green-400">"1234"</span>, owner: customer!)
+
+customer = <span class="text-pink-400">nil</span>
+<span class="text-zinc-500">// → "Анна удалён"</span>
+<span class="text-zinc-500">// → "Карта 1234 удалена"</span>
+<span class="text-zinc-500">// Карта не может существовать без владельца</span></code></pre>
+                        </div>
+
+                        <div class="overflow-x-auto mb-6">
+                            <table class="w-full text-sm border border-zinc-200 dark:border-zinc-700 rounded-xl overflow-hidden">
+                                <thead class="bg-zinc-100 dark:bg-zinc-800">
+                                    <tr>
+                                        <th class="px-4 py-3 text-left font-semibold">Тип ссылки</th>
+                                        <th class="px-4 py-3 text-left font-semibold">Счётчик</th>
+                                        <th class="px-4 py-3 text-left font-semibold">Optional?</th>
+                                        <th class="px-4 py-3 text-left font-semibold">При удалении объекта</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-zinc-200 dark:divide-zinc-700">
+                                    <tr>
+                                        <td class="px-4 py-3"><code class="text-pink-400">strong</code></td>
+                                        <td class="px-4 py-3">+1</td>
+                                        <td class="px-4 py-3">Может быть</td>
+                                        <td class="px-4 py-3">Не даёт удалиться</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="px-4 py-3"><code class="text-cyan-400">weak</code></td>
+                                        <td class="px-4 py-3">Не влияет</td>
+                                        <td class="px-4 py-3">Всегда Optional</td>
+                                        <td class="px-4 py-3">Становится nil</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="px-4 py-3"><code class="text-yellow-400">unowned</code></td>
+                                        <td class="px-4 py-3">Не влияет</td>
+                                        <td class="px-4 py-3">Нет</td>
+                                        <td class="px-4 py-3">💥 Краш при обращении</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </section>
+
+                    <!-- Closures and Memory -->
+                    <section class="mb-12">
+                        <h2 class="text-2xl font-bold mb-4">Замыкания и память</h2>
+                        <p class="text-zinc-600 dark:text-zinc-400 mb-4">
+                            Замыкания — reference types. Когда замыкание захватывает self, создаётся strong ссылка.
+                            Это частая причина retain cycles в iOS!
+                        </p>
+
+                        <div class="bg-zinc-900 rounded-xl p-4 mb-6">
+                            <div class="text-xs text-zinc-500 mb-2 font-mono">❌ Retain cycle с замыканием</div>
+                            <pre class="text-sm overflow-x-auto"><code><span class="text-pink-400">class</span> <span class="text-yellow-300">ViewController</span> {
+    <span class="text-pink-400">var</span> name = <span class="text-green-400">"Home"</span>
+    <span class="text-pink-400">var</span> onTap: (() -> <span class="text-cyan-400">Void</span>)?
+
+    <span class="text-pink-400">func</span> <span class="text-cyan-400">setup</span>() {
+        <span class="text-zinc-500">// ❌ self захвачен как strong</span>
+        onTap = {
+            <span class="text-cyan-400">print</span>(<span class="text-pink-400">self</span>.name)  <span class="text-zinc-500">// strong ссылка на self</span>
+        }
+    }
+
+    <span class="text-pink-400">deinit</span> { <span class="text-cyan-400">print</span>(<span class="text-green-400">"ViewController удалён"</span>) }
+}
+
+<span class="text-pink-400">var</span> vc: <span class="text-cyan-400">ViewController?</span> = <span class="text-yellow-300">ViewController</span>()
+vc?.setup()
+vc = <span class="text-pink-400">nil</span>  <span class="text-zinc-500">// ❌ deinit НЕ вызовется!</span>
+<span class="text-zinc-500">// ViewController → onTap (strong)</span>
+<span class="text-zinc-500">// onTap → ViewController (strong через self)</span></code></pre>
+                        </div>
+
+                        <h3 class="text-xl font-semibold mb-3">Capture List — решение</h3>
+                        <p class="text-zinc-600 dark:text-zinc-400 mb-4">
+                            Используйте capture list <code class="bg-zinc-200 dark:bg-zinc-700 px-1 rounded">[weak self]</code>
+                            или <code class="bg-zinc-200 dark:bg-zinc-700 px-1 rounded">[unowned self]</code> чтобы избежать retain cycle.
+                        </p>
+
+                        <div class="bg-zinc-900 rounded-xl p-4 mb-6">
+                            <div class="text-xs text-zinc-500 mb-2 font-mono">✅ Решение с [weak self]</div>
+                            <pre class="text-sm overflow-x-auto"><code><span class="text-pink-400">class</span> <span class="text-yellow-300">ViewController</span> {
+    <span class="text-pink-400">var</span> name = <span class="text-green-400">"Home"</span>
+    <span class="text-pink-400">var</span> onTap: (() -> <span class="text-cyan-400">Void</span>)?
+
+    <span class="text-pink-400">func</span> <span class="text-cyan-400">setup</span>() {
+        <span class="text-zinc-500">// ✅ [weak self] — не увеличивает счётчик</span>
+        onTap = { [<span class="text-cyan-400">weak</span> <span class="text-pink-400">self</span>] <span class="text-pink-400">in</span>
+            <span class="text-pink-400">guard let</span> self = self <span class="text-pink-400">else</span> { <span class="text-pink-400">return</span> }
+            <span class="text-cyan-400">print</span>(self.name)
+        }
+    }
+
+    <span class="text-pink-400">deinit</span> { <span class="text-cyan-400">print</span>(<span class="text-green-400">"ViewController удалён"</span>) }
+}
+
+<span class="text-pink-400">var</span> vc: <span class="text-cyan-400">ViewController?</span> = <span class="text-yellow-300">ViewController</span>()
+vc?.setup()
+vc = <span class="text-pink-400">nil</span>  <span class="text-zinc-500">// ✅ "ViewController удалён"</span></code></pre>
+                        </div>
+
+                        <div class="bg-zinc-900 rounded-xl p-4 mb-6">
+                            <div class="text-xs text-zinc-500 mb-2 font-mono">✅ Альтернатива с [unowned self]</div>
+                            <pre class="text-sm overflow-x-auto"><code><span class="text-pink-400">class</span> <span class="text-yellow-300">ViewController</span> {
+    <span class="text-pink-400">var</span> name = <span class="text-green-400">"Home"</span>
+    <span class="text-pink-400">var</span> onTap: (() -> <span class="text-cyan-400">Void</span>)?
+
+    <span class="text-pink-400">func</span> <span class="text-cyan-400">setup</span>() {
+        <span class="text-zinc-500">// ✅ [unowned self] — если уверены, что self существует</span>
+        onTap = { [<span class="text-yellow-400">unowned</span> <span class="text-pink-400">self</span>] <span class="text-pink-400">in</span>
+            <span class="text-cyan-400">print</span>(self.name)  <span class="text-zinc-500">// Не нужен guard let</span>
+        }
+    }
+}</code></pre>
+                        </div>
+
+                        <div class="p-5 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-xl mb-6">
+                            <div class="flex items-start gap-3">
+                                <span class="text-2xl">💡</span>
+                                <div>
+                                    <h4 class="font-semibold text-amber-800 dark:text-amber-200 mb-1">Когда что использовать?</h4>
+                                    <ul class="text-amber-700 dark:text-amber-300 text-sm space-y-1">
+                                        <li><strong>[weak self]</strong> — безопасно, когда self может быть nil</li>
+                                        <li><strong>[unowned self]</strong> — когда 100% уверены, что self существует (быстрее)</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Practical Example -->
+                    <section class="mb-12">
+                        <h2 class="text-2xl font-bold mb-4">Практика: Delegation в ECommerce</h2>
+                        <p class="text-zinc-600 dark:text-zinc-400 mb-4">
+                            В реальном проекте weak чаще всего используется для делегатов:
+                        </p>
+
+                        <div class="bg-zinc-900 rounded-xl p-4 mb-6">
+                            <div class="text-xs text-zinc-500 mb-2 font-mono">Типичный паттерн delegate</div>
+                            <pre class="text-sm overflow-x-auto"><code><span class="text-zinc-500">// Протокол делегата</span>
+<span class="text-pink-400">protocol</span> <span class="text-yellow-300">ProductCellDelegate</span>: <span class="text-cyan-400">AnyObject</span> {
+    <span class="text-pink-400">func</span> <span class="text-cyan-400">didTapAddToCart</span>(product: <span class="text-cyan-400">Product</span>)
+}
+
+<span class="text-zinc-500">// Ячейка товара</span>
+<span class="text-pink-400">class</span> <span class="text-yellow-300">ProductCell</span>: <span class="text-cyan-400">UITableViewCell</span> {
+    <span class="text-zinc-500">// ✅ weak delegate — иначе retain cycle!</span>
+    <span class="text-pink-400">weak var</span> delegate: <span class="text-cyan-400">ProductCellDelegate?</span>
+    <span class="text-pink-400">var</span> product: <span class="text-cyan-400">Product?</span>
+
+    <span class="text-pink-400">@objc func</span> <span class="text-cyan-400">addToCartTapped</span>() {
+        <span class="text-pink-400">guard let</span> product = product <span class="text-pink-400">else</span> { <span class="text-pink-400">return</span> }
+        delegate?.<span class="text-cyan-400">didTapAddToCart</span>(product: product)
+    }
+}
+
+<span class="text-zinc-500">// ViewController</span>
+<span class="text-pink-400">class</span> <span class="text-yellow-300">ProductsViewController</span>: <span class="text-cyan-400">UIViewController</span>, <span class="text-cyan-400">ProductCellDelegate</span> {
+
+    <span class="text-pink-400">func</span> <span class="text-cyan-400">tableView</span>(_ tableView: <span class="text-cyan-400">UITableView</span>,
+                     cellForRowAt indexPath: <span class="text-cyan-400">IndexPath</span>) -> <span class="text-cyan-400">UITableViewCell</span> {
+        <span class="text-pink-400">let</span> cell = tableView.<span class="text-cyan-400">dequeueReusableCell</span>(...) <span class="text-pink-400">as!</span> <span class="text-cyan-400">ProductCell</span>
+        cell.delegate = <span class="text-pink-400">self</span>  <span class="text-zinc-500">// Не создаёт retain cycle благодаря weak</span>
+        <span class="text-pink-400">return</span> cell
+    }
+
+    <span class="text-pink-400">func</span> <span class="text-cyan-400">didTapAddToCart</span>(product: <span class="text-cyan-400">Product</span>) {
+        <span class="text-cyan-400">print</span>(<span class="text-green-400">"Добавлен: </span>\(product.name)<span class="text-green-400">"</span>)
+    }
+}</code></pre>
+                        </div>
+
+                        <div class="bg-zinc-900 rounded-xl p-4 mb-6">
+                            <div class="text-xs text-zinc-500 mb-2 font-mono">API запрос с [weak self]</div>
+                            <pre class="text-sm overflow-x-auto"><code><span class="text-pink-400">class</span> <span class="text-yellow-300">ProductsPresenter</span> {
+    <span class="text-pink-400">weak var</span> view: <span class="text-cyan-400">ProductsViewInput?</span>
+    <span class="text-pink-400">var</span> interactor: <span class="text-cyan-400">ProductsInteractorInput?</span>
+
+    <span class="text-pink-400">func</span> <span class="text-cyan-400">loadProducts</span>() {
+        interactor?.<span class="text-cyan-400">fetchProducts</span> { [<span class="text-cyan-400">weak</span> <span class="text-pink-400">self</span>] result <span class="text-pink-400">in</span>
+            <span class="text-zinc-500">// Если пользователь ушёл с экрана,</span>
+            <span class="text-zinc-500">// self будет nil и код не выполнится</span>
+            <span class="text-pink-400">guard let</span> self = self <span class="text-pink-400">else</span> { <span class="text-pink-400">return</span> }
+
+            <span class="text-pink-400">switch</span> result {
+            <span class="text-pink-400">case</span> .<span class="text-cyan-400">success</span>(<span class="text-pink-400">let</span> products):
+                self.view?.<span class="text-cyan-400">showProducts</span>(products)
+            <span class="text-pink-400">case</span> .<span class="text-cyan-400">failure</span>(<span class="text-pink-400">let</span> error):
+                self.view?.<span class="text-cyan-400">showError</span>(error.localizedDescription)
+            }
+        }
+    }
+}</code></pre>
+                        </div>
+                    </section>
+
+                    <!-- Summary -->
+                    <section class="mb-12">
+                        <h2 class="text-2xl font-bold mb-4">Что вы узнали</h2>
+                        <div class="grid md:grid-cols-2 gap-4">
+                            <div class="p-4 bg-zinc-100 dark:bg-zinc-800/50 rounded-xl">
+                                <div class="flex items-center gap-2 mb-2">
+                                    <span class="text-green-500">✓</span>
+                                    <span class="font-medium">ARC</span>
+                                </div>
+                                <p class="text-sm text-zinc-600 dark:text-zinc-400">Автоматический подсчёт ссылок</p>
+                            </div>
+                            <div class="p-4 bg-zinc-100 dark:bg-zinc-800/50 rounded-xl">
+                                <div class="flex items-center gap-2 mb-2">
+                                    <span class="text-green-500">✓</span>
+                                    <span class="font-medium">Strong / Weak / Unowned</span>
+                                </div>
+                                <p class="text-sm text-zinc-600 dark:text-zinc-400">Типы ссылок и их различия</p>
+                            </div>
+                            <div class="p-4 bg-zinc-100 dark:bg-zinc-800/50 rounded-xl">
+                                <div class="flex items-center gap-2 mb-2">
+                                    <span class="text-green-500">✓</span>
+                                    <span class="font-medium">Retain Cycle</span>
+                                </div>
+                                <p class="text-sm text-zinc-600 dark:text-zinc-400">Проблема и её решение</p>
+                            </div>
+                            <div class="p-4 bg-zinc-100 dark:bg-zinc-800/50 rounded-xl">
+                                <div class="flex items-center gap-2 mb-2">
+                                    <span class="text-green-500">✓</span>
+                                    <span class="font-medium">Capture Lists</span>
+                                </div>
+                                <p class="text-sm text-zinc-600 dark:text-zinc-400">[weak self] в замыканиях</p>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Next Chapter -->
+                    <section class="p-6 bg-gradient-to-r from-primary/10 to-purple-500/10 rounded-2xl">
+                        <h3 class="font-semibold mb-2">Следующая глава</h3>
+                        <p class="text-zinc-600 dark:text-zinc-400 mb-4">
+                            В следующей главе изучим Generics — мощный инструмент для написания переиспользуемого кода.
+                        </p>
+                        <a href="09-generics.html" class="inline-flex items-center gap-2 text-primary font-medium hover:underline">
+                            Глава 9: Generics
+                            <span>→</span>
+                        </a>
+                    </section>
+
+                </div>
+
+                <nav class="flex justify-between gap-4 mt-16 pt-8 border-t border-zinc-200 dark:border-zinc-800">
+                    <a href="07-optionals.html" class="flex items-center gap-3 px-5 py-3 bg-zinc-100 dark:bg-zinc-800 hover:bg-primary hover:text-white rounded-xl transition-colors">
+                        <span class="text-xl">←</span>
+                        <span class="font-medium">Предыдущая</span>
+                    </a>
+                    <a href="09-generics.html" class="flex items-center gap-3 px-5 py-3 bg-zinc-100 dark:bg-zinc-800 hover:bg-primary hover:text-white rounded-xl transition-colors ml-auto">
+                        <span class="font-medium">Следующая</span>
+                        <span class="text-xl">→</span>
+                    </a>
+                </nav>
+            </article>
+        </main>
+    </div>
+
+    <script>
+        const menuBtn = document.getElementById('menuBtn');
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('overlay');
+        menuBtn.addEventListener('click', () => {
+            sidebar.classList.toggle('-translate-x-full');
+            overlay.classList.toggle('hidden');
+        });
+        function closeSidebar() {
+            sidebar.classList.add('-translate-x-full');
+            overlay.classList.add('hidden');
+        }
+    </script>
+</body>
+</html>

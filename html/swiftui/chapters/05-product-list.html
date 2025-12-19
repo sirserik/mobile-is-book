@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Глава 5: Список товаров | SwiftUI E-Commerce</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'media',
+            theme: { extend: { colors: { primary: '#007AFF' } } }
+        }
+    </script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/vs2015.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/swift.min.js"></script>
+    <style>
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 3px; }
+        pre code { font-size: 14px; line-height: 1.6; }
+    </style>
+</head>
+<body class="bg-white dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100">
+    <div class="min-h-screen">
+        <header class="sticky top-0 z-40 bg-white/80 dark:bg-zinc-950/80 backdrop-blur-md border-b border-zinc-200 dark:border-zinc-800">
+            <div class="max-w-4xl mx-auto px-6 py-4 flex items-center justify-between">
+                <a href="../index.html" class="flex items-center gap-2 text-zinc-600 dark:text-zinc-400 hover:text-primary transition-colors">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                    </svg>
+                    Оглавление
+                </a>
+                <span class="text-sm text-zinc-500">Глава 5</span>
+            </div>
+        </header>
+
+        <main class="max-w-4xl mx-auto px-6 py-12">
+            <article class="prose prose-zinc dark:prose-invert max-w-none">
+                <span class="text-sm font-semibold text-primary uppercase tracking-wider">Глава 5</span>
+                <h1 class="text-4xl font-bold mt-2 mb-8">Список товаров</h1>
+
+                <div class="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-xl p-6 mb-8">
+                    <h3 class="text-lg font-semibold text-blue-800 dark:text-blue-300 mb-2">🎯 Цель главы</h3>
+                    <p class="text-blue-700 dark:text-blue-400">
+                        Создать экран списка товаров с LazyVGrid, AsyncImage и анимациями загрузки.
+                    </p>
+                </div>
+
+                <h2 class="text-2xl font-bold mt-12 mb-4">ProductCard компонент</h2>
+                <pre><code class="language-swift rounded-xl">// Features/Products/Views/Components/ProductCard.swift
+import SwiftUI
+
+struct ProductCard: View {
+    let product: Product
+    @Environment(FavoritesManager.self) private var favorites
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 0) {
+            // Изображение
+            ZStack(alignment: .topTrailing) {
+                AsyncImage(url: URL(string: product.thumbnail)) { phase in
+                    switch phase {
+                    case .empty:
+                        Rectangle()
+                            .fill(Color.gray.opacity(0.2))
+                            .overlay(ProgressView())
+                    case .success(let image):
+                        image
+                            .resizable()
+                            .aspectRatio(contentMode: .fill)
+                    case .failure:
+                        Rectangle()
+                            .fill(Color.gray.opacity(0.2))
+                            .overlay(
+                                Image(systemName: "photo")
+                                    .foregroundColor(.gray)
+                            )
+                    @unknown default:
+                        EmptyView()
+                    }
+                }
+                .frame(height: 150)
+                .clipped()
+
+                // Кнопка избранного
+                Button {
+                    favorites.toggle(product)
+                } label: {
+                    Image(systemName: favorites.contains(product) ? "heart.fill" : "heart")
+                        .font(.system(size: 20))
+                        .foregroundColor(favorites.contains(product) ? .red : .white)
+                        .padding(8)
+                        .background(.ultraThinMaterial)
+                        .clipShape(Circle())
+                }
+                .padding(8)
+            }
+
+            // Контент
+            VStack(alignment: .leading, spacing: 6) {
+                Text(product.title)
+                    .font(.subheadline)
+                    .fontWeight(.medium)
+                    .lineLimit(2)
+                    .foregroundColor(.primary)
+
+                HStack {
+                    Text(product.formattedPrice)
+                        .font(.headline)
+                        .foregroundColor(.blue)
+
+                    if product.discountPercentage > 0 {
+                        Text("-\(Int(product.discountPercentage))%")
+                            .font(.caption)
+                            .fontWeight(.semibold)
+                            .foregroundColor(.white)
+                            .padding(.horizontal, 6)
+                            .padding(.vertical, 2)
+                            .background(Color.red)
+                            .cornerRadius(4)
+                    }
+                }
+
+                // Рейтинг
+                HStack(spacing: 4) {
+                    Image(systemName: "star.fill")
+                        .font(.caption)
+                        .foregroundColor(.yellow)
+                    Text(String(format: "%.1f", product.rating))
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                }
+            }
+            .padding(12)
+        }
+        .background(Color(.systemBackground))
+        .cornerRadius(12)
+        .shadow(color: .black.opacity(0.1), radius: 5, x: 0, y: 2)
+    }
+}
+
+#Preview {
+    ProductCard(product: .mock)
+        .frame(width: 180)
+        .environment(FavoritesManager())
+}
+
+// Мок для Preview
+extension Product {
+    static var mock: Product {
+        Product(
+            id: 1,
+            title: "iPhone 15 Pro Max",
+            description: "Latest iPhone",
+            price: 1199,
+            discountPercentage: 10,
+            rating: 4.8,
+            stock: 50,
+            brand: "Apple",
+            category: "smartphones",
+            thumbnail: "https://cdn.dummyjson.com/product-images/1/thumbnail.jpg",
+            images: []
+        )
+    }
+}</code></pre>
+
+                <h2 class="text-2xl font-bold mt-12 mb-4">ProductListView</h2>
+                <pre><code class="language-swift rounded-xl">// Features/Products/Views/ProductListView.swift
+import SwiftUI
+
+struct ProductListView: View {
+    @State private var viewModel = ProductViewModel()
+    @State private var selectedProduct: Product?
+
+    private let columns = [
+        GridItem(.flexible(), spacing: 16),
+        GridItem(.flexible(), spacing: 16)
+    ]
+
+    var body: some View {
+        NavigationStack {
+            Group {
+                if viewModel.isLoading && viewModel.products.isEmpty {
+                    loadingView
+                } else if let error = viewModel.errorMessage {
+                    errorView(error)
+                } else {
+                    productGrid
+                }
+            }
+            .navigationTitle("Товары")
+            .toolbar {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    NavigationLink {
+                        CartView()
+                    } label: {
+                        CartBadgeView()
+                    }
+                }
+            }
+        }
+        .task {
+            await viewModel.fetchProducts()
+        }
+    }
+
+    // MARK: - Views
+
+    private var loadingView: some View {
+        VStack(spacing: 16) {
+            ProgressView()
+                .scaleEffect(1.5)
+            Text("Загрузка товаров...")
+                .foregroundColor(.secondary)
+        }
+    }
+
+    private func errorView(_ message: String) -> some View {
+        VStack(spacing: 16) {
+            Image(systemName: "wifi.exclamationmark")
+                .font(.system(size: 50))
+                .foregroundColor(.red)
+
+            Text("Ошибка загрузки")
+                .font(.headline)
+
+            Text(message)
+                .font(.subheadline)
+                .foregroundColor(.secondary)
+                .multilineTextAlignment(.center)
+
+            Button("Повторить") {
+                Task {
+                    await viewModel.fetchProducts()
+                }
+            }
+            .buttonStyle(.borderedProminent)
+        }
+        .padding()
+    }
+
+    private var productGrid: some View {
+        ScrollView {
+            LazyVGrid(columns: columns, spacing: 16) {
+                ForEach(viewModel.products) { product in
+                    NavigationLink(value: product) {
+                        ProductCard(product: product)
+                    }
+                    .buttonStyle(.plain)
+                }
+            }
+            .padding()
+        }
+        .refreshable {
+            await viewModel.fetchProducts()
+        }
+        .navigationDestination(for: Product.self) { product in
+            ProductDetailView(product: product)
+        }
+    }
+}</code></pre>
+
+                <h2 class="text-2xl font-bold mt-12 mb-4">Скелетон загрузки</h2>
+                <pre><code class="language-swift rounded-xl">// Shared/Components/SkeletonView.swift
+struct SkeletonView: View {
+    @State private var isAnimating = false
+
+    var body: some View {
+        Rectangle()
+            .fill(
+                LinearGradient(
+                    colors: [
+                        Color.gray.opacity(0.3),
+                        Color.gray.opacity(0.1),
+                        Color.gray.opacity(0.3)
+                    ],
+                    startPoint: .leading,
+                    endPoint: .trailing
+                )
+            )
+            .overlay(
+                Rectangle()
+                    .fill(Color.white.opacity(0.3))
+                    .offset(x: isAnimating ? 300 : -300)
+            )
+            .clipped()
+            .onAppear {
+                withAnimation(.linear(duration: 1.5).repeatForever(autoreverses: false)) {
+                    isAnimating = true
+                }
+            }
+    }
+}
+
+// Скелетон карточки товара
+struct ProductCardSkeleton: View {
+    var body: some View {
+        VStack(alignment: .leading, spacing: 0) {
+            SkeletonView()
+                .frame(height: 150)
+
+            VStack(alignment: .leading, spacing: 8) {
+                SkeletonView()
+                    .frame(height: 16)
+                    .cornerRadius(4)
+
+                SkeletonView()
+                    .frame(width: 80, height: 20)
+                    .cornerRadius(4)
+            }
+            .padding(12)
+        }
+        .background(Color(.systemBackground))
+        .cornerRadius(12)
+    }
+}</code></pre>
+
+                <h2 class="text-2xl font-bold mt-12 mb-4">Pull-to-Refresh</h2>
+                <p class="text-zinc-600 dark:text-zinc-400 mb-4">
+                    SwiftUI предоставляет встроенный модификатор <code class="bg-zinc-100 dark:bg-zinc-800 px-2 py-1 rounded">.refreshable</code> для обновления данных свайпом вниз.
+                </p>
+
+                <pre><code class="language-swift rounded-xl">ScrollView {
+    // контент
+}
+.refreshable {
+    await viewModel.fetchProducts()
+}</code></pre>
+
+                <h2 class="text-2xl font-bold mt-12 mb-4">🏋️ Задания</h2>
+                <div class="bg-zinc-50 dark:bg-zinc-900 rounded-xl p-6 border border-zinc-200 dark:border-zinc-800">
+                    <ol class="space-y-4 text-zinc-600 dark:text-zinc-400">
+                        <li><strong>1.</strong> Добавьте переключатель Grid/List для отображения товаров</li>
+                        <li><strong>2.</strong> Реализуйте бесконечный скролл (пагинацию)</li>
+                        <li><strong>3.</strong> Добавьте анимацию появления карточек (.transition)</li>
+                    </ol>
+                </div>
+
+                <!-- Navigation -->
+                <div class="flex justify-between items-center mt-16 pt-8 border-t border-zinc-200 dark:border-zinc-800">
+                    <a href="04-api-layer.html" class="flex items-center gap-2 text-zinc-600 dark:text-zinc-400 hover:text-primary transition-colors">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                        </svg>
+                        Глава 4: API
+                    </a>
+                    <a href="06-product-detail.html" class="flex items-center gap-2 px-6 py-3 bg-primary text-white rounded-xl hover:bg-blue-600 transition-colors">
+                        Глава 6: Детали
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                        </svg>
+                    </a>
+                </div>
+            </article>
+        </main>
+    </div>
+
+    <script>hljs.highlightAll();</script>
+</body>
+</html>

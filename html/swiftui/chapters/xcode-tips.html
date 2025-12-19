@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Советы по Xcode | SwiftUI E-Commerce</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'media',
+            theme: { extend: { colors: { primary: '#007AFF' } } }
+        }
+    </script>
+    <style>
+        .kbd {
+            display: inline-block;
+            padding: 2px 6px;
+            font-family: ui-monospace, monospace;
+            font-size: 12px;
+            background: linear-gradient(180deg, #f5f5f5, #e5e5e5);
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-shadow: 0 1px 0 #999, inset 0 0 0 1px #fff;
+        }
+        .dark .kbd {
+            background: linear-gradient(180deg, #444, #333);
+            border-color: #555;
+            box-shadow: 0 1px 0 #222, inset 0 0 0 1px #555;
+            color: #eee;
+        }
+    </style>
+</head>
+<body class="bg-white dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100">
+    <div class="min-h-screen">
+        <!-- Header -->
+        <header class="sticky top-0 z-40 bg-white/80 dark:bg-zinc-950/80 backdrop-blur-md border-b border-zinc-200 dark:border-zinc-800">
+            <div class="max-w-4xl mx-auto px-6 py-4 flex items-center justify-between">
+                <a href="../index.html" class="flex items-center gap-2 text-zinc-600 dark:text-zinc-400 hover:text-primary transition-colors">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                    </svg>
+                    Оглавление
+                </a>
+                <span class="text-sm text-zinc-500">Xcode Tips</span>
+            </div>
+        </header>
+
+        <!-- Content -->
+        <main class="max-w-4xl mx-auto px-6 py-12">
+            <h1 class="text-4xl font-bold mb-4 bg-gradient-to-r from-blue-500 to-cyan-600 bg-clip-text text-transparent">
+                Советы по Xcode
+            </h1>
+            <p class="text-lg text-zinc-600 dark:text-zinc-400 mb-8">
+                Горячие клавиши и трюки для продуктивной работы
+            </p>
+
+            <!-- Keyboard Shortcuts -->
+            <section class="mb-16">
+                <h2 class="text-2xl font-bold mb-6 flex items-center gap-3">
+                    <span class="w-10 h-10 bg-purple-100 dark:bg-purple-900/30 rounded-lg flex items-center justify-center">
+                        <svg class="w-5 h-5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707"/>
+                        </svg>
+                    </span>
+                    Горячие клавиши
+                </h2>
+
+                <!-- Essential -->
+                <div class="mb-8">
+                    <h3 class="font-bold text-lg mb-4 text-green-600">Самые важные</h3>
+                    <div class="overflow-hidden border border-zinc-200 dark:border-zinc-800 rounded-xl">
+                        <table class="w-full">
+                            <tbody class="divide-y divide-zinc-200 dark:divide-zinc-800">
+                                <tr class="hover:bg-zinc-50 dark:hover:bg-zinc-900/50">
+                                    <td class="px-4 py-3 w-1/3">
+                                        <span class="kbd">Cmd</span> + <span class="kbd">R</span>
+                                    </td>
+                                    <td class="px-4 py-3 font-medium">Run</td>
+                                    <td class="px-4 py-3 text-zinc-500">Запустить приложение</td>
+                                </tr>
+                                <tr class="hover:bg-zinc-50 dark:hover:bg-zinc-900/50">
+                                    <td class="px-4 py-3">
+                                        <span class="kbd">Cmd</span> + <span class="kbd">B</span>
+                                    </td>
+                                    <td class="px-4 py-3 font-medium">Build</td>
+                                    <td class="px-4 py-3 text-zinc-500">Скомпилировать проект</td>
+                                </tr>
+                                <tr class="hover:bg-zinc-50 dark:hover:bg-zinc-900/50">
+                                    <td class="px-4 py-3">
+                                        <span class="kbd">Cmd</span> + <span class="kbd">.</span>
+                                    </td>
+                                    <td class="px-4 py-3 font-medium">Stop</td>
+                                    <td class="px-4 py-3 text-zinc-500">Остановить выполнение</td>
+                                </tr>
+                                <tr class="hover:bg-zinc-50 dark:hover:bg-zinc-900/50">
+                                    <td class="px-4 py-3">
+                                        <span class="kbd">Cmd</span> + <span class="kbd">Shift</span> + <span class="kbd">K</span>
+                                    </td>
+                                    <td class="px-4 py-3 font-medium">Clean Build</td>
+                                    <td class="px-4 py-3 text-zinc-500">Очистить кэш сборки</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Navigation -->
+                <div class="mb-8">
+                    <h3 class="font-bold text-lg mb-4 text-blue-600">Навигация</h3>
+                    <div class="overflow-hidden border border-zinc-200 dark:border-zinc-800 rounded-xl">
+                        <table class="w-full">
+                            <tbody class="divide-y divide-zinc-200 dark:divide-zinc-800">
+                                <tr class="hover:bg-zinc-50 dark:hover:bg-zinc-900/50">
+                                    <td class="px-4 py-3 w-1/3">
+                                        <span class="kbd">Cmd</span> + <span class="kbd">Shift</span> + <span class="kbd">O</span>
+                                    </td>
+                                    <td class="px-4 py-3 font-medium">Open Quickly</td>
+                                    <td class="px-4 py-3 text-zinc-500">Быстрый поиск файла</td>
+                                </tr>
+                                <tr class="hover:bg-zinc-50 dark:hover:bg-zinc-900/50">
+                                    <td class="px-4 py-3">
+                                        <span class="kbd">Cmd</span> + <span class="kbd">Shift</span> + <span class="kbd">J</span>
+                                    </td>
+                                    <td class="px-4 py-3 font-medium">Reveal in Navigator</td>
+                                    <td class="px-4 py-3 text-zinc-500">Показать файл в дереве</td>
+                                </tr>
+                                <tr class="hover:bg-zinc-50 dark:hover:bg-zinc-900/50">
+                                    <td class="px-4 py-3">
+                                        <span class="kbd">Ctrl</span> + <span class="kbd">6</span>
+                                    </td>
+                                    <td class="px-4 py-3 font-medium">Jump to Method</td>
+                                    <td class="px-4 py-3 text-zinc-500">Список методов в файле</td>
+                                </tr>
+                                <tr class="hover:bg-zinc-50 dark:hover:bg-zinc-900/50">
+                                    <td class="px-4 py-3">
+                                        <span class="kbd">Cmd</span> + <span class="kbd">L</span>
+                                    </td>
+                                    <td class="px-4 py-3 font-medium">Go to Line</td>
+                                    <td class="px-4 py-3 text-zinc-500">Перейти к строке</td>
+                                </tr>
+                                <tr class="hover:bg-zinc-50 dark:hover:bg-zinc-900/50">
+                                    <td class="px-4 py-3">
+                                        <span class="kbd">Cmd</span> + <span class="kbd">Click</span>
+                                    </td>
+                                    <td class="px-4 py-3 font-medium">Jump to Definition</td>
+                                    <td class="px-4 py-3 text-zinc-500">Перейти к определению</td>
+                                </tr>
+                                <tr class="hover:bg-zinc-50 dark:hover:bg-zinc-900/50">
+                                    <td class="px-4 py-3">
+                                        <span class="kbd">Cmd</span> + <span class="kbd">Ctrl</span> + <span class="kbd">&#8592;</span>
+                                    </td>
+                                    <td class="px-4 py-3 font-medium">Go Back</td>
+                                    <td class="px-4 py-3 text-zinc-500">Вернуться назад</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Editing -->
+                <div class="mb-8">
+                    <h3 class="font-bold text-lg mb-4 text-orange-600">Редактирование</h3>
+                    <div class="overflow-hidden border border-zinc-200 dark:border-zinc-800 rounded-xl">
+                        <table class="w-full">
+                            <tbody class="divide-y divide-zinc-200 dark:divide-zinc-800">
+                                <tr class="hover:bg-zinc-50 dark:hover:bg-zinc-900/50">
+                                    <td class="px-4 py-3 w-1/3">
+                                        <span class="kbd">Cmd</span> + <span class="kbd">/</span>
+                                    </td>
+                                    <td class="px-4 py-3 font-medium">Toggle Comment</td>
+                                    <td class="px-4 py-3 text-zinc-500">Закомментировать строку</td>
+                                </tr>
+                                <tr class="hover:bg-zinc-50 dark:hover:bg-zinc-900/50">
+                                    <td class="px-4 py-3">
+                                        <span class="kbd">Cmd</span> + <span class="kbd">D</span>
+                                    </td>
+                                    <td class="px-4 py-3 font-medium">Duplicate Line</td>
+                                    <td class="px-4 py-3 text-zinc-500">Дублировать строку</td>
+                                </tr>
+                                <tr class="hover:bg-zinc-50 dark:hover:bg-zinc-900/50">
+                                    <td class="px-4 py-3">
+                                        <span class="kbd">Cmd</span> + <span class="kbd">[</span> / <span class="kbd">]</span>
+                                    </td>
+                                    <td class="px-4 py-3 font-medium">Indent</td>
+                                    <td class="px-4 py-3 text-zinc-500">Изменить отступ</td>
+                                </tr>
+                                <tr class="hover:bg-zinc-50 dark:hover:bg-zinc-900/50">
+                                    <td class="px-4 py-3">
+                                        <span class="kbd">Ctrl</span> + <span class="kbd">I</span>
+                                    </td>
+                                    <td class="px-4 py-3 font-medium">Re-Indent</td>
+                                    <td class="px-4 py-3 text-zinc-500">Исправить отступы</td>
+                                </tr>
+                                <tr class="hover:bg-zinc-50 dark:hover:bg-zinc-900/50">
+                                    <td class="px-4 py-3">
+                                        <span class="kbd">Option</span> + <span class="kbd">&#8593;</span> / <span class="kbd">&#8595;</span>
+                                    </td>
+                                    <td class="px-4 py-3 font-medium">Move Line</td>
+                                    <td class="px-4 py-3 text-zinc-500">Переместить строку</td>
+                                </tr>
+                                <tr class="hover:bg-zinc-50 dark:hover:bg-zinc-900/50">
+                                    <td class="px-4 py-3">
+                                        <span class="kbd">Cmd</span> + <span class="kbd">Option</span> + <span class="kbd">[</span> / <span class="kbd">]</span>
+                                    </td>
+                                    <td class="px-4 py-3 font-medium">Fold/Unfold</td>
+                                    <td class="px-4 py-3 text-zinc-500">Свернуть/развернуть блок</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Debugging -->
+                <div class="mb-8">
+                    <h3 class="font-bold text-lg mb-4 text-red-600">Отладка</h3>
+                    <div class="overflow-hidden border border-zinc-200 dark:border-zinc-800 rounded-xl">
+                        <table class="w-full">
+                            <tbody class="divide-y divide-zinc-200 dark:divide-zinc-800">
+                                <tr class="hover:bg-zinc-50 dark:hover:bg-zinc-900/50">
+                                    <td class="px-4 py-3 w-1/3">
+                                        <span class="kbd">Cmd</span> + <span class="kbd">\</span>
+                                    </td>
+                                    <td class="px-4 py-3 font-medium">Toggle Breakpoint</td>
+                                    <td class="px-4 py-3 text-zinc-500">Поставить/убрать точку останова</td>
+                                </tr>
+                                <tr class="hover:bg-zinc-50 dark:hover:bg-zinc-900/50">
+                                    <td class="px-4 py-3">
+                                        <span class="kbd">Cmd</span> + <span class="kbd">Y</span>
+                                    </td>
+                                    <td class="px-4 py-3 font-medium">Enable/Disable Breakpoints</td>
+                                    <td class="px-4 py-3 text-zinc-500">Включить/выключить все</td>
+                                </tr>
+                                <tr class="hover:bg-zinc-50 dark:hover:bg-zinc-900/50">
+                                    <td class="px-4 py-3">
+                                        <span class="kbd">F6</span>
+                                    </td>
+                                    <td class="px-4 py-3 font-medium">Step Over</td>
+                                    <td class="px-4 py-3 text-zinc-500">Следующая строка</td>
+                                </tr>
+                                <tr class="hover:bg-zinc-50 dark:hover:bg-zinc-900/50">
+                                    <td class="px-4 py-3">
+                                        <span class="kbd">F7</span>
+                                    </td>
+                                    <td class="px-4 py-3 font-medium">Step Into</td>
+                                    <td class="px-4 py-3 text-zinc-500">Войти в функцию</td>
+                                </tr>
+                                <tr class="hover:bg-zinc-50 dark:hover:bg-zinc-900/50">
+                                    <td class="px-4 py-3">
+                                        <span class="kbd">F8</span>
+                                    </td>
+                                    <td class="px-4 py-3 font-medium">Step Out</td>
+                                    <td class="px-4 py-3 text-zinc-500">Выйти из функции</td>
+                                </tr>
+                                <tr class="hover:bg-zinc-50 dark:hover:bg-zinc-900/50">
+                                    <td class="px-4 py-3">
+                                        <span class="kbd">Ctrl</span> + <span class="kbd">Cmd</span> + <span class="kbd">Y</span>
+                                    </td>
+                                    <td class="px-4 py-3 font-medium">Continue</td>
+                                    <td class="px-4 py-3 text-zinc-500">Продолжить выполнение</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SwiftUI Preview -->
+            <section class="mb-16">
+                <h2 class="text-2xl font-bold mb-6 flex items-center gap-3">
+                    <span class="w-10 h-10 bg-green-100 dark:bg-green-900/30 rounded-lg flex items-center justify-center">
+                        <svg class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                        </svg>
+                    </span>
+                    SwiftUI Preview
+                </h2>
+
+                <div class="space-y-4">
+                    <div class="p-6 bg-zinc-50 dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-zinc-800">
+                        <h3 class="font-bold text-lg mb-3">Открыть/закрыть Preview</h3>
+                        <p class="text-zinc-600 dark:text-zinc-400 mb-3">
+                            <span class="kbd">Cmd</span> + <span class="kbd">Option</span> + <span class="kbd">Enter</span>
+                        </p>
+                        <p class="text-sm text-zinc-500">Показывает или скрывает Canvas с превью справа от редактора.</p>
+                    </div>
+
+                    <div class="p-6 bg-zinc-50 dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-zinc-800">
+                        <h3 class="font-bold text-lg mb-3">Обновить Preview</h3>
+                        <p class="text-zinc-600 dark:text-zinc-400 mb-3">
+                            <span class="kbd">Cmd</span> + <span class="kbd">Option</span> + <span class="kbd">P</span>
+                        </p>
+                        <p class="text-sm text-zinc-500">Перезапускает превью если оно зависло или показывает ошибку.</p>
+                    </div>
+
+                    <div class="p-6 bg-zinc-50 dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-zinc-800">
+                        <h3 class="font-bold text-lg mb-3">Live Preview</h3>
+                        <p class="text-zinc-600 dark:text-zinc-400 mb-3">
+                            Нажмите кнопку <strong>Play</strong> на превью или используйте <span class="kbd">Cmd</span> + <span class="kbd">Option</span> + <span class="kbd">P</span>
+                        </p>
+                        <p class="text-sm text-zinc-500">Включает интерактивный режим - можно кликать на кнопки и вводить текст.</p>
+                    </div>
+
+                    <div class="p-6 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-2xl">
+                        <h3 class="font-bold text-lg mb-3 text-blue-800 dark:text-blue-300">Preview на разных устройствах</h3>
+                        <pre class="bg-zinc-800 text-zinc-100 p-4 rounded-lg text-sm overflow-x-auto"><code>#Preview {
+    ContentView()
+}
+
+#Preview("iPhone SE") {
+    ContentView()
+        .previewDevice("iPhone SE (3rd generation)")
+}
+
+#Preview("Dark Mode") {
+    ContentView()
+        .preferredColorScheme(.dark)
+}</code></pre>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Useful Features -->
+            <section class="mb-16">
+                <h2 class="text-2xl font-bold mb-6 flex items-center gap-3">
+                    <span class="w-10 h-10 bg-yellow-100 dark:bg-yellow-900/30 rounded-lg flex items-center justify-center">
+                        <svg class="w-5 h-5 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                        </svg>
+                    </span>
+                    Полезные функции
+                </h2>
+
+                <div class="grid md:grid-cols-2 gap-4">
+                    <div class="p-5 bg-zinc-50 dark:bg-zinc-900 rounded-xl border border-zinc-200 dark:border-zinc-800">
+                        <h3 class="font-bold mb-2">Quick Help</h3>
+                        <p class="text-sm text-zinc-500 mb-2"><span class="kbd">Option</span> + Click на символе</p>
+                        <p class="text-zinc-600 dark:text-zinc-400 text-sm">Показывает документацию прямо в редакторе</p>
+                    </div>
+
+                    <div class="p-5 bg-zinc-50 dark:bg-zinc-900 rounded-xl border border-zinc-200 dark:border-zinc-800">
+                        <h3 class="font-bold mb-2">Автодополнение</h3>
+                        <p class="text-sm text-zinc-500 mb-2"><span class="kbd">Esc</span> или <span class="kbd">Ctrl</span> + <span class="kbd">Space</span></p>
+                        <p class="text-zinc-600 dark:text-zinc-400 text-sm">Вызвать меню автодополнения</p>
+                    </div>
+
+                    <div class="p-5 bg-zinc-50 dark:bg-zinc-900 rounded-xl border border-zinc-200 dark:border-zinc-800">
+                        <h3 class="font-bold mb-2">Переименование</h3>
+                        <p class="text-sm text-zinc-500 mb-2"><span class="kbd">Cmd</span> + Click &#8594; Rename</p>
+                        <p class="text-zinc-600 dark:text-zinc-400 text-sm">Безопасное переименование во всём проекте</p>
+                    </div>
+
+                    <div class="p-5 bg-zinc-50 dark:bg-zinc-900 rounded-xl border border-zinc-200 dark:border-zinc-800">
+                        <h3 class="font-bold mb-2">Fix-it</h3>
+                        <p class="text-sm text-zinc-500 mb-2">Click на ошибке или <span class="kbd">Cmd</span> + <span class="kbd">.</span></p>
+                        <p class="text-zinc-600 dark:text-zinc-400 text-sm">Автоматическое исправление ошибок</p>
+                    </div>
+
+                    <div class="p-5 bg-zinc-50 dark:bg-zinc-900 rounded-xl border border-zinc-200 dark:border-zinc-800">
+                        <h3 class="font-bold mb-2">Extract to Method</h3>
+                        <p class="text-sm text-zinc-500 mb-2">Выделить код &#8594; ПКМ &#8594; Refactor &#8594; Extract</p>
+                        <p class="text-zinc-600 dark:text-zinc-400 text-sm">Выделить код в отдельную функцию</p>
+                    </div>
+
+                    <div class="p-5 bg-zinc-50 dark:bg-zinc-900 rounded-xl border border-zinc-200 dark:border-zinc-800">
+                        <h3 class="font-bold mb-2">Show Callers</h3>
+                        <p class="text-sm text-zinc-500 mb-2"><span class="kbd">Ctrl</span> + <span class="kbd">1</span> &#8594; Callers</p>
+                        <p class="text-zinc-600 dark:text-zinc-400 text-sm">Кто вызывает эту функцию?</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Interface Tips -->
+            <section class="mb-16">
+                <h2 class="text-2xl font-bold mb-6 flex items-center gap-3">
+                    <span class="w-10 h-10 bg-indigo-100 dark:bg-indigo-900/30 rounded-lg flex items-center justify-center">
+                        <svg class="w-5 h-5 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM4 13a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6zM16 13a1 1 0 011-1h2a1 1 0 011 1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1v-6z"/>
+                        </svg>
+                    </span>
+                    Настройка интерфейса
+                </h2>
+
+                <div class="space-y-4">
+                    <div class="p-6 bg-zinc-50 dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-zinc-800">
+                        <h3 class="font-bold text-lg mb-3">Панели навигации</h3>
+                        <div class="grid sm:grid-cols-3 gap-3 text-sm">
+                            <div class="p-3 bg-white dark:bg-zinc-800 rounded-lg">
+                                <p class="font-medium"><span class="kbd">Cmd</span> + <span class="kbd">0</span></p>
+                                <p class="text-zinc-500">Navigator (слева)</p>
+                            </div>
+                            <div class="p-3 bg-white dark:bg-zinc-800 rounded-lg">
+                                <p class="font-medium"><span class="kbd">Cmd</span> + <span class="kbd">Option</span> + <span class="kbd">0</span></p>
+                                <p class="text-zinc-500">Inspector (справа)</p>
+                            </div>
+                            <div class="p-3 bg-white dark:bg-zinc-800 rounded-lg">
+                                <p class="font-medium"><span class="kbd">Cmd</span> + <span class="kbd">Shift</span> + <span class="kbd">Y</span></p>
+                                <p class="text-zinc-500">Debug Area (снизу)</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="p-6 bg-zinc-50 dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-zinc-800">
+                        <h3 class="font-bold text-lg mb-3">Minimap</h3>
+                        <p class="text-zinc-600 dark:text-zinc-400 mb-2">
+                            Editor &#8594; Minimap (или <span class="kbd">Ctrl</span> + <span class="kbd">Shift</span> + <span class="kbd">Cmd</span> + <span class="kbd">M</span>)
+                        </p>
+                        <p class="text-sm text-zinc-500">Показывает миниатюру кода справа для быстрой навигации.</p>
+                    </div>
+
+                    <div class="p-6 bg-zinc-50 dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-zinc-800">
+                        <h3 class="font-bold text-lg mb-3">Увеличить размер шрифта</h3>
+                        <p class="text-zinc-600 dark:text-zinc-400 mb-2">
+                            <span class="kbd">Cmd</span> + <span class="kbd">+</span> / <span class="kbd">-</span>
+                        </p>
+                        <p class="text-sm text-zinc-500">Или настроить в Preferences &#8594; Fonts & Colors</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Tips -->
+            <section class="mb-16">
+                <h2 class="text-2xl font-bold mb-6 flex items-center gap-3">
+                    <span class="w-10 h-10 bg-pink-100 dark:bg-pink-900/30 rounded-lg flex items-center justify-center">
+                        <svg class="w-5 h-5 text-pink-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/>
+                        </svg>
+                    </span>
+                    Советы
+                </h2>
+
+                <div class="space-y-4">
+                    <div class="p-4 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-xl">
+                        <h3 class="font-bold text-green-800 dark:text-green-300 mb-2">Используйте Cmd + Shift + O</h3>
+                        <p class="text-green-700 dark:text-green-400 text-sm">
+                            Это самый быстрый способ найти файл или символ. Начните печатать название и выберите из списка.
+                        </p>
+                    </div>
+
+                    <div class="p-4 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-xl">
+                        <h3 class="font-bold text-blue-800 dark:text-blue-300 mb-2">Clean Build при странных ошибках</h3>
+                        <p class="text-blue-700 dark:text-blue-400 text-sm">
+                            Если Xcode показывает странные ошибки, попробуйте Cmd + Shift + K для очистки кэша сборки.
+                        </p>
+                    </div>
+
+                    <div class="p-4 bg-purple-50 dark:bg-purple-900/20 border border-purple-200 dark:border-purple-800 rounded-xl">
+                        <h3 class="font-bold text-purple-800 dark:text-purple-300 mb-2">Перезапустите Xcode</h3>
+                        <p class="text-purple-700 dark:text-purple-400 text-sm">
+                            Если что-то не работает (Preview не обновляется, автодополнение сломалось) - перезапустите Xcode.
+                        </p>
+                    </div>
+
+                    <div class="p-4 bg-orange-50 dark:bg-orange-900/20 border border-orange-200 dark:border-orange-800 rounded-xl">
+                        <h3 class="font-bold text-orange-800 dark:text-orange-300 mb-2">Derived Data</h3>
+                        <p class="text-orange-700 dark:text-orange-400 text-sm">
+                            При серьёзных проблемах: удалите папку ~/Library/Developer/Xcode/DerivedData и перезапустите Xcode.
+                        </p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Navigation -->
+            <div class="flex justify-between items-center mt-16 pt-8 border-t border-zinc-200 dark:border-zinc-800">
+                <a href="../index.html" class="flex items-center gap-2 text-zinc-600 dark:text-zinc-400 hover:text-primary transition-colors">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                    </svg>
+                    Оглавление
+                </a>
+                <a href="debugging.html" class="flex items-center gap-2 px-6 py-3 bg-primary text-white rounded-xl hover:bg-blue-600 transition-colors">
+                    Отладка
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                    </svg>
+                </a>
+            </div>
+        </main>
+    </div>
+</body>
+</html>

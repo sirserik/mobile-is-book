@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Глава 2: MVVM архитектура | SwiftUI E-Commerce</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'media',
+            theme: { extend: { colors: { primary: '#007AFF' } } }
+        }
+    </script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/vs2015.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/swift.min.js"></script>
+    <style>
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 3px; }
+        pre code { font-size: 14px; line-height: 1.6; }
+    </style>
+</head>
+<body class="bg-white dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100">
+    <div class="min-h-screen">
+        <!-- Header -->
+        <header class="sticky top-0 z-40 bg-white/80 dark:bg-zinc-950/80 backdrop-blur-md border-b border-zinc-200 dark:border-zinc-800">
+            <div class="max-w-4xl mx-auto px-6 py-4 flex items-center justify-between">
+                <a href="../index.html" class="flex items-center gap-2 text-zinc-600 dark:text-zinc-400 hover:text-primary transition-colors">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                    </svg>
+                    Оглавление
+                </a>
+                <span class="text-sm text-zinc-500">Глава 2</span>
+            </div>
+        </header>
+
+        <!-- Content -->
+        <main class="max-w-4xl mx-auto px-6 py-12">
+            <article class="prose prose-zinc dark:prose-invert max-w-none">
+                <span class="text-sm font-semibold text-primary uppercase tracking-wider">Глава 2</span>
+                <h1 class="text-4xl font-bold mt-2 mb-8">Архитектура MVVM</h1>
+
+                <div class="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-xl p-6 mb-8">
+                    <h3 class="text-lg font-semibold text-blue-800 dark:text-blue-300 mb-2">🎯 Цель главы</h3>
+                    <p class="text-blue-700 dark:text-blue-400">
+                        Понять паттерн MVVM и научиться разделять UI и бизнес-логику с помощью @Observable и @ObservedObject.
+                    </p>
+                </div>
+
+                <h2 class="text-2xl font-bold mt-12 mb-4">Зачем нужна архитектура?</h2>
+                <p class="text-zinc-600 dark:text-zinc-400 leading-relaxed">
+                    Без чёткой архитектуры код быстро превращается в "спагетти" — всё связано со всем, изменение в одном месте ломает другое, тестирование невозможно.
+                </p>
+
+                <div class="bg-zinc-100 dark:bg-zinc-900 rounded-xl p-6 font-mono text-sm overflow-x-auto my-8">
+<pre class="whitespace-pre text-zinc-800 dark:text-zinc-200">
+┌─────────────────────────────────────────────────┐
+│                      MVVM                       │
+├─────────────────────────────────────────────────┤
+│                                                 │
+│   ┌──────────┐         ┌─────────────┐         │
+│   │   VIEW   │ ◄─────► │  VIEWMODEL  │         │
+│   │ (SwiftUI)│         │ (@Observable)│         │
+│   └──────────┘         └──────┬──────┘         │
+│         │                     │                 │
+│         │ Отображает          │ Обрабатывает   │
+│         │ данные              │ логику          │
+│         │                     │                 │
+│         │                     ▼                 │
+│         │              ┌─────────────┐         │
+│         │              │    MODEL    │         │
+│         │              │  (Structs)  │         │
+│         │              └─────────────┘         │
+│         │                     │                 │
+│         └─────────────────────┘                 │
+│           Данные передаются                     │
+│                                                 │
+└─────────────────────────────────────────────────┘
+</pre>
+                </div>
+
+                <h2 class="text-2xl font-bold mt-12 mb-4">Model — данные</h2>
+                <p class="text-zinc-600 dark:text-zinc-400 mb-4">
+                    Model представляет данные приложения. В Swift это обычно структуры с протоколом <code class="bg-zinc-100 dark:bg-zinc-800 px-2 py-1 rounded">Codable</code> для работы с JSON.
+                </p>
+
+                <pre><code class="language-swift rounded-xl">// Models/Product.swift
+struct Product: Identifiable, Codable {
+    let id: Int
+    let title: String
+    let description: String
+    let price: Double
+    let discountPercentage: Double
+    let rating: Double
+    let stock: Int
+    let brand: String
+    let category: String
+    let thumbnail: String
+    let images: [String]
+}
+
+// Ответ API
+struct ProductResponse: Codable {
+    let products: [Product]
+    let total: Int
+    let skip: Int
+    let limit: Int
+}</code></pre>
+
+                <h2 class="text-2xl font-bold mt-12 mb-4">ViewModel — логика</h2>
+                <p class="text-zinc-600 dark:text-zinc-400 mb-4">
+                    ViewModel содержит бизнес-логику и состояние. В iOS 17+ используем <code class="bg-zinc-100 dark:bg-zinc-800 px-2 py-1 rounded">@Observable</code>, для более ранних версий — <code class="bg-zinc-100 dark:bg-zinc-800 px-2 py-1 rounded">ObservableObject</code>.
+                </p>
+
+                <h3 class="text-xl font-semibold mt-8 mb-4">iOS 17+ (@Observable)</h3>
+                <pre><code class="language-swift rounded-xl">import Observation
+
+@Observable
+final class ProductViewModel {
+    // MARK: - Properties
+    var products: [Product] = []
+    var isLoading = false
+    var errorMessage: String?
+    var searchText = ""
+
+    // Отфильтрованные товары
+    var filteredProducts: [Product] {
+        if searchText.isEmpty {
+            return products
+        }
+        return products.filter {
+            $0.title.localizedCaseInsensitiveContains(searchText)
+        }
+    }
+
+    // MARK: - Methods
+    func fetchProducts() async {
+        isLoading = true
+        errorMessage = nil
+
+        do {
+            let url = URL(string: "https://dummyjson.com/products")!
+            let (data, _) = try await URLSession.shared.data(from: url)
+            let response = try JSONDecoder().decode(ProductResponse.self, from: data)
+            products = response.products
+        } catch {
+            errorMessage = error.localizedDescription
+        }
+
+        isLoading = false
+    }
+}</code></pre>
+
+                <h3 class="text-xl font-semibold mt-8 mb-4">iOS 14-16 (ObservableObject)</h3>
+                <pre><code class="language-swift rounded-xl">import Combine
+
+final class ProductViewModel: ObservableObject {
+    @Published var products: [Product] = []
+    @Published var isLoading = false
+    @Published var errorMessage: String?
+
+    // Аналогичная логика...
+}</code></pre>
+
+                <h2 class="text-2xl font-bold mt-12 mb-4">View — отображение</h2>
+                <p class="text-zinc-600 dark:text-zinc-400 mb-4">
+                    View только отображает данные из ViewModel и вызывает его методы. Никакой бизнес-логики в View!
+                </p>
+
+                <pre><code class="language-swift rounded-xl">struct ProductListView: View {
+    @State private var viewModel = ProductViewModel()
+
+    var body: some View {
+        NavigationStack {
+            Group {
+                if viewModel.isLoading {
+                    ProgressView("Загрузка...")
+                } else if let error = viewModel.errorMessage {
+                    ErrorView(message: error) {
+                        Task { await viewModel.fetchProducts() }
+                    }
+                } else {
+                    productGrid
+                }
+            }
+            .navigationTitle("Товары")
+            .searchable(text: $viewModel.searchText)
+        }
+        .task {
+            await viewModel.fetchProducts()
+        }
+    }
+
+    private var productGrid: some View {
+        ScrollView {
+            LazyVGrid(columns: [
+                GridItem(.flexible()),
+                GridItem(.flexible())
+            ], spacing: 16) {
+                ForEach(viewModel.filteredProducts) { product in
+                    ProductCard(product: product)
+                }
+            }
+            .padding()
+        }
+    }
+}</code></pre>
+
+                <h2 class="text-2xl font-bold mt-12 mb-4">Внедрение зависимостей</h2>
+                <p class="text-zinc-600 dark:text-zinc-400 mb-4">
+                    Для тестирования важно использовать протоколы и внедрять зависимости:
+                </p>
+
+                <pre><code class="language-swift rounded-xl">// Протокол для сетевого слоя
+protocol ProductServiceProtocol {
+    func fetchProducts() async throws -> [Product]
+}
+
+// Реальная реализация
+final class ProductService: ProductServiceProtocol {
+    func fetchProducts() async throws -> [Product] {
+        let url = URL(string: "https://dummyjson.com/products")!
+        let (data, _) = try await URLSession.shared.data(from: url)
+        let response = try JSONDecoder().decode(ProductResponse.self, from: data)
+        return response.products
+    }
+}
+
+// ViewModel с внедрённой зависимостью
+@Observable
+final class ProductViewModel {
+    private let service: ProductServiceProtocol
+
+    var products: [Product] = []
+    var isLoading = false
+
+    init(service: ProductServiceProtocol = ProductService()) {
+        self.service = service
+    }
+
+    func fetchProducts() async {
+        isLoading = true
+        do {
+            products = try await service.fetchProducts()
+        } catch {
+            // handle error
+        }
+        isLoading = false
+    }
+}
+
+// Mock для тестов
+final class MockProductService: ProductServiceProtocol {
+    var mockProducts: [Product] = []
+
+    func fetchProducts() async throws -> [Product] {
+        return mockProducts
+    }
+}</code></pre>
+
+                <h2 class="text-2xl font-bold mt-12 mb-4">@Environment и @EnvironmentObject</h2>
+                <p class="text-zinc-600 dark:text-zinc-400 mb-4">
+                    Для глобального состояния (корзина, избранное) используем Environment:
+                </p>
+
+                <pre><code class="language-swift rounded-xl">// Глобальный менеджер корзины
+@Observable
+final class CartManager {
+    var items: [CartItem] = []
+
+    var totalPrice: Double {
+        items.reduce(0) { $0 + $1.price * Double($1.quantity) }
+    }
+
+    func add(_ product: Product) {
+        if let index = items.firstIndex(where: { $0.productId == product.id }) {
+            items[index].quantity += 1
+        } else {
+            items.append(CartItem(product: product, quantity: 1))
+        }
+    }
+}
+
+// App.swift
+@main
+struct ShoppingApp: App {
+    @State private var cartManager = CartManager()
+
+    var body: some Scene {
+        WindowGroup {
+            ContentView()
+                .environment(cartManager)
+        }
+    }
+}
+
+// Использование в любом View
+struct ProductDetailView: View {
+    @Environment(CartManager.self) private var cart
+    let product: Product
+
+    var body: some View {
+        Button("Добавить в корзину") {
+            cart.add(product)
+        }
+    }
+}</code></pre>
+
+                <h2 class="text-2xl font-bold mt-12 mb-4">Структура проекта MVVM</h2>
+                <div class="bg-zinc-100 dark:bg-zinc-900 rounded-xl p-6 font-mono text-sm">
+<pre class="whitespace-pre text-zinc-800 dark:text-zinc-200">
+ShoppingApp/
+├── App/
+│   └── ShoppingApp.swift
+├── Models/
+│   ├── Product.swift
+│   ├── CartItem.swift
+│   └── User.swift
+├── ViewModels/
+│   ├── ProductViewModel.swift
+│   ├── CartViewModel.swift
+│   └── FavoritesViewModel.swift
+├── Views/
+│   ├── ProductList/
+│   │   ├── ProductListView.swift
+│   │   └── ProductCard.swift
+│   ├── ProductDetail/
+│   │   └── ProductDetailView.swift
+│   └── Cart/
+│       └── CartView.swift
+├── Services/
+│   ├── NetworkService.swift
+│   └── ProductService.swift
+└── Utilities/
+    └── Extensions.swift
+</pre>
+                </div>
+
+                <h2 class="text-2xl font-bold mt-12 mb-4">🏋️ Задания</h2>
+                <div class="bg-zinc-50 dark:bg-zinc-900 rounded-xl p-6 border border-zinc-200 dark:border-zinc-800">
+                    <ol class="space-y-4 text-zinc-600 dark:text-zinc-400">
+                        <li><strong>1.</strong> Создайте FavoritesViewModel с методами add/remove и сохранением в UserDefaults</li>
+                        <li><strong>2.</strong> Добавьте в ProductViewModel сортировку по цене и рейтингу</li>
+                        <li><strong>3.</strong> Реализуйте пагинацию (загрузка по 20 товаров при скролле)</li>
+                    </ol>
+                </div>
+
+                <!-- Navigation -->
+                <div class="flex justify-between items-center mt-16 pt-8 border-t border-zinc-200 dark:border-zinc-800">
+                    <a href="01-swiftui-basics.html" class="flex items-center gap-2 text-zinc-600 dark:text-zinc-400 hover:text-primary transition-colors">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                        </svg>
+                        Глава 1: SwiftUI
+                    </a>
+                    <a href="03-project-setup.html" class="flex items-center gap-2 px-6 py-3 bg-primary text-white rounded-xl hover:bg-blue-600 transition-colors">
+                        Глава 3: Проект
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                        </svg>
+                    </a>
+                </div>
+            </article>
+        </main>
+    </div>
+
+    <script>hljs.highlightAll();</script>
+</body>
+</html>

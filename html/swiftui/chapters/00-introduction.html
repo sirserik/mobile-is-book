@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Введение | SwiftUI E-Commerce</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'media',
+            theme: { extend: { colors: { primary: '#007AFF' } } }
+        }
+    </script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/vs2015.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/swift.min.js"></script>
+    <style>
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 3px; }
+        pre code { font-size: 14px; line-height: 1.6; }
+    </style>
+</head>
+<body class="bg-white dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100">
+    <div class="min-h-screen">
+        <!-- Header -->
+        <header class="sticky top-0 z-40 bg-white/80 dark:bg-zinc-950/80 backdrop-blur-md border-b border-zinc-200 dark:border-zinc-800">
+            <div class="max-w-4xl mx-auto px-6 py-4 flex items-center justify-between">
+                <a href="../index.html" class="flex items-center gap-2 text-zinc-600 dark:text-zinc-400 hover:text-primary transition-colors">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                    </svg>
+                    Оглавление
+                </a>
+                <span class="text-sm text-zinc-500">Введение</span>
+            </div>
+        </header>
+
+        <!-- Content -->
+        <main class="max-w-4xl mx-auto px-6 py-12">
+            <article class="prose prose-zinc dark:prose-invert max-w-none">
+                <h1 class="text-4xl font-bold mb-8 bg-gradient-to-r from-blue-500 to-purple-600 bg-clip-text text-transparent">
+                    Введение
+                </h1>
+
+                <div class="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-xl p-6 mb-8">
+                    <h3 class="text-lg font-semibold text-blue-800 dark:text-blue-300 mb-2">Что вы изучите</h3>
+                    <ul class="text-blue-700 dark:text-blue-400 space-y-1">
+                        <li>Создание iOS приложений на SwiftUI</li>
+                        <li>Архитектура MVVM в реальном проекте</li>
+                        <li>Работа с REST API</li>
+                        <li>Управление состоянием приложения</li>
+                    </ul>
+                </div>
+
+                <h2 class="text-2xl font-bold mt-12 mb-4">О книге</h2>
+                <p class="text-lg text-zinc-600 dark:text-zinc-400 leading-relaxed">
+                    Эта книга научит вас создавать <strong>современные iOS приложения</strong> на SwiftUI с использованием архитектуры MVVM. Вы создадите полноценное приложение интернет-магазина с нуля.
+                </p>
+
+                <h2 class="text-2xl font-bold mt-12 mb-4">Что создадим</h2>
+                <div class="bg-zinc-100 dark:bg-zinc-900 rounded-xl p-6 font-mono text-sm overflow-x-auto">
+<pre class="whitespace-pre text-zinc-800 dark:text-zinc-200">
+┌─────────────────────────────────────────────────┐
+│          SHOPPING APP - SwiftUI MVVM            │
+├─────────────────────────────────────────────────┤
+│                                                 │
+│  ✅ Каталог товаров (Grid/List)                │
+│  ✅ Поиск товаров                               │
+│  ✅ Детальная страница товара                   │
+│  ✅ Избранное (UserDefaults)                    │
+│  ✅ Корзина покупок                             │
+│  ✅ Programmatic Navigation                     │
+│  ✅ REST API интеграция                         │
+│  ✅ Unit & UI тесты                             │
+│                                                 │
+└─────────────────────────────────────────────────┘
+</pre>
+                </div>
+
+                <h2 class="text-2xl font-bold mt-12 mb-4">Архитектура MVVM</h2>
+                <p class="text-zinc-600 dark:text-zinc-400 mb-4">
+                    MVVM (Model-View-ViewModel) — это архитектурный паттерн, который отлично подходит для SwiftUI благодаря реактивной природе фреймворка.
+                </p>
+
+                <div class="bg-zinc-100 dark:bg-zinc-900 rounded-xl p-6 font-mono text-sm overflow-x-auto">
+<pre class="whitespace-pre text-zinc-800 dark:text-zinc-200">
+┌─────────────────────────────────────────────────┐
+│                      MVVM                       │
+├─────────────────────────────────────────────────┤
+│                                                 │
+│   ┌──────────┐         ┌─────────────┐         │
+│   │   VIEW   │ ◄─────► │  VIEWMODEL  │         │
+│   │ (SwiftUI)│         │ (@Observable)│         │
+│   └──────────┘         └──────┬──────┘         │
+│                               │                 │
+│                               ▼                 │
+│                        ┌─────────────┐         │
+│                        │    MODEL    │         │
+│                        │  (Structs)  │         │
+│                        └─────────────┘         │
+│                                                 │
+│   View: Отображение UI                         │
+│   ViewModel: Бизнес-логика, состояние          │
+│   Model: Данные (Product, Cart, etc.)          │
+│                                                 │
+└─────────────────────────────────────────────────┘
+</pre>
+                </div>
+
+                <h2 class="text-2xl font-bold mt-12 mb-4">Для кого эта книга</h2>
+                <ul class="space-y-3 text-zinc-600 dark:text-zinc-400">
+                    <li class="flex items-start gap-3">
+                        <span class="text-green-500 mt-1">✓</span>
+                        <span>Знаете <strong>Swift</strong>, но не знаете SwiftUI</span>
+                    </li>
+                    <li class="flex items-start gap-3">
+                        <span class="text-green-500 mt-1">✓</span>
+                        <span>Хотите освоить <strong>MVVM</strong> архитектуру</span>
+                    </li>
+                    <li class="flex items-start gap-3">
+                        <span class="text-green-500 mt-1">✓</span>
+                        <span>Переходите с <strong>UIKit</strong> на SwiftUI</span>
+                    </li>
+                    <li class="flex items-start gap-3">
+                        <span class="text-green-500 mt-1">✓</span>
+                        <span>Хотите создать <strong>портфолио проект</strong></span>
+                    </li>
+                </ul>
+
+                <h2 class="text-2xl font-bold mt-12 mb-4">Требования</h2>
+                <div class="grid sm:grid-cols-2 gap-4">
+                    <div class="bg-zinc-50 dark:bg-zinc-900 rounded-xl p-4 border border-zinc-200 dark:border-zinc-800">
+                        <h4 class="font-semibold mb-2">Оборудование</h4>
+                        <ul class="text-sm text-zinc-600 dark:text-zinc-400 space-y-1">
+                            <li>• macOS Sonoma 14.0+</li>
+                            <li>• Xcode 15.0+</li>
+                            <li>• iOS Simulator или устройство</li>
+                        </ul>
+                    </div>
+                    <div class="bg-zinc-50 dark:bg-zinc-900 rounded-xl p-4 border border-zinc-200 dark:border-zinc-800">
+                        <h4 class="font-semibold mb-2">Знания</h4>
+                        <ul class="text-sm text-zinc-600 dark:text-zinc-400 space-y-1">
+                            <li>• Базовый Swift</li>
+                            <li>• Понимание ООП</li>
+                            <li>• Желание учиться</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <h2 class="text-2xl font-bold mt-12 mb-4">Быстрый старт</h2>
+                <pre><code class="language-bash rounded-xl"># Клонировать оригинальный проект
+git clone https://github.com/BerkaySancar/ShoppingApp-SwiftUI-MVVM.git
+
+# Открыть в Xcode
+cd ShoppingApp-SwiftUI-MVVM
+open Shopping.xcodeproj
+
+# Запустить (Cmd + R)</code></pre>
+
+                <h2 class="text-2xl font-bold mt-12 mb-4">Структура главы</h2>
+                <div class="overflow-hidden border border-zinc-200 dark:border-zinc-800 rounded-xl">
+                    <table class="w-full text-sm">
+                        <tbody class="divide-y divide-zinc-200 dark:divide-zinc-800">
+                            <tr class="hover:bg-zinc-50 dark:hover:bg-zinc-900/50">
+                                <td class="px-4 py-3 font-medium">🎯 Цель</td>
+                                <td class="px-4 py-3 text-zinc-500">Что изучим в этой главе</td>
+                            </tr>
+                            <tr class="hover:bg-zinc-50 dark:hover:bg-zinc-900/50">
+                                <td class="px-4 py-3 font-medium">📖 Теория</td>
+                                <td class="px-4 py-3 text-zinc-500">Объяснение концепций</td>
+                            </tr>
+                            <tr class="hover:bg-zinc-50 dark:hover:bg-zinc-900/50">
+                                <td class="px-4 py-3 font-medium">💻 Код</td>
+                                <td class="px-4 py-3 text-zinc-500">Пошаговая реализация</td>
+                            </tr>
+                            <tr class="hover:bg-zinc-50 dark:hover:bg-zinc-900/50">
+                                <td class="px-4 py-3 font-medium">🎨 UI</td>
+                                <td class="px-4 py-3 text-zinc-500">Создание интерфейса</td>
+                            </tr>
+                            <tr class="hover:bg-zinc-50 dark:hover:bg-zinc-900/50">
+                                <td class="px-4 py-3 font-medium">✅ Результат</td>
+                                <td class="px-4 py-3 text-zinc-500">Что получилось</td>
+                            </tr>
+                            <tr class="hover:bg-zinc-50 dark:hover:bg-zinc-900/50">
+                                <td class="px-4 py-3 font-medium">🏋️ Задания</td>
+                                <td class="px-4 py-3 text-zinc-500">Практика для закрепления</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Navigation -->
+                <div class="flex justify-between items-center mt-16 pt-8 border-t border-zinc-200 dark:border-zinc-800">
+                    <a href="../index.html" class="flex items-center gap-2 text-zinc-600 dark:text-zinc-400 hover:text-primary transition-colors">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                        </svg>
+                        Оглавление
+                    </a>
+                    <a href="00a-swift-for-developers.html" class="flex items-center gap-2 px-6 py-3 bg-primary text-white rounded-xl hover:bg-blue-600 transition-colors">
+                        Swift для JS/PHP
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                        </svg>
+                    </a>
+                </div>
+            </article>
+        </main>
+    </div>
+
+    <script>hljs.highlightAll();</script>
+</body>
+</html>

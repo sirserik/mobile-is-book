@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Глава 4: API Layer | SwiftUI E-Commerce</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'media',
+            theme: { extend: { colors: { primary: '#007AFF' } } }
+        }
+    </script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/vs2015.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/swift.min.js"></script>
+    <style>
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 3px; }
+        pre code { font-size: 14px; line-height: 1.6; }
+    </style>
+</head>
+<body class="bg-white dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100">
+    <div class="min-h-screen">
+        <header class="sticky top-0 z-40 bg-white/80 dark:bg-zinc-950/80 backdrop-blur-md border-b border-zinc-200 dark:border-zinc-800">
+            <div class="max-w-4xl mx-auto px-6 py-4 flex items-center justify-between">
+                <a href="../index.html" class="flex items-center gap-2 text-zinc-600 dark:text-zinc-400 hover:text-primary transition-colors">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                    </svg>
+                    Оглавление
+                </a>
+                <span class="text-sm text-zinc-500">Глава 4</span>
+            </div>
+        </header>
+
+        <main class="max-w-4xl mx-auto px-6 py-12">
+            <article class="prose prose-zinc dark:prose-invert max-w-none">
+                <span class="text-sm font-semibold text-primary uppercase tracking-wider">Глава 4</span>
+                <h1 class="text-4xl font-bold mt-2 mb-8">API Layer</h1>
+
+                <div class="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-xl p-6 mb-8">
+                    <h3 class="text-lg font-semibold text-blue-800 dark:text-blue-300 mb-2">🎯 Цель главы</h3>
+                    <p class="text-blue-700 dark:text-blue-400">
+                        Создать переиспользуемый сетевой слой с Generic запросами, обработкой ошибок и интеграцией с DummyJSON API.
+                    </p>
+                </div>
+
+                <h2 class="text-2xl font-bold mt-12 mb-4">DummyJSON API</h2>
+                <p class="text-zinc-600 dark:text-zinc-400 mb-4">
+                    <a href="https://dummyjson.com" class="text-primary hover:underline">DummyJSON</a> — бесплатный REST API с тестовыми данными. Отличная альтернатива реальному бэкенду для обучения.
+                </p>
+
+                <div class="overflow-hidden border border-zinc-200 dark:border-zinc-800 rounded-xl mb-8">
+                    <table class="w-full text-sm">
+                        <thead class="bg-zinc-50 dark:bg-zinc-900">
+                            <tr>
+                                <th class="px-4 py-3 text-left font-semibold">Endpoint</th>
+                                <th class="px-4 py-3 text-left font-semibold">Описание</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-zinc-200 dark:divide-zinc-800">
+                            <tr>
+                                <td class="px-4 py-3 font-mono text-sm">GET /products</td>
+                                <td class="px-4 py-3 text-zinc-500">Все товары</td>
+                            </tr>
+                            <tr>
+                                <td class="px-4 py-3 font-mono text-sm">GET /products/{id}</td>
+                                <td class="px-4 py-3 text-zinc-500">Товар по ID</td>
+                            </tr>
+                            <tr>
+                                <td class="px-4 py-3 font-mono text-sm">GET /products/search?q=</td>
+                                <td class="px-4 py-3 text-zinc-500">Поиск товаров</td>
+                            </tr>
+                            <tr>
+                                <td class="px-4 py-3 font-mono text-sm">GET /products/categories</td>
+                                <td class="px-4 py-3 text-zinc-500">Список категорий</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <h2 class="text-2xl font-bold mt-12 mb-4">Endpoint enum</h2>
+                <pre><code class="language-swift rounded-xl">// Core/Network/Endpoint.swift
+import Foundation
+
+enum Endpoint {
+    case products
+    case product(id: Int)
+    case search(query: String)
+    case category(name: String)
+    case categories
+
+    var path: String {
+        switch self {
+        case .products:
+            return "/products"
+        case .product(let id):
+            return "/products/\(id)"
+        case .search(let query):
+            return "/products/search?q=\(query)"
+        case .category(let name):
+            return "/products/category/\(name)"
+        case .categories:
+            return "/products/categories"
+        }
+    }
+
+    var url: URL? {
+        URL(string: "https://dummyjson.com" + path)
+    }
+}</code></pre>
+
+                <h2 class="text-2xl font-bold mt-12 mb-4">Network Error</h2>
+                <pre><code class="language-swift rounded-xl">// Core/Network/NetworkError.swift
+import Foundation
+
+enum NetworkError: LocalizedError {
+    case invalidURL
+    case noData
+    case decodingError(Error)
+    case serverError(Int)
+    case unknown(Error)
+
+    var errorDescription: String? {
+        switch self {
+        case .invalidURL:
+            return "Неверный URL"
+        case .noData:
+            return "Данные не получены"
+        case .decodingError(let error):
+            return "Ошибка декодирования: \(error.localizedDescription)"
+        case .serverError(let code):
+            return "Ошибка сервера: \(code)"
+        case .unknown(let error):
+            return error.localizedDescription
+        }
+    }
+}</code></pre>
+
+                <h2 class="text-2xl font-bold mt-12 mb-4">Network Manager</h2>
+                <pre><code class="language-swift rounded-xl">// Core/Network/NetworkManager.swift
+import Foundation
+
+protocol NetworkManagerProtocol {
+    func fetch<T: Decodable>(_ endpoint: Endpoint) async throws -> T
+}
+
+final class NetworkManager: NetworkManagerProtocol {
+    static let shared = NetworkManager()
+
+    private let decoder: JSONDecoder = {
+        let decoder = JSONDecoder()
+        decoder.keyDecodingStrategy = .convertFromSnakeCase
+        return decoder
+    }()
+
+    private init() {}
+
+    func fetch<T: Decodable>(_ endpoint: Endpoint) async throws -> T {
+        guard let url = endpoint.url else {
+            throw NetworkError.invalidURL
+        }
+
+        do {
+            let (data, response) = try await URLSession.shared.data(from: url)
+
+            guard let httpResponse = response as? HTTPURLResponse else {
+                throw NetworkError.unknown(URLError(.badServerResponse))
+            }
+
+            guard (200...299).contains(httpResponse.statusCode) else {
+                throw NetworkError.serverError(httpResponse.statusCode)
+            }
+
+            do {
+                return try decoder.decode(T.self, from: data)
+            } catch {
+                throw NetworkError.decodingError(error)
+            }
+        } catch let error as NetworkError {
+            throw error
+        } catch {
+            throw NetworkError.unknown(error)
+        }
+    }
+}</code></pre>
+
+                <h2 class="text-2xl font-bold mt-12 mb-4">Product Service</h2>
+                <pre><code class="language-swift rounded-xl">// Features/Products/Services/ProductService.swift
+import Foundation
+
+protocol ProductServiceProtocol {
+    func fetchProducts() async throws -> [Product]
+    func fetchProduct(id: Int) async throws -> Product
+    func searchProducts(query: String) async throws -> [Product]
+    func fetchCategories() async throws -> [String]
+}
+
+final class ProductService: ProductServiceProtocol {
+    private let networkManager: NetworkManagerProtocol
+
+    init(networkManager: NetworkManagerProtocol = NetworkManager.shared) {
+        self.networkManager = networkManager
+    }
+
+    func fetchProducts() async throws -> [Product] {
+        let response: ProductResponse = try await networkManager.fetch(.products)
+        return response.products
+    }
+
+    func fetchProduct(id: Int) async throws -> Product {
+        try await networkManager.fetch(.product(id: id))
+    }
+
+    func searchProducts(query: String) async throws -> [Product] {
+        let response: ProductResponse = try await networkManager.fetch(.search(query: query))
+        return response.products
+    }
+
+    func fetchCategories() async throws -> [String] {
+        try await networkManager.fetch(.categories)
+    }
+}</code></pre>
+
+                <h2 class="text-2xl font-bold mt-12 mb-4">Использование в ViewModel</h2>
+                <pre><code class="language-swift rounded-xl">// Features/Products/ViewModels/ProductViewModel.swift
+import Observation
+
+@Observable
+final class ProductViewModel {
+    private let service: ProductServiceProtocol
+
+    var products: [Product] = []
+    var isLoading = false
+    var errorMessage: String?
+
+    init(service: ProductServiceProtocol = ProductService()) {
+        self.service = service
+    }
+
+    @MainActor
+    func fetchProducts() async {
+        isLoading = true
+        errorMessage = nil
+
+        do {
+            products = try await service.fetchProducts()
+        } catch {
+            errorMessage = error.localizedDescription
+        }
+
+        isLoading = false
+    }
+
+    @MainActor
+    func search(query: String) async {
+        guard !query.isEmpty else {
+            await fetchProducts()
+            return
+        }
+
+        isLoading = true
+
+        do {
+            products = try await service.searchProducts(query: query)
+        } catch {
+            errorMessage = error.localizedDescription
+        }
+
+        isLoading = false
+    }
+}</code></pre>
+
+                <h2 class="text-2xl font-bold mt-12 mb-4">Mock для тестов</h2>
+                <pre><code class="language-swift rounded-xl">// Tests/Mocks/MockProductService.swift
+final class MockProductService: ProductServiceProtocol {
+    var mockProducts: [Product] = []
+    var shouldThrowError = false
+
+    func fetchProducts() async throws -> [Product] {
+        if shouldThrowError {
+            throw NetworkError.noData
+        }
+        return mockProducts
+    }
+
+    func fetchProduct(id: Int) async throws -> Product {
+        guard let product = mockProducts.first(where: { $0.id == id }) else {
+            throw NetworkError.noData
+        }
+        return product
+    }
+
+    func searchProducts(query: String) async throws -> [Product] {
+        return mockProducts.filter {
+            $0.title.localizedCaseInsensitiveContains(query)
+        }
+    }
+
+    func fetchCategories() async throws -> [String] {
+        return ["smartphones", "laptops", "fragrances"]
+    }
+}</code></pre>
+
+                <h2 class="text-2xl font-bold mt-12 mb-4">🏋️ Задания</h2>
+                <div class="bg-zinc-50 dark:bg-zinc-900 rounded-xl p-6 border border-zinc-200 dark:border-zinc-800">
+                    <ol class="space-y-4 text-zinc-600 dark:text-zinc-400">
+                        <li><strong>1.</strong> Добавьте endpoint для пагинации: /products?limit=10&skip=0</li>
+                        <li><strong>2.</strong> Реализуйте кэширование ответов с помощью URLCache</li>
+                        <li><strong>3.</strong> Добавьте retry логику при ошибке сети (3 попытки)</li>
+                    </ol>
+                </div>
+
+                <!-- Navigation -->
+                <div class="flex justify-between items-center mt-16 pt-8 border-t border-zinc-200 dark:border-zinc-800">
+                    <a href="03-project-setup.html" class="flex items-center gap-2 text-zinc-600 dark:text-zinc-400 hover:text-primary transition-colors">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                        </svg>
+                        Глава 3: Проект
+                    </a>
+                    <a href="05-product-list.html" class="flex items-center gap-2 px-6 py-3 bg-primary text-white rounded-xl hover:bg-blue-600 transition-colors">
+                        Глава 5: Товары
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                        </svg>
+                    </a>
+                </div>
+            </article>
+        </main>
+    </div>
+
+    <script>hljs.highlightAll();</script>
+</body>
+</html>

@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Отладка в Swift | SwiftUI E-Commerce</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'media',
+            theme: { extend: { colors: { primary: '#007AFF' } } }
+        }
+    </script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/vs2015.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/swift.min.js"></script>
+    <style>
+        pre code { font-size: 13px; line-height: 1.5; }
+    </style>
+</head>
+<body class="bg-white dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100">
+    <div class="min-h-screen">
+        <!-- Header -->
+        <header class="sticky top-0 z-40 bg-white/80 dark:bg-zinc-950/80 backdrop-blur-md border-b border-zinc-200 dark:border-zinc-800">
+            <div class="max-w-4xl mx-auto px-6 py-4 flex items-center justify-between">
+                <a href="../index.html" class="flex items-center gap-2 text-zinc-600 dark:text-zinc-400 hover:text-primary transition-colors">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                    </svg>
+                    Оглавление
+                </a>
+                <span class="text-sm text-zinc-500">Отладка</span>
+            </div>
+        </header>
+
+        <!-- Content -->
+        <main class="max-w-4xl mx-auto px-6 py-12">
+            <h1 class="text-4xl font-bold mb-4 bg-gradient-to-r from-red-500 to-orange-600 bg-clip-text text-transparent">
+                Отладка в Swift и SwiftUI
+            </h1>
+            <p class="text-lg text-zinc-600 dark:text-zinc-400 mb-8">
+                Как читать ошибки, использовать print() и breakpoints
+            </p>
+
+            <!-- Print Debugging -->
+            <section class="mb-16">
+                <h2 class="text-2xl font-bold mb-6 flex items-center gap-3">
+                    <span class="w-10 h-10 bg-green-100 dark:bg-green-900/30 rounded-lg flex items-center justify-center">
+                        <svg class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/>
+                        </svg>
+                    </span>
+                    Print Debugging
+                </h2>
+
+                <div class="space-y-4">
+                    <div class="p-6 bg-zinc-50 dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-zinc-800">
+                        <h3 class="font-bold text-lg mb-4">Базовый print()</h3>
+                        <pre><code class="language-swift">// Простой вывод
+print("Hello")
+
+// С переменными
+let count = 5
+print("Count is \(count)")
+
+// Несколько значений
+print("Name:", name, "Age:", age)
+
+// С разделителем
+print("A", "B", "C", separator: " - ")  // A - B - C</code></pre>
+                    </div>
+
+                    <div class="p-6 bg-zinc-50 dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-zinc-800">
+                        <h3 class="font-bold text-lg mb-4">Продвинутый вывод</h3>
+                        <pre><code class="language-swift">// dump() - детальный вывод структуры
+let product = Product(id: 1, title: "iPhone", price: 999)
+dump(product)
+// ▿ Product
+//   - id: 1
+//   - title: "iPhone"
+//   - price: 999.0
+
+// debugPrint() - для отладки (с кавычками и типами)
+debugPrint(product)
+
+// Условный print
+#if DEBUG
+print("Only in debug mode")
+#endif</code></pre>
+                    </div>
+
+                    <div class="p-6 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-2xl">
+                        <h3 class="font-bold text-lg mb-4 text-blue-800 dark:text-blue-300">Полезные паттерны</h3>
+                        <pre><code class="language-swift">// Логирование с файлом и строкой
+func log(_ message: String, file: String = #file, line: Int = #line) {
+    let filename = URL(string: file)?.lastPathComponent ?? file
+    print("[\(filename):\(line)] \(message)")
+}
+
+log("Something happened")  // [ProductsView.swift:42] Something happened
+
+// Логирование в SwiftUI
+var body: some View {
+    let _ = print("body вызван, products: \(products.count)")
+    List(products) { ... }
+}</code></pre>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Reading Errors -->
+            <section class="mb-16">
+                <h2 class="text-2xl font-bold mb-6 flex items-center gap-3">
+                    <span class="w-10 h-10 bg-red-100 dark:bg-red-900/30 rounded-lg flex items-center justify-center">
+                        <svg class="w-5 h-5 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+                        </svg>
+                    </span>
+                    Чтение ошибок компилятора
+                </h2>
+
+                <div class="space-y-6">
+                    <!-- Error 1 -->
+                    <div class="p-6 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-2xl">
+                        <h3 class="font-bold text-lg mb-2 text-red-800 dark:text-red-300">Cannot assign to value: 'x' is a 'let' constant</h3>
+                        <p class="text-red-700 dark:text-red-400 mb-4">Пытаетесь изменить константу</p>
+                        <pre><code class="language-swift">// Ошибка:
+let count = 0
+count = 1  // Нельзя изменить let
+
+// Исправление:
+var count = 0
+count = 1  // var можно изменять</code></pre>
+                    </div>
+
+                    <!-- Error 2 -->
+                    <div class="p-6 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-2xl">
+                        <h3 class="font-bold text-lg mb-2 text-red-800 dark:text-red-300">Value of optional type 'X?' must be unwrapped</h3>
+                        <p class="text-red-700 dark:text-red-400 mb-4">Используете Optional без распаковки</p>
+                        <pre><code class="language-swift">// Ошибка:
+let name: String? = "John"
+print(name.count)  // name это Optional!
+
+// Исправление:
+if let name = name {
+    print(name.count)
+}
+// или
+print(name?.count ?? 0)</code></pre>
+                    </div>
+
+                    <!-- Error 3 -->
+                    <div class="p-6 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-2xl">
+                        <h3 class="font-bold text-lg mb-2 text-red-800 dark:text-red-300">Cannot convert value of type 'X' to expected argument type 'Y'</h3>
+                        <p class="text-red-700 dark:text-red-400 mb-4">Несоответствие типов</p>
+                        <pre><code class="language-swift">// Ошибка:
+func greet(name: String) { ... }
+greet(name: 123)  // Int вместо String
+
+// Ошибка с Binding:
+TextField("Name", text: name)  // Нужен $name
+
+// Исправление:
+greet(name: "John")
+TextField("Name", text: $name)</code></pre>
+                    </div>
+
+                    <!-- Error 4 -->
+                    <div class="p-6 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-2xl">
+                        <h3 class="font-bold text-lg mb-2 text-red-800 dark:text-red-300">Cannot assign to property: 'self' is immutable</h3>
+                        <p class="text-red-700 dark:text-red-400 mb-4">Пытаетесь изменить свойство в View без @State</p>
+                        <pre><code class="language-swift">// Ошибка:
+struct MyView: View {
+    var count = 0  // Обычное свойство
+
+    var body: some View {
+        Button("Tap") {
+            count += 1  // View это struct, нельзя изменить
+        }
+    }
+}
+
+// Исправление:
+@State private var count = 0  // Добавили @State</code></pre>
+                    </div>
+
+                    <!-- Error 5 -->
+                    <div class="p-6 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-2xl">
+                        <h3 class="font-bold text-lg mb-2 text-red-800 dark:text-red-300">Missing argument for parameter 'x' in call</h3>
+                        <p class="text-red-700 dark:text-red-400 mb-4">Не передали обязательный параметр</p>
+                        <pre><code class="language-swift">// Ошибка:
+struct User {
+    let name: String
+    let age: Int
+}
+let user = User(name: "John")  // Забыли age
+
+// Исправление:
+let user = User(name: "John", age: 25)
+
+// Или сделать age optional:
+struct User {
+    let name: String
+    let age: Int?
+}</code></pre>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Breakpoints -->
+            <section class="mb-16">
+                <h2 class="text-2xl font-bold mb-6 flex items-center gap-3">
+                    <span class="w-10 h-10 bg-purple-100 dark:bg-purple-900/30 rounded-lg flex items-center justify-center">
+                        <svg class="w-5 h-5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 10a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1h-4a1 1 0 01-1-1v-4z"/>
+                        </svg>
+                    </span>
+                    Breakpoints (точки останова)
+                </h2>
+
+                <div class="space-y-4">
+                    <div class="p-6 bg-zinc-50 dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-zinc-800">
+                        <h3 class="font-bold text-lg mb-4">Как использовать</h3>
+                        <ol class="space-y-3 text-zinc-600 dark:text-zinc-400">
+                            <li class="flex items-start gap-3">
+                                <span class="flex-shrink-0 w-6 h-6 bg-primary text-white rounded-full flex items-center justify-center text-sm">1</span>
+                                <span>Кликните на номер строки слева - появится синяя стрелка</span>
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <span class="flex-shrink-0 w-6 h-6 bg-primary text-white rounded-full flex items-center justify-center text-sm">2</span>
+                                <span>Запустите приложение (Cmd + R)</span>
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <span class="flex-shrink-0 w-6 h-6 bg-primary text-white rounded-full flex items-center justify-center text-sm">3</span>
+                                <span>Когда код дойдёт до этой строки - выполнение остановится</span>
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <span class="flex-shrink-0 w-6 h-6 bg-primary text-white rounded-full flex items-center justify-center text-sm">4</span>
+                                <span>Наведите мышку на переменные чтобы увидеть их значения</span>
+                            </li>
+                        </ol>
+                    </div>
+
+                    <div class="grid sm:grid-cols-2 gap-4">
+                        <div class="p-4 bg-zinc-50 dark:bg-zinc-900 rounded-xl border border-zinc-200 dark:border-zinc-800">
+                            <h4 class="font-bold mb-2">Step Over (F6)</h4>
+                            <p class="text-sm text-zinc-500">Выполнить строку и перейти к следующей</p>
+                        </div>
+                        <div class="p-4 bg-zinc-50 dark:bg-zinc-900 rounded-xl border border-zinc-200 dark:border-zinc-800">
+                            <h4 class="font-bold mb-2">Step Into (F7)</h4>
+                            <p class="text-sm text-zinc-500">Войти внутрь функции</p>
+                        </div>
+                        <div class="p-4 bg-zinc-50 dark:bg-zinc-900 rounded-xl border border-zinc-200 dark:border-zinc-800">
+                            <h4 class="font-bold mb-2">Step Out (F8)</h4>
+                            <p class="text-sm text-zinc-500">Выйти из текущей функции</p>
+                        </div>
+                        <div class="p-4 bg-zinc-50 dark:bg-zinc-900 rounded-xl border border-zinc-200 dark:border-zinc-800">
+                            <h4 class="font-bold mb-2">Continue (Ctrl+Cmd+Y)</h4>
+                            <p class="text-sm text-zinc-500">Продолжить выполнение</p>
+                        </div>
+                    </div>
+
+                    <div class="p-6 bg-purple-50 dark:bg-purple-900/20 border border-purple-200 dark:border-purple-800 rounded-2xl">
+                        <h3 class="font-bold text-lg mb-4 text-purple-800 dark:text-purple-300">LLDB Console</h3>
+                        <p class="text-purple-700 dark:text-purple-400 mb-4">В Debug Area можно вводить команды:</p>
+                        <pre><code class="language-swift">// Вывести значение переменной
+(lldb) po products
+// [Product(id: 1, title: "iPhone"), ...]
+
+// Вывести тип
+(lldb) type lookup Product
+
+// Изменить значение (для тестирования)
+(lldb) expr count = 10</code></pre>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Common Runtime Errors -->
+            <section class="mb-16">
+                <h2 class="text-2xl font-bold mb-6 flex items-center gap-3">
+                    <span class="w-10 h-10 bg-orange-100 dark:bg-orange-900/30 rounded-lg flex items-center justify-center">
+                        <svg class="w-5 h-5 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                    </span>
+                    Runtime ошибки (крэши)
+                </h2>
+
+                <div class="space-y-6">
+                    <div class="p-6 bg-orange-50 dark:bg-orange-900/20 border border-orange-200 dark:border-orange-800 rounded-2xl">
+                        <h3 class="font-bold text-lg mb-2 text-orange-800 dark:text-orange-300">Fatal error: Unexpectedly found nil while unwrapping</h3>
+                        <p class="text-orange-700 dark:text-orange-400 mb-4">Использовали ! на nil значении</p>
+                        <pre><code class="language-swift">// Причина крэша:
+let user: User? = nil
+print(user!.name)  // CRASH!
+
+// Решение:
+guard let user = user else {
+    print("No user")
+    return
+}
+print(user.name)</code></pre>
+                    </div>
+
+                    <div class="p-6 bg-orange-50 dark:bg-orange-900/20 border border-orange-200 dark:border-orange-800 rounded-2xl">
+                        <h3 class="font-bold text-lg mb-2 text-orange-800 dark:text-orange-300">Index out of range</h3>
+                        <p class="text-orange-700 dark:text-orange-400 mb-4">Обращение к несуществующему индексу массива</p>
+                        <pre><code class="language-swift">// Причина крэша:
+let items = ["A", "B", "C"]
+print(items[5])  // CRASH! Только 0, 1, 2
+
+// Решение:
+if items.indices.contains(5) {
+    print(items[5])
+}
+// или
+print(items.first ?? "Empty")</code></pre>
+                    </div>
+
+                    <div class="p-6 bg-orange-50 dark:bg-orange-900/20 border border-orange-200 dark:border-orange-800 rounded-2xl">
+                        <h3 class="font-bold text-lg mb-2 text-orange-800 dark:text-orange-300">Thread 1: EXC_BAD_ACCESS</h3>
+                        <p class="text-orange-700 dark:text-orange-400 mb-4">Обращение к освобождённой памяти (редко в Swift)</p>
+                        <pre><code class="language-swift">// Обычно связано с:
+// - Неправильным использованием Unmanaged
+// - Работой с C/Objective-C кодом
+// - Циклическими ссылками
+
+// В SwiftUI чаще всего причина:
+// - Изменение UI не на main thread
+
+// Решение:
+Task { @MainActor in
+    self.data = newData
+}</code></pre>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SwiftUI Debugging -->
+            <section class="mb-16">
+                <h2 class="text-2xl font-bold mb-6 flex items-center gap-3">
+                    <span class="w-10 h-10 bg-blue-100 dark:bg-blue-900/30 rounded-lg flex items-center justify-center">
+                        <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+                        </svg>
+                    </span>
+                    Отладка SwiftUI
+                </h2>
+
+                <div class="space-y-4">
+                    <div class="p-6 bg-zinc-50 dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-zinc-800">
+                        <h3 class="font-bold text-lg mb-4">Отслеживание перерисовок</h3>
+                        <pre><code class="language-swift">struct ProductCard: View {
+    let product: Product
+
+    var body: some View {
+        // Этот print покажет когда View перерисовывается
+        let _ = print("ProductCard body called: \(product.id)")
+
+        VStack {
+            Text(product.title)
+        }
+    }
+}
+
+// Или используйте Self._printChanges() (iOS 15+)
+var body: some View {
+    let _ = Self._printChanges()
+    // ...
+}</code></pre>
+                    </div>
+
+                    <div class="p-6 bg-zinc-50 dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-zinc-800">
+                        <h3 class="font-bold text-lg mb-4">Debug Preview</h3>
+                        <pre><code class="language-swift">#Preview {
+    // Тестовые данные для Preview
+    let testProduct = Product(
+        id: 1,
+        title: "Test Product",
+        price: 99.99,
+        thumbnail: "https://example.com/image.jpg"
+    )
+
+    ProductCard(product: testProduct)
+}
+
+// Preview с разными состояниями
+#Preview("Loading") {
+    ProductsView()
+        .environment(\.isLoading, true)
+}
+
+#Preview("Error") {
+    ProductsView()
+        .environment(\.errorMessage, "Network error")
+}</code></pre>
+                    </div>
+
+                    <div class="p-6 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-2xl">
+                        <h3 class="font-bold text-lg mb-4 text-green-800 dark:text-green-300">View Hierarchy Debug</h3>
+                        <p class="text-green-700 dark:text-green-400 mb-4">
+                            В запущенном приложении: Debug &rarr; View Debugging &rarr; Capture View Hierarchy
+                        </p>
+                        <p class="text-green-600 dark:text-green-400 text-sm">
+                            Показывает 3D визуализацию всех View в приложении. Полезно для понимания layout проблем.
+                        </p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Network Debugging -->
+            <section class="mb-16">
+                <h2 class="text-2xl font-bold mb-6 flex items-center gap-3">
+                    <span class="w-10 h-10 bg-cyan-100 dark:bg-cyan-900/30 rounded-lg flex items-center justify-center">
+                        <svg class="w-5 h-5 text-cyan-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"/>
+                        </svg>
+                    </span>
+                    Отладка сетевых запросов
+                </h2>
+
+                <div class="p-6 bg-zinc-50 dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-zinc-800">
+                    <pre><code class="language-swift">func fetchProducts() async throws -> [Product] {
+    let url = URL(string: "https://dummyjson.com/products")!
+
+    // Логируем запрос
+    print("🌐 Request: \(url)")
+
+    let (data, response) = try await URLSession.shared.data(from: url)
+
+    // Логируем ответ
+    if let httpResponse = response as? HTTPURLResponse {
+        print("📥 Status: \(httpResponse.statusCode)")
+    }
+
+    // Логируем JSON (для отладки)
+    if let json = String(data: data, encoding: .utf8) {
+        print("📦 JSON: \(json.prefix(500))...")
+    }
+
+    do {
+        let decoded = try JSONDecoder().decode(ProductsResponse.self, from: data)
+        print("✅ Decoded \(decoded.products.count) products")
+        return decoded.products
+    } catch {
+        print("❌ Decode error: \(error)")
+        throw error
+    }
+}</code></pre>
+                </div>
+            </section>
+
+            <!-- Tips -->
+            <section class="mb-16">
+                <h2 class="text-2xl font-bold mb-6">Советы по отладке</h2>
+                <div class="grid md:grid-cols-2 gap-4">
+                    <div class="p-4 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-xl">
+                        <h3 class="font-bold text-green-800 dark:text-green-300 mb-2">Читайте ошибку сверху</h3>
+                        <p class="text-green-700 dark:text-green-400 text-sm">
+                            Первая ошибка часто самая важная. Остальные могут быть следствием первой.
+                        </p>
+                    </div>
+                    <div class="p-4 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-xl">
+                        <h3 class="font-bold text-blue-800 dark:text-blue-300 mb-2">Используйте Fix-it</h3>
+                        <p class="text-blue-700 dark:text-blue-400 text-sm">
+                            Xcode часто предлагает автоматическое исправление. Кликните на ошибку.
+                        </p>
+                    </div>
+                    <div class="p-4 bg-purple-50 dark:bg-purple-900/20 border border-purple-200 dark:border-purple-800 rounded-xl">
+                        <h3 class="font-bold text-purple-800 dark:text-purple-300 mb-2">Clean Build</h3>
+                        <p class="text-purple-700 dark:text-purple-400 text-sm">
+                            Cmd + Shift + K очищает кэш. Помогает при странных ошибках.
+                        </p>
+                    </div>
+                    <div class="p-4 bg-orange-50 dark:bg-orange-900/20 border border-orange-200 dark:border-orange-800 rounded-xl">
+                        <h3 class="font-bold text-orange-800 dark:text-orange-300 mb-2">Google ошибку</h3>
+                        <p class="text-orange-700 dark:text-orange-400 text-sm">
+                            Скопируйте текст ошибки в поиск. Stack Overflow часто имеет ответ.
+                        </p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Navigation -->
+            <div class="flex justify-between items-center mt-16 pt-8 border-t border-zinc-200 dark:border-zinc-800">
+                <a href="../index.html" class="flex items-center gap-2 text-zinc-600 dark:text-zinc-400 hover:text-primary transition-colors">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                    </svg>
+                    Оглавление
+                </a>
+                <a href="xcode-tips.html" class="flex items-center gap-2 px-6 py-3 bg-primary text-white rounded-xl hover:bg-blue-600 transition-colors">
+                    Xcode Tips
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                    </svg>
+                </a>
+            </div>
+        </main>
+    </div>
+
+    <script>hljs.highlightAll();</script>
+</body>
+</html>

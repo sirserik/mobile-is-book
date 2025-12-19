@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Визуальные схемы | SwiftUI E-Commerce</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'media',
+            theme: { extend: { colors: { primary: '#007AFF' } } }
+        }
+    </script>
+    <style>
+        .diagram-box {
+            font-family: ui-monospace, monospace;
+            white-space: pre;
+            line-height: 1.4;
+        }
+    </style>
+</head>
+<body class="bg-white dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100">
+    <div class="min-h-screen">
+        <!-- Header -->
+        <header class="sticky top-0 z-40 bg-white/80 dark:bg-zinc-950/80 backdrop-blur-md border-b border-zinc-200 dark:border-zinc-800">
+            <div class="max-w-5xl mx-auto px-6 py-4 flex items-center justify-between">
+                <a href="../index.html" class="flex items-center gap-2 text-zinc-600 dark:text-zinc-400 hover:text-primary transition-colors">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                    </svg>
+                    Оглавление
+                </a>
+                <span class="text-sm text-zinc-500">Схемы</span>
+            </div>
+        </header>
+
+        <!-- Content -->
+        <main class="max-w-5xl mx-auto px-6 py-12">
+            <h1 class="text-4xl font-bold mb-4 bg-gradient-to-r from-purple-500 to-pink-600 bg-clip-text text-transparent">
+                Визуальные схемы
+            </h1>
+            <p class="text-lg text-zinc-600 dark:text-zinc-400 mb-12">
+                Диаграммы архитектуры и потока данных в SwiftUI MVVM
+            </p>
+
+            <!-- MVVM Overview -->
+            <section class="mb-16">
+                <h2 class="text-2xl font-bold mb-6">MVVM Архитектура</h2>
+                <div class="bg-zinc-50 dark:bg-zinc-900 rounded-2xl p-8 border border-zinc-200 dark:border-zinc-800 overflow-x-auto">
+                    <div class="diagram-box text-sm text-zinc-700 dark:text-zinc-300 min-w-[600px]">
+┌─────────────────────────────────────────────────────────────────────────┐
+│                           MVVM ARCHITECTURE                              │
+├─────────────────────────────────────────────────────────────────────────┤
+│                                                                          │
+│    ┌──────────────────┐                    ┌──────────────────┐         │
+│    │                  │    User Action     │                  │         │
+│    │       VIEW       │ ─────────────────► │    VIEWMODEL     │         │
+│    │    (SwiftUI)     │                    │   (@Observable)  │         │
+│    │                  │ ◄───────────────── │                  │         │
+│    └──────────────────┘    State Update    └────────┬─────────┘         │
+│              │                                      │                    │
+│              │                                      │                    │
+│         Displays                              Fetches/Updates            │
+│              │                                      │                    │
+│              ▼                                      ▼                    │
+│    ┌──────────────────┐                    ┌──────────────────┐         │
+│    │                  │                    │                  │         │
+│    │      MODEL       │ ◄───────────────── │     SERVICE      │         │
+│    │    (Structs)     │       Data         │   (API Client)   │         │
+│    │                  │                    │                  │         │
+│    └──────────────────┘                    └──────────────────┘         │
+│                                                                          │
+│    View: Отображает UI, реагирует на изменения ViewModel                │
+│    ViewModel: Бизнес-логика, состояние, обработка действий              │
+│    Model: Структуры данных (Product, User, Cart)                        │
+│    Service: API запросы, работа с сетью                                 │
+│                                                                          │
+└─────────────────────────────────────────────────────────────────────────┘</div>
+                </div>
+            </section>
+
+            <!-- Data Flow -->
+            <section class="mb-16">
+                <h2 class="text-2xl font-bold mb-6">Поток данных в SwiftUI</h2>
+                <div class="bg-zinc-50 dark:bg-zinc-900 rounded-2xl p-8 border border-zinc-200 dark:border-zinc-800 overflow-x-auto">
+                    <div class="diagram-box text-sm text-zinc-700 dark:text-zinc-300 min-w-[600px]">
+┌─────────────────────────────────────────────────────────────────────────┐
+│                         DATA FLOW IN SWIFTUI                             │
+├─────────────────────────────────────────────────────────────────────────┤
+│                                                                          │
+│                     ┌─────────────────────┐                             │
+│                     │    Parent View      │                             │
+│                     │  @State var text    │                             │
+│                     └──────────┬──────────┘                             │
+│                                │                                         │
+│                    $text (Binding)                                       │
+│                                │                                         │
+│                                ▼                                         │
+│                     ┌─────────────────────┐                             │
+│                     │    Child View       │                             │
+│                     │  @Binding var text  │                             │
+│                     └─────────────────────┘                             │
+│                                                                          │
+│    ══════════════════════════════════════════════════════════════       │
+│                                                                          │
+│    @State          →  Source of truth (локальный)                       │
+│    @Binding        →  Ссылка на @State родителя                         │
+│    @Observable     →  Реактивный класс (ViewModel)                      │
+│    @Environment    →  Глобальные значения (colorScheme, dismiss)        │
+│                                                                          │
+│    ══════════════════════════════════════════════════════════════       │
+│                                                                          │
+│      ┌──────────┐        ┌──────────┐        ┌──────────┐               │
+│      │  @State  │  ───►  │ @Binding │  ───►  │ @Binding │               │
+│      │ (Parent) │        │ (Child)  │        │(Grandchd)│               │
+│      └──────────┘        └──────────┘        └──────────┘               │
+│           │                   │                   │                      │
+│           └───────────────────┴───────────────────┘                      │
+│                     Все изменения синхронизированы                       │
+│                                                                          │
+└─────────────────────────────────────────────────────────────────────────┘</div>
+                </div>
+            </section>
+
+            <!-- View Lifecycle -->
+            <section class="mb-16">
+                <h2 class="text-2xl font-bold mb-6">Жизненный цикл View</h2>
+                <div class="bg-zinc-50 dark:bg-zinc-900 rounded-2xl p-8 border border-zinc-200 dark:border-zinc-800 overflow-x-auto">
+                    <div class="diagram-box text-sm text-zinc-700 dark:text-zinc-300 min-w-[600px]">
+┌─────────────────────────────────────────────────────────────────────────┐
+│                        VIEW LIFECYCLE IN SWIFTUI                         │
+├─────────────────────────────────────────────────────────────────────────┤
+│                                                                          │
+│       ┌──────────────┐                                                  │
+│       │   View Init  │  ◄─── Создание View (вызывается часто!)          │
+│       └──────┬───────┘                                                  │
+│              │                                                           │
+│              ▼                                                           │
+│       ┌──────────────┐                                                  │
+│       │     body     │  ◄─── Вычисление UI (при каждом изменении)       │
+│       └──────┬───────┘                                                  │
+│              │                                                           │
+│              ▼                                                           │
+│       ┌──────────────┐                                                  │
+│       │   .onAppear  │  ◄─── View появился на экране                    │
+│       └──────┬───────┘                                                  │
+│              │                                                           │
+│              ▼                                                           │
+│       ┌──────────────┐                                                  │
+│       │    .task     │  ◄─── Async код при появлении                    │
+│       └──────┬───────┘                                                  │
+│              │                                                           │
+│          [Живёт]                                                         │
+│              │                                                           │
+│              ▼                                                           │
+│       ┌──────────────┐                                                  │
+│       │ .onDisappear │  ◄─── View исчез с экрана                        │
+│       └──────────────┘                                                  │
+│                                                                          │
+│    ══════════════════════════════════════════════════════════════       │
+│                                                                          │
+│    Важно:                                                                │
+│    • init() вызывается ЧАСТО - не делайте тяжёлых операций              │
+│    • body вызывается при КАЖДОМ изменении состояния                     │
+│    • Используйте .task для загрузки данных, не init                     │
+│    • .task автоматически отменяется при исчезновении View               │
+│                                                                          │
+└─────────────────────────────────────────────────────────────────────────┘</div>
+                </div>
+            </section>
+
+            <!-- App Structure -->
+            <section class="mb-16">
+                <h2 class="text-2xl font-bold mb-6">Структура приложения</h2>
+                <div class="bg-zinc-50 dark:bg-zinc-900 rounded-2xl p-8 border border-zinc-200 dark:border-zinc-800 overflow-x-auto">
+                    <div class="diagram-box text-sm text-zinc-700 dark:text-zinc-300 min-w-[600px]">
+┌─────────────────────────────────────────────────────────────────────────┐
+│                       PROJECT STRUCTURE                                  │
+├─────────────────────────────────────────────────────────────────────────┤
+│                                                                          │
+│    Shopping/                                                             │
+│    ├── ShoppingApp.swift           ─── @main точка входа                │
+│    │                                                                     │
+│    ├── Models/                     ─── Структуры данных                 │
+│    │   ├── Product.swift                                                │
+│    │   ├── Category.swift                                               │
+│    │   └── Cart.swift                                                   │
+│    │                                                                     │
+│    ├── ViewModels/                 ─── Бизнес-логика                    │
+│    │   ├── ProductsViewModel.swift                                      │
+│    │   ├── CartViewModel.swift                                          │
+│    │   └── FavoritesViewModel.swift                                     │
+│    │                                                                     │
+│    ├── Views/                      ─── UI компоненты                    │
+│    │   ├── Products/                                                    │
+│    │   │   ├── ProductsView.swift                                       │
+│    │   │   ├── ProductCard.swift                                        │
+│    │   │   └── ProductDetailView.swift                                  │
+│    │   ├── Cart/                                                        │
+│    │   │   └── CartView.swift                                           │
+│    │   └── Common/                                                      │
+│    │       ├── AsyncImageView.swift                                     │
+│    │       └── LoadingView.swift                                        │
+│    │                                                                     │
+│    ├── Services/                   ─── API и сервисы                    │
+│    │   ├── NetworkManager.swift                                         │
+│    │   └── APIEndpoints.swift                                           │
+│    │                                                                     │
+│    └── Utils/                      ─── Вспомогательное                  │
+│        ├── Extensions/                                                  │
+│        └── Constants.swift                                              │
+│                                                                          │
+└─────────────────────────────────────────────────────────────────────────┘</div>
+                </div>
+            </section>
+
+            <!-- Navigation Flow -->
+            <section class="mb-16">
+                <h2 class="text-2xl font-bold mb-6">Навигация</h2>
+                <div class="bg-zinc-50 dark:bg-zinc-900 rounded-2xl p-8 border border-zinc-200 dark:border-zinc-800 overflow-x-auto">
+                    <div class="diagram-box text-sm text-zinc-700 dark:text-zinc-300 min-w-[600px]">
+┌─────────────────────────────────────────────────────────────────────────┐
+│                       NAVIGATION STRUCTURE                               │
+├─────────────────────────────────────────────────────────────────────────┤
+│                                                                          │
+│                         ┌──────────────┐                                │
+│                         │   TabView    │                                │
+│                         └──────┬───────┘                                │
+│                                │                                         │
+│           ┌────────────────────┼────────────────────┐                   │
+│           │                    │                    │                    │
+│           ▼                    ▼                    ▼                    │
+│    ┌─────────────┐      ┌─────────────┐      ┌─────────────┐            │
+│    │   Products  │      │  Favorites  │      │    Cart     │            │
+│    │  (Tab 1)    │      │   (Tab 2)   │      │   (Tab 3)   │            │
+│    └──────┬──────┘      └──────┬──────┘      └─────────────┘            │
+│           │                    │                                         │
+│           ▼                    ▼                                         │
+│    ┌─────────────┐      ┌─────────────┐                                 │
+│    │  NavigationStack  ││  NavigationStack │                            │
+│    └──────┬──────┘      └──────┬──────┘                                 │
+│           │                    │                                         │
+│           ▼                    ▼                                         │
+│    ┌─────────────┐      ┌─────────────┐                                 │
+│    │   Product   │      │   Product   │                                 │
+│    │   Detail    │      │   Detail    │                                 │
+│    └─────────────┘      └─────────────┘                                 │
+│                                                                          │
+│    ══════════════════════════════════════════════════════════════       │
+│                                                                          │
+│    NavigationStack {                                                     │
+│        List(products) { product in                                      │
+│            NavigationLink(value: product) {                             │
+│                ProductRow(product: product)                             │
+│            }                                                             │
+│        }                                                                 │
+│        .navigationDestination(for: Product.self) { product in          │
+│            ProductDetailView(product: product)                          │
+│        }                                                                 │
+│    }                                                                     │
+│                                                                          │
+└─────────────────────────────────────────────────────────────────────────┘</div>
+                </div>
+            </section>
+
+            <!-- API Data Flow -->
+            <section class="mb-16">
+                <h2 class="text-2xl font-bold mb-6">Загрузка данных из API</h2>
+                <div class="bg-zinc-50 dark:bg-zinc-900 rounded-2xl p-8 border border-zinc-200 dark:border-zinc-800 overflow-x-auto">
+                    <div class="diagram-box text-sm text-zinc-700 dark:text-zinc-300 min-w-[600px]">
+┌─────────────────────────────────────────────────────────────────────────┐
+│                         API DATA FLOW                                    │
+├─────────────────────────────────────────────────────────────────────────┤
+│                                                                          │
+│  1. View появляется                                                      │
+│     │                                                                    │
+│     ▼                                                                    │
+│  ┌──────────────────┐                                                   │
+│  │  ProductsView    │                                                   │
+│  │  .task {         │ ─────────────────────────────────────────────┐    │
+│  │    await vm.load()                                              │    │
+│  │  }               │                                              │    │
+│  └──────────────────┘                                              │    │
+│                                                                    │    │
+│  2. ViewModel загружает                                            │    │
+│     │                                                              │    │
+│     ▼                                                              │    │
+│  ┌──────────────────┐                                              │    │
+│  │  ViewModel       │                                              │    │
+│  │  isLoading = true│ ◄────────────────────────────────────────────┘    │
+│  │  products = []   │                                                   │
+│  └────────┬─────────┘                                                   │
+│           │                                                              │
+│           ▼                                                              │
+│  3. Сетевой запрос                                                      │
+│  ┌──────────────────┐        ┌──────────────────┐                       │
+│  │  NetworkManager  │ ─────► │  DummyJSON API   │                       │
+│  │  URLSession      │ ◄───── │  /products       │                       │
+│  └────────┬─────────┘  JSON  └──────────────────┘                       │
+│           │                                                              │
+│           ▼                                                              │
+│  4. Парсинг JSON                                                        │
+│  ┌──────────────────┐                                                   │
+│  │  JSONDecoder     │ ─────► [Product, Product, ...]                    │
+│  └────────┬─────────┘                                                   │
+│           │                                                              │
+│           ▼                                                              │
+│  5. Обновление состояния                                                │
+│  ┌──────────────────┐                                                   │
+│  │  ViewModel       │                                                   │
+│  │  isLoading = false                                                   │
+│  │  products = [...]│ ─────► UI автоматически обновляется              │
+│  └──────────────────┘                                                   │
+│                                                                          │
+└─────────────────────────────────────────────────────────────────────────┘</div>
+                </div>
+            </section>
+
+            <!-- State Management -->
+            <section class="mb-16">
+                <h2 class="text-2xl font-bold mb-6">Выбор Property Wrapper</h2>
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div class="p-6 bg-blue-50 dark:bg-blue-900/20 rounded-2xl border border-blue-200 dark:border-blue-800">
+                        <h3 class="font-bold text-xl mb-4 text-blue-800 dark:text-blue-300">@State</h3>
+                        <p class="text-blue-700 dark:text-blue-400 mb-4">Используйте для:</p>
+                        <ul class="text-blue-600 dark:text-blue-400 text-sm space-y-2">
+                            <li>&#8226; Простое UI состояние</li>
+                            <li>&#8226; isLoading, isExpanded</li>
+                            <li>&#8226; Значения формы</li>
+                            <li>&#8226; Локальные переменные View</li>
+                        </ul>
+                    </div>
+
+                    <div class="p-6 bg-purple-50 dark:bg-purple-900/20 rounded-2xl border border-purple-200 dark:border-purple-800">
+                        <h3 class="font-bold text-xl mb-4 text-purple-800 dark:text-purple-300">@Observable</h3>
+                        <p class="text-purple-700 dark:text-purple-400 mb-4">Используйте для:</p>
+                        <ul class="text-purple-600 dark:text-purple-400 text-sm space-y-2">
+                            <li>&#8226; ViewModel с бизнес-логикой</li>
+                            <li>&#8226; Данные из API</li>
+                            <li>&#8226; Сложное состояние</li>
+                            <li>&#8226; Shared state между Views</li>
+                        </ul>
+                    </div>
+
+                    <div class="p-6 bg-green-50 dark:bg-green-900/20 rounded-2xl border border-green-200 dark:border-green-800">
+                        <h3 class="font-bold text-xl mb-4 text-green-800 dark:text-green-300">@Binding</h3>
+                        <p class="text-green-700 dark:text-green-400 mb-4">Используйте для:</p>
+                        <ul class="text-green-600 dark:text-green-400 text-sm space-y-2">
+                            <li>&#8226; Передача состояния в child</li>
+                            <li>&#8226; Two-way data binding</li>
+                            <li>&#8226; Переиспользуемые компоненты</li>
+                            <li>&#8226; TextField, Toggle, Picker</li>
+                        </ul>
+                    </div>
+
+                    <div class="p-6 bg-orange-50 dark:bg-orange-900/20 rounded-2xl border border-orange-200 dark:border-orange-800">
+                        <h3 class="font-bold text-xl mb-4 text-orange-800 dark:text-orange-300">@Environment</h3>
+                        <p class="text-orange-700 dark:text-orange-400 mb-4">Используйте для:</p>
+                        <ul class="text-orange-600 dark:text-orange-400 text-sm space-y-2">
+                            <li>&#8226; Системные настройки</li>
+                            <li>&#8226; colorScheme, locale</li>
+                            <li>&#8226; dismiss action</li>
+                            <li>&#8226; Dependency Injection</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Navigation -->
+            <div class="flex justify-between items-center mt-16 pt-8 border-t border-zinc-200 dark:border-zinc-800">
+                <a href="../index.html" class="flex items-center gap-2 text-zinc-600 dark:text-zinc-400 hover:text-primary transition-colors">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                    </svg>
+                    Оглавление
+                </a>
+                <a href="glossary.html" class="flex items-center gap-2 px-6 py-3 bg-primary text-white rounded-xl hover:bg-blue-600 transition-colors">
+                    Глоссарий
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                    </svg>
+                </a>
+            </div>
+        </main>
+    </div>
+</body>
+</html>

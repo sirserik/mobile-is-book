@@ -1,0 +1,970 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Глава 20: Profile | iOS Book</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'media',
+            theme: { extend: { colors: { primary: '#007AFF' } } }
+        }
+    </script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
+</head>
+<body class="bg-white dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100">
+    <button id="menuBtn" class="lg:hidden fixed top-4 left-4 z-50 p-3 bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-xl shadow-lg">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+        </svg>
+    </button>
+
+    <div class="flex min-h-screen">
+        <aside id="sidebar" class="fixed inset-y-0 left-0 w-72 bg-zinc-50 dark:bg-zinc-900 border-r border-zinc-200 dark:border-zinc-800 flex flex-col z-40 transform -translate-x-full lg:translate-x-0 transition-transform duration-300">
+            <div class="p-5 border-b border-zinc-200 dark:border-zinc-800">
+                <a href="../index.html" class="flex items-center gap-3 text-lg font-semibold hover:text-primary transition-colors">
+                    <div class="w-9 h-9 bg-primary rounded-lg flex items-center justify-center">
+                        <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/>
+                        </svg>
+                    </div>
+                    iOS Book
+                </a>
+            </div>
+            <nav class="flex-1 overflow-y-auto p-4">
+                <div class="space-y-6">
+                    <div>
+                        <h3 class="px-3 mb-2 text-xs font-semibold uppercase tracking-wider text-zinc-400">Введение</h3>
+                        <a href="00-introduction.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">Введение</a>
+                    </div>
+                    <div>
+                        <h3 class="px-3 mb-2 text-xs font-semibold uppercase tracking-wider text-zinc-400">Основы Swift</h3>
+                        <div class="space-y-1">
+                            <a href="01-xcode.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">1. Xcode</a>
+                            <a href="02-swift-basics.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">2. Основы Swift</a>
+                            <a href="03-control-flow.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">3. Control Flow</a>
+                            <a href="04-functions.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">4. Функции</a>
+                            <a href="05-oop.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">5. ООП</a>
+                            <a href="06-protocols.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">6. Протоколы</a>
+                            <a href="07-optionals.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">7. Optionals</a>
+                            <a href="08-memory.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">8. Память</a>
+                            <a href="09-generics.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">9. Generics</a>
+                            <a href="10-concurrency.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">10. Concurrency</a>
+                        </div>
+                    </div>
+                    <div>
+                        <h3 class="px-3 mb-2 text-xs font-semibold uppercase tracking-wider text-zinc-400">UIKit</h3>
+                        <div class="space-y-1">
+                            <a href="11-uikit-basics.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">11. UIKit</a>
+                            <a href="12-programmatic-ui.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">12. Programmatic UI</a>
+                        </div>
+                    </div>
+                    <div>
+                        <h3 class="px-3 mb-2 text-xs font-semibold uppercase tracking-wider text-zinc-400">Архитектура</h3>
+                        <div class="space-y-1">
+                            <a href="13-viper.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">13. VIPER</a>
+                            <a href="14-project-setup.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">14. Project Setup</a>
+                        </div>
+                    </div>
+                    <div>
+                        <h3 class="px-3 mb-2 text-xs font-semibold uppercase tracking-wider text-zinc-400">Практика</h3>
+                        <div class="space-y-1">
+                            <a href="15-authentication.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">15. Auth</a>
+                            <a href="16-products.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">16. Products</a>
+                            <a href="17-cart.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">17. Cart</a>
+                            <a href="18-favorites.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">18. Favorites</a>
+                            <a href="19-orders.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">19. Orders</a>
+                            <a href="20-profile.html" class="block px-3 py-2 text-sm text-white bg-primary rounded-lg">20. Profile</a>
+                        </div>
+                    </div>
+                    <div>
+                        <h3 class="px-3 mb-2 text-xs font-semibold uppercase tracking-wider text-zinc-400">Дополнительно</h3>
+                        <a href="21-reusable-views.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">21. Reusable Views</a>
+                    </div>
+                </div>
+            </nav>
+        </aside>
+
+        <div id="overlay" class="fixed inset-0 bg-black/50 z-30 lg:hidden hidden" onclick="closeSidebar()"></div>
+
+        <main class="flex-1 lg:ml-72">
+            <article class="max-w-3xl mx-auto px-6 sm:px-8 lg:px-12 py-12 lg:py-16">
+                <header class="mb-12 pb-8 border-b border-zinc-200 dark:border-zinc-800">
+                    <span class="text-sm font-semibold uppercase tracking-wider text-primary">Глава 20</span>
+                    <h1 class="text-3xl sm:text-4xl font-bold mt-2 mb-4">Profile</h1>
+                    <p class="text-lg text-zinc-600 dark:text-zinc-400">Профиль пользователя</p>
+                </header>
+
+                <div class="prose prose-zinc dark:prose-invert max-w-none">
+                    <p class="text-lg leading-relaxed mb-8">Профиль пользователя — центральный экран для управления аккаунтом, просмотра настроек и выхода из системы. Здесь мы реализуем отображение и редактирование данных пользователя.</p>
+
+                    <h2 class="text-2xl font-bold mt-12 mb-6">Модель пользователя</h2>
+                    <p class="mb-6">Хранение данных пользователя в Firestore с расширенной информацией профиля.</p>
+
+                    <div class="bg-zinc-950 rounded-2xl p-6 mb-8 overflow-x-auto">
+                        <pre class="text-sm leading-relaxed"><code><span class="text-pink-400">import</span> <span class="text-cyan-400">FirebaseFirestore</span>
+
+<span class="text-pink-400">struct</span> <span class="text-cyan-400">UserProfile</span>: <span class="text-cyan-400">Codable</span> {
+    <span class="text-purple-400">@DocumentID</span> <span class="text-pink-400">var</span> id: <span class="text-cyan-400">String</span>?
+    <span class="text-pink-400">let</span> email: <span class="text-cyan-400">String</span>
+    <span class="text-pink-400">var</span> displayName: <span class="text-cyan-400">String</span>
+    <span class="text-pink-400">var</span> phone: <span class="text-cyan-400">String</span>?
+    <span class="text-pink-400">var</span> photoURL: <span class="text-cyan-400">String</span>?
+    <span class="text-pink-400">var</span> defaultAddress: <span class="text-cyan-400">ShippingAddress</span>?
+    <span class="text-pink-400">let</span> createdAt: <span class="text-cyan-400">Date</span>
+    <span class="text-pink-400">var</span> updatedAt: <span class="text-cyan-400">Date</span>
+
+    <span class="text-pink-400">var</span> initials: <span class="text-cyan-400">String</span> {
+        <span class="text-pink-400">let</span> components = displayName.split(separator: <span class="text-green-400">" "</span>)
+        <span class="text-pink-400">let</span> first = components.first?.prefix(<span class="text-purple-400">1</span>) ?? <span class="text-green-400">""</span>
+        <span class="text-pink-400">let</span> last = components.dropFirst().first?.prefix(<span class="text-purple-400">1</span>) ?? <span class="text-green-400">""</span>
+        <span class="text-pink-400">return</span> <span class="text-green-400">"\(first)\(last)"</span>.uppercased()
+    }
+
+    <span class="text-pink-400">var</span> memberSince: <span class="text-cyan-400">String</span> {
+        <span class="text-pink-400">let</span> formatter = <span class="text-cyan-400">DateFormatter</span>()
+        formatter.dateFormat = <span class="text-green-400">"MMMM yyyy"</span>
+        formatter.locale = <span class="text-cyan-400">Locale</span>(identifier: <span class="text-green-400">"ru_RU"</span>)
+        <span class="text-pink-400">return</span> <span class="text-green-400">"С \(formatter.string(from: createdAt))"</span>
+    }
+}</code></pre>
+                    </div>
+
+                    <h2 class="text-2xl font-bold mt-12 mb-6">ProfileService</h2>
+                    <p class="mb-6">Сервис для работы с профилем: загрузка, обновление и удаление аккаунта.</p>
+
+                    <div class="bg-zinc-950 rounded-2xl p-6 mb-8 overflow-x-auto">
+                        <pre class="text-sm leading-relaxed"><code><span class="text-pink-400">import</span> <span class="text-cyan-400">FirebaseFirestore</span>
+<span class="text-pink-400">import</span> <span class="text-cyan-400">FirebaseAuth</span>
+<span class="text-pink-400">import</span> <span class="text-cyan-400">Combine</span>
+
+<span class="text-pink-400">final class</span> <span class="text-cyan-400">ProfileService</span> {
+    <span class="text-pink-400">static let</span> shared = <span class="text-cyan-400">ProfileService</span>()
+    <span class="text-pink-400">private let</span> db = <span class="text-cyan-400">Firestore</span>.firestore()
+
+    <span class="text-pink-400">private let</span> profileSubject = <span class="text-cyan-400">CurrentValueSubject</span>&lt;<span class="text-cyan-400">UserProfile</span>?, <span class="text-cyan-400">Never</span>&gt;(<span class="text-pink-400">nil</span>)
+    <span class="text-pink-400">var</span> profilePublisher: <span class="text-cyan-400">AnyPublisher</span>&lt;<span class="text-cyan-400">UserProfile</span>?, <span class="text-cyan-400">Never</span>&gt; {
+        profileSubject.eraseToAnyPublisher()
+    }
+
+    <span class="text-pink-400">var</span> currentProfile: <span class="text-cyan-400">UserProfile</span>? {
+        profileSubject.value
+    }
+
+    <span class="text-pink-400">private var</span> userId: <span class="text-cyan-400">String</span>? {
+        <span class="text-cyan-400">Auth</span>.auth().currentUser?.uid
+    }
+
+    <span class="text-pink-400">private var</span> listener: <span class="text-cyan-400">ListenerRegistration</span>?
+
+    <span class="text-gray-500">// MARK: - Fetch Profile</span>
+    <span class="text-pink-400">func</span> startListening() {
+        <span class="text-pink-400">guard let</span> userId = userId <span class="text-pink-400">else</span> { <span class="text-pink-400">return</span> }
+
+        listener?.remove()
+        listener = db.collection(<span class="text-green-400">"users"</span>).document(userId)
+            .addSnapshotListener { [<span class="text-pink-400">weak self</span>] snapshot, error <span class="text-pink-400">in</span>
+                <span class="text-pink-400">guard let</span> snapshot = snapshot <span class="text-pink-400">else</span> { <span class="text-pink-400">return</span> }
+                <span class="text-pink-400">let</span> profile = <span class="text-pink-400">try</span>? snapshot.data(as: <span class="text-cyan-400">UserProfile</span>.<span class="text-pink-400">self</span>)
+                <span class="text-pink-400">self</span>?.profileSubject.send(profile)
+            }
+    }
+
+    <span class="text-pink-400">func</span> stopListening() {
+        listener?.remove()
+        listener = <span class="text-pink-400">nil</span>
+        profileSubject.send(<span class="text-pink-400">nil</span>)
+    }
+
+    <span class="text-gray-500">// MARK: - Create Profile (при регистрации)</span>
+    <span class="text-pink-400">func</span> createProfile(
+        email: <span class="text-cyan-400">String</span>,
+        displayName: <span class="text-cyan-400">String</span>,
+        completion: <span class="text-purple-400">@escaping</span> (<span class="text-cyan-400">Result</span>&lt;<span class="text-cyan-400">Void</span>, <span class="text-cyan-400">Error</span>&gt;) -> <span class="text-cyan-400">Void</span>
+    ) {
+        <span class="text-pink-400">guard let</span> userId = userId <span class="text-pink-400">else</span> {
+            completion(.failure(<span class="text-cyan-400">AuthError</span>.notAuthenticated))
+            <span class="text-pink-400">return</span>
+        }
+
+        <span class="text-pink-400">let</span> now = <span class="text-cyan-400">Date</span>()
+        <span class="text-pink-400">let</span> profile = <span class="text-cyan-400">UserProfile</span>(
+            id: userId,
+            email: email,
+            displayName: displayName,
+            phone: <span class="text-pink-400">nil</span>,
+            photoURL: <span class="text-pink-400">nil</span>,
+            defaultAddress: <span class="text-pink-400">nil</span>,
+            createdAt: now,
+            updatedAt: now
+        )
+
+        <span class="text-pink-400">do</span> {
+            <span class="text-pink-400">try</span> db.collection(<span class="text-green-400">"users"</span>).document(userId).setData(from: profile)
+            completion(.success(()))
+        } <span class="text-pink-400">catch</span> {
+            completion(.failure(error))
+        }
+    }
+
+    <span class="text-gray-500">// MARK: - Update Profile</span>
+    <span class="text-pink-400">func</span> updateProfile(
+        displayName: <span class="text-cyan-400">String</span>? = <span class="text-pink-400">nil</span>,
+        phone: <span class="text-cyan-400">String</span>? = <span class="text-pink-400">nil</span>,
+        photoURL: <span class="text-cyan-400">String</span>? = <span class="text-pink-400">nil</span>,
+        defaultAddress: <span class="text-cyan-400">ShippingAddress</span>? = <span class="text-pink-400">nil</span>,
+        completion: <span class="text-purple-400">@escaping</span> (<span class="text-cyan-400">Result</span>&lt;<span class="text-cyan-400">Void</span>, <span class="text-cyan-400">Error</span>&gt;) -> <span class="text-cyan-400">Void</span>
+    ) {
+        <span class="text-pink-400">guard let</span> userId = userId <span class="text-pink-400">else</span> {
+            completion(.failure(<span class="text-cyan-400">AuthError</span>.notAuthenticated))
+            <span class="text-pink-400">return</span>
+        }
+
+        <span class="text-pink-400">var</span> updates: [<span class="text-cyan-400">String</span>: <span class="text-cyan-400">Any</span>] = [
+            <span class="text-green-400">"updatedAt"</span>: <span class="text-cyan-400">FieldValue</span>.serverTimestamp()
+        ]
+
+        <span class="text-pink-400">if let</span> displayName = displayName {
+            updates[<span class="text-green-400">"displayName"</span>] = displayName
+        }
+        <span class="text-pink-400">if let</span> phone = phone {
+            updates[<span class="text-green-400">"phone"</span>] = phone
+        }
+        <span class="text-pink-400">if let</span> photoURL = photoURL {
+            updates[<span class="text-green-400">"photoURL"</span>] = photoURL
+        }
+        <span class="text-pink-400">if let</span> address = defaultAddress {
+            updates[<span class="text-green-400">"defaultAddress"</span>] = <span class="text-pink-400">try</span>? <span class="text-cyan-400">Firestore</span>.<span class="text-cyan-400">Encoder</span>().encode(address)
+        }
+
+        db.collection(<span class="text-green-400">"users"</span>).document(userId).updateData(updates) { error <span class="text-pink-400">in</span>
+            <span class="text-pink-400">if let</span> error = error {
+                completion(.failure(error))
+            } <span class="text-pink-400">else</span> {
+                completion(.success(()))
+            }
+        }
+    }
+
+    <span class="text-gray-500">// MARK: - Delete Account</span>
+    <span class="text-pink-400">func</span> deleteAccount(completion: <span class="text-purple-400">@escaping</span> (<span class="text-cyan-400">Result</span>&lt;<span class="text-cyan-400">Void</span>, <span class="text-cyan-400">Error</span>&gt;) -> <span class="text-cyan-400">Void</span>) {
+        <span class="text-pink-400">guard let</span> userId = userId,
+              <span class="text-pink-400">let</span> user = <span class="text-cyan-400">Auth</span>.auth().currentUser <span class="text-pink-400">else</span> {
+            completion(.failure(<span class="text-cyan-400">AuthError</span>.notAuthenticated))
+            <span class="text-pink-400">return</span>
+        }
+
+        <span class="text-gray-500">// Удаляем документ пользователя</span>
+        db.collection(<span class="text-green-400">"users"</span>).document(userId).delete { [<span class="text-pink-400">weak self</span>] error <span class="text-pink-400">in</span>
+            <span class="text-pink-400">if let</span> error = error {
+                completion(.failure(error))
+                <span class="text-pink-400">return</span>
+            }
+
+            <span class="text-gray-500">// Удаляем аккаунт Firebase Auth</span>
+            user.delete { error <span class="text-pink-400">in</span>
+                <span class="text-pink-400">if let</span> error = error {
+                    completion(.failure(error))
+                } <span class="text-pink-400">else</span> {
+                    <span class="text-pink-400">self</span>?.stopListening()
+                    completion(.success(()))
+                }
+            }
+        }
+    }
+}</code></pre>
+                    </div>
+
+                    <h2 class="text-2xl font-bold mt-12 mb-6">ProfileProtocols</h2>
+                    <p class="mb-6">Протоколы VIPER для модуля профиля.</p>
+
+                    <div class="bg-zinc-950 rounded-2xl p-6 mb-8 overflow-x-auto">
+                        <pre class="text-sm leading-relaxed"><code><span class="text-pink-400">protocol</span> <span class="text-cyan-400">ProfileViewProtocol</span>: <span class="text-cyan-400">AnyObject</span> {
+    <span class="text-pink-400">func</span> displayProfile(_ profile: <span class="text-cyan-400">UserProfile</span>)
+    <span class="text-pink-400">func</span> showLoading()
+    <span class="text-pink-400">func</span> hideLoading()
+    <span class="text-pink-400">func</span> showError(_ message: <span class="text-cyan-400">String</span>)
+}
+
+<span class="text-pink-400">protocol</span> <span class="text-cyan-400">ProfilePresenterProtocol</span>: <span class="text-cyan-400">AnyObject</span> {
+    <span class="text-pink-400">func</span> viewDidLoad()
+    <span class="text-pink-400">func</span> didTapEditProfile()
+    <span class="text-pink-400">func</span> didTapOrders()
+    <span class="text-pink-400">func</span> didTapAddresses()
+    <span class="text-pink-400">func</span> didTapSettings()
+    <span class="text-pink-400">func</span> didTapLogout()
+    <span class="text-pink-400">func</span> didTapDeleteAccount()
+}
+
+<span class="text-pink-400">protocol</span> <span class="text-cyan-400">ProfileInteractorProtocol</span>: <span class="text-cyan-400">AnyObject</span> {
+    <span class="text-pink-400">var</span> profilePublisher: <span class="text-cyan-400">AnyPublisher</span>&lt;<span class="text-cyan-400">UserProfile</span>?, <span class="text-cyan-400">Never</span>&gt; { <span class="text-pink-400">get</span> }
+    <span class="text-pink-400">func</span> startListening()
+    <span class="text-pink-400">func</span> logout()
+    <span class="text-pink-400">func</span> deleteAccount(completion: <span class="text-purple-400">@escaping</span> (<span class="text-cyan-400">Result</span>&lt;<span class="text-cyan-400">Void</span>, <span class="text-cyan-400">Error</span>&gt;) -> <span class="text-cyan-400">Void</span>)
+}
+
+<span class="text-pink-400">protocol</span> <span class="text-cyan-400">ProfileRouterProtocol</span>: <span class="text-cyan-400">AnyObject</span> {
+    <span class="text-pink-400">func</span> showEditProfile()
+    <span class="text-pink-400">func</span> showOrders()
+    <span class="text-pink-400">func</span> showAddresses()
+    <span class="text-pink-400">func</span> showSettings()
+    <span class="text-pink-400">func</span> showLogin()
+}</code></pre>
+                    </div>
+
+                    <h2 class="text-2xl font-bold mt-12 mb-6">ProfileViewController</h2>
+                    <p class="mb-6">Экран профиля с аватаром, данными пользователя и меню действий.</p>
+
+                    <div class="bg-zinc-950 rounded-2xl p-6 mb-8 overflow-x-auto">
+                        <pre class="text-sm leading-relaxed"><code><span class="text-pink-400">final class</span> <span class="text-cyan-400">ProfileViewController</span>: <span class="text-cyan-400">UIViewController</span> {
+    <span class="text-pink-400">var</span> presenter: <span class="text-cyan-400">ProfilePresenterProtocol</span>!
+
+    <span class="text-pink-400">private let</span> scrollView = <span class="text-cyan-400">UIScrollView</span>()
+    <span class="text-pink-400">private let</span> contentView = <span class="text-cyan-400">UIView</span>()
+
+    <span class="text-gray-500">// Header</span>
+    <span class="text-pink-400">private let</span> avatarView = <span class="text-cyan-400">UIView</span>()
+    <span class="text-pink-400">private let</span> avatarImageView = <span class="text-cyan-400">UIImageView</span>()
+    <span class="text-pink-400">private let</span> initialsLabel = <span class="text-cyan-400">UILabel</span>()
+    <span class="text-pink-400">private let</span> nameLabel = <span class="text-cyan-400">UILabel</span>()
+    <span class="text-pink-400">private let</span> emailLabel = <span class="text-cyan-400">UILabel</span>()
+    <span class="text-pink-400">private let</span> memberSinceLabel = <span class="text-cyan-400">UILabel</span>()
+
+    <span class="text-gray-500">// Menu</span>
+    <span class="text-pink-400">private let</span> menuStackView = <span class="text-cyan-400">UIStackView</span>()
+
+    <span class="text-pink-400">override func</span> viewDidLoad() {
+        <span class="text-pink-400">super</span>.viewDidLoad()
+        setupUI()
+        presenter.viewDidLoad()
+    }
+
+    <span class="text-pink-400">private func</span> setupUI() {
+        title = <span class="text-green-400">"Профиль"</span>
+        view.backgroundColor = .systemBackground
+
+        <span class="text-gray-500">// ScrollView</span>
+        view.addSubview(scrollView)
+        scrollView.addSubview(contentView)
+
+        scrollView.snp.makeConstraints { make <span class="text-pink-400">in</span>
+            make.edges.equalToSuperview()
+        }
+
+        contentView.snp.makeConstraints { make <span class="text-pink-400">in</span>
+            make.edges.equalToSuperview()
+            make.width.equalTo(view)
+        }
+
+        <span class="text-gray-500">// Avatar</span>
+        setupAvatarView()
+
+        <span class="text-gray-500">// User info</span>
+        nameLabel.font = .systemFont(ofSize: <span class="text-purple-400">24</span>, weight: .bold)
+        nameLabel.textAlignment = .center
+
+        emailLabel.font = .systemFont(ofSize: <span class="text-purple-400">15</span>)
+        emailLabel.textColor = .secondaryLabel
+        emailLabel.textAlignment = .center
+
+        memberSinceLabel.font = .systemFont(ofSize: <span class="text-purple-400">13</span>)
+        memberSinceLabel.textColor = .tertiaryLabel
+        memberSinceLabel.textAlignment = .center
+
+        <span class="text-pink-400">let</span> headerStack = <span class="text-cyan-400">UIStackView</span>(arrangedSubviews: [
+            avatarView, nameLabel, emailLabel, memberSinceLabel
+        ])
+        headerStack.axis = .vertical
+        headerStack.spacing = <span class="text-purple-400">8</span>
+        headerStack.alignment = .center
+        headerStack.setCustomSpacing(<span class="text-purple-400">16</span>, after: avatarView)
+
+        contentView.addSubview(headerStack)
+        headerStack.snp.makeConstraints { make <span class="text-pink-400">in</span>
+            make.top.equalToSuperview().offset(<span class="text-purple-400">32</span>)
+            make.centerX.equalToSuperview()
+        }
+
+        <span class="text-gray-500">// Edit profile button</span>
+        <span class="text-pink-400">let</span> editButton = <span class="text-cyan-400">UIButton</span>(type: .system)
+        editButton.setTitle(<span class="text-green-400">"Редактировать профиль"</span>, for: .normal)
+        editButton.titleLabel?.font = .systemFont(ofSize: <span class="text-purple-400">15</span>, weight: .medium)
+        editButton.addTarget(<span class="text-pink-400">self</span>, action: <span class="text-pink-400">#selector</span>(editProfileTapped), for: .touchUpInside)
+        contentView.addSubview(editButton)
+
+        editButton.snp.makeConstraints { make <span class="text-pink-400">in</span>
+            make.top.equalTo(headerStack.snp.bottom).offset(<span class="text-purple-400">16</span>)
+            make.centerX.equalToSuperview()
+        }
+
+        <span class="text-gray-500">// Menu items</span>
+        setupMenu()
+        contentView.addSubview(menuStackView)
+
+        menuStackView.snp.makeConstraints { make <span class="text-pink-400">in</span>
+            make.top.equalTo(editButton.snp.bottom).offset(<span class="text-purple-400">32</span>)
+            make.leading.trailing.equalToSuperview().inset(<span class="text-purple-400">16</span>)
+        }
+
+        <span class="text-gray-500">// Logout button</span>
+        <span class="text-pink-400">let</span> logoutButton = <span class="text-cyan-400">UIButton</span>(type: .system)
+        logoutButton.setTitle(<span class="text-green-400">"Выйти"</span>, for: .normal)
+        logoutButton.setTitleColor(.systemRed, for: .normal)
+        logoutButton.titleLabel?.font = .systemFont(ofSize: <span class="text-purple-400">17</span>, weight: .medium)
+        logoutButton.addTarget(<span class="text-pink-400">self</span>, action: <span class="text-pink-400">#selector</span>(logoutTapped), for: .touchUpInside)
+        contentView.addSubview(logoutButton)
+
+        logoutButton.snp.makeConstraints { make <span class="text-pink-400">in</span>
+            make.top.equalTo(menuStackView.snp.bottom).offset(<span class="text-purple-400">32</span>)
+            make.centerX.equalToSuperview()
+            make.bottom.equalToSuperview().offset(-<span class="text-purple-400">32</span>)
+        }
+    }
+
+    <span class="text-pink-400">private func</span> setupAvatarView() {
+        avatarView.backgroundColor = .systemBlue
+        avatarView.layer.cornerRadius = <span class="text-purple-400">50</span>
+        avatarView.clipsToBounds = <span class="text-pink-400">true</span>
+
+        avatarImageView.contentMode = .scaleAspectFill
+        avatarImageView.isHidden = <span class="text-pink-400">true</span>
+
+        initialsLabel.font = .systemFont(ofSize: <span class="text-purple-400">32</span>, weight: .semibold)
+        initialsLabel.textColor = .white
+        initialsLabel.textAlignment = .center
+
+        avatarView.addSubview(avatarImageView)
+        avatarView.addSubview(initialsLabel)
+
+        avatarView.snp.makeConstraints { make <span class="text-pink-400">in</span>
+            make.width.height.equalTo(<span class="text-purple-400">100</span>)
+        }
+
+        avatarImageView.snp.makeConstraints { make <span class="text-pink-400">in</span>
+            make.edges.equalToSuperview()
+        }
+
+        initialsLabel.snp.makeConstraints { make <span class="text-pink-400">in</span>
+            make.center.equalToSuperview()
+        }
+    }
+
+    <span class="text-pink-400">private func</span> setupMenu() {
+        menuStackView.axis = .vertical
+        menuStackView.spacing = <span class="text-purple-400">0</span>
+
+        <span class="text-pink-400">let</span> menuItems: [(icon: <span class="text-cyan-400">String</span>, title: <span class="text-cyan-400">String</span>, action: <span class="text-cyan-400">Selector</span>)] = [
+            (<span class="text-green-400">"bag"</span>, <span class="text-green-400">"Мои заказы"</span>, <span class="text-pink-400">#selector</span>(ordersTapped)),
+            (<span class="text-green-400">"location"</span>, <span class="text-green-400">"Адреса доставки"</span>, <span class="text-pink-400">#selector</span>(addressesTapped)),
+            (<span class="text-green-400">"creditcard"</span>, <span class="text-green-400">"Способы оплаты"</span>, <span class="text-pink-400">#selector</span>(paymentsTapped)),
+            (<span class="text-green-400">"bell"</span>, <span class="text-green-400">"Уведомления"</span>, <span class="text-pink-400">#selector</span>(notificationsTapped)),
+            (<span class="text-green-400">"gearshape"</span>, <span class="text-green-400">"Настройки"</span>, <span class="text-pink-400">#selector</span>(settingsTapped)),
+            (<span class="text-green-400">"questionmark.circle"</span>, <span class="text-green-400">"Помощь"</span>, <span class="text-pink-400">#selector</span>(helpTapped))
+        ]
+
+        <span class="text-pink-400">for</span> (index, item) <span class="text-pink-400">in</span> menuItems.enumerated() {
+            <span class="text-pink-400">let</span> menuRow = createMenuRow(icon: item.icon, title: item.title, action: item.action)
+            menuStackView.addArrangedSubview(menuRow)
+
+            <span class="text-pink-400">if</span> index < menuItems.count - <span class="text-purple-400">1</span> {
+                <span class="text-pink-400">let</span> separator = <span class="text-cyan-400">UIView</span>()
+                separator.backgroundColor = .separator
+                separator.snp.makeConstraints { make <span class="text-pink-400">in</span>
+                    make.height.equalTo(<span class="text-purple-400">1</span> / <span class="text-cyan-400">UIScreen</span>.main.scale)
+                }
+                menuStackView.addArrangedSubview(separator)
+            }
+        }
+
+        menuStackView.backgroundColor = .secondarySystemBackground
+        menuStackView.layer.cornerRadius = <span class="text-purple-400">16</span>
+        menuStackView.clipsToBounds = <span class="text-pink-400">true</span>
+    }
+
+    <span class="text-pink-400">private func</span> createMenuRow(icon: <span class="text-cyan-400">String</span>, title: <span class="text-cyan-400">String</span>, action: <span class="text-cyan-400">Selector</span>) -> <span class="text-cyan-400">UIView</span> {
+        <span class="text-pink-400">let</span> container = <span class="text-cyan-400">UIView</span>()
+
+        <span class="text-pink-400">let</span> iconView = <span class="text-cyan-400">UIImageView</span>()
+        iconView.image = <span class="text-cyan-400">UIImage</span>(systemName: icon)
+        iconView.tintColor = .systemBlue
+        iconView.contentMode = .scaleAspectFit
+
+        <span class="text-pink-400">let</span> titleLabel = <span class="text-cyan-400">UILabel</span>()
+        titleLabel.text = title
+        titleLabel.font = .systemFont(ofSize: <span class="text-purple-400">16</span>)
+
+        <span class="text-pink-400">let</span> chevron = <span class="text-cyan-400">UIImageView</span>()
+        chevron.image = <span class="text-cyan-400">UIImage</span>(systemName: <span class="text-green-400">"chevron.right"</span>)
+        chevron.tintColor = .tertiaryLabel
+        chevron.contentMode = .scaleAspectFit
+
+        container.addSubview(iconView)
+        container.addSubview(titleLabel)
+        container.addSubview(chevron)
+
+        iconView.snp.makeConstraints { make <span class="text-pink-400">in</span>
+            make.leading.equalToSuperview().offset(<span class="text-purple-400">16</span>)
+            make.centerY.equalToSuperview()
+            make.width.height.equalTo(<span class="text-purple-400">24</span>)
+        }
+
+        titleLabel.snp.makeConstraints { make <span class="text-pink-400">in</span>
+            make.leading.equalTo(iconView.snp.trailing).offset(<span class="text-purple-400">12</span>)
+            make.centerY.equalToSuperview()
+        }
+
+        chevron.snp.makeConstraints { make <span class="text-pink-400">in</span>
+            make.trailing.equalToSuperview().offset(-<span class="text-purple-400">16</span>)
+            make.centerY.equalToSuperview()
+            make.width.height.equalTo(<span class="text-purple-400">16</span>)
+        }
+
+        container.snp.makeConstraints { make <span class="text-pink-400">in</span>
+            make.height.equalTo(<span class="text-purple-400">52</span>)
+        }
+
+        <span class="text-pink-400">let</span> button = <span class="text-cyan-400">UIButton</span>(type: .system)
+        button.addTarget(<span class="text-pink-400">self</span>, action: action, for: .touchUpInside)
+        container.addSubview(button)
+        button.snp.makeConstraints { make <span class="text-pink-400">in</span>
+            make.edges.equalToSuperview()
+        }
+
+        <span class="text-pink-400">return</span> container
+    }
+
+    <span class="text-gray-500">// MARK: - Actions</span>
+    <span class="text-purple-400">@objc</span> <span class="text-pink-400">private func</span> editProfileTapped() { presenter.didTapEditProfile() }
+    <span class="text-purple-400">@objc</span> <span class="text-pink-400">private func</span> ordersTapped() { presenter.didTapOrders() }
+    <span class="text-purple-400">@objc</span> <span class="text-pink-400">private func</span> addressesTapped() { presenter.didTapAddresses() }
+    <span class="text-purple-400">@objc</span> <span class="text-pink-400">private func</span> paymentsTapped() { }
+    <span class="text-purple-400">@objc</span> <span class="text-pink-400">private func</span> notificationsTapped() { }
+    <span class="text-purple-400">@objc</span> <span class="text-pink-400">private func</span> settingsTapped() { presenter.didTapSettings() }
+    <span class="text-purple-400">@objc</span> <span class="text-pink-400">private func</span> helpTapped() { }
+    <span class="text-purple-400">@objc</span> <span class="text-pink-400">private func</span> logoutTapped() { presenter.didTapLogout() }
+}
+
+<span class="text-pink-400">extension</span> <span class="text-cyan-400">ProfileViewController</span>: <span class="text-cyan-400">ProfileViewProtocol</span> {
+    <span class="text-pink-400">func</span> displayProfile(_ profile: <span class="text-cyan-400">UserProfile</span>) {
+        nameLabel.text = profile.displayName
+        emailLabel.text = profile.email
+        memberSinceLabel.text = profile.memberSince
+        initialsLabel.text = profile.initials
+
+        <span class="text-pink-400">if let</span> photoURL = profile.photoURL, <span class="text-pink-400">let</span> url = <span class="text-cyan-400">URL</span>(string: photoURL) {
+            avatarImageView.kf.setImage(with: url)
+            avatarImageView.isHidden = <span class="text-pink-400">false</span>
+            initialsLabel.isHidden = <span class="text-pink-400">true</span>
+        } <span class="text-pink-400">else</span> {
+            avatarImageView.isHidden = <span class="text-pink-400">true</span>
+            initialsLabel.isHidden = <span class="text-pink-400">false</span>
+        }
+    }
+
+    <span class="text-pink-400">func</span> showLoading() { }
+    <span class="text-pink-400">func</span> hideLoading() { }
+
+    <span class="text-pink-400">func</span> showError(_ message: <span class="text-cyan-400">String</span>) {
+        <span class="text-pink-400">let</span> alert = <span class="text-cyan-400">UIAlertController</span>(title: <span class="text-green-400">"Ошибка"</span>, message: message, preferredStyle: .alert)
+        alert.addAction(<span class="text-cyan-400">UIAlertAction</span>(title: <span class="text-green-400">"OK"</span>, style: .default))
+        present(alert, animated: <span class="text-pink-400">true</span>)
+    }
+}</code></pre>
+                    </div>
+
+                    <h2 class="text-2xl font-bold mt-12 mb-6">ProfilePresenter</h2>
+                    <p class="mb-6">Presenter управляет логикой профиля и обрабатывает выход из системы.</p>
+
+                    <div class="bg-zinc-950 rounded-2xl p-6 mb-8 overflow-x-auto">
+                        <pre class="text-sm leading-relaxed"><code><span class="text-pink-400">import</span> <span class="text-cyan-400">Combine</span>
+
+<span class="text-pink-400">final class</span> <span class="text-cyan-400">ProfilePresenter</span>: <span class="text-cyan-400">ProfilePresenterProtocol</span> {
+    <span class="text-pink-400">weak var</span> view: <span class="text-cyan-400">ProfileViewProtocol</span>?
+    <span class="text-pink-400">var</span> interactor: <span class="text-cyan-400">ProfileInteractorProtocol</span>!
+    <span class="text-pink-400">var</span> router: <span class="text-cyan-400">ProfileRouterProtocol</span>!
+
+    <span class="text-pink-400">private var</span> cancellables = <span class="text-cyan-400">Set</span>&lt;<span class="text-cyan-400">AnyCancellable</span>&gt;()
+
+    <span class="text-pink-400">func</span> viewDidLoad() {
+        interactor.startListening()
+
+        interactor.profilePublisher
+            .receive(on: <span class="text-cyan-400">DispatchQueue</span>.main)
+            .compactMap { $0 }
+            .sink { [<span class="text-pink-400">weak self</span>] profile <span class="text-pink-400">in</span>
+                <span class="text-pink-400">self</span>?.view?.displayProfile(profile)
+            }
+            .store(in: &cancellables)
+    }
+
+    <span class="text-pink-400">func</span> didTapEditProfile() {
+        router.showEditProfile()
+    }
+
+    <span class="text-pink-400">func</span> didTapOrders() {
+        router.showOrders()
+    }
+
+    <span class="text-pink-400">func</span> didTapAddresses() {
+        router.showAddresses()
+    }
+
+    <span class="text-pink-400">func</span> didTapSettings() {
+        router.showSettings()
+    }
+
+    <span class="text-pink-400">func</span> didTapLogout() {
+        interactor.logout()
+        router.showLogin()
+    }
+
+    <span class="text-pink-400">func</span> didTapDeleteAccount() {
+        interactor.deleteAccount { [<span class="text-pink-400">weak self</span>] result <span class="text-pink-400">in</span>
+            <span class="text-pink-400">switch</span> result {
+            <span class="text-pink-400">case</span> .success:
+                <span class="text-pink-400">self</span>?.router.showLogin()
+            <span class="text-pink-400">case</span> .failure(<span class="text-pink-400">let</span> error):
+                <span class="text-pink-400">self</span>?.view?.showError(error.localizedDescription)
+            }
+        }
+    }
+}
+
+<span class="text-pink-400">final class</span> <span class="text-cyan-400">ProfileInteractor</span>: <span class="text-cyan-400">ProfileInteractorProtocol</span> {
+    <span class="text-pink-400">var</span> profilePublisher: <span class="text-cyan-400">AnyPublisher</span>&lt;<span class="text-cyan-400">UserProfile</span>?, <span class="text-cyan-400">Never</span>&gt; {
+        <span class="text-cyan-400">ProfileService</span>.shared.profilePublisher
+    }
+
+    <span class="text-pink-400">func</span> startListening() {
+        <span class="text-cyan-400">ProfileService</span>.shared.startListening()
+    }
+
+    <span class="text-pink-400">func</span> logout() {
+        <span class="text-cyan-400">ProfileService</span>.shared.stopListening()
+        <span class="text-pink-400">try</span>? <span class="text-cyan-400">Auth</span>.auth().signOut()
+    }
+
+    <span class="text-pink-400">func</span> deleteAccount(completion: <span class="text-purple-400">@escaping</span> (<span class="text-cyan-400">Result</span>&lt;<span class="text-cyan-400">Void</span>, <span class="text-cyan-400">Error</span>&gt;) -> <span class="text-cyan-400">Void</span>) {
+        <span class="text-cyan-400">ProfileService</span>.shared.deleteAccount(completion: completion)
+    }
+}</code></pre>
+                    </div>
+
+                    <h2 class="text-2xl font-bold mt-12 mb-6">Редактирование профиля</h2>
+                    <p class="mb-6">Экран для изменения имени, телефона и фото профиля.</p>
+
+                    <div class="bg-zinc-950 rounded-2xl p-6 mb-8 overflow-x-auto">
+                        <pre class="text-sm leading-relaxed"><code><span class="text-pink-400">final class</span> <span class="text-cyan-400">EditProfileViewController</span>: <span class="text-cyan-400">UIViewController</span> {
+    <span class="text-pink-400">private var</span> profile: <span class="text-cyan-400">UserProfile</span>
+
+    <span class="text-pink-400">private let</span> avatarView = <span class="text-cyan-400">UIView</span>()
+    <span class="text-pink-400">private let</span> avatarImageView = <span class="text-cyan-400">UIImageView</span>()
+    <span class="text-pink-400">private let</span> changePhotoButton = <span class="text-cyan-400">UIButton</span>(type: .system)
+
+    <span class="text-pink-400">private let</span> nameField = <span class="text-cyan-400">UITextField</span>()
+    <span class="text-pink-400">private let</span> phoneField = <span class="text-cyan-400">UITextField</span>()
+
+    <span class="text-pink-400">private let</span> saveButton = <span class="text-cyan-400">UIButton</span>(type: .system)
+
+    <span class="text-pink-400">init</span>(profile: <span class="text-cyan-400">UserProfile</span>) {
+        <span class="text-pink-400">self</span>.profile = profile
+        <span class="text-pink-400">super</span>.init(nibName: <span class="text-pink-400">nil</span>, bundle: <span class="text-pink-400">nil</span>)
+    }
+
+    <span class="text-pink-400">required init</span>?(coder: <span class="text-cyan-400">NSCoder</span>) {
+        <span class="text-pink-400">fatalError</span>(<span class="text-green-400">"init(coder:) has not been implemented"</span>)
+    }
+
+    <span class="text-pink-400">override func</span> viewDidLoad() {
+        <span class="text-pink-400">super</span>.viewDidLoad()
+        setupUI()
+        populateData()
+    }
+
+    <span class="text-pink-400">private func</span> setupUI() {
+        title = <span class="text-green-400">"Редактировать"</span>
+        view.backgroundColor = .systemBackground
+
+        navigationItem.leftBarButtonItem = <span class="text-cyan-400">UIBarButtonItem</span>(
+            title: <span class="text-green-400">"Отмена"</span>,
+            style: .plain,
+            target: <span class="text-pink-400">self</span>,
+            action: <span class="text-pink-400">#selector</span>(cancelTapped)
+        )
+
+        <span class="text-gray-500">// Avatar</span>
+        avatarView.backgroundColor = .systemBlue
+        avatarView.layer.cornerRadius = <span class="text-purple-400">50</span>
+        avatarView.clipsToBounds = <span class="text-pink-400">true</span>
+        view.addSubview(avatarView)
+
+        avatarImageView.contentMode = .scaleAspectFill
+        avatarView.addSubview(avatarImageView)
+
+        avatarView.snp.makeConstraints { make <span class="text-pink-400">in</span>
+            make.top.equalTo(view.safeAreaLayoutGuide).offset(<span class="text-purple-400">32</span>)
+            make.centerX.equalToSuperview()
+            make.width.height.equalTo(<span class="text-purple-400">100</span>)
+        }
+
+        avatarImageView.snp.makeConstraints { make <span class="text-pink-400">in</span>
+            make.edges.equalToSuperview()
+        }
+
+        changePhotoButton.setTitle(<span class="text-green-400">"Изменить фото"</span>, for: .normal)
+        changePhotoButton.addTarget(<span class="text-pink-400">self</span>, action: <span class="text-pink-400">#selector</span>(changePhotoTapped), for: .touchUpInside)
+        view.addSubview(changePhotoButton)
+
+        changePhotoButton.snp.makeConstraints { make <span class="text-pink-400">in</span>
+            make.top.equalTo(avatarView.snp.bottom).offset(<span class="text-purple-400">12</span>)
+            make.centerX.equalToSuperview()
+        }
+
+        <span class="text-gray-500">// Form</span>
+        <span class="text-pink-400">let</span> formStack = <span class="text-cyan-400">UIStackView</span>()
+        formStack.axis = .vertical
+        formStack.spacing = <span class="text-purple-400">16</span>
+
+        configureField(nameField, placeholder: <span class="text-green-400">"Имя"</span>)
+        configureField(phoneField, placeholder: <span class="text-green-400">"Телефон"</span>)
+        phoneField.keyboardType = .phonePad
+
+        formStack.addArrangedSubview(createFieldSection(<span class="text-green-400">"Имя"</span>, field: nameField))
+        formStack.addArrangedSubview(createFieldSection(<span class="text-green-400">"Телефон"</span>, field: phoneField))
+
+        view.addSubview(formStack)
+        formStack.snp.makeConstraints { make <span class="text-pink-400">in</span>
+            make.top.equalTo(changePhotoButton.snp.bottom).offset(<span class="text-purple-400">32</span>)
+            make.leading.trailing.equalToSuperview().inset(<span class="text-purple-400">16</span>)
+        }
+
+        <span class="text-gray-500">// Save button</span>
+        saveButton.setTitle(<span class="text-green-400">"Сохранить"</span>, for: .normal)
+        saveButton.titleLabel?.font = .systemFont(ofSize: <span class="text-purple-400">17</span>, weight: .semibold)
+        saveButton.backgroundColor = .systemBlue
+        saveButton.setTitleColor(.white, for: .normal)
+        saveButton.layer.cornerRadius = <span class="text-purple-400">12</span>
+        saveButton.addTarget(<span class="text-pink-400">self</span>, action: <span class="text-pink-400">#selector</span>(saveTapped), for: .touchUpInside)
+        view.addSubview(saveButton)
+
+        saveButton.snp.makeConstraints { make <span class="text-pink-400">in</span>
+            make.top.equalTo(formStack.snp.bottom).offset(<span class="text-purple-400">32</span>)
+            make.leading.trailing.equalToSuperview().inset(<span class="text-purple-400">16</span>)
+            make.height.equalTo(<span class="text-purple-400">50</span>)
+        }
+    }
+
+    <span class="text-pink-400">private func</span> configureField(_ field: <span class="text-cyan-400">UITextField</span>, placeholder: <span class="text-cyan-400">String</span>) {
+        field.placeholder = placeholder
+        field.borderStyle = .roundedRect
+        field.font = .systemFont(ofSize: <span class="text-purple-400">16</span>)
+    }
+
+    <span class="text-pink-400">private func</span> createFieldSection(_ title: <span class="text-cyan-400">String</span>, field: <span class="text-cyan-400">UITextField</span>) -> <span class="text-cyan-400">UIView</span> {
+        <span class="text-pink-400">let</span> container = <span class="text-cyan-400">UIView</span>()
+
+        <span class="text-pink-400">let</span> label = <span class="text-cyan-400">UILabel</span>()
+        label.text = title
+        label.font = .systemFont(ofSize: <span class="text-purple-400">13</span>, weight: .medium)
+        label.textColor = .secondaryLabel
+
+        container.addSubview(label)
+        container.addSubview(field)
+
+        label.snp.makeConstraints { make <span class="text-pink-400">in</span>
+            make.top.leading.trailing.equalToSuperview()
+        }
+
+        field.snp.makeConstraints { make <span class="text-pink-400">in</span>
+            make.top.equalTo(label.snp.bottom).offset(<span class="text-purple-400">6</span>)
+            make.leading.trailing.bottom.equalToSuperview()
+            make.height.equalTo(<span class="text-purple-400">44</span>)
+        }
+
+        <span class="text-pink-400">return</span> container
+    }
+
+    <span class="text-pink-400">private func</span> populateData() {
+        nameField.text = profile.displayName
+        phoneField.text = profile.phone
+
+        <span class="text-pink-400">if let</span> photoURL = profile.photoURL, <span class="text-pink-400">let</span> url = <span class="text-cyan-400">URL</span>(string: photoURL) {
+            avatarImageView.kf.setImage(with: url)
+        }
+    }
+
+    <span class="text-purple-400">@objc</span> <span class="text-pink-400">private func</span> cancelTapped() {
+        dismiss(animated: <span class="text-pink-400">true</span>)
+    }
+
+    <span class="text-purple-400">@objc</span> <span class="text-pink-400">private func</span> changePhotoTapped() {
+        <span class="text-pink-400">let</span> picker = <span class="text-cyan-400">UIImagePickerController</span>()
+        picker.delegate = <span class="text-pink-400">self</span>
+        picker.sourceType = .photoLibrary
+        picker.allowsEditing = <span class="text-pink-400">true</span>
+        present(picker, animated: <span class="text-pink-400">true</span>)
+    }
+
+    <span class="text-purple-400">@objc</span> <span class="text-pink-400">private func</span> saveTapped() {
+        <span class="text-pink-400">guard let</span> name = nameField.text, !name.isEmpty <span class="text-pink-400">else</span> {
+            showError(<span class="text-green-400">"Введите имя"</span>)
+            <span class="text-pink-400">return</span>
+        }
+
+        saveButton.isEnabled = <span class="text-pink-400">false</span>
+
+        <span class="text-cyan-400">ProfileService</span>.shared.updateProfile(
+            displayName: name,
+            phone: phoneField.text
+        ) { [<span class="text-pink-400">weak self</span>] result <span class="text-pink-400">in</span>
+            <span class="text-pink-400">self</span>?.saveButton.isEnabled = <span class="text-pink-400">true</span>
+
+            <span class="text-pink-400">switch</span> result {
+            <span class="text-pink-400">case</span> .success:
+                <span class="text-pink-400">self</span>?.dismiss(animated: <span class="text-pink-400">true</span>)
+            <span class="text-pink-400">case</span> .failure(<span class="text-pink-400">let</span> error):
+                <span class="text-pink-400">self</span>?.showError(error.localizedDescription)
+            }
+        }
+    }
+
+    <span class="text-pink-400">private func</span> showError(_ message: <span class="text-cyan-400">String</span>) {
+        <span class="text-pink-400">let</span> alert = <span class="text-cyan-400">UIAlertController</span>(title: <span class="text-green-400">"Ошибка"</span>, message: message, preferredStyle: .alert)
+        alert.addAction(<span class="text-cyan-400">UIAlertAction</span>(title: <span class="text-green-400">"OK"</span>, style: .default))
+        present(alert, animated: <span class="text-pink-400">true</span>)
+    }
+}
+
+<span class="text-pink-400">extension</span> <span class="text-cyan-400">EditProfileViewController</span>: <span class="text-cyan-400">UIImagePickerControllerDelegate</span>, <span class="text-cyan-400">UINavigationControllerDelegate</span> {
+    <span class="text-pink-400">func</span> imagePickerController(
+        _ picker: <span class="text-cyan-400">UIImagePickerController</span>,
+        didFinishPickingMediaWithInfo info: [<span class="text-cyan-400">UIImagePickerController</span>.<span class="text-cyan-400">InfoKey</span>: <span class="text-cyan-400">Any</span>]
+    ) {
+        picker.dismiss(animated: <span class="text-pink-400">true</span>)
+
+        <span class="text-pink-400">if let</span> image = info[.editedImage] <span class="text-pink-400">as</span>? <span class="text-cyan-400">UIImage</span> {
+            avatarImageView.image = image
+            <span class="text-gray-500">// TODO: Upload to Firebase Storage</span>
+        }
+    }
+}</code></pre>
+                    </div>
+
+                    <h2 class="text-2xl font-bold mt-12 mb-6">ProfileRouter</h2>
+                    <p class="mb-6">Router собирает модуль и управляет навигацией.</p>
+
+                    <div class="bg-zinc-950 rounded-2xl p-6 mb-8 overflow-x-auto">
+                        <pre class="text-sm leading-relaxed"><code><span class="text-pink-400">final class</span> <span class="text-cyan-400">ProfileRouter</span>: <span class="text-cyan-400">ProfileRouterProtocol</span> {
+    <span class="text-pink-400">weak var</span> viewController: <span class="text-cyan-400">UIViewController</span>?
+
+    <span class="text-pink-400">static func</span> createModule() -> <span class="text-cyan-400">UIViewController</span> {
+        <span class="text-pink-400">let</span> view = <span class="text-cyan-400">ProfileViewController</span>()
+        <span class="text-pink-400">let</span> presenter = <span class="text-cyan-400">ProfilePresenter</span>()
+        <span class="text-pink-400">let</span> interactor = <span class="text-cyan-400">ProfileInteractor</span>()
+        <span class="text-pink-400">let</span> router = <span class="text-cyan-400">ProfileRouter</span>()
+
+        view.presenter = presenter
+        presenter.view = view
+        presenter.interactor = interactor
+        presenter.router = router
+        router.viewController = view
+
+        <span class="text-pink-400">return</span> view
+    }
+
+    <span class="text-pink-400">func</span> showEditProfile() {
+        <span class="text-pink-400">guard let</span> profile = <span class="text-cyan-400">ProfileService</span>.shared.currentProfile <span class="text-pink-400">else</span> { <span class="text-pink-400">return</span> }
+
+        <span class="text-pink-400">let</span> editVC = <span class="text-cyan-400">EditProfileViewController</span>(profile: profile)
+        <span class="text-pink-400">let</span> nav = <span class="text-cyan-400">UINavigationController</span>(rootViewController: editVC)
+        viewController?.present(nav, animated: <span class="text-pink-400">true</span>)
+    }
+
+    <span class="text-pink-400">func</span> showOrders() {
+        <span class="text-pink-400">let</span> ordersVC = <span class="text-cyan-400">OrdersRouter</span>.createModule()
+        viewController?.navigationController?.pushViewController(ordersVC, animated: <span class="text-pink-400">true</span>)
+    }
+
+    <span class="text-pink-400">func</span> showAddresses() {
+        <span class="text-gray-500">// Реализация экрана адресов</span>
+    }
+
+    <span class="text-pink-400">func</span> showSettings() {
+        <span class="text-gray-500">// Реализация экрана настроек</span>
+    }
+
+    <span class="text-pink-400">func</span> showLogin() {
+        <span class="text-pink-400">guard let</span> scene = <span class="text-cyan-400">UIApplication</span>.shared.connectedScenes.first <span class="text-pink-400">as</span>? <span class="text-cyan-400">UIWindowScene</span>,
+              <span class="text-pink-400">let</span> window = scene.windows.first <span class="text-pink-400">else</span> { <span class="text-pink-400">return</span> }
+
+        <span class="text-pink-400">let</span> loginVC = <span class="text-cyan-400">LoginRouter</span>.createModule()
+        <span class="text-pink-400">let</span> nav = <span class="text-cyan-400">UINavigationController</span>(rootViewController: loginVC)
+
+        window.rootViewController = nav
+        <span class="text-cyan-400">UIView</span>.transition(with: window, duration: <span class="text-purple-400">0.3</span>, options: .transitionCrossDissolve, animations: <span class="text-pink-400">nil</span>)
+    }
+}</code></pre>
+                    </div>
+
+                    <div class="mt-12 p-6 bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-200 dark:border-emerald-800 rounded-2xl">
+                        <h3 class="text-lg font-semibold text-emerald-800 dark:text-emerald-200 mb-3">Что мы изучили</h3>
+                        <ul class="space-y-2 text-emerald-700 dark:text-emerald-300">
+                            <li class="flex items-start gap-2">
+                                <span class="text-emerald-500 mt-1">•</span>
+                                <span>Модель UserProfile с Firestore</span>
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <span class="text-emerald-500 mt-1">•</span>
+                                <span>ProfileService с CRUD операциями</span>
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <span class="text-emerald-500 mt-1">•</span>
+                                <span>Экран профиля с аватаром и меню</span>
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <span class="text-emerald-500 mt-1">•</span>
+                                <span>Редактирование профиля с UIImagePicker</span>
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <span class="text-emerald-500 mt-1">•</span>
+                                <span>Выход из системы и удаление аккаунта</span>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="mt-8 p-6 bg-zinc-100 dark:bg-zinc-800 rounded-2xl">
+                        <h3 class="text-lg font-semibold mb-3">Следующий шаг</h3>
+                        <p class="text-zinc-600 dark:text-zinc-400">В следующей главе мы создадим библиотеку переиспользуемых компонентов DSKit для единообразного дизайна приложения.</p>
+                    </div>
+                </div>
+
+                <nav class="flex justify-between gap-4 mt-16 pt-8 border-t border-zinc-200 dark:border-zinc-800">
+                    <a href="19-orders.html" class="flex items-center gap-3 px-5 py-3 bg-zinc-100 dark:bg-zinc-800 hover:bg-primary hover:text-white rounded-xl transition-colors">
+                        <span class="text-xl">←</span>
+                        <span class="font-medium">Предыдущая</span>
+                    </a>
+                    <a href="21-reusable-views.html" class="flex items-center gap-3 px-5 py-3 bg-zinc-100 dark:bg-zinc-800 hover:bg-primary hover:text-white rounded-xl transition-colors ml-auto">
+                        <span class="font-medium">Следующая</span>
+                        <span class="text-xl">→</span>
+                    </a>
+                </nav>
+            </article>
+        </main>
+    </div>
+
+    <script>
+        const menuBtn = document.getElementById('menuBtn');
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('overlay');
+        menuBtn.addEventListener('click', () => {
+            sidebar.classList.toggle('-translate-x-full');
+            overlay.classList.toggle('hidden');
+        });
+        function closeSidebar() {
+            sidebar.classList.add('-translate-x-full');
+            overlay.classList.add('hidden');
+        }
+    </script>
+</body>
+</html>

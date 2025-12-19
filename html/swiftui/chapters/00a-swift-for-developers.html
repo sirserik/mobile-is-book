@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Swift для разработчиков | SwiftUI E-Commerce</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'media',
+            theme: { extend: { colors: { primary: '#007AFF' } } }
+        }
+    </script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/vs2015.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/swift.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/javascript.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/php.min.js"></script>
+    <style>
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 3px; }
+        pre code { font-size: 14px; line-height: 1.6; }
+    </style>
+</head>
+<body class="bg-white dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100">
+    <div class="min-h-screen">
+        <header class="sticky top-0 z-40 bg-white/80 dark:bg-zinc-950/80 backdrop-blur-md border-b border-zinc-200 dark:border-zinc-800">
+            <div class="max-w-4xl mx-auto px-6 py-4 flex items-center justify-between">
+                <a href="../index.html" class="flex items-center gap-2 text-zinc-600 dark:text-zinc-400 hover:text-primary transition-colors">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                    </svg>
+                    Оглавление
+                </a>
+                <span class="text-sm text-zinc-500">Swift Basics</span>
+            </div>
+        </header>
+
+        <main class="max-w-4xl mx-auto px-6 py-12">
+            <article class="prose prose-zinc dark:prose-invert max-w-none">
+                <span class="text-sm font-semibold text-primary uppercase tracking-wider">Для разработчиков</span>
+                <h1 class="text-4xl font-bold mt-2 mb-8">Swift для JS/PHP разработчиков</h1>
+
+                <div class="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-xl p-6 mb-8">
+                    <h3 class="text-lg font-semibold text-blue-800 dark:text-blue-300 mb-2">🎯 Цель главы</h3>
+                    <p class="text-blue-700 dark:text-blue-400">
+                        Понять ключевые отличия Swift от JavaScript/PHP: типизация, optionals, struct vs class, property wrappers и реактивность.
+                    </p>
+                </div>
+
+                <!-- ТИПИЗАЦИЯ -->
+                <h2 class="text-2xl font-bold mt-12 mb-4">1. Строгая типизация</h2>
+                <p class="text-zinc-600 dark:text-zinc-400 mb-4">
+                    В отличие от JS/PHP, Swift — <strong>строго типизированный</strong> язык. Тип переменной определяется при создании и не может измениться.
+                </p>
+
+                <div class="space-y-4 my-6">
+                    <div class="bg-yellow-50 dark:bg-yellow-900/20 rounded-xl p-4 border border-yellow-200 dark:border-yellow-800">
+                        <h4 class="font-semibold text-yellow-800 dark:text-yellow-300 mb-2">JavaScript (динамическая)</h4>
+                        <pre><code class="language-javascript text-sm">let price = 100;      // number
+price = "сто";        // теперь string ✓
+price = { value: 100 }; // теперь object ✓
+
+// Тип может быть чем угодно</code></pre>
+                    </div>
+                    <div class="bg-green-50 dark:bg-green-900/20 rounded-xl p-4 border border-green-200 dark:border-green-800">
+                        <h4 class="font-semibold text-green-800 dark:text-green-300 mb-2">Swift (строгая)</h4>
+                        <pre><code class="language-swift text-sm">var price = 100       // Int (выведено)
+price = "сто"         // ❌ Ошибка компиляции!
+
+// Явное указание типа
+var price: Double = 100.0
+var name: String = "iPhone"</code></pre>
+                    </div>
+                </div>
+
+                <!-- Компиляция vs Runtime -->
+                <div class="bg-zinc-100 dark:bg-zinc-900 rounded-xl p-6 my-8 border border-zinc-200 dark:border-zinc-800">
+                    <h3 class="text-lg font-bold mb-4">🔧 Компиляция vs Runtime — в чём разница?</h3>
+
+                    <p class="text-zinc-600 dark:text-zinc-400 mb-4">
+                        Если вы пришли из JavaScript/PHP, вы привыкли к <strong>интерпретируемым</strong> языкам. Swift — <strong>компилируемый</strong> язык. Это принципиальная разница:
+                    </p>
+
+                    <div class="space-y-4 mb-6">
+                        <div class="bg-yellow-50 dark:bg-yellow-900/20 rounded-lg p-4 border border-yellow-200 dark:border-yellow-800">
+                            <h4 class="font-semibold text-yellow-800 dark:text-yellow-300 mb-3">JS/PHP (Интерпретируемые)</h4>
+                            <p class="text-sm text-yellow-700 dark:text-yellow-400 mb-2"><strong>Как работает:</strong> Пишете код → Запускаете → Код выполняется <strong>построчно</strong> → Ошибка? Узнаете когда дойдёт до той строки</p>
+                            <pre class="bg-yellow-100 dark:bg-yellow-900/40 p-3 rounded text-sm overflow-x-auto"><code class="language-javascript">// Этот код запустится без ошибок
+let x = 5;
+console.log("Привет!");
+
+// Ошибка случится ТОЛЬКО здесь, когда интерпретатор дойдёт до этой строки
+x.toUpperCase(); // 💥 Runtime Error! Приложение крашнется у пользователя</code></pre>
+                        </div>
+
+                        <div class="bg-green-50 dark:bg-green-900/20 rounded-lg p-4 border border-green-200 dark:border-green-800">
+                            <h4 class="font-semibold text-green-800 dark:text-green-300 mb-3">Swift (Компилируемый)</h4>
+                            <p class="text-sm text-green-700 dark:text-green-400 mb-2"><strong>Как работает:</strong> Пишете код → Нажимаете Build → <strong>Компилятор проверяет ВЕСЬ код</strong> → Ошибка? Узнаете сразу, до запуска</p>
+                            <pre class="bg-green-100 dark:bg-green-900/40 p-3 rounded text-sm overflow-x-auto"><code class="language-swift">// Xcode подчеркнёт ошибку СРАЗУ, даже не запуская приложение
+let x = 5
+print("Привет!")
+
+x.uppercased() // ❌ Ошибка компиляции! Код не запустится пока не исправите</code></pre>
+                        </div>
+                    </div>
+
+                    <div class="bg-white dark:bg-zinc-800 rounded-lg p-4 border border-zinc-300 dark:border-zinc-700">
+                        <h4 class="font-semibold mb-2">Аналогия:</h4>
+                        <ul class="text-sm text-zinc-600 dark:text-zinc-400 space-y-2">
+                            <li><strong>JS/PHP:</strong> Как читать книгу вслух — ошибку заметите только когда дойдёте до опечатки</li>
+                            <li><strong>Swift:</strong> Как проверка орфографии в Word — все ошибки подчёркнуты <strong>до</strong> того, как вы отправите документ</li>
+                        </ul>
+                    </div>
+
+                    <div class="mt-4 p-3 bg-green-100 dark:bg-green-900/30 rounded-lg">
+                        <p class="text-green-800 dark:text-green-300 text-sm">
+                            <strong>💡 Почему это важно:</strong> В продакшене JS-приложение может крашнуться у пользователя из-за ошибки типа. В Swift такой код просто не скомпилируется — вы исправите ошибку до релиза.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- LET VS VAR -->
+                <h2 class="text-2xl font-bold mt-12 mb-4">2. let vs var (константы)</h2>
+                <p class="text-zinc-600 dark:text-zinc-400 mb-4">
+                    В Swift <code class="bg-zinc-100 dark:bg-zinc-800 px-2 py-1 rounded">let</code> создаёт <strong>настоящую константу</strong>, которую нельзя изменить. В JS <code>const</code> работает иначе.
+                </p>
+
+                <div class="space-y-4 my-6">
+                    <div class="bg-yellow-50 dark:bg-yellow-900/20 rounded-xl p-4 border border-yellow-200 dark:border-yellow-800">
+                        <h4 class="font-semibold text-yellow-800 dark:text-yellow-300 mb-2">JavaScript</h4>
+                        <pre><code class="language-javascript text-sm">const user = { name: "John" };
+user.name = "Jane";  // ✓ Можно менять свойства!
+user = {};           // ❌ Нельзя переприсвоить
+
+// const защищает только ссылку,
+// не содержимое объекта</code></pre>
+                    </div>
+                    <div class="bg-green-50 dark:bg-green-900/20 rounded-xl p-4 border border-green-200 dark:border-green-800">
+                        <h4 class="font-semibold text-green-800 dark:text-green-300 mb-2">Swift</h4>
+                        <pre><code class="language-swift text-sm">let user = User(name: "John")
+user.name = "Jane"  // ❌ Ошибка! (для struct)
+
+var user2 = User(name: "John")
+user2.name = "Jane" // ✓ OK с var
+
+// let = полная неизменяемость</code></pre>
+                    </div>
+                </div>
+
+                <!-- OPTIONALS -->
+                <h2 class="text-2xl font-bold mt-12 mb-4">3. Optionals (nil-безопасность)</h2>
+                <p class="text-zinc-600 dark:text-zinc-400 mb-4">
+                    Главное отличие Swift — <strong>Optionals</strong>. В JS/PHP любая переменная может быть <code>null/undefined</code>. В Swift нужно явно указать, что значение может отсутствовать.
+                </p>
+
+                <div class="space-y-4 my-6">
+                    <div class="bg-red-50 dark:bg-red-900/20 rounded-xl p-4 border border-red-200 dark:border-red-800">
+                        <h4 class="font-semibold text-red-800 dark:text-red-300 mb-2">JavaScript — null везде</h4>
+                        <pre class="overflow-x-auto"><code class="language-javascript text-sm">function getUser(id) {
+    return users.find(u => u.id === id);  // Может вернуть undefined!
+}
+
+const user = getUser(999);
+console.log(user.name);
+// 💥 TypeError: Cannot read 'name' of undefined
+// Ошибка в RUNTIME! Приложение крашнется у пользователя</code></pre>
+                    </div>
+                    <div class="bg-green-50 dark:bg-green-900/20 rounded-xl p-4 border border-green-200 dark:border-green-800">
+                        <h4 class="font-semibold text-green-800 dark:text-green-300 mb-2">Swift — явные Optionals</h4>
+                        <pre class="overflow-x-auto"><code class="language-swift text-sm">func getUser(id: Int) -> User? {  // User? означает "User или nil"
+    return users.first { $0.id == id }
+}
+
+let user = getUser(id: 999)
+print(user.name)
+// ❌ Ошибка КОМПИЛЯЦИИ! Xcode не даст запустить код
+// Компилятор заставляет обработать nil</code></pre>
+                    </div>
+                </div>
+
+                <h3 class="text-xl font-semibold mt-8 mb-4">Работа с Optionals</h3>
+                <pre><code class="language-swift rounded-xl">var name: String? = nil  // String? = Optional&lt;String&gt;
+
+// 1. If let — безопасное извлечение
+if let unwrappedName = name {
+    print(unwrappedName)  // Только если name != nil
+}
+
+// 2. Guard let — ранний выход
+func greet(name: String?) {
+    guard let name = name else {
+        print("Имя не указано")
+        return
+    }
+    print("Привет, \(name)!")
+}
+
+// 3. Nil coalescing — значение по умолчанию
+let displayName = name ?? "Гость"  // Как || в JS
+
+// 4. Optional chaining — безопасный доступ
+let length = name?.count  // Int? (nil если name == nil)
+
+// 5. Force unwrap — ОПАСНО! Только если 100% уверены
+let forcedName = name!  // 💥 Crash если nil</code></pre>
+
+                <div class="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-xl p-4 my-6">
+                    <p class="text-red-800 dark:text-red-300">
+                        <strong>⚠️ Важно:</strong> Никогда не используйте <code>!</code> без проверки. Это главная причина крашей в Swift-приложениях.
+                    </p>
+                </div>
+
+                <!-- STRUCT VS CLASS -->
+                <h2 class="text-2xl font-bold mt-12 mb-4">4. Struct vs Class</h2>
+                <p class="text-zinc-600 dark:text-zinc-400 mb-4">
+                    В Swift есть и struct, и class. В JS/PHP всё — объекты (reference types). В Swift struct — это <strong>value type</strong>.
+                </p>
+
+                <div class="space-y-4 my-6">
+                    <div class="bg-purple-50 dark:bg-purple-900/20 rounded-xl p-4 border border-purple-200 dark:border-purple-800">
+                        <h4 class="font-semibold text-purple-800 dark:text-purple-300 mb-2">Class (Reference Type)</h4>
+                        <pre><code class="language-swift text-sm">class UserClass {
+    var name: String
+    init(name: String) { self.name = name }
+}
+
+var user1 = UserClass(name: "John")
+var user2 = user1  // Копируется ССЫЛКА
+
+user2.name = "Jane"
+print(user1.name)  // "Jane" — изменился!</code></pre>
+                    </div>
+                    <div class="bg-blue-50 dark:bg-blue-900/20 rounded-xl p-4 border border-blue-200 dark:border-blue-800">
+                        <h4 class="font-semibold text-blue-800 dark:text-blue-300 mb-2">Struct (Value Type)</h4>
+                        <pre><code class="language-swift text-sm">struct UserStruct {
+    var name: String
+}
+
+var user1 = UserStruct(name: "John")
+var user2 = user1  // Копируется ЗНАЧЕНИЕ
+
+user2.name = "Jane"
+print(user1.name)  // "John" — не изменился!</code></pre>
+                    </div>
+                </div>
+
+                <div class="bg-zinc-100 dark:bg-zinc-900 rounded-xl p-6 my-6">
+                    <h4 class="font-semibold mb-3">Когда что использовать?</h4>
+                    <table class="w-full text-sm">
+                        <tr class="border-b border-zinc-300 dark:border-zinc-700">
+                            <td class="py-2 font-medium">Struct</td>
+                            <td class="py-2">Модели данных (Product, User), маленькие объекты</td>
+                        </tr>
+                        <tr class="border-b border-zinc-300 dark:border-zinc-700">
+                            <td class="py-2 font-medium">Class</td>
+                            <td class="py-2">Менеджеры, сервисы, когда нужно разделять состояние</td>
+                        </tr>
+                        <tr>
+                            <td class="py-2 font-medium">SwiftUI View</td>
+                            <td class="py-2">Всегда struct!</td>
+                        </tr>
+                    </table>
+                </div>
+
+                <!-- CLOSURES -->
+                <h2 class="text-2xl font-bold mt-12 mb-4">5. Closures (замыкания)</h2>
+                <p class="text-zinc-600 dark:text-zinc-400 mb-4">
+                    Closures в Swift похожи на arrow functions в JS, но с другим синтаксисом.
+                </p>
+
+                <div class="space-y-4 my-6">
+                    <div class="bg-yellow-50 dark:bg-yellow-900/20 rounded-xl p-4 border border-yellow-200 dark:border-yellow-800">
+                        <h4 class="font-semibold text-yellow-800 dark:text-yellow-300 mb-2">JavaScript</h4>
+                        <pre><code class="language-javascript text-sm">// Arrow function
+const add = (a, b) => a + b;
+
+// Array methods
+const doubled = [1, 2, 3].map(x => x * 2);
+
+// Callback
+fetch(url).then(response => {
+    console.log(response);
+});</code></pre>
+                    </div>
+                    <div class="bg-green-50 dark:bg-green-900/20 rounded-xl p-4 border border-green-200 dark:border-green-800">
+                        <h4 class="font-semibold text-green-800 dark:text-green-300 mb-2">Swift</h4>
+                        <pre><code class="language-swift text-sm">// Closure
+let add = { (a: Int, b: Int) -> Int in
+    return a + b
+}
+
+// Сокращённая форма
+let doubled = [1, 2, 3].map { $0 * 2 }
+
+// Trailing closure
+Button("Tap") {
+    print("Tapped!")
+}</code></pre>
+                    </div>
+                </div>
+
+                <h3 class="text-xl font-semibold mt-8 mb-4">Trailing Closure Syntax</h3>
+                <pre><code class="language-swift rounded-xl">// Полная форма
+Button(action: {
+    print("Tapped")
+}, label: {
+    Text("Tap me")
+})
+
+// Trailing closure (последний параметр-closure выносится)
+Button {
+    print("Tapped")
+} label: {
+    Text("Tap me")
+}
+
+// Если closure — единственный параметр
+[1, 2, 3].map { $0 * 2 }  // [2, 4, 6]</code></pre>
+
+                <!-- ASYNC/AWAIT -->
+                <h2 class="text-2xl font-bold mt-12 mb-4">6. Async/Await</h2>
+                <p class="text-zinc-600 dark:text-zinc-400 mb-4">
+                    Swift имеет async/await, похожий на JS, но с некоторыми отличиями.
+                </p>
+
+                <div class="space-y-4 my-6">
+                    <div class="bg-yellow-50 dark:bg-yellow-900/20 rounded-xl p-4 border border-yellow-200 dark:border-yellow-800">
+                        <h4 class="font-semibold text-yellow-800 dark:text-yellow-300 mb-2">JavaScript</h4>
+                        <pre><code class="language-javascript text-sm">async function fetchUser() {
+    try {
+        const response = await fetch(url);
+        const data = await response.json();
+        return data;
+    } catch (error) {
+        console.error(error);
+    }
+}
+
+// Вызов
+fetchUser().then(user => {
+    console.log(user);
+});</code></pre>
+                    </div>
+                    <div class="bg-green-50 dark:bg-green-900/20 rounded-xl p-4 border border-green-200 dark:border-green-800">
+                        <h4 class="font-semibold text-green-800 dark:text-green-300 mb-2">Swift</h4>
+                        <pre><code class="language-swift text-sm">func fetchUser() async throws -> User {
+    let (data, _) = try await URLSession
+        .shared.data(from: url)
+    return try JSONDecoder()
+        .decode(User.self, from: data)
+}
+
+// Вызов
+Task {
+    do {
+        let user = try await fetchUser()
+        print(user)
+    } catch {
+        print(error)
+    }
+}</code></pre>
+                    </div>
+                </div>
+
+                <!-- PROPERTY WRAPPERS -->
+                <h2 class="text-2xl font-bold mt-12 mb-4">7. Property Wrappers (@State, @Binding...)</h2>
+                <p class="text-zinc-600 dark:text-zinc-400 mb-4">
+                    Это самое непривычное для JS/PHP разработчиков. Property wrappers — это "обёртки", которые добавляют поведение к переменным.
+                </p>
+
+                <div class="bg-zinc-100 dark:bg-zinc-900 rounded-xl p-6 my-6">
+                    <h4 class="font-semibold mb-4">Аналогия с JS:</h4>
+                    <pre><code class="language-javascript">// В JS для реактивности используют:
+// React: useState, useEffect
+// Vue: ref(), reactive(), computed()
+
+const [count, setCount] = useState(0);  // React
+const count = ref(0);                    // Vue</code></pre>
+                </div>
+
+                <pre><code class="language-swift rounded-xl">// В SwiftUI используются property wrappers:
+
+struct CounterView: View {
+    // @State — локальное состояние View (как useState в React)
+    @State private var count = 0
+
+    // При изменении count, View автоматически перерисуется
+    var body: some View {
+        Button("Count: \(count)") {
+            count += 1  // Изменение вызывает re-render
+        }
+    }
+}</code></pre>
+
+                <h3 class="text-xl font-semibold mt-8 mb-4">Основные Property Wrappers</h3>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-sm border border-zinc-200 dark:border-zinc-800 rounded-xl overflow-hidden">
+                        <thead class="bg-zinc-50 dark:bg-zinc-900">
+                            <tr>
+                                <th class="px-4 py-3 text-left font-semibold">Swift</th>
+                                <th class="px-4 py-3 text-left font-semibold">React аналог</th>
+                                <th class="px-4 py-3 text-left font-semibold">Назначение</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-zinc-200 dark:divide-zinc-800">
+                            <tr>
+                                <td class="px-4 py-3 font-mono text-primary">@State</td>
+                                <td class="px-4 py-3">useState()</td>
+                                <td class="px-4 py-3">Локальное состояние View</td>
+                            </tr>
+                            <tr>
+                                <td class="px-4 py-3 font-mono text-primary">@Binding</td>
+                                <td class="px-4 py-3">props + callback</td>
+                                <td class="px-4 py-3">Двусторонняя связь с родителем</td>
+                            </tr>
+                            <tr>
+                                <td class="px-4 py-3 font-mono text-primary">@Observable</td>
+                                <td class="px-4 py-3">useContext + useState</td>
+                                <td class="px-4 py-3">Реактивный класс (ViewModel)</td>
+                            </tr>
+                            <tr>
+                                <td class="px-4 py-3 font-mono text-primary">@Environment</td>
+                                <td class="px-4 py-3">useContext()</td>
+                                <td class="px-4 py-3">Глобальные данные</td>
+                            </tr>
+                            <tr>
+                                <td class="px-4 py-3 font-mono text-primary">@AppStorage</td>
+                                <td class="px-4 py-3">localStorage + useState</td>
+                                <td class="px-4 py-3">Сохранение в UserDefaults</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <h3 class="text-xl font-semibold mt-8 mb-4">@State vs @Binding</h3>
+                <pre><code class="language-swift rounded-xl">// РОДИТЕЛЬ владеет данными (@State)
+struct ParentView: View {
+    @State private var isOn = false  // Источник правды
+
+    var body: some View {
+        // Передаём $isOn — это Binding
+        ChildView(isOn: $isOn)
+    }
+}
+
+// РЕБЁНОК получает ссылку (@Binding)
+struct ChildView: View {
+    @Binding var isOn: Bool  // Ссылка на родительский State
+
+    var body: some View {
+        Toggle("Switch", isOn: $isOn)
+        // Изменение здесь изменит isOn в родителе!
+    }
+}</code></pre>
+
+                <div class="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-xl p-4 my-6">
+                    <p class="text-blue-800 dark:text-blue-300">
+                        <strong>💡 Аналогия:</strong> @State — это <code>useState</code> в React. @Binding — это как передать <code>setValue</code> дочернему компоненту.
+                    </p>
+                </div>
+
+                <!-- @OBSERVABLE -->
+                <h2 class="text-2xl font-bold mt-12 mb-4">8. @Observable (ViewModel)</h2>
+                <p class="text-zinc-600 dark:text-zinc-400 mb-4">
+                    Для сложного состояния используется <code class="bg-zinc-100 dark:bg-zinc-800 px-2 py-1 rounded">@Observable</code> — это делает класс "реактивным".
+                </p>
+
+                <div class="space-y-4 my-6">
+                    <div class="bg-yellow-50 dark:bg-yellow-900/20 rounded-xl p-4 border border-yellow-200 dark:border-yellow-800">
+                        <h4 class="font-semibold text-yellow-800 dark:text-yellow-300 mb-2">React (Context + State)</h4>
+                        <pre><code class="language-javascript text-sm">// Store
+const CartContext = createContext();
+
+function CartProvider({ children }) {
+  const [items, setItems] = useState([]);
+
+  const addItem = (product) => {
+    setItems([...items, product]);
+  };
+
+  return (
+    &lt;CartContext.Provider value={{ items, addItem }}&gt;
+      {children}
+    &lt;/CartContext.Provider&gt;
+  );
+}
+
+// Использование
+const { items, addItem } = useContext(CartContext);</code></pre>
+                    </div>
+                    <div class="bg-green-50 dark:bg-green-900/20 rounded-xl p-4 border border-green-200 dark:border-green-800">
+                        <h4 class="font-semibold text-green-800 dark:text-green-300 mb-2">SwiftUI (@Observable)</h4>
+                        <pre><code class="language-swift text-sm">// ViewModel
+@Observable
+class CartManager {
+    var items: [Product] = []
+
+    func addItem(_ product: Product) {
+        items.append(product)
+        // View автоматически обновится!
+    }
+}
+
+// App.swift
+@main
+struct App {
+    @State var cart = CartManager()
+
+    var body: some Scene {
+        WindowGroup {
+            ContentView()
+                .environment(cart)
+        }
+    }
+}
+
+// Использование в любом View
+@Environment(CartManager.self) var cart</code></pre>
+                    </div>
+                </div>
+
+                <!-- ПРОТОКОЛЫ -->
+                <h2 class="text-2xl font-bold mt-12 mb-4">9. Протоколы (Interfaces)</h2>
+                <p class="text-zinc-600 dark:text-zinc-400 mb-4">
+                    Протоколы в Swift — это как интерфейсы в TypeScript/PHP.
+                </p>
+
+                <div class="space-y-4 my-6">
+                    <div class="bg-yellow-50 dark:bg-yellow-900/20 rounded-xl p-4 border border-yellow-200 dark:border-yellow-800">
+                        <h4 class="font-semibold text-yellow-800 dark:text-yellow-300 mb-2">TypeScript</h4>
+                        <pre><code class="language-typescript text-sm">interface Identifiable {
+    id: string;
+}
+
+interface Product extends Identifiable {
+    name: string;
+    price: number;
+}
+
+const product: Product = {
+    id: "1",
+    name: "iPhone",
+    price: 999
+};</code></pre>
+                    </div>
+                    <div class="bg-green-50 dark:bg-green-900/20 rounded-xl p-4 border border-green-200 dark:border-green-800">
+                        <h4 class="font-semibold text-green-800 dark:text-green-300 mb-2">Swift</h4>
+                        <pre><code class="language-swift text-sm">protocol Identifiable {
+    var id: String { get }
+}
+
+struct Product: Identifiable, Codable {
+    let id: String
+    let name: String
+    let price: Double
+}
+
+let product = Product(
+    id: "1",
+    name: "iPhone",
+    price: 999
+)</code></pre>
+                    </div>
+                </div>
+
+                <!-- CODABLE -->
+                <h2 class="text-2xl font-bold mt-12 mb-4">10. Codable (JSON parsing)</h2>
+                <p class="text-zinc-600 dark:text-zinc-400 mb-4">
+                    В Swift JSON парсинг строго типизирован через протокол <code class="bg-zinc-100 dark:bg-zinc-800 px-2 py-1 rounded">Codable</code>.
+                </p>
+
+                <div class="space-y-4 my-6">
+                    <div class="bg-yellow-50 dark:bg-yellow-900/20 rounded-xl p-4 border border-yellow-200 dark:border-yellow-800">
+                        <h4 class="font-semibold text-yellow-800 dark:text-yellow-300 mb-2">JavaScript</h4>
+                        <pre><code class="language-javascript text-sm">// JSON → Object (нет типов)
+const json = '{"name":"John","age":30}';
+const user = JSON.parse(json);
+
+// user.name — any, может быть что угодно
+// Ошибки только в runtime</code></pre>
+                    </div>
+                    <div class="bg-green-50 dark:bg-green-900/20 rounded-xl p-4 border border-green-200 dark:border-green-800">
+                        <h4 class="font-semibold text-green-800 dark:text-green-300 mb-2">Swift</h4>
+                        <pre><code class="language-swift text-sm">struct User: Codable {
+    let name: String
+    let age: Int
+}
+
+let json = """
+{"name":"John","age":30}
+""".data(using: .utf8)!
+
+let user = try JSONDecoder()
+    .decode(User.self, from: json)
+// user.name — точно String</code></pre>
+                    </div>
+                </div>
+
+                <!-- ИТОГОВАЯ ТАБЛИЦА -->
+                <h2 class="text-2xl font-bold mt-12 mb-4">Шпаргалка: JS → Swift</h2>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-sm border border-zinc-200 dark:border-zinc-800 rounded-xl overflow-hidden">
+                        <thead class="bg-zinc-50 dark:bg-zinc-900">
+                            <tr>
+                                <th class="px-4 py-3 text-left font-semibold">Концепция</th>
+                                <th class="px-4 py-3 text-left font-semibold">JavaScript</th>
+                                <th class="px-4 py-3 text-left font-semibold">Swift</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-zinc-200 dark:divide-zinc-800">
+                            <tr>
+                                <td class="px-4 py-3">Переменная</td>
+                                <td class="px-4 py-3 font-mono">let / const</td>
+                                <td class="px-4 py-3 font-mono">var / let</td>
+                            </tr>
+                            <tr>
+                                <td class="px-4 py-3">Null/undefined</td>
+                                <td class="px-4 py-3 font-mono">null, undefined</td>
+                                <td class="px-4 py-3 font-mono">nil (только Optional)</td>
+                            </tr>
+                            <tr>
+                                <td class="px-4 py-3">Optional chaining</td>
+                                <td class="px-4 py-3 font-mono">user?.name</td>
+                                <td class="px-4 py-3 font-mono">user?.name</td>
+                            </tr>
+                            <tr>
+                                <td class="px-4 py-3">Default value</td>
+                                <td class="px-4 py-3 font-mono">name || "Guest"</td>
+                                <td class="px-4 py-3 font-mono">name ?? "Guest"</td>
+                            </tr>
+                            <tr>
+                                <td class="px-4 py-3">Arrow function</td>
+                                <td class="px-4 py-3 font-mono">(x) => x * 2</td>
+                                <td class="px-4 py-3 font-mono">{ $0 * 2 }</td>
+                            </tr>
+                            <tr>
+                                <td class="px-4 py-3">Template string</td>
+                                <td class="px-4 py-3 font-mono">`Hello ${name}`</td>
+                                <td class="px-4 py-3 font-mono">"Hello \(name)"</td>
+                            </tr>
+                            <tr>
+                                <td class="px-4 py-3">Array map</td>
+                                <td class="px-4 py-3 font-mono">arr.map(x => x*2)</td>
+                                <td class="px-4 py-3 font-mono">arr.map { $0*2 }</td>
+                            </tr>
+                            <tr>
+                                <td class="px-4 py-3">Array filter</td>
+                                <td class="px-4 py-3 font-mono">arr.filter(x => x > 0)</td>
+                                <td class="px-4 py-3 font-mono">arr.filter { $0 > 0 }</td>
+                            </tr>
+                            <tr>
+                                <td class="px-4 py-3">Async/await</td>
+                                <td class="px-4 py-3 font-mono">await fetch()</td>
+                                <td class="px-4 py-3 font-mono">try await fetch()</td>
+                            </tr>
+                            <tr>
+                                <td class="px-4 py-3">Interface</td>
+                                <td class="px-4 py-3 font-mono">interface</td>
+                                <td class="px-4 py-3 font-mono">protocol</td>
+                            </tr>
+                            <tr>
+                                <td class="px-4 py-3">useState</td>
+                                <td class="px-4 py-3 font-mono">useState(0)</td>
+                                <td class="px-4 py-3 font-mono">@State var x = 0</td>
+                            </tr>
+                            <tr>
+                                <td class="px-4 py-3">useContext</td>
+                                <td class="px-4 py-3 font-mono">useContext(Ctx)</td>
+                                <td class="px-4 py-3 font-mono">@Environment(X.self)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Navigation -->
+                <div class="flex justify-between items-center mt-16 pt-8 border-t border-zinc-200 dark:border-zinc-800">
+                    <a href="00-introduction.html" class="flex items-center gap-2 text-zinc-600 dark:text-zinc-400 hover:text-primary transition-colors">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                        </svg>
+                        Введение
+                    </a>
+                    <a href="01-swiftui-basics.html" class="flex items-center gap-2 px-6 py-3 bg-primary text-white rounded-xl hover:bg-blue-600 transition-colors">
+                        Глава 1: SwiftUI
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                        </svg>
+                    </a>
+                </div>
+            </article>
+        </main>
+    </div>
+
+    <script>hljs.highlightAll();</script>
+</body>
+</html>

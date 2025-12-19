@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Глава 09: Generics | iOS Book</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'media',
+            theme: { extend: { colors: { primary: '#007AFF' } } }
+        }
+    </script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
+</head>
+<body class="bg-white dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100">
+    <button id="menuBtn" class="lg:hidden fixed top-4 left-4 z-50 p-3 bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-xl shadow-lg">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+        </svg>
+    </button>
+
+    <div class="flex min-h-screen">
+        <aside id="sidebar" class="fixed inset-y-0 left-0 w-72 bg-zinc-50 dark:bg-zinc-900 border-r border-zinc-200 dark:border-zinc-800 flex flex-col z-40 transform -translate-x-full lg:translate-x-0 transition-transform duration-300">
+            <div class="p-5 border-b border-zinc-200 dark:border-zinc-800">
+                <a href="../index.html" class="flex items-center gap-3 text-lg font-semibold hover:text-primary transition-colors">
+                    <div class="w-9 h-9 bg-primary rounded-lg flex items-center justify-center">
+                        <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/>
+                        </svg>
+                    </div>
+                    iOS Book
+                </a>
+            </div>
+            <nav class="flex-1 overflow-y-auto p-4">
+                <div class="space-y-6">
+                    <div>
+                        <h3 class="px-3 mb-2 text-xs font-semibold uppercase tracking-wider text-zinc-400">Введение</h3>
+                        <a href="00-introduction.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">Введение</a>
+                    </div>
+                    <div>
+                        <h3 class="px-3 mb-2 text-xs font-semibold uppercase tracking-wider text-zinc-400">Основы Swift</h3>
+                        <div class="space-y-1">
+                            <a href="01-xcode.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">1. Xcode</a>
+                            <a href="02-swift-basics.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">2. Основы Swift</a>
+                            <a href="03-control-flow.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">3. Control Flow</a>
+                            <a href="04-functions.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">4. Функции</a>
+                            <a href="05-oop.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">5. ООП</a>
+                            <a href="06-protocols.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">6. Протоколы</a>
+                            <a href="07-optionals.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">7. Optionals</a>
+                            <a href="08-memory.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">8. Память</a>
+                            <a href="09-generics.html" class="block px-3 py-2 text-sm text-white bg-primary rounded-lg">9. Generics</a>
+                            <a href="10-concurrency.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">10. Concurrency</a>
+                        </div>
+                    </div>
+                    <div>
+                        <h3 class="px-3 mb-2 text-xs font-semibold uppercase tracking-wider text-zinc-400">UIKit</h3>
+                        <div class="space-y-1">
+                            <a href="11-uikit-basics.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">11. UIKit</a>
+                            <a href="12-programmatic-ui.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">12. Programmatic UI</a>
+                        </div>
+                    </div>
+                    <div>
+                        <h3 class="px-3 mb-2 text-xs font-semibold uppercase tracking-wider text-zinc-400">Архитектура</h3>
+                        <div class="space-y-1">
+                            <a href="13-viper.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">13. VIPER</a>
+                            <a href="14-project-setup.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">14. Project Setup</a>
+                        </div>
+                    </div>
+                    <div>
+                        <h3 class="px-3 mb-2 text-xs font-semibold uppercase tracking-wider text-zinc-400">Практика</h3>
+                        <div class="space-y-1">
+                            <a href="15-authentication.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">15. Auth</a>
+                            <a href="16-products.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">16. Products</a>
+                            <a href="17-cart.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">17. Cart</a>
+                            <a href="18-favorites.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">18. Favorites</a>
+                            <a href="19-orders.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">19. Orders</a>
+                            <a href="20-profile.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">20. Profile</a>
+                        </div>
+                    </div>
+                    <div>
+                        <h3 class="px-3 mb-2 text-xs font-semibold uppercase tracking-wider text-zinc-400">Дополнительно</h3>
+                        <a href="21-reusable-views.html" class="block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200/50 dark:hover:bg-zinc-800 rounded-lg">21. Reusable Views</a>
+                    </div>
+                </div>
+            </nav>
+        </aside>
+
+        <div id="overlay" class="fixed inset-0 bg-black/50 z-30 lg:hidden hidden" onclick="closeSidebar()"></div>
+
+        <main class="flex-1 lg:ml-72">
+            <article class="max-w-3xl mx-auto px-6 sm:px-8 lg:px-12 py-12 lg:py-16">
+                <header class="mb-12 pb-8 border-b border-zinc-200 dark:border-zinc-800">
+                    <span class="text-sm font-semibold uppercase tracking-wider text-primary">Глава 09</span>
+                    <h1 class="text-3xl sm:text-4xl font-bold mt-2 mb-4">Generics</h1>
+                    <p class="text-lg text-zinc-600 dark:text-zinc-400">Generic functions и types</p>
+                </header>
+
+                <div class="prose prose-zinc dark:prose-invert max-w-none">
+
+                    <!-- Введение -->
+                    <section class="mb-12">
+                        <h2 class="text-2xl font-bold mb-4">Что такое Generics?</h2>
+                        <p class="text-zinc-600 dark:text-zinc-400 mb-4">
+                            Generics позволяют писать гибкий, переиспользуемый код, который работает с любым типом.
+                            Вместо создания отдельных функций для Int, String и других типов, вы пишете одну generic-функцию.
+                        </p>
+
+                        <div class="p-5 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-xl mb-6">
+                            <div class="flex items-start gap-3">
+                                <span class="text-2xl">💡</span>
+                                <div>
+                                    <h4 class="font-semibold text-blue-800 dark:text-blue-200 mb-1">Вы уже используете Generics!</h4>
+                                    <p class="text-blue-700 dark:text-blue-300 text-sm">
+                                        <code>Array&lt;String&gt;</code>, <code>Dictionary&lt;String, Int&gt;</code>, <code>Optional&lt;T&gt;</code> —
+                                        все они generic-типы. Теперь научимся создавать свои.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Проблема без Generics -->
+                    <section class="mb-12">
+                        <h2 class="text-2xl font-bold mb-4">Проблема без Generics</h2>
+                        <p class="text-zinc-600 dark:text-zinc-400 mb-4">
+                            Представим, что нужно поменять местами два значения. Без generics пришлось бы писать
+                            отдельную функцию для каждого типа:
+                        </p>
+
+                        <div class="bg-zinc-900 rounded-xl p-4 mb-6">
+                            <div class="text-xs text-zinc-500 mb-2 font-mono">❌ Без Generics — много дублирования</div>
+                            <pre class="text-sm overflow-x-auto"><code><span class="text-pink-400">func</span> <span class="text-cyan-400">swapInts</span>(_ a: <span class="text-pink-400">inout</span> <span class="text-cyan-400">Int</span>, _ b: <span class="text-pink-400">inout</span> <span class="text-cyan-400">Int</span>) {
+    <span class="text-pink-400">let</span> temp = a
+    a = b
+    b = temp
+}
+
+<span class="text-pink-400">func</span> <span class="text-cyan-400">swapStrings</span>(_ a: <span class="text-pink-400">inout</span> <span class="text-cyan-400">String</span>, _ b: <span class="text-pink-400">inout</span> <span class="text-cyan-400">String</span>) {
+    <span class="text-pink-400">let</span> temp = a
+    a = b
+    b = temp
+}
+
+<span class="text-pink-400">func</span> <span class="text-cyan-400">swapDoubles</span>(_ a: <span class="text-pink-400">inout</span> <span class="text-cyan-400">Double</span>, _ b: <span class="text-pink-400">inout</span> <span class="text-cyan-400">Double</span>) {
+    <span class="text-pink-400">let</span> temp = a
+    a = b
+    b = temp
+}
+
+<span class="text-zinc-500">// И так для каждого типа... 😰</span></code></pre>
+                        </div>
+                    </section>
+
+                    <!-- Generic Functions -->
+                    <section class="mb-12">
+                        <h2 class="text-2xl font-bold mb-4">Generic Functions</h2>
+                        <p class="text-zinc-600 dark:text-zinc-400 mb-4">
+                            С generics пишем одну функцию, которая работает с любым типом.
+                            <code class="bg-zinc-200 dark:bg-zinc-700 px-1 rounded">&lt;T&gt;</code> — это placeholder для типа.
+                        </p>
+
+                        <div class="bg-zinc-900 rounded-xl p-4 mb-6">
+                            <div class="text-xs text-zinc-500 mb-2 font-mono">✅ Generic функция</div>
+                            <pre class="text-sm overflow-x-auto"><code><span class="text-pink-400">func</span> <span class="text-cyan-400">swap</span>&lt;<span class="text-yellow-300">T</span>&gt;(_ a: <span class="text-pink-400">inout</span> <span class="text-yellow-300">T</span>, _ b: <span class="text-pink-400">inout</span> <span class="text-yellow-300">T</span>) {
+    <span class="text-pink-400">let</span> temp = a
+    a = b
+    b = temp
+}
+
+<span class="text-zinc-500">// Использование</span>
+<span class="text-pink-400">var</span> x = <span class="text-purple-400">5</span>, y = <span class="text-purple-400">10</span>
+<span class="text-cyan-400">swap</span>(&amp;x, &amp;y)  <span class="text-zinc-500">// T = Int</span>
+<span class="text-cyan-400">print</span>(x, y)  <span class="text-zinc-500">// 10, 5</span>
+
+<span class="text-pink-400">var</span> a = <span class="text-green-400">"hello"</span>, b = <span class="text-green-400">"world"</span>
+<span class="text-cyan-400">swap</span>(&amp;a, &amp;b)  <span class="text-zinc-500">// T = String</span>
+<span class="text-cyan-400">print</span>(a, b)  <span class="text-zinc-500">// world, hello</span></code></pre>
+                        </div>
+
+                        <div class="bg-zinc-900 rounded-xl p-4 mb-6">
+                            <div class="text-xs text-zinc-500 mb-2 font-mono">Ещё примеры generic-функций</div>
+                            <pre class="text-sm overflow-x-auto"><code><span class="text-zinc-500">// Функция, которая возвращает первый элемент массива</span>
+<span class="text-pink-400">func</span> <span class="text-cyan-400">first</span>&lt;<span class="text-yellow-300">T</span>&gt;(of array: [<span class="text-yellow-300">T</span>]) -> <span class="text-yellow-300">T</span>? {
+    <span class="text-pink-400">return</span> array.<span class="text-cyan-400">first</span>
+}
+
+<span class="text-pink-400">let</span> numbers = [<span class="text-purple-400">1</span>, <span class="text-purple-400">2</span>, <span class="text-purple-400">3</span>]
+<span class="text-pink-400">let</span> names = [<span class="text-green-400">"Alice"</span>, <span class="text-green-400">"Bob"</span>]
+
+<span class="text-cyan-400">print</span>(<span class="text-cyan-400">first</span>(of: numbers))  <span class="text-zinc-500">// Optional(1)</span>
+<span class="text-cyan-400">print</span>(<span class="text-cyan-400">first</span>(of: names))    <span class="text-zinc-500">// Optional("Alice")</span>
+
+<span class="text-zinc-500">// Несколько type parameters</span>
+<span class="text-pink-400">func</span> <span class="text-cyan-400">makePair</span>&lt;<span class="text-yellow-300">A</span>, <span class="text-yellow-300">B</span>&gt;(_ first: <span class="text-yellow-300">A</span>, _ second: <span class="text-yellow-300">B</span>) -> (<span class="text-yellow-300">A</span>, <span class="text-yellow-300">B</span>) {
+    <span class="text-pink-400">return</span> (first, second)
+}
+
+<span class="text-pink-400">let</span> pair = <span class="text-cyan-400">makePair</span>(<span class="text-green-400">"iPhone"</span>, <span class="text-purple-400">999</span>)
+<span class="text-zinc-500">// pair: (String, Int)</span></code></pre>
+                        </div>
+                    </section>
+
+                    <!-- Generic Types -->
+                    <section class="mb-12">
+                        <h2 class="text-2xl font-bold mb-4">Generic Types</h2>
+                        <p class="text-zinc-600 dark:text-zinc-400 mb-4">
+                            Можно создавать не только generic-функции, но и generic-структуры, классы и enum.
+                        </p>
+
+                        <div class="bg-zinc-900 rounded-xl p-4 mb-6">
+                            <div class="text-xs text-zinc-500 mb-2 font-mono">Generic Stack</div>
+                            <pre class="text-sm overflow-x-auto"><code><span class="text-pink-400">struct</span> <span class="text-yellow-300">Stack</span>&lt;<span class="text-yellow-300">Element</span>&gt; {
+    <span class="text-pink-400">private var</span> items: [<span class="text-yellow-300">Element</span>] = []
+
+    <span class="text-pink-400">mutating func</span> <span class="text-cyan-400">push</span>(_ item: <span class="text-yellow-300">Element</span>) {
+        items.<span class="text-cyan-400">append</span>(item)
+    }
+
+    <span class="text-pink-400">mutating func</span> <span class="text-cyan-400">pop</span>() -> <span class="text-yellow-300">Element</span>? {
+        <span class="text-pink-400">return</span> items.<span class="text-cyan-400">popLast</span>()
+    }
+
+    <span class="text-pink-400">var</span> top: <span class="text-yellow-300">Element</span>? {
+        <span class="text-pink-400">return</span> items.<span class="text-cyan-400">last</span>
+    }
+
+    <span class="text-pink-400">var</span> isEmpty: <span class="text-cyan-400">Bool</span> {
+        <span class="text-pink-400">return</span> items.<span class="text-cyan-400">isEmpty</span>
+    }
+}
+
+<span class="text-zinc-500">// Stack для Int</span>
+<span class="text-pink-400">var</span> intStack = <span class="text-yellow-300">Stack</span>&lt;<span class="text-cyan-400">Int</span>&gt;()
+intStack.<span class="text-cyan-400">push</span>(<span class="text-purple-400">1</span>)
+intStack.<span class="text-cyan-400">push</span>(<span class="text-purple-400">2</span>)
+<span class="text-cyan-400">print</span>(intStack.<span class="text-cyan-400">pop</span>())  <span class="text-zinc-500">// Optional(2)</span>
+
+<span class="text-zinc-500">// Stack для String</span>
+<span class="text-pink-400">var</span> stringStack = <span class="text-yellow-300">Stack</span>&lt;<span class="text-cyan-400">String</span>&gt;()
+stringStack.<span class="text-cyan-400">push</span>(<span class="text-green-400">"Hello"</span>)
+stringStack.<span class="text-cyan-400">push</span>(<span class="text-green-400">"World"</span>)</code></pre>
+                        </div>
+
+                        <div class="bg-zinc-900 rounded-xl p-4 mb-6">
+                            <div class="text-xs text-zinc-500 mb-2 font-mono">Generic Result для API</div>
+                            <pre class="text-sm overflow-x-auto"><code><span class="text-zinc-500">// Встроенный Result из Swift</span>
+<span class="text-pink-400">enum</span> <span class="text-yellow-300">Result</span>&lt;<span class="text-yellow-300">Success</span>, <span class="text-yellow-300">Failure</span>: <span class="text-cyan-400">Error</span>&gt; {
+    <span class="text-pink-400">case</span> success(<span class="text-yellow-300">Success</span>)
+    <span class="text-pink-400">case</span> failure(<span class="text-yellow-300">Failure</span>)
+}
+
+<span class="text-zinc-500">// Использование</span>
+<span class="text-pink-400">func</span> <span class="text-cyan-400">fetchProducts</span>() -> <span class="text-yellow-300">Result</span>&lt;[<span class="text-cyan-400">Product</span>], <span class="text-cyan-400">NetworkError</span>&gt; {
+    <span class="text-pink-400">if</span> hasConnection {
+        <span class="text-pink-400">return</span> .<span class="text-cyan-400">success</span>(products)
+    } <span class="text-pink-400">else</span> {
+        <span class="text-pink-400">return</span> .<span class="text-cyan-400">failure</span>(.<span class="text-cyan-400">noConnection</span>)
+    }
+}</code></pre>
+                        </div>
+                    </section>
+
+                    <!-- Type Constraints -->
+                    <section class="mb-12">
+                        <h2 class="text-2xl font-bold mb-4">Type Constraints (Ограничения)</h2>
+                        <p class="text-zinc-600 dark:text-zinc-400 mb-4">
+                            Иногда нужно ограничить типы, с которыми работает generic. Например, для сравнения
+                            элементов нужен протокол <code class="bg-zinc-200 dark:bg-zinc-700 px-1 rounded">Comparable</code>.
+                        </p>
+
+                        <div class="bg-zinc-900 rounded-xl p-4 mb-6">
+                            <div class="text-xs text-zinc-500 mb-2 font-mono">Type Constraint с протоколом</div>
+                            <pre class="text-sm overflow-x-auto"><code><span class="text-zinc-500">// T должен соответствовать Comparable</span>
+<span class="text-pink-400">func</span> <span class="text-cyan-400">findMax</span>&lt;<span class="text-yellow-300">T</span>: <span class="text-cyan-400">Comparable</span>&gt;(_ a: <span class="text-yellow-300">T</span>, _ b: <span class="text-yellow-300">T</span>) -> <span class="text-yellow-300">T</span> {
+    <span class="text-pink-400">return</span> a > b ? a : b
+}
+
+<span class="text-cyan-400">print</span>(<span class="text-cyan-400">findMax</span>(<span class="text-purple-400">5</span>, <span class="text-purple-400">10</span>))        <span class="text-zinc-500">// 10</span>
+<span class="text-cyan-400">print</span>(<span class="text-cyan-400">findMax</span>(<span class="text-green-400">"apple"</span>, <span class="text-green-400">"banana"</span>))  <span class="text-zinc-500">// banana</span>
+
+<span class="text-zinc-500">// Несколько constraints</span>
+<span class="text-pink-400">func</span> <span class="text-cyan-400">process</span>&lt;<span class="text-yellow-300">T</span>: <span class="text-cyan-400">Hashable</span> & <span class="text-cyan-400">Codable</span>&gt;(_ value: <span class="text-yellow-300">T</span>) {
+    <span class="text-zinc-500">// T должен быть и Hashable, и Codable</span>
+}</code></pre>
+                        </div>
+
+                        <div class="bg-zinc-900 rounded-xl p-4 mb-6">
+                            <div class="text-xs text-zinc-500 mb-2 font-mono">where clause для сложных условий</div>
+                            <pre class="text-sm overflow-x-auto"><code><span class="text-zinc-500">// Найти индекс элемента в массиве</span>
+<span class="text-pink-400">func</span> <span class="text-cyan-400">findIndex</span>&lt;<span class="text-yellow-300">T</span>&gt;(of value: <span class="text-yellow-300">T</span>, <span class="text-pink-400">in</span> array: [<span class="text-yellow-300">T</span>]) -> <span class="text-cyan-400">Int</span>?
+    <span class="text-pink-400">where</span> <span class="text-yellow-300">T</span>: <span class="text-cyan-400">Equatable</span>
+{
+    <span class="text-pink-400">for</span> (index, item) <span class="text-pink-400">in</span> array.<span class="text-cyan-400">enumerated</span>() {
+        <span class="text-pink-400">if</span> item == value {
+            <span class="text-pink-400">return</span> index
+        }
+    }
+    <span class="text-pink-400">return nil</span>
+}
+
+<span class="text-pink-400">let</span> fruits = [<span class="text-green-400">"apple"</span>, <span class="text-green-400">"banana"</span>, <span class="text-green-400">"cherry"</span>]
+<span class="text-cyan-400">print</span>(<span class="text-cyan-400">findIndex</span>(of: <span class="text-green-400">"banana"</span>, <span class="text-pink-400">in</span>: fruits))  <span class="text-zinc-500">// Optional(1)</span>
+
+<span class="text-zinc-500">// where с несколькими условиями</span>
+<span class="text-pink-400">func</span> <span class="text-cyan-400">allEqual</span>&lt;<span class="text-yellow-300">C1</span>: <span class="text-cyan-400">Collection</span>, <span class="text-yellow-300">C2</span>: <span class="text-cyan-400">Collection</span>&gt;(_ c1: <span class="text-yellow-300">C1</span>, _ c2: <span class="text-yellow-300">C2</span>) -> <span class="text-cyan-400">Bool</span>
+    <span class="text-pink-400">where</span> <span class="text-yellow-300">C1</span>.Element == <span class="text-yellow-300">C2</span>.Element, <span class="text-yellow-300">C1</span>.Element: <span class="text-cyan-400">Equatable</span>
+{
+    <span class="text-pink-400">guard</span> c1.count == c2.count <span class="text-pink-400">else</span> { <span class="text-pink-400">return false</span> }
+    <span class="text-pink-400">return</span> <span class="text-cyan-400">zip</span>(c1, c2).<span class="text-cyan-400">allSatisfy</span> { $0 == $1 }
+}</code></pre>
+                        </div>
+                    </section>
+
+                    <!-- Associated Types -->
+                    <section class="mb-12">
+                        <h2 class="text-2xl font-bold mb-4">Associated Types в протоколах</h2>
+                        <p class="text-zinc-600 dark:text-zinc-400 mb-4">
+                            Для создания generic-протоколов используется <code class="bg-zinc-200 dark:bg-zinc-700 px-1 rounded">associatedtype</code>.
+                            Это placeholder для типа, который определит конкретная реализация.
+                        </p>
+
+                        <div class="bg-zinc-900 rounded-xl p-4 mb-6">
+                            <div class="text-xs text-zinc-500 mb-2 font-mono">Протокол с associatedtype</div>
+                            <pre class="text-sm overflow-x-auto"><code><span class="text-pink-400">protocol</span> <span class="text-yellow-300">Container</span> {
+    <span class="text-pink-400">associatedtype</span> <span class="text-yellow-300">Item</span>
+
+    <span class="text-pink-400">mutating func</span> <span class="text-cyan-400">append</span>(_ item: <span class="text-yellow-300">Item</span>)
+    <span class="text-pink-400">var</span> count: <span class="text-cyan-400">Int</span> { <span class="text-pink-400">get</span> }
+    <span class="text-pink-400">subscript</span>(i: <span class="text-cyan-400">Int</span>) -> <span class="text-yellow-300">Item</span> { <span class="text-pink-400">get</span> }
+}
+
+<span class="text-zinc-500">// Реализация для Stack</span>
+<span class="text-pink-400">struct</span> <span class="text-yellow-300">IntStack</span>: <span class="text-cyan-400">Container</span> {
+    <span class="text-pink-400">typealias</span> Item = <span class="text-cyan-400">Int</span>  <span class="text-zinc-500">// Можно опустить, Swift выведет сам</span>
+
+    <span class="text-pink-400">private var</span> items: [<span class="text-cyan-400">Int</span>] = []
+
+    <span class="text-pink-400">mutating func</span> <span class="text-cyan-400">append</span>(_ item: <span class="text-cyan-400">Int</span>) {
+        items.<span class="text-cyan-400">append</span>(item)
+    }
+
+    <span class="text-pink-400">var</span> count: <span class="text-cyan-400">Int</span> { items.count }
+
+    <span class="text-pink-400">subscript</span>(i: <span class="text-cyan-400">Int</span>) -> <span class="text-cyan-400">Int</span> { items[i] }
+}
+
+<span class="text-zinc-500">// Generic реализация</span>
+<span class="text-pink-400">struct</span> <span class="text-yellow-300">GenericStack</span>&lt;<span class="text-yellow-300">Element</span>&gt;: <span class="text-cyan-400">Container</span> {
+    <span class="text-pink-400">private var</span> items: [<span class="text-yellow-300">Element</span>] = []
+
+    <span class="text-pink-400">mutating func</span> <span class="text-cyan-400">append</span>(_ item: <span class="text-yellow-300">Element</span>) {
+        items.<span class="text-cyan-400">append</span>(item)
+    }
+
+    <span class="text-pink-400">var</span> count: <span class="text-cyan-400">Int</span> { items.count }
+
+    <span class="text-pink-400">subscript</span>(i: <span class="text-cyan-400">Int</span>) -> <span class="text-yellow-300">Element</span> { items[i] }
+}</code></pre>
+                        </div>
+                    </section>
+
+                    <!-- Practical Example -->
+                    <section class="mb-12">
+                        <h2 class="text-2xl font-bold mb-4">Практика: NetworkService</h2>
+                        <p class="text-zinc-600 dark:text-zinc-400 mb-4">
+                            Создадим generic сетевой сервис для ECommerce приложения:
+                        </p>
+
+                        <div class="bg-zinc-900 rounded-xl p-4 mb-6">
+                            <div class="text-xs text-zinc-500 mb-2 font-mono">Generic NetworkService</div>
+                            <pre class="text-sm overflow-x-auto"><code><span class="text-pink-400">protocol</span> <span class="text-yellow-300">APIEndpoint</span> {
+    <span class="text-pink-400">associatedtype</span> <span class="text-yellow-300">Response</span>: <span class="text-cyan-400">Decodable</span>
+
+    <span class="text-pink-400">var</span> path: <span class="text-cyan-400">String</span> { <span class="text-pink-400">get</span> }
+    <span class="text-pink-400">var</span> method: <span class="text-cyan-400">HTTPMethod</span> { <span class="text-pink-400">get</span> }
+}
+
+<span class="text-pink-400">enum</span> <span class="text-yellow-300">HTTPMethod</span> {
+    <span class="text-pink-400">case</span> get, post, put, delete
+}
+
+<span class="text-zinc-500">// Конкретные endpoints</span>
+<span class="text-pink-400">struct</span> <span class="text-yellow-300">ProductsEndpoint</span>: <span class="text-cyan-400">APIEndpoint</span> {
+    <span class="text-pink-400">typealias</span> Response = [<span class="text-cyan-400">Product</span>]
+    <span class="text-pink-400">let</span> path = <span class="text-green-400">"/products"</span>
+    <span class="text-pink-400">let</span> method: <span class="text-cyan-400">HTTPMethod</span> = .get
+}
+
+<span class="text-pink-400">struct</span> <span class="text-yellow-300">UserEndpoint</span>: <span class="text-cyan-400">APIEndpoint</span> {
+    <span class="text-pink-400">typealias</span> Response = <span class="text-cyan-400">User</span>
+    <span class="text-pink-400">let</span> path = <span class="text-green-400">"/user"</span>
+    <span class="text-pink-400">let</span> method: <span class="text-cyan-400">HTTPMethod</span> = .get
+}
+
+<span class="text-zinc-500">// Generic Network Service</span>
+<span class="text-pink-400">class</span> <span class="text-yellow-300">NetworkService</span> {
+    <span class="text-pink-400">func</span> <span class="text-cyan-400">request</span>&lt;<span class="text-yellow-300">E</span>: <span class="text-cyan-400">APIEndpoint</span>&gt;(
+        _ endpoint: <span class="text-yellow-300">E</span>,
+        completion: @<span class="text-cyan-400">escaping</span> (<span class="text-cyan-400">Result</span>&lt;<span class="text-yellow-300">E</span>.Response, <span class="text-cyan-400">Error</span>&gt;) -> <span class="text-cyan-400">Void</span>
+    ) {
+        <span class="text-zinc-500">// Сетевой запрос...</span>
+        <span class="text-zinc-500">// Response автоматически декодируется в E.Response</span>
+    }
+}
+
+<span class="text-zinc-500">// Использование</span>
+<span class="text-pink-400">let</span> network = <span class="text-yellow-300">NetworkService</span>()
+
+network.<span class="text-cyan-400">request</span>(<span class="text-yellow-300">ProductsEndpoint</span>()) { result <span class="text-pink-400">in</span>
+    <span class="text-pink-400">switch</span> result {
+    <span class="text-pink-400">case</span> .<span class="text-cyan-400">success</span>(<span class="text-pink-400">let</span> products):  <span class="text-zinc-500">// [Product]</span>
+        <span class="text-cyan-400">print</span>(<span class="text-green-400">"Получено </span>\(products.count)<span class="text-green-400"> товаров"</span>)
+    <span class="text-pink-400">case</span> .<span class="text-cyan-400">failure</span>(<span class="text-pink-400">let</span> error):
+        <span class="text-cyan-400">print</span>(error)
+    }
+}
+
+network.<span class="text-cyan-400">request</span>(<span class="text-yellow-300">UserEndpoint</span>()) { result <span class="text-pink-400">in</span>
+    <span class="text-pink-400">switch</span> result {
+    <span class="text-pink-400">case</span> .<span class="text-cyan-400">success</span>(<span class="text-pink-400">let</span> user):  <span class="text-zinc-500">// User</span>
+        <span class="text-cyan-400">print</span>(<span class="text-green-400">"Привет, </span>\(user.name)<span class="text-green-400">"</span>)
+    <span class="text-pink-400">case</span> .<span class="text-cyan-400">failure</span>(<span class="text-pink-400">let</span> error):
+        <span class="text-cyan-400">print</span>(error)
+    }
+}</code></pre>
+                        </div>
+
+                        <div class="bg-zinc-900 rounded-xl p-4 mb-6">
+                            <div class="text-xs text-zinc-500 mb-2 font-mono">Generic Cache</div>
+                            <pre class="text-sm overflow-x-auto"><code><span class="text-pink-400">class</span> <span class="text-yellow-300">Cache</span>&lt;<span class="text-yellow-300">Key</span>: <span class="text-cyan-400">Hashable</span>, <span class="text-yellow-300">Value</span>&gt; {
+    <span class="text-pink-400">private var</span> storage: [<span class="text-yellow-300">Key</span>: <span class="text-yellow-300">Value</span>] = [:]
+
+    <span class="text-pink-400">func</span> <span class="text-cyan-400">set</span>(_ value: <span class="text-yellow-300">Value</span>, forKey key: <span class="text-yellow-300">Key</span>) {
+        storage[key] = value
+    }
+
+    <span class="text-pink-400">func</span> <span class="text-cyan-400">get</span>(forKey key: <span class="text-yellow-300">Key</span>) -> <span class="text-yellow-300">Value</span>? {
+        <span class="text-pink-400">return</span> storage[key]
+    }
+
+    <span class="text-pink-400">func</span> <span class="text-cyan-400">remove</span>(forKey key: <span class="text-yellow-300">Key</span>) {
+        storage[key] = <span class="text-pink-400">nil</span>
+    }
+}
+
+<span class="text-zinc-500">// Кэш товаров</span>
+<span class="text-pink-400">let</span> productCache = <span class="text-yellow-300">Cache</span>&lt;<span class="text-cyan-400">String</span>, <span class="text-cyan-400">Product</span>&gt;()
+productCache.<span class="text-cyan-400">set</span>(iphone, forKey: <span class="text-green-400">"iphone-15"</span>)
+
+<span class="text-zinc-500">// Кэш изображений</span>
+<span class="text-pink-400">let</span> imageCache = <span class="text-yellow-300">Cache</span>&lt;<span class="text-cyan-400">URL</span>, <span class="text-cyan-400">UIImage</span>&gt;()</code></pre>
+                        </div>
+                    </section>
+
+                    <!-- Summary -->
+                    <section class="mb-12">
+                        <h2 class="text-2xl font-bold mb-4">Что вы узнали</h2>
+                        <div class="grid md:grid-cols-2 gap-4">
+                            <div class="p-4 bg-zinc-100 dark:bg-zinc-800/50 rounded-xl">
+                                <div class="flex items-center gap-2 mb-2">
+                                    <span class="text-green-500">✓</span>
+                                    <span class="font-medium">Generic Functions</span>
+                                </div>
+                                <p class="text-sm text-zinc-600 dark:text-zinc-400">func name&lt;T&gt;(param: T)</p>
+                            </div>
+                            <div class="p-4 bg-zinc-100 dark:bg-zinc-800/50 rounded-xl">
+                                <div class="flex items-center gap-2 mb-2">
+                                    <span class="text-green-500">✓</span>
+                                    <span class="font-medium">Generic Types</span>
+                                </div>
+                                <p class="text-sm text-zinc-600 dark:text-zinc-400">struct Name&lt;Element&gt;</p>
+                            </div>
+                            <div class="p-4 bg-zinc-100 dark:bg-zinc-800/50 rounded-xl">
+                                <div class="flex items-center gap-2 mb-2">
+                                    <span class="text-green-500">✓</span>
+                                    <span class="font-medium">Type Constraints</span>
+                                </div>
+                                <p class="text-sm text-zinc-600 dark:text-zinc-400">T: Protocol, where clause</p>
+                            </div>
+                            <div class="p-4 bg-zinc-100 dark:bg-zinc-800/50 rounded-xl">
+                                <div class="flex items-center gap-2 mb-2">
+                                    <span class="text-green-500">✓</span>
+                                    <span class="font-medium">Associated Types</span>
+                                </div>
+                                <p class="text-sm text-zinc-600 dark:text-zinc-400">Generic протоколы</p>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Next Chapter -->
+                    <section class="p-6 bg-gradient-to-r from-primary/10 to-purple-500/10 rounded-2xl">
+                        <h3 class="font-semibold mb-2">Следующая глава</h3>
+                        <p class="text-zinc-600 dark:text-zinc-400 mb-4">
+                            Переходим к Concurrency — async/await, Task, и работа с асинхронным кодом в Swift.
+                        </p>
+                        <a href="10-concurrency.html" class="inline-flex items-center gap-2 text-primary font-medium hover:underline">
+                            Глава 10: Concurrency
+                            <span>→</span>
+                        </a>
+                    </section>
+
+                </div>
+
+                <nav class="flex justify-between gap-4 mt-16 pt-8 border-t border-zinc-200 dark:border-zinc-800">
+                    <a href="08-memory.html" class="flex items-center gap-3 px-5 py-3 bg-zinc-100 dark:bg-zinc-800 hover:bg-primary hover:text-white rounded-xl transition-colors">
+                        <span class="text-xl">←</span>
+                        <span class="font-medium">Предыдущая</span>
+                    </a>
+                    <a href="10-concurrency.html" class="flex items-center gap-3 px-5 py-3 bg-zinc-100 dark:bg-zinc-800 hover:bg-primary hover:text-white rounded-xl transition-colors ml-auto">
+                        <span class="font-medium">Следующая</span>
+                        <span class="text-xl">→</span>
+                    </a>
+                </nav>
+            </article>
+        </main>
+    </div>
+
+    <script>
+        const menuBtn = document.getElementById('menuBtn');
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('overlay');
+        menuBtn.addEventListener('click', () => {
+            sidebar.classList.toggle('-translate-x-full');
+            overlay.classList.toggle('hidden');
+        });
+        function closeSidebar() {
+            sidebar.classList.add('-translate-x-full');
+            overlay.classList.add('hidden');
+        }
+    </script>
+</body>
+</html>
