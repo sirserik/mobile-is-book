@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>iOS Разработка | UIKit VIPER & SwiftUI MVVM</title>
+    <title>Mobile Development | iOS & Android E-Commerce</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -25,7 +25,7 @@
             transform: translateY(-8px);
         }
         .gradient-text {
-            background: linear-gradient(135deg, #007AFF 0%, #5856D6 50%, #AF52DE 100%);
+            background: linear-gradient(135deg, #007AFF 0%, #3DDC84 50%, #AF52DE 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
@@ -38,14 +38,14 @@
     <header class="border-b border-zinc-200 dark:border-zinc-800">
         <div class="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
             <div class="flex items-center gap-3">
-                <div class="w-10 h-10 bg-gradient-to-br from-blue-500 via-purple-500 to-pink-500 rounded-xl flex items-center justify-center">
+                <div class="w-10 h-10 bg-gradient-to-br from-blue-500 via-green-500 to-purple-500 rounded-xl flex items-center justify-center">
                     <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
                     </svg>
                 </div>
-                <span class="text-xl font-bold">iOS Books</span>
+                <span class="text-xl font-bold">Mobile Books</span>
             </div>
-            <a href="https://github.com/AkhmetovSerworker/iOS-ECommerce-Book" target="_blank" class="flex items-center gap-2 px-4 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white transition-colors">
+            <a href="https://github.com/sirserik/mobile-is-book" target="_blank" class="flex items-center gap-2 px-4 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white transition-colors">
                 <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
                     <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
                 </svg>
@@ -56,123 +56,151 @@
 
     <!-- Hero -->
     <section class="max-w-6xl mx-auto px-6 py-20 text-center">
-        <span class="inline-block px-4 py-1.5 mb-6 text-xs font-semibold uppercase tracking-wider text-white bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 rounded-full">
+        <span class="inline-block px-4 py-1.5 mb-6 text-xs font-semibold uppercase tracking-wider text-white bg-gradient-to-r from-blue-500 via-green-500 to-purple-500 rounded-full">
             Open Source
         </span>
         <h1 class="text-5xl sm:text-6xl font-bold mb-6 gradient-text">
-            iOS Разработка
+            Mobile Development
         </h1>
         <p class="text-xl text-zinc-600 dark:text-zinc-400 max-w-2xl mx-auto mb-4">
-            Два полноценных курса по созданию E-Commerce приложений для iOS
+            Три полноценных курса по созданию E-Commerce приложений для iOS и Android
         </p>
         <p class="text-zinc-500 max-w-xl mx-auto">
-            От основ Swift до production-ready приложений с разными архитектурами
+            SwiftUI, UIKit, Jetpack Compose — от основ до production-ready приложений
         </p>
     </section>
 
     <!-- Books -->
     <section class="max-w-6xl mx-auto px-6 pb-20">
-        <div class="grid md:grid-cols-2 gap-8">
+        <div class="grid md:grid-cols-3 gap-6">
 
             <!-- UIKit + VIPER Book -->
-            <a href="viper/index.html" class="book-card block p-8 bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-blue-900/30 dark:to-indigo-900/30 border border-blue-200 dark:border-blue-800 rounded-3xl hover:shadow-2xl hover:shadow-blue-500/20">
-                <div class="flex items-center gap-4 mb-6">
-                    <div class="w-16 h-16 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-2xl flex items-center justify-center shadow-lg">
-                        <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <a href="viper/index.html" class="book-card block p-6 bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-blue-900/30 dark:to-indigo-900/30 border border-blue-200 dark:border-blue-800 rounded-3xl hover:shadow-2xl hover:shadow-blue-500/20">
+                <div class="flex items-center gap-3 mb-4">
+                    <div class="w-14 h-14 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-2xl flex items-center justify-center shadow-lg">
+                        <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z"/>
                         </svg>
                     </div>
                     <div>
-                        <h2 class="text-2xl font-bold text-blue-900 dark:text-blue-100">UIKit + VIPER</h2>
-                        <p class="text-blue-600 dark:text-blue-400">Классический подход</p>
+                        <h2 class="text-xl font-bold text-blue-900 dark:text-blue-100">UIKit + VIPER</h2>
+                        <p class="text-sm text-blue-600 dark:text-blue-400">iOS Classic</p>
                     </div>
                 </div>
 
-                <p class="text-zinc-600 dark:text-zinc-400 mb-6">
-                    Полный курс iOS разработки с нуля. Изучите Swift, UIKit и создайте E-Commerce приложение с архитектурой VIPER.
+                <p class="text-sm text-zinc-600 dark:text-zinc-400 mb-4">
+                    Полный курс iOS с нуля. Swift, UIKit и VIPER архитектура.
                 </p>
 
-                <div class="space-y-3 mb-6">
-                    <div class="flex items-center gap-3 text-sm text-zinc-600 dark:text-zinc-400">
-                        <span class="w-6 h-6 bg-blue-100 dark:bg-blue-900/50 rounded-full flex items-center justify-center text-blue-600">&#10003;</span>
-                        <span>22 главы от Xcode до публикации</span>
+                <div class="space-y-2 mb-4 text-xs">
+                    <div class="flex items-center gap-2 text-zinc-600 dark:text-zinc-400">
+                        <span class="text-blue-600">✓</span> 22 главы
                     </div>
-                    <div class="flex items-center gap-3 text-sm text-zinc-600 dark:text-zinc-400">
-                        <span class="w-6 h-6 bg-blue-100 dark:bg-blue-900/50 rounded-full flex items-center justify-center text-blue-600">&#10003;</span>
-                        <span>Swift с нуля: ООП, Generics, Concurrency</span>
+                    <div class="flex items-center gap-2 text-zinc-600 dark:text-zinc-400">
+                        <span class="text-blue-600">✓</span> Swift с нуля
                     </div>
-                    <div class="flex items-center gap-3 text-sm text-zinc-600 dark:text-zinc-400">
-                        <span class="w-6 h-6 bg-blue-100 dark:bg-blue-900/50 rounded-full flex items-center justify-center text-blue-600">&#10003;</span>
-                        <span>UIKit: программный UI, Auto Layout</span>
-                    </div>
-                    <div class="flex items-center gap-3 text-sm text-zinc-600 dark:text-zinc-400">
-                        <span class="w-6 h-6 bg-blue-100 dark:bg-blue-900/50 rounded-full flex items-center justify-center text-blue-600">&#10003;</span>
-                        <span>VIPER архитектура на практике</span>
+                    <div class="flex items-center gap-2 text-zinc-600 dark:text-zinc-400">
+                        <span class="text-blue-600">✓</span> Programmatic UI
                     </div>
                 </div>
 
-                <div class="flex flex-wrap gap-2">
-                    <span class="px-3 py-1 text-xs font-medium bg-blue-200 dark:bg-blue-800 text-blue-800 dark:text-blue-200 rounded-full">Swift</span>
-                    <span class="px-3 py-1 text-xs font-medium bg-blue-200 dark:bg-blue-800 text-blue-800 dark:text-blue-200 rounded-full">UIKit</span>
-                    <span class="px-3 py-1 text-xs font-medium bg-blue-200 dark:bg-blue-800 text-blue-800 dark:text-blue-200 rounded-full">VIPER</span>
-                    <span class="px-3 py-1 text-xs font-medium bg-blue-200 dark:bg-blue-800 text-blue-800 dark:text-blue-200 rounded-full">Programmatic UI</span>
+                <div class="flex flex-wrap gap-1 mb-4">
+                    <span class="px-2 py-0.5 text-xs font-medium bg-blue-200 dark:bg-blue-800 text-blue-800 dark:text-blue-200 rounded-full">Swift</span>
+                    <span class="px-2 py-0.5 text-xs font-medium bg-blue-200 dark:bg-blue-800 text-blue-800 dark:text-blue-200 rounded-full">UIKit</span>
+                    <span class="px-2 py-0.5 text-xs font-medium bg-blue-200 dark:bg-blue-800 text-blue-800 dark:text-blue-200 rounded-full">VIPER</span>
                 </div>
 
-                <div class="mt-6 flex items-center gap-2 text-blue-600 dark:text-blue-400 font-medium">
-                    Начать обучение
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div class="flex items-center gap-2 text-blue-600 dark:text-blue-400 font-medium text-sm">
+                    Открыть
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
                     </svg>
                 </div>
             </a>
 
             <!-- SwiftUI + MVVM Book -->
-            <a href="swiftui/index.html" class="book-card block p-8 bg-gradient-to-br from-purple-50 to-pink-100 dark:from-purple-900/30 dark:to-pink-900/30 border border-purple-200 dark:border-purple-800 rounded-3xl hover:shadow-2xl hover:shadow-purple-500/20">
-                <div class="flex items-center gap-4 mb-6">
-                    <div class="w-16 h-16 bg-gradient-to-br from-purple-500 to-pink-600 rounded-2xl flex items-center justify-center shadow-lg">
-                        <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <a href="swiftui/index.html" class="book-card block p-6 bg-gradient-to-br from-purple-50 to-pink-100 dark:from-purple-900/30 dark:to-pink-900/30 border border-purple-200 dark:border-purple-800 rounded-3xl hover:shadow-2xl hover:shadow-purple-500/20">
+                <div class="flex items-center gap-3 mb-4">
+                    <div class="w-14 h-14 bg-gradient-to-br from-purple-500 to-pink-600 rounded-2xl flex items-center justify-center shadow-lg">
+                        <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"/>
                         </svg>
                     </div>
                     <div>
-                        <h2 class="text-2xl font-bold text-purple-900 dark:text-purple-100">SwiftUI + MVVM</h2>
-                        <p class="text-purple-600 dark:text-purple-400">Современный подход</p>
+                        <h2 class="text-xl font-bold text-purple-900 dark:text-purple-100">SwiftUI + MVVM</h2>
+                        <p class="text-sm text-purple-600 dark:text-purple-400">iOS Modern</p>
                     </div>
                 </div>
 
-                <p class="text-zinc-600 dark:text-zinc-400 mb-6">
-                    Декларативный UI с SwiftUI. Создайте современное E-Commerce приложение с архитектурой MVVM и @Observable.
+                <p class="text-sm text-zinc-600 dark:text-zinc-400 mb-4">
+                    Декларативный UI с SwiftUI. MVVM и @Observable.
                 </p>
 
-                <div class="space-y-3 mb-6">
-                    <div class="flex items-center gap-3 text-sm text-zinc-600 dark:text-zinc-400">
-                        <span class="w-6 h-6 bg-purple-100 dark:bg-purple-900/50 rounded-full flex items-center justify-center text-purple-600">&#10003;</span>
-                        <span>13 глав + 7 дополнительных материалов</span>
+                <div class="space-y-2 mb-4 text-xs">
+                    <div class="flex items-center gap-2 text-zinc-600 dark:text-zinc-400">
+                        <span class="text-purple-600">✓</span> 13 глав + 7 доп
                     </div>
-                    <div class="flex items-center gap-3 text-sm text-zinc-600 dark:text-zinc-400">
-                        <span class="w-6 h-6 bg-purple-100 dark:bg-purple-900/50 rounded-full flex items-center justify-center text-purple-600">&#10003;</span>
-                        <span>Swift для JS/PHP разработчиков</span>
+                    <div class="flex items-center gap-2 text-zinc-600 dark:text-zinc-400">
+                        <span class="text-purple-600">✓</span> Swift для JS/PHP
                     </div>
-                    <div class="flex items-center gap-3 text-sm text-zinc-600 dark:text-zinc-400">
-                        <span class="w-6 h-6 bg-purple-100 dark:bg-purple-900/50 rounded-full flex items-center justify-center text-purple-600">&#10003;</span>
-                        <span>SwiftUI: @State, @Binding, @Observable</span>
-                    </div>
-                    <div class="flex items-center gap-3 text-sm text-zinc-600 dark:text-zinc-400">
-                        <span class="w-6 h-6 bg-purple-100 dark:bg-purple-900/50 rounded-full flex items-center justify-center text-purple-600">&#10003;</span>
-                        <span>MVVM + интерактивные задания</span>
+                    <div class="flex items-center gap-2 text-zinc-600 dark:text-zinc-400">
+                        <span class="text-purple-600">✓</span> Интерактивные задания
                     </div>
                 </div>
 
-                <div class="flex flex-wrap gap-2">
-                    <span class="px-3 py-1 text-xs font-medium bg-purple-200 dark:bg-purple-800 text-purple-800 dark:text-purple-200 rounded-full">Swift</span>
-                    <span class="px-3 py-1 text-xs font-medium bg-purple-200 dark:bg-purple-800 text-purple-800 dark:text-purple-200 rounded-full">SwiftUI</span>
-                    <span class="px-3 py-1 text-xs font-medium bg-purple-200 dark:bg-purple-800 text-purple-800 dark:text-purple-200 rounded-full">MVVM</span>
-                    <span class="px-3 py-1 text-xs font-medium bg-purple-200 dark:bg-purple-800 text-purple-800 dark:text-purple-200 rounded-full">@Observable</span>
+                <div class="flex flex-wrap gap-1 mb-4">
+                    <span class="px-2 py-0.5 text-xs font-medium bg-purple-200 dark:bg-purple-800 text-purple-800 dark:text-purple-200 rounded-full">Swift</span>
+                    <span class="px-2 py-0.5 text-xs font-medium bg-purple-200 dark:bg-purple-800 text-purple-800 dark:text-purple-200 rounded-full">SwiftUI</span>
+                    <span class="px-2 py-0.5 text-xs font-medium bg-purple-200 dark:bg-purple-800 text-purple-800 dark:text-purple-200 rounded-full">MVVM</span>
                 </div>
 
-                <div class="mt-6 flex items-center gap-2 text-purple-600 dark:text-purple-400 font-medium">
-                    Начать обучение
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div class="flex items-center gap-2 text-purple-600 dark:text-purple-400 font-medium text-sm">
+                    Открыть
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+                    </svg>
+                </div>
+            </a>
+
+            <!-- Android + Compose Book -->
+            <a href="android/index.html" class="book-card block p-6 bg-gradient-to-br from-green-50 to-teal-100 dark:from-green-900/30 dark:to-teal-900/30 border border-green-200 dark:border-green-800 rounded-3xl hover:shadow-2xl hover:shadow-green-500/20">
+                <div class="flex items-center gap-3 mb-4">
+                    <div class="w-14 h-14 bg-gradient-to-br from-green-500 to-teal-600 rounded-2xl flex items-center justify-center shadow-lg">
+                        <svg class="w-7 h-7 text-white" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M17.523 2.047a.5.5 0 0 0-.7.007l-1.22 1.22a.5.5 0 0 0 .007.7l.354.354-3.536 3.536-.354-.354a.5.5 0 0 0-.7.007l-1.22 1.22a.5.5 0 0 0 .007.7l5.657 5.657a.5.5 0 0 0 .7-.007l1.22-1.22a.5.5 0 0 0-.007-.7l-.354-.354 3.536-3.536.354.354a.5.5 0 0 0 .7-.007l1.22-1.22a.5.5 0 0 0-.007-.7l-5.657-5.657zM6.5 12a.5.5 0 0 0-.5.5v9a.5.5 0 0 0 .5.5h11a.5.5 0 0 0 .5-.5v-4a.5.5 0 0 0-1 0v3.5H7v-8h3.5a.5.5 0 0 0 0-1H6.5z"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <h2 class="text-xl font-bold text-green-900 dark:text-green-100">Compose + MVVM</h2>
+                        <p class="text-sm text-green-600 dark:text-green-400">Android</p>
+                    </div>
+                </div>
+
+                <p class="text-sm text-zinc-600 dark:text-zinc-400 mb-4">
+                    Kotlin с Jetpack Compose. Clean Architecture + Hilt.
+                </p>
+
+                <div class="space-y-2 mb-4 text-xs">
+                    <div class="flex items-center gap-2 text-zinc-600 dark:text-zinc-400">
+                        <span class="text-green-600">✓</span> 13 глав
+                    </div>
+                    <div class="flex items-center gap-2 text-zinc-600 dark:text-zinc-400">
+                        <span class="text-green-600">✓</span> Kotlin для JS/PHP
+                    </div>
+                    <div class="flex items-center gap-2 text-zinc-600 dark:text-zinc-400">
+                        <span class="text-green-600">✓</span> Retrofit + Moshi
+                    </div>
+                </div>
+
+                <div class="flex flex-wrap gap-1 mb-4">
+                    <span class="px-2 py-0.5 text-xs font-medium bg-green-200 dark:bg-green-800 text-green-800 dark:text-green-200 rounded-full">Kotlin</span>
+                    <span class="px-2 py-0.5 text-xs font-medium bg-green-200 dark:bg-green-800 text-green-800 dark:text-green-200 rounded-full">Compose</span>
+                    <span class="px-2 py-0.5 text-xs font-medium bg-green-200 dark:bg-green-800 text-green-800 dark:text-green-200 rounded-full">Hilt</span>
+                </div>
+
+                <div class="flex items-center gap-2 text-green-600 dark:text-green-400 font-medium text-sm">
+                    Открыть
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
                     </svg>
                 </div>
@@ -182,44 +210,76 @@
 
     <!-- Comparison -->
     <section class="max-w-6xl mx-auto px-6 pb-20">
-        <h2 class="text-2xl font-bold text-center mb-8">Какую книгу выбрать?</h2>
-        <div class="overflow-hidden border border-zinc-200 dark:border-zinc-800 rounded-2xl">
-            <table class="w-full text-sm">
-                <thead class="bg-zinc-50 dark:bg-zinc-900">
-                    <tr>
-                        <th class="px-6 py-4 text-left font-semibold">Критерий</th>
-                        <th class="px-6 py-4 text-center font-semibold text-blue-600">UIKit + VIPER</th>
-                        <th class="px-6 py-4 text-center font-semibold text-purple-600">SwiftUI + MVVM</th>
-                    </tr>
-                </thead>
-                <tbody class="divide-y divide-zinc-200 dark:divide-zinc-800">
-                    <tr>
-                        <td class="px-6 py-4 font-medium">Уровень</td>
-                        <td class="px-6 py-4 text-center">С полного нуля</td>
-                        <td class="px-6 py-4 text-center">Базовые знания Swift</td>
-                    </tr>
-                    <tr>
-                        <td class="px-6 py-4 font-medium">UI Framework</td>
-                        <td class="px-6 py-4 text-center">UIKit (императивный)</td>
-                        <td class="px-6 py-4 text-center">SwiftUI (декларативный)</td>
-                    </tr>
-                    <tr>
-                        <td class="px-6 py-4 font-medium">Архитектура</td>
-                        <td class="px-6 py-4 text-center">VIPER (сложнее, масштабируемо)</td>
-                        <td class="px-6 py-4 text-center">MVVM (проще, современно)</td>
-                    </tr>
-                    <tr>
-                        <td class="px-6 py-4 font-medium">Для кого</td>
-                        <td class="px-6 py-4 text-center">Enterprise, legacy проекты</td>
-                        <td class="px-6 py-4 text-center">Стартапы, новые проекты</td>
-                    </tr>
-                    <tr>
-                        <td class="px-6 py-4 font-medium">Минимальная iOS</td>
-                        <td class="px-6 py-4 text-center">iOS 13+</td>
-                        <td class="px-6 py-4 text-center">iOS 17+ (@Observable)</td>
-                    </tr>
-                </tbody>
-            </table>
+        <h2 class="text-2xl font-bold text-center mb-8">Сравнение курсов</h2>
+        <div class="overflow-x-auto">
+            <div class="overflow-hidden border border-zinc-200 dark:border-zinc-800 rounded-2xl min-w-[600px]">
+                <table class="w-full text-sm">
+                    <thead class="bg-zinc-50 dark:bg-zinc-900">
+                        <tr>
+                            <th class="px-4 py-4 text-left font-semibold">Критерий</th>
+                            <th class="px-4 py-4 text-center font-semibold text-blue-600">UIKit + VIPER</th>
+                            <th class="px-4 py-4 text-center font-semibold text-purple-600">SwiftUI + MVVM</th>
+                            <th class="px-4 py-4 text-center font-semibold text-green-600">Compose + MVVM</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-zinc-200 dark:divide-zinc-800">
+                        <tr>
+                            <td class="px-4 py-3 font-medium">Платформа</td>
+                            <td class="px-4 py-3 text-center">iOS</td>
+                            <td class="px-4 py-3 text-center">iOS</td>
+                            <td class="px-4 py-3 text-center">Android</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-3 font-medium">Язык</td>
+                            <td class="px-4 py-3 text-center">Swift</td>
+                            <td class="px-4 py-3 text-center">Swift</td>
+                            <td class="px-4 py-3 text-center">Kotlin</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-3 font-medium">UI Framework</td>
+                            <td class="px-4 py-3 text-center">UIKit</td>
+                            <td class="px-4 py-3 text-center">SwiftUI</td>
+                            <td class="px-4 py-3 text-center">Jetpack Compose</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-3 font-medium">Подход к UI</td>
+                            <td class="px-4 py-3 text-center">Императивный</td>
+                            <td class="px-4 py-3 text-center">Декларативный</td>
+                            <td class="px-4 py-3 text-center">Декларативный</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-3 font-medium">Архитектура</td>
+                            <td class="px-4 py-3 text-center">VIPER</td>
+                            <td class="px-4 py-3 text-center">MVVM</td>
+                            <td class="px-4 py-3 text-center">MVVM + Clean</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-3 font-medium">DI</td>
+                            <td class="px-4 py-3 text-center">Manual</td>
+                            <td class="px-4 py-3 text-center">—</td>
+                            <td class="px-4 py-3 text-center">Hilt</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-3 font-medium">Сетевой слой</td>
+                            <td class="px-4 py-3 text-center">URLSession</td>
+                            <td class="px-4 py-3 text-center">URLSession</td>
+                            <td class="px-4 py-3 text-center">Retrofit + Moshi</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-3 font-medium">Локальное хранение</td>
+                            <td class="px-4 py-3 text-center">UserDefaults</td>
+                            <td class="px-4 py-3 text-center">UserDefaults</td>
+                            <td class="px-4 py-3 text-center">Room</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-3 font-medium">Для кого</td>
+                            <td class="px-4 py-3 text-center">Enterprise</td>
+                            <td class="px-4 py-3 text-center">Стартапы</td>
+                            <td class="px-4 py-3 text-center">Android проекты</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </section>
 
@@ -229,9 +289,9 @@
             <p>Open Source. Бесплатно для всех.</p>
             <p class="mt-2">
                 Основано на проектах
-                <a href="https://github.com/nicklockwood/EcommerceAppUIKit" target="_blank" class="text-primary hover:underline">EcommerceAppUIKit</a>
-                и
-                <a href="https://github.com/BerkaySancar/ShoppingApp-SwiftUI-MVVM" target="_blank" class="text-primary hover:underline">ShoppingApp-SwiftUI-MVVM</a>
+                <a href="https://github.com/nicklockwood/EcommerceAppUIKit" target="_blank" class="text-blue-500 hover:underline">EcommerceAppUIKit</a>,
+                <a href="https://github.com/BerkaySancar/ShoppingApp-SwiftUI-MVVM" target="_blank" class="text-purple-500 hover:underline">ShoppingApp-SwiftUI</a> и
+                <a href="https://github.com/mustfaunlu/Ecommerce-Compose" target="_blank" class="text-green-500 hover:underline">Ecommerce-Compose</a>
             </p>
         </div>
     </footer>

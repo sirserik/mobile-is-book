@@ -1,0 +1,1177 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Парсинг JSON в Kotlin | Android E-Commerce</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        code, pre { font-family: 'JetBrains Mono', monospace; }
+        pre { background: #1e1e1e; color: #d4d4d4; padding: 1rem; border-radius: 0.5rem; overflow-x: auto; }
+        .keyword { color: #cc7832; }
+        .type { color: #a9b7c6; }
+        .string { color: #6a8759; }
+        .comment { color: #808080; }
+        .property { color: #9876aa; }
+        .number { color: #6897bb; }
+        .annotation { color: #bbb529; }
+        .function { color: #ffc66d; }
+        .json-key { color: #9cdcfe; }
+        .json-string { color: #ce9178; }
+        .json-number { color: #b5cea8; }
+        .json-bool { color: #569cd6; }
+        .exercise { border-left: 4px solid #3DDC84; }
+        .answer { display: none; }
+        .answer.show { display: block; }
+        .difficulty-easy { background: #dcfce7; color: #166534; }
+        .difficulty-medium { background: #fef3c7; color: #92400e; }
+        .difficulty-hard { background: #fee2e2; color: #991b1b; }
+        .lib-moshi { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+        .lib-gson { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); }
+    </style>
+</head>
+<body class="bg-white dark:bg-zinc-900">
+    <div class="max-w-4xl mx-auto px-6 py-12">
+
+        <!-- Header -->
+        <div class="mb-12">
+            <a href="../index.html" class="text-green-500 hover:underline mb-4 inline-block">&larr; Назад к оглавлению</a>
+            <h1 class="text-4xl font-bold text-zinc-900 dark:text-white mb-4">Парсинг JSON в Kotlin</h1>
+            <p class="text-xl text-zinc-600 dark:text-zinc-400">
+                Полное руководство по Moshi и Gson с практическими упражнениями
+            </p>
+        </div>
+
+        <!-- Libraries Comparison -->
+        <div class="grid md:grid-cols-2 gap-6 mb-12">
+            <div class="lib-moshi rounded-xl p-6 text-white">
+                <h3 class="text-xl font-bold mb-2">Moshi</h3>
+                <p class="text-white/80 text-sm mb-3">Современная библиотека от Square</p>
+                <ul class="text-sm space-y-1 text-white/90">
+                    <li>✓ Kotlin-first подход</li>
+                    <li>✓ Codegen для производительности</li>
+                    <li>✓ Null-safety из коробки</li>
+                    <li>✓ Рекомендуется для новых проектов</li>
+                </ul>
+            </div>
+            <div class="lib-gson rounded-xl p-6 text-white">
+                <h3 class="text-xl font-bold mb-2">Gson</h3>
+                <p class="text-white/80 text-sm mb-3">Библиотека от Google</p>
+                <ul class="text-sm space-y-1 text-white/90">
+                    <li>✓ Проверенная временем</li>
+                    <li>✓ Простой API</li>
+                    <li>✓ Большое сообщество</li>
+                    <li>✓ Хороша для legacy проектов</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Table of Contents -->
+        <div class="bg-zinc-50 dark:bg-zinc-800 rounded-xl p-6 mb-12">
+            <h2 class="text-lg font-semibold text-zinc-900 dark:text-white mb-4">Содержание</h2>
+            <div class="grid md:grid-cols-2 gap-2">
+                <a href="#moshi-basics" class="text-green-500 hover:underline">1. Основы Moshi</a>
+                <a href="#simple-object" class="text-green-500 hover:underline">2. Простой объект</a>
+                <a href="#arrays" class="text-green-500 hover:underline">3. Массивы и списки</a>
+                <a href="#nested" class="text-green-500 hover:underline">4. Вложенные объекты</a>
+                <a href="#json-annotation" class="text-green-500 hover:underline">5. @Json аннотация</a>
+                <a href="#nullable" class="text-green-500 hover:underline">6. Nullable поля</a>
+                <a href="#retrofit" class="text-green-500 hover:underline">7. Интеграция с Retrofit</a>
+                <a href="#gson" class="text-green-500 hover:underline">8. Альтернатива: Gson</a>
+                <a href="#errors" class="text-green-500 hover:underline">9. Обработка ошибок</a>
+                <a href="#real-api" class="text-green-500 hover:underline">10. Реальные API примеры</a>
+                <a href="#exercises" class="text-green-500 hover:underline">11. Упражнения</a>
+            </div>
+        </div>
+
+        <!-- Section 1: Moshi Basics -->
+        <section id="moshi-basics" class="mb-16">
+            <h2 class="text-2xl font-bold text-zinc-900 dark:text-white mb-6">1. Основы Moshi</h2>
+
+            <div class="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-xl p-6 mb-6">
+                <h3 class="font-semibold text-green-900 dark:text-green-100 mb-2">Что такое Moshi?</h3>
+                <p class="text-green-800 dark:text-green-200">
+                    <strong>Moshi</strong> — современная JSON библиотека для Kotlin/Java от Square (создатели Retrofit, OkHttp).
+                    Использует аннотации и codegen для быстрого и безопасного парсинга.
+                </p>
+            </div>
+
+            <h3 class="text-lg font-semibold text-zinc-800 dark:text-zinc-200 mb-4">Подключение в Gradle</h3>
+            <pre class="mb-6"><code><span class="comment">// build.gradle.kts (Module: app)</span>
+<span class="function">plugins</span> {
+    id(<span class="string">"com.google.devtools.ksp"</span>) version <span class="string">"1.9.0-1.0.13"</span>
+}
+
+<span class="function">dependencies</span> {
+    <span class="comment">// Moshi core</span>
+    <span class="function">implementation</span>(<span class="string">"com.squareup.moshi:moshi:1.15.0"</span>)
+    <span class="function">implementation</span>(<span class="string">"com.squareup.moshi:moshi-kotlin:1.15.0"</span>)
+
+    <span class="comment">// Codegen (рекомендуется для производительности)</span>
+    <span class="function">ksp</span>(<span class="string">"com.squareup.moshi:moshi-kotlin-codegen:1.15.0"</span>)
+}</code></pre>
+
+            <div class="grid md:grid-cols-2 gap-6 mb-6">
+                <div>
+                    <h4 class="font-semibold text-zinc-700 dark:text-zinc-300 mb-2">JSON</h4>
+                    <pre><code>{
+  <span class="json-key">"id"</span>: <span class="json-number">1</span>,
+  <span class="json-key">"name"</span>: <span class="json-string">"iPhone"</span>,
+  <span class="json-key">"price"</span>: <span class="json-number">999.99</span>
+}</code></pre>
+                </div>
+                <div>
+                    <h4 class="font-semibold text-zinc-700 dark:text-zinc-300 mb-2">Kotlin Data Class</h4>
+                    <pre><code><span class="annotation">@JsonClass</span>(generateAdapter = <span class="keyword">true</span>)
+<span class="keyword">data class</span> <span class="type">Product</span>(
+    <span class="keyword">val</span> <span class="property">id</span>: <span class="type">Int</span>,
+    <span class="keyword">val</span> <span class="property">name</span>: <span class="type">String</span>,
+    <span class="keyword">val</span> <span class="property">price</span>: <span class="type">Double</span>
+)</code></pre>
+                </div>
+            </div>
+
+            <div class="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-xl p-6">
+                <h4 class="font-semibold text-blue-900 dark:text-blue-100 mb-2">Аналог в JavaScript/TypeScript</h4>
+                <pre class="!bg-blue-900/30"><code><span class="comment">// TypeScript interface</span>
+<span class="keyword">interface</span> <span class="type">Product</span> {
+    <span class="property">id</span>: <span class="type">number</span>;
+    <span class="property">name</span>: <span class="type">string</span>;
+    <span class="property">price</span>: <span class="type">number</span>;
+}
+
+<span class="comment">// Парсинг</span>
+<span class="keyword">const</span> product: <span class="type">Product</span> = JSON.<span class="function">parse</span>(jsonString);</code></pre>
+            </div>
+        </section>
+
+        <!-- Section 2: Simple Object -->
+        <section id="simple-object" class="mb-16">
+            <h2 class="text-2xl font-bold text-zinc-900 dark:text-white mb-6">2. Парсинг простого объекта</h2>
+
+            <pre class="mb-6"><code><span class="keyword">import</span> com.squareup.moshi.Moshi
+<span class="keyword">import</span> com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
+
+<span class="comment">// 1. Создаём модель</span>
+<span class="annotation">@JsonClass</span>(generateAdapter = <span class="keyword">true</span>)
+<span class="keyword">data class</span> <span class="type">Product</span>(
+    <span class="keyword">val</span> <span class="property">id</span>: <span class="type">Int</span>,
+    <span class="keyword">val</span> <span class="property">name</span>: <span class="type">String</span>,
+    <span class="keyword">val</span> <span class="property">price</span>: <span class="type">Double</span>
+)
+
+<span class="comment">// 2. Создаём Moshi instance</span>
+<span class="keyword">val</span> <span class="property">moshi</span> = Moshi.Builder()
+    .<span class="function">addLast</span>(KotlinJsonAdapterFactory())
+    .<span class="function">build</span>()
+
+<span class="comment">// 3. Получаем адаптер для нашего типа</span>
+<span class="keyword">val</span> <span class="property">adapter</span> = moshi.<span class="function">adapter</span>(Product::<span class="keyword">class</span>.java)
+
+<span class="comment">// 4. Парсим JSON строку</span>
+<span class="keyword">val</span> <span class="property">jsonString</span> = <span class="string">"""
+    {
+        "id": 1,
+        "name": "MacBook Pro",
+        "price": 1999.99
+    }
+"""</span>
+
+<span class="keyword">val</span> <span class="property">product</span> = adapter.<span class="function">fromJson</span>(jsonString)
+
+<span class="comment">// 5. Используем</span>
+<span class="function">println</span>(product?.<span class="property">name</span>)  <span class="comment">// "MacBook Pro"</span>
+<span class="function">println</span>(product?.<span class="property">price</span>) <span class="comment">// 1999.99</span>
+
+<span class="comment">// Обратно в JSON</span>
+<span class="keyword">val</span> <span class="property">json</span> = adapter.<span class="function">toJson</span>(product)
+<span class="function">println</span>(json) <span class="comment">// {"id":1,"name":"MacBook Pro","price":1999.99}</span></code></pre>
+
+            <div class="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-xl p-6">
+                <h4 class="font-semibold text-yellow-900 dark:text-yellow-100 mb-2">Важно!</h4>
+                <ul class="text-yellow-800 dark:text-yellow-200 space-y-1">
+                    <li>• <code>@JsonClass(generateAdapter = true)</code> — генерирует адаптер во время компиляции (быстрее)</li>
+                    <li>• <code>KotlinJsonAdapterFactory()</code> — нужен для reflection (медленнее, но без аннотаций)</li>
+                    <li>• Имена свойств должны совпадать с ключами в JSON</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Section 3: Arrays -->
+        <section id="arrays" class="mb-16">
+            <h2 class="text-2xl font-bold text-zinc-900 dark:text-white mb-6">3. Массивы и списки</h2>
+
+            <h3 class="text-lg font-semibold text-zinc-800 dark:text-zinc-200 mb-4">Список объектов</h3>
+
+            <div class="grid md:grid-cols-2 gap-6 mb-6">
+                <div>
+                    <h4 class="font-semibold text-zinc-700 dark:text-zinc-300 mb-2">JSON</h4>
+                    <pre><code>[
+  { <span class="json-key">"id"</span>: <span class="json-number">1</span>, <span class="json-key">"name"</span>: <span class="json-string">"iPhone"</span> },
+  { <span class="json-key">"id"</span>: <span class="json-number">2</span>, <span class="json-key">"name"</span>: <span class="json-string">"iPad"</span> },
+  { <span class="json-key">"id"</span>: <span class="json-number">3</span>, <span class="json-key">"name"</span>: <span class="json-string">"MacBook"</span> }
+]</code></pre>
+                </div>
+                <div>
+                    <h4 class="font-semibold text-zinc-700 dark:text-zinc-300 mb-2">Kotlin</h4>
+                    <pre><code><span class="keyword">import</span> com.squareup.moshi.Types
+
+<span class="comment">// Создаём тип для List&lt;Product&gt;</span>
+<span class="keyword">val</span> <span class="property">listType</span> = Types.<span class="function">newParameterizedType</span>(
+    List::<span class="keyword">class</span>.java,
+    Product::<span class="keyword">class</span>.java
+)
+
+<span class="keyword">val</span> <span class="property">adapter</span> = moshi.<span class="function">adapter</span>&lt;List&lt;Product&gt;&gt;(listType)
+
+<span class="keyword">val</span> <span class="property">products</span> = adapter.<span class="function">fromJson</span>(jsonString)
+<span class="comment">// products: List&lt;Product&gt;?</span></code></pre>
+                </div>
+            </div>
+
+            <h3 class="text-lg font-semibold text-zinc-800 dark:text-zinc-200 mb-4">Список внутри объекта (чаще всего)</h3>
+
+            <div class="grid md:grid-cols-2 gap-6 mb-6">
+                <div>
+                    <h4 class="font-semibold text-zinc-700 dark:text-zinc-300 mb-2">JSON</h4>
+                    <pre><code>{
+  <span class="json-key">"products"</span>: [
+    { <span class="json-key">"id"</span>: <span class="json-number">1</span>, <span class="json-key">"name"</span>: <span class="json-string">"iPhone"</span> },
+    { <span class="json-key">"id"</span>: <span class="json-number">2</span>, <span class="json-key">"name"</span>: <span class="json-string">"iPad"</span> }
+  ],
+  <span class="json-key">"total"</span>: <span class="json-number">2</span>,
+  <span class="json-key">"skip"</span>: <span class="json-number">0</span>,
+  <span class="json-key">"limit"</span>: <span class="json-number">30</span>
+}</code></pre>
+                </div>
+                <div>
+                    <h4 class="font-semibold text-zinc-700 dark:text-zinc-300 mb-2">Kotlin</h4>
+                    <pre><code><span class="annotation">@JsonClass</span>(generateAdapter = <span class="keyword">true</span>)
+<span class="keyword">data class</span> <span class="type">Product</span>(
+    <span class="keyword">val</span> <span class="property">id</span>: <span class="type">Int</span>,
+    <span class="keyword">val</span> <span class="property">name</span>: <span class="type">String</span>
+)
+
+<span class="annotation">@JsonClass</span>(generateAdapter = <span class="keyword">true</span>)
+<span class="keyword">data class</span> <span class="type">ProductsResponse</span>(
+    <span class="keyword">val</span> <span class="property">products</span>: <span class="type">List</span>&lt;<span class="type">Product</span>&gt;,
+    <span class="keyword">val</span> <span class="property">total</span>: <span class="type">Int</span>,
+    <span class="keyword">val</span> <span class="property">skip</span>: <span class="type">Int</span>,
+    <span class="keyword">val</span> <span class="property">limit</span>: <span class="type">Int</span>
+)
+
+<span class="comment">// Парсинг</span>
+<span class="keyword">val</span> adapter = moshi.<span class="function">adapter</span>(ProductsResponse::<span class="keyword">class</span>.java)
+<span class="keyword">val</span> response = adapter.<span class="function">fromJson</span>(json)
+<span class="function">println</span>(response?.<span class="property">products</span>.<span class="property">size</span>)</code></pre>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 4: Nested Objects -->
+        <section id="nested" class="mb-16">
+            <h2 class="text-2xl font-bold text-zinc-900 dark:text-white mb-6">4. Вложенные объекты</h2>
+
+            <pre class="mb-6"><code><span class="comment">// JSON с вложенными объектами</span>
+{
+  <span class="json-key">"id"</span>: <span class="json-number">1</span>,
+  <span class="json-key">"title"</span>: <span class="json-string">"iPhone 15"</span>,
+  <span class="json-key">"price"</span>: <span class="json-number">999</span>,
+  <span class="json-key">"category"</span>: {
+    <span class="json-key">"id"</span>: <span class="json-number">5</span>,
+    <span class="json-key">"name"</span>: <span class="json-string">"Electronics"</span>,
+    <span class="json-key">"slug"</span>: <span class="json-string">"electronics"</span>
+  },
+  <span class="json-key">"images"</span>: [<span class="json-string">"img1.jpg"</span>, <span class="json-string">"img2.jpg"</span>],
+  <span class="json-key">"meta"</span>: {
+    <span class="json-key">"createdAt"</span>: <span class="json-string">"2024-01-15T10:00:00Z"</span>,
+    <span class="json-key">"barcode"</span>: <span class="json-string">"1234567890"</span>
+  }
+}</code></pre>
+
+            <pre><code><span class="comment">// Kotlin модели</span>
+
+<span class="annotation">@JsonClass</span>(generateAdapter = <span class="keyword">true</span>)
+<span class="keyword">data class</span> <span class="type">Category</span>(
+    <span class="keyword">val</span> <span class="property">id</span>: <span class="type">Int</span>,
+    <span class="keyword">val</span> <span class="property">name</span>: <span class="type">String</span>,
+    <span class="keyword">val</span> <span class="property">slug</span>: <span class="type">String</span>
+)
+
+<span class="annotation">@JsonClass</span>(generateAdapter = <span class="keyword">true</span>)
+<span class="keyword">data class</span> <span class="type">ProductMeta</span>(
+    <span class="keyword">val</span> <span class="property">createdAt</span>: <span class="type">String</span>,
+    <span class="keyword">val</span> <span class="property">barcode</span>: <span class="type">String</span>
+)
+
+<span class="annotation">@JsonClass</span>(generateAdapter = <span class="keyword">true</span>)
+<span class="keyword">data class</span> <span class="type">Product</span>(
+    <span class="keyword">val</span> <span class="property">id</span>: <span class="type">Int</span>,
+    <span class="keyword">val</span> <span class="property">title</span>: <span class="type">String</span>,
+    <span class="keyword">val</span> <span class="property">price</span>: <span class="type">Int</span>,
+    <span class="keyword">val</span> <span class="property">category</span>: <span class="type">Category</span>,          <span class="comment">// вложенный объект</span>
+    <span class="keyword">val</span> <span class="property">images</span>: <span class="type">List</span>&lt;<span class="type">String</span>&gt;,        <span class="comment">// список строк</span>
+    <span class="keyword">val</span> <span class="property">meta</span>: <span class="type">ProductMeta</span>             <span class="comment">// вложенный объект</span>
+)
+
+<span class="comment">// Использование</span>
+<span class="keyword">val</span> product = adapter.<span class="function">fromJson</span>(json)
+<span class="function">println</span>(product?.<span class="property">category</span>.<span class="property">name</span>)  <span class="comment">// "Electronics"</span>
+<span class="function">println</span>(product?.<span class="property">images</span>[<span class="number">0</span>])       <span class="comment">// "img1.jpg"</span>
+<span class="function">println</span>(product?.<span class="property">meta</span>.<span class="property">barcode</span>)   <span class="comment">// "1234567890"</span></code></pre>
+        </section>
+
+        <!-- Section 5: @Json Annotation -->
+        <section id="json-annotation" class="mb-16">
+            <h2 class="text-2xl font-bold text-zinc-900 dark:text-white mb-6">5. @Json аннотация — переименование полей</h2>
+
+            <div class="bg-purple-50 dark:bg-purple-900/20 border border-purple-200 dark:border-purple-800 rounded-xl p-6 mb-6">
+                <h4 class="font-semibold text-purple-900 dark:text-purple-100 mb-2">Когда нужен @Json?</h4>
+                <ul class="text-purple-800 dark:text-purple-200 space-y-1">
+                    <li>• JSON ключи в snake_case, а Kotlin использует camelCase</li>
+                    <li>• JSON ключ — зарезервированное слово Kotlin (class, object, when)</li>
+                    <li>• Хотите использовать другое имя в коде</li>
+                </ul>
+            </div>
+
+            <h3 class="text-lg font-semibold text-zinc-800 dark:text-zinc-200 mb-4">Пример: snake_case → camelCase</h3>
+            <div class="grid md:grid-cols-2 gap-6 mb-6">
+                <div>
+                    <h4 class="font-semibold text-zinc-700 dark:text-zinc-300 mb-2">JSON (snake_case)</h4>
+                    <pre><code>{
+  <span class="json-key">"user_id"</span>: <span class="json-number">123</span>,
+  <span class="json-key">"first_name"</span>: <span class="json-string">"Серик"</span>,
+  <span class="json-key">"last_name"</span>: <span class="json-string">"Иванов"</span>,
+  <span class="json-key">"discount_percentage"</span>: <span class="json-number">12.5</span>
+}</code></pre>
+                </div>
+                <div>
+                    <h4 class="font-semibold text-zinc-700 dark:text-zinc-300 mb-2">Kotlin (camelCase)</h4>
+                    <pre><code><span class="keyword">import</span> com.squareup.moshi.Json
+
+<span class="annotation">@JsonClass</span>(generateAdapter = <span class="keyword">true</span>)
+<span class="keyword">data class</span> <span class="type">User</span>(
+    <span class="annotation">@Json</span>(name = <span class="string">"user_id"</span>)
+    <span class="keyword">val</span> <span class="property">userId</span>: <span class="type">Int</span>,
+
+    <span class="annotation">@Json</span>(name = <span class="string">"first_name"</span>)
+    <span class="keyword">val</span> <span class="property">firstName</span>: <span class="type">String</span>,
+
+    <span class="annotation">@Json</span>(name = <span class="string">"last_name"</span>)
+    <span class="keyword">val</span> <span class="property">lastName</span>: <span class="type">String</span>,
+
+    <span class="annotation">@Json</span>(name = <span class="string">"discount_percentage"</span>)
+    <span class="keyword">val</span> <span class="property">discountPercentage</span>: <span class="type">Double</span>
+)</code></pre>
+                </div>
+            </div>
+
+            <h3 class="text-lg font-semibold text-zinc-800 dark:text-zinc-200 mb-4">Реальный пример из проекта</h3>
+            <pre><code><span class="comment">// Из Ecommerce-Compose проекта</span>
+<span class="annotation">@JsonClass</span>(generateAdapter = <span class="keyword">true</span>)
+<span class="keyword">data class</span> <span class="type">Product</span>(
+    <span class="annotation">@Json</span>(name = <span class="string">"brand"</span>)
+    <span class="keyword">val</span> <span class="property">brand</span>: <span class="type">String</span>,
+
+    <span class="annotation">@Json</span>(name = <span class="string">"category"</span>)
+    <span class="keyword">val</span> <span class="property">category</span>: <span class="type">String</span>,
+
+    <span class="annotation">@Json</span>(name = <span class="string">"description"</span>)
+    <span class="keyword">val</span> <span class="property">description</span>: <span class="type">String</span>,
+
+    <span class="annotation">@Json</span>(name = <span class="string">"discountPercentage"</span>)
+    <span class="keyword">val</span> <span class="property">discountPercentage</span>: <span class="type">Double</span>,
+
+    <span class="annotation">@Json</span>(name = <span class="string">"id"</span>)
+    <span class="keyword">val</span> <span class="property">id</span>: <span class="type">Int</span>,
+
+    <span class="annotation">@Json</span>(name = <span class="string">"images"</span>)
+    <span class="keyword">val</span> <span class="property">images</span>: <span class="type">List</span>&lt;<span class="type">String</span>&gt;,
+
+    <span class="annotation">@Json</span>(name = <span class="string">"price"</span>)
+    <span class="keyword">val</span> <span class="property">price</span>: <span class="type">Int</span>,
+
+    <span class="annotation">@Json</span>(name = <span class="string">"rating"</span>)
+    <span class="keyword">val</span> <span class="property">rating</span>: <span class="type">Double</span>,
+
+    <span class="annotation">@Json</span>(name = <span class="string">"stock"</span>)
+    <span class="keyword">val</span> <span class="property">stock</span>: <span class="type">Int</span>,
+
+    <span class="annotation">@Json</span>(name = <span class="string">"thumbnail"</span>)
+    <span class="keyword">val</span> <span class="property">thumbnail</span>: <span class="type">String</span>,
+
+    <span class="annotation">@Json</span>(name = <span class="string">"title"</span>)
+    <span class="keyword">val</span> <span class="property">title</span>: <span class="type">String</span>
+)</code></pre>
+        </section>
+
+        <!-- Section 6: Nullable -->
+        <section id="nullable" class="mb-16">
+            <h2 class="text-2xl font-bold text-zinc-900 dark:text-white mb-6">6. Nullable поля</h2>
+
+            <div class="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-xl p-6 mb-6">
+                <h4 class="font-semibold text-red-900 dark:text-red-100 mb-2">Проблема</h4>
+                <p class="text-red-800 dark:text-red-200">
+                    Если в JSON отсутствует поле, которое объявлено как non-null — Moshi выбросит исключение!
+                </p>
+            </div>
+
+            <h3 class="text-lg font-semibold text-zinc-800 dark:text-zinc-200 mb-4">Решение: Nullable типы</h3>
+            <div class="grid md:grid-cols-2 gap-6 mb-6">
+                <div>
+                    <h4 class="font-semibold text-zinc-700 dark:text-zinc-300 mb-2">JSON (поле может отсутствовать)</h4>
+                    <pre><code><span class="comment">// Иногда есть discount</span>
+{
+  <span class="json-key">"id"</span>: <span class="json-number">1</span>,
+  <span class="json-key">"price"</span>: <span class="json-number">100</span>,
+  <span class="json-key">"discount"</span>: <span class="json-number">10</span>
+}
+
+<span class="comment">// Иногда нет</span>
+{
+  <span class="json-key">"id"</span>: <span class="json-number">2</span>,
+  <span class="json-key">"price"</span>: <span class="json-number">200</span>
+}</code></pre>
+                </div>
+                <div>
+                    <h4 class="font-semibold text-zinc-700 dark:text-zinc-300 mb-2">Kotlin</h4>
+                    <pre><code><span class="annotation">@JsonClass</span>(generateAdapter = <span class="keyword">true</span>)
+<span class="keyword">data class</span> <span class="type">Product</span>(
+    <span class="keyword">val</span> <span class="property">id</span>: <span class="type">Int</span>,
+    <span class="keyword">val</span> <span class="property">price</span>: <span class="type">Double</span>,
+    <span class="keyword">val</span> <span class="property">discount</span>: <span class="type">Double?</span> = <span class="keyword">null</span>  <span class="comment">// Nullable!</span>
+)
+
+<span class="comment">// Использование</span>
+<span class="keyword">val</span> discount = product.<span class="property">discount</span> ?: <span class="number">0.0</span>
+<span class="function">println</span>(<span class="string">"Скидка: $discount%"</span>)</code></pre>
+                </div>
+            </div>
+
+            <h3 class="text-lg font-semibold text-zinc-800 dark:text-zinc-200 mb-4">Значения по умолчанию</h3>
+            <pre><code><span class="annotation">@JsonClass</span>(generateAdapter = <span class="keyword">true</span>)
+<span class="keyword">data class</span> <span class="type">Product</span>(
+    <span class="keyword">val</span> <span class="property">id</span>: <span class="type">Int</span>,
+    <span class="keyword">val</span> <span class="property">title</span>: <span class="type">String</span>,
+    <span class="keyword">val</span> <span class="property">description</span>: <span class="type">String?</span> = <span class="keyword">null</span>,      <span class="comment">// может быть null</span>
+    <span class="keyword">val</span> <span class="property">discount</span>: <span class="type">Double</span> = <span class="number">0.0</span>,           <span class="comment">// значение по умолчанию</span>
+    <span class="keyword">val</span> <span class="property">tags</span>: <span class="type">List</span>&lt;<span class="type">String</span>&gt; = <span class="function">emptyList</span>(), <span class="comment">// пустой список</span>
+    <span class="keyword">val</span> <span class="property">isActive</span>: <span class="type">Boolean</span> = <span class="keyword">true</span>         <span class="comment">// по умолчанию true</span>
+)</code></pre>
+
+            <div class="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-xl p-6 mt-6">
+                <h4 class="font-semibold text-green-900 dark:text-green-100 mb-2">Kotlin vs Swift сравнение</h4>
+                <div class="grid md:grid-cols-2 gap-4 text-sm">
+                    <div>
+                        <p class="font-medium text-green-800 dark:text-green-200 mb-2">Kotlin:</p>
+                        <pre class="!bg-green-900/30 !text-sm"><code><span class="keyword">val</span> <span class="property">discount</span>: <span class="type">Double?</span> = <span class="keyword">null</span>
+<span class="keyword">val</span> value = discount ?: <span class="number">0.0</span></code></pre>
+                    </div>
+                    <div>
+                        <p class="font-medium text-green-800 dark:text-green-200 mb-2">Swift:</p>
+                        <pre class="!bg-green-900/30 !text-sm"><code><span class="keyword">let</span> <span class="property">discount</span>: <span class="type">Double?</span> = <span class="keyword">nil</span>
+<span class="keyword">let</span> value = discount ?? <span class="number">0.0</span></code></pre>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 7: Retrofit Integration -->
+        <section id="retrofit" class="mb-16">
+            <h2 class="text-2xl font-bold text-zinc-900 dark:text-white mb-6">7. Интеграция с Retrofit</h2>
+
+            <pre class="mb-6"><code><span class="comment">// build.gradle.kts</span>
+<span class="function">dependencies</span> {
+    <span class="function">implementation</span>(<span class="string">"com.squareup.retrofit2:retrofit:2.9.0"</span>)
+    <span class="function">implementation</span>(<span class="string">"com.squareup.retrofit2:converter-moshi:2.9.0"</span>)
+    <span class="function">implementation</span>(<span class="string">"com.squareup.moshi:moshi-kotlin:1.15.0"</span>)
+}</code></pre>
+
+            <pre class="mb-6"><code><span class="comment">// ApiService.kt</span>
+<span class="keyword">interface</span> <span class="type">ApiService</span> {
+
+    <span class="annotation">@GET</span>(<span class="string">"products"</span>)
+    <span class="keyword">suspend fun</span> <span class="function">getProducts</span>(): <span class="type">ProductsResponse</span>
+
+    <span class="annotation">@GET</span>(<span class="string">"products/{id}"</span>)
+    <span class="keyword">suspend fun</span> <span class="function">getProductById</span>(
+        <span class="annotation">@Path</span>(<span class="string">"id"</span>) productId: <span class="type">Int</span>
+    ): <span class="type">Product</span>
+
+    <span class="annotation">@GET</span>(<span class="string">"products/search"</span>)
+    <span class="keyword">suspend fun</span> <span class="function">searchProducts</span>(
+        <span class="annotation">@Query</span>(<span class="string">"q"</span>) query: <span class="type">String</span>
+    ): <span class="type">ProductsResponse</span>
+
+    <span class="annotation">@GET</span>(<span class="string">"products/category/{name}"</span>)
+    <span class="keyword">suspend fun</span> <span class="function">getProductsByCategory</span>(
+        <span class="annotation">@Path</span>(<span class="string">"name"</span>) categoryName: <span class="type">String</span>
+    ): <span class="type">ProductsResponse</span>
+}</code></pre>
+
+            <pre><code><span class="comment">// Retrofit Setup</span>
+<span class="keyword">object</span> <span class="type">RetrofitClient</span> {
+
+    <span class="keyword">private const val</span> <span class="property">BASE_URL</span> = <span class="string">"https://dummyjson.com/"</span>
+
+    <span class="keyword">private val</span> <span class="property">moshi</span> = Moshi.Builder()
+        .<span class="function">addLast</span>(KotlinJsonAdapterFactory())
+        .<span class="function">build</span>()
+
+    <span class="keyword">private val</span> <span class="property">retrofit</span> = Retrofit.Builder()
+        .<span class="function">baseUrl</span>(<span class="property">BASE_URL</span>)
+        .<span class="function">addConverterFactory</span>(MoshiConverterFactory.<span class="function">create</span>(<span class="property">moshi</span>))
+        .<span class="function">build</span>()
+
+    <span class="keyword">val</span> <span class="property">api</span>: <span class="type">ApiService</span> = retrofit.<span class="function">create</span>(ApiService::<span class="keyword">class</span>.java)
+}
+
+<span class="comment">// Использование в ViewModel</span>
+<span class="keyword">class</span> <span class="type">HomeViewModel</span> : <span class="type">ViewModel</span>() {
+
+    <span class="keyword">private val</span> <span class="property">_products</span> = MutableStateFlow&lt;List&lt;Product&gt;&gt;(<span class="function">emptyList</span>())
+    <span class="keyword">val</span> <span class="property">products</span>: StateFlow&lt;List&lt;Product&gt;&gt; = <span class="property">_products</span>
+
+    <span class="keyword">fun</span> <span class="function">loadProducts</span>() {
+        viewModelScope.<span class="function">launch</span> {
+            <span class="keyword">try</span> {
+                <span class="keyword">val</span> response = RetrofitClient.<span class="property">api</span>.<span class="function">getProducts</span>()
+                <span class="property">_products</span>.<span class="property">value</span> = response.<span class="property">products</span>
+            } <span class="keyword">catch</span> (e: Exception) {
+                <span class="comment">// Обработка ошибки</span>
+            }
+        }
+    }
+}</code></pre>
+        </section>
+
+        <!-- Section 8: Gson Alternative -->
+        <section id="gson" class="mb-16">
+            <h2 class="text-2xl font-bold text-zinc-900 dark:text-white mb-6">8. Альтернатива: Gson</h2>
+
+            <pre class="mb-6"><code><span class="comment">// build.gradle.kts</span>
+<span class="function">dependencies</span> {
+    <span class="function">implementation</span>(<span class="string">"com.google.code.gson:gson:2.10.1"</span>)
+    <span class="comment">// Для Retrofit</span>
+    <span class="function">implementation</span>(<span class="string">"com.squareup.retrofit2:converter-gson:2.9.0"</span>)
+}</code></pre>
+
+            <div class="grid md:grid-cols-2 gap-6 mb-6">
+                <div>
+                    <h4 class="font-semibold text-zinc-700 dark:text-zinc-300 mb-2">Moshi</h4>
+                    <pre><code><span class="annotation">@JsonClass</span>(generateAdapter = <span class="keyword">true</span>)
+<span class="keyword">data class</span> <span class="type">User</span>(
+    <span class="annotation">@Json</span>(name = <span class="string">"user_id"</span>)
+    <span class="keyword">val</span> <span class="property">userId</span>: <span class="type">Int</span>,
+
+    <span class="annotation">@Json</span>(name = <span class="string">"first_name"</span>)
+    <span class="keyword">val</span> <span class="property">firstName</span>: <span class="type">String</span>
+)
+
+<span class="comment">// Парсинг</span>
+<span class="keyword">val</span> moshi = Moshi.Builder()
+    .<span class="function">addLast</span>(KotlinJsonAdapterFactory())
+    .<span class="function">build</span>()
+<span class="keyword">val</span> adapter = moshi.<span class="function">adapter</span>(User::<span class="keyword">class</span>.java)
+<span class="keyword">val</span> user = adapter.<span class="function">fromJson</span>(json)</code></pre>
+                </div>
+                <div>
+                    <h4 class="font-semibold text-zinc-700 dark:text-zinc-300 mb-2">Gson</h4>
+                    <pre><code><span class="keyword">data class</span> <span class="type">User</span>(
+    <span class="annotation">@SerializedName</span>(<span class="string">"user_id"</span>)
+    <span class="keyword">val</span> <span class="property">userId</span>: <span class="type">Int</span>,
+
+    <span class="annotation">@SerializedName</span>(<span class="string">"first_name"</span>)
+    <span class="keyword">val</span> <span class="property">firstName</span>: <span class="type">String</span>
+)
+
+<span class="comment">// Парсинг</span>
+<span class="keyword">val</span> gson = Gson()
+<span class="keyword">val</span> user = gson.<span class="function">fromJson</span>(json, User::<span class="keyword">class</span>.java)
+
+<span class="comment">// Обратно в JSON</span>
+<span class="keyword">val</span> jsonOutput = gson.<span class="function">toJson</span>(user)</code></pre>
+                </div>
+            </div>
+
+            <div class="bg-zinc-100 dark:bg-zinc-800 rounded-xl p-6">
+                <h4 class="font-semibold text-zinc-900 dark:text-white mb-4">Moshi vs Gson</h4>
+                <table class="w-full text-sm">
+                    <thead>
+                        <tr class="text-left border-b border-zinc-300 dark:border-zinc-600">
+                            <th class="pb-2">Критерий</th>
+                            <th class="pb-2">Moshi</th>
+                            <th class="pb-2">Gson</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-zinc-700 dark:text-zinc-300">
+                        <tr class="border-b border-zinc-200 dark:border-zinc-700">
+                            <td class="py-2">Kotlin поддержка</td>
+                            <td class="py-2 text-green-600">Отличная</td>
+                            <td class="py-2 text-yellow-600">Хорошая</td>
+                        </tr>
+                        <tr class="border-b border-zinc-200 dark:border-zinc-700">
+                            <td class="py-2">Null-safety</td>
+                            <td class="py-2 text-green-600">Строгая проверка</td>
+                            <td class="py-2 text-yellow-600">Может пропустить null</td>
+                        </tr>
+                        <tr class="border-b border-zinc-200 dark:border-zinc-700">
+                            <td class="py-2">Codegen</td>
+                            <td class="py-2 text-green-600">Есть (быстро)</td>
+                            <td class="py-2 text-red-600">Нет (reflection)</td>
+                        </tr>
+                        <tr>
+                            <td class="py-2">Сообщество</td>
+                            <td class="py-2 text-yellow-600">Растущее</td>
+                            <td class="py-2 text-green-600">Огромное</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Section 9: Error Handling -->
+        <section id="errors" class="mb-16">
+            <h2 class="text-2xl font-bold text-zinc-900 dark:text-white mb-6">9. Обработка ошибок парсинга</h2>
+
+            <pre class="mb-6"><code><span class="keyword">try</span> {
+    <span class="keyword">val</span> product = adapter.<span class="function">fromJson</span>(jsonString)
+    <span class="function">println</span>(<span class="string">"Успех: ${product?.title}"</span>)
+
+} <span class="keyword">catch</span> (e: JsonDataException) {
+    <span class="comment">// Ошибка в структуре данных (неверный тип, отсутствующее поле)</span>
+    <span class="function">println</span>(<span class="string">"Ошибка данных: ${e.message}"</span>)
+
+} <span class="keyword">catch</span> (e: JsonEncodingException) {
+    <span class="comment">// Невалидный JSON (синтаксическая ошибка)</span>
+    <span class="function">println</span>(<span class="string">"Невалидный JSON: ${e.message}"</span>)
+
+} <span class="keyword">catch</span> (e: IOException) {
+    <span class="comment">// Ошибка ввода-вывода</span>
+    <span class="function">println</span>(<span class="string">"IO ошибка: ${e.message}"</span>)
+}</code></pre>
+
+            <h3 class="text-lg font-semibold text-zinc-800 dark:text-zinc-200 mb-4">Безопасный парсинг с Result</h3>
+            <pre><code><span class="keyword">sealed class</span> <span class="type">ParseResult</span>&lt;<span class="keyword">out</span> T&gt; {
+    <span class="keyword">data class</span> <span class="type">Success</span>&lt;T&gt;(<span class="keyword">val</span> <span class="property">data</span>: T) : <span class="type">ParseResult</span>&lt;T&gt;()
+    <span class="keyword">data class</span> <span class="type">Error</span>(<span class="keyword">val</span> <span class="property">message</span>: <span class="type">String</span>) : <span class="type">ParseResult</span>&lt;<span class="type">Nothing</span>&gt;()
+}
+
+<span class="keyword">fun</span> &lt;T&gt; <span class="function">safeFromJson</span>(
+    adapter: JsonAdapter&lt;T&gt;,
+    json: <span class="type">String</span>
+): <span class="type">ParseResult</span>&lt;T&gt; {
+    <span class="keyword">return try</span> {
+        <span class="keyword">val</span> result = adapter.<span class="function">fromJson</span>(json)
+        <span class="keyword">if</span> (result != <span class="keyword">null</span>) {
+            <span class="type">ParseResult</span>.<span class="function">Success</span>(result)
+        } <span class="keyword">else</span> {
+            <span class="type">ParseResult</span>.<span class="function">Error</span>(<span class="string">"Результат null"</span>)
+        }
+    } <span class="keyword">catch</span> (e: JsonDataException) {
+        <span class="type">ParseResult</span>.<span class="function">Error</span>(<span class="string">"Ошибка структуры: ${e.message}"</span>)
+    } <span class="keyword">catch</span> (e: Exception) {
+        <span class="type">ParseResult</span>.<span class="function">Error</span>(<span class="string">"Неизвестная ошибка: ${e.message}"</span>)
+    }
+}
+
+<span class="comment">// Использование</span>
+<span class="keyword">when</span> (<span class="keyword">val</span> result = <span class="function">safeFromJson</span>(adapter, json)) {
+    <span class="keyword">is</span> <span class="type">ParseResult.Success</span> -> <span class="function">println</span>(result.<span class="property">data</span>.<span class="property">title</span>)
+    <span class="keyword">is</span> <span class="type">ParseResult.Error</span> -> <span class="function">println</span>(result.<span class="property">message</span>)
+}</code></pre>
+        </section>
+
+        <!-- Section 10: Real API Examples -->
+        <section id="real-api" class="mb-16">
+            <h2 class="text-2xl font-bold text-zinc-900 dark:text-white mb-6">10. Реальные примеры API</h2>
+
+            <h3 class="text-lg font-semibold text-zinc-800 dark:text-zinc-200 mb-4">Полный пример: DummyJSON API</h3>
+            <pre><code><span class="comment">// DTO модели (Data Transfer Objects)</span>
+
+<span class="annotation">@JsonClass</span>(generateAdapter = <span class="keyword">true</span>)
+<span class="keyword">data class</span> <span class="type">ProductDto</span>(
+    <span class="annotation">@Json</span>(name = <span class="string">"id"</span>) <span class="keyword">val</span> <span class="property">id</span>: <span class="type">Int</span>,
+    <span class="annotation">@Json</span>(name = <span class="string">"title"</span>) <span class="keyword">val</span> <span class="property">title</span>: <span class="type">String</span>,
+    <span class="annotation">@Json</span>(name = <span class="string">"description"</span>) <span class="keyword">val</span> <span class="property">description</span>: <span class="type">String</span>,
+    <span class="annotation">@Json</span>(name = <span class="string">"price"</span>) <span class="keyword">val</span> <span class="property">price</span>: <span class="type">Int</span>,
+    <span class="annotation">@Json</span>(name = <span class="string">"discountPercentage"</span>) <span class="keyword">val</span> <span class="property">discountPercentage</span>: <span class="type">Double</span>,
+    <span class="annotation">@Json</span>(name = <span class="string">"rating"</span>) <span class="keyword">val</span> <span class="property">rating</span>: <span class="type">Double</span>,
+    <span class="annotation">@Json</span>(name = <span class="string">"stock"</span>) <span class="keyword">val</span> <span class="property">stock</span>: <span class="type">Int</span>,
+    <span class="annotation">@Json</span>(name = <span class="string">"brand"</span>) <span class="keyword">val</span> <span class="property">brand</span>: <span class="type">String</span>? = <span class="keyword">null</span>,
+    <span class="annotation">@Json</span>(name = <span class="string">"category"</span>) <span class="keyword">val</span> <span class="property">category</span>: <span class="type">String</span>,
+    <span class="annotation">@Json</span>(name = <span class="string">"thumbnail"</span>) <span class="keyword">val</span> <span class="property">thumbnail</span>: <span class="type">String</span>,
+    <span class="annotation">@Json</span>(name = <span class="string">"images"</span>) <span class="keyword">val</span> <span class="property">images</span>: <span class="type">List</span>&lt;<span class="type">String</span>&gt;
+)
+
+<span class="annotation">@JsonClass</span>(generateAdapter = <span class="keyword">true</span>)
+<span class="keyword">data class</span> <span class="type">ProductsResponseDto</span>(
+    <span class="annotation">@Json</span>(name = <span class="string">"products"</span>) <span class="keyword">val</span> <span class="property">products</span>: <span class="type">List</span>&lt;<span class="type">ProductDto</span>&gt;,
+    <span class="annotation">@Json</span>(name = <span class="string">"total"</span>) <span class="keyword">val</span> <span class="property">total</span>: <span class="type">Int</span>,
+    <span class="annotation">@Json</span>(name = <span class="string">"skip"</span>) <span class="keyword">val</span> <span class="property">skip</span>: <span class="type">Int</span>,
+    <span class="annotation">@Json</span>(name = <span class="string">"limit"</span>) <span class="keyword">val</span> <span class="property">limit</span>: <span class="type">Int</span>
+)
+
+<span class="comment">// Domain модель (чистая, без аннотаций)</span>
+<span class="keyword">data class</span> <span class="type">Product</span>(
+    <span class="keyword">val</span> <span class="property">id</span>: <span class="type">Int</span>,
+    <span class="keyword">val</span> <span class="property">title</span>: <span class="type">String</span>,
+    <span class="keyword">val</span> <span class="property">price</span>: <span class="type">String</span>,
+    <span class="keyword">val</span> <span class="property">imageUrl</span>: <span class="type">String</span>,
+    <span class="keyword">val</span> <span class="property">rating</span>: <span class="type">Double</span>
+)
+
+<span class="comment">// Mapper: DTO -> Domain</span>
+<span class="keyword">fun</span> ProductDto.<span class="function">toDomain</span>(): <span class="type">Product</span> {
+    <span class="keyword">return</span> <span class="function">Product</span>(
+        id = <span class="keyword">this</span>.<span class="property">id</span>,
+        title = <span class="keyword">this</span>.<span class="property">title</span>,
+        price = <span class="string">"$${this.price}"</span>,
+        imageUrl = <span class="keyword">this</span>.<span class="property">thumbnail</span>,
+        rating = <span class="keyword">this</span>.<span class="property">rating</span>
+    )
+}
+
+<span class="keyword">fun</span> List&lt;ProductDto&gt;.<span class="function">toDomainList</span>(): <span class="type">List</span>&lt;<span class="type">Product</span>&gt; {
+    <span class="keyword">return this</span>.<span class="function">map</span> { it.<span class="function">toDomain</span>() }
+}</code></pre>
+
+            <h3 class="text-lg font-semibold text-zinc-800 dark:text-zinc-200 mb-4 mt-8">Repository с Retrofit</h3>
+            <pre><code><span class="keyword">class</span> <span class="type">ProductRepository</span>(
+    <span class="keyword">private val</span> <span class="property">api</span>: <span class="type">ApiService</span>
+) {
+    <span class="keyword">suspend fun</span> <span class="function">getProducts</span>(): <span class="type">Result</span>&lt;<span class="type">List</span>&lt;<span class="type">Product</span>&gt;&gt; {
+        <span class="keyword">return try</span> {
+            <span class="keyword">val</span> response = <span class="property">api</span>.<span class="function">getProducts</span>()
+            <span class="type">Result</span>.<span class="function">success</span>(response.<span class="property">products</span>.<span class="function">toDomainList</span>())
+        } <span class="keyword">catch</span> (e: Exception) {
+            <span class="type">Result</span>.<span class="function">failure</span>(e)
+        }
+    }
+
+    <span class="keyword">suspend fun</span> <span class="function">searchProducts</span>(query: <span class="type">String</span>): <span class="type">Result</span>&lt;<span class="type">List</span>&lt;<span class="type">Product</span>&gt;&gt; {
+        <span class="keyword">return try</span> {
+            <span class="keyword">val</span> response = <span class="property">api</span>.<span class="function">searchProducts</span>(query)
+            <span class="type">Result</span>.<span class="function">success</span>(response.<span class="property">products</span>.<span class="function">toDomainList</span>())
+        } <span class="keyword">catch</span> (e: Exception) {
+            <span class="type">Result</span>.<span class="function">failure</span>(e)
+        }
+    }
+}
+
+<span class="comment">// Использование в ViewModel</span>
+<span class="annotation">@HiltViewModel</span>
+<span class="keyword">class</span> <span class="type">HomeViewModel</span> <span class="annotation">@Inject</span> <span class="keyword">constructor</span>(
+    <span class="keyword">private val</span> <span class="property">repository</span>: <span class="type">ProductRepository</span>
+) : <span class="type">ViewModel</span>() {
+
+    <span class="keyword">private val</span> <span class="property">_uiState</span> = MutableStateFlow&lt;<span class="type">HomeUiState</span>&gt;(<span class="type">HomeUiState.Loading</span>)
+    <span class="keyword">val</span> <span class="property">uiState</span>: StateFlow&lt;<span class="type">HomeUiState</span>&gt; = <span class="property">_uiState</span>.<span class="function">asStateFlow</span>()
+
+    <span class="keyword">init</span> {
+        <span class="function">loadProducts</span>()
+    }
+
+    <span class="keyword">private fun</span> <span class="function">loadProducts</span>() {
+        viewModelScope.<span class="function">launch</span> {
+            <span class="property">repository</span>.<span class="function">getProducts</span>()
+                .<span class="function">onSuccess</span> { products ->
+                    <span class="property">_uiState</span>.<span class="property">value</span> = <span class="type">HomeUiState.Success</span>(products)
+                }
+                .<span class="function">onFailure</span> { error ->
+                    <span class="property">_uiState</span>.<span class="property">value</span> = <span class="type">HomeUiState.Error</span>(error.<span class="property">message</span> ?: <span class="string">"Ошибка"</span>)
+                }
+        }
+    }
+}
+
+<span class="keyword">sealed class</span> <span class="type">HomeUiState</span> {
+    <span class="keyword">object</span> <span class="type">Loading</span> : <span class="type">HomeUiState</span>()
+    <span class="keyword">data class</span> <span class="type">Success</span>(<span class="keyword">val</span> <span class="property">products</span>: <span class="type">List</span>&lt;<span class="type">Product</span>&gt;) : <span class="type">HomeUiState</span>()
+    <span class="keyword">data class</span> <span class="type">Error</span>(<span class="keyword">val</span> <span class="property">message</span>: <span class="type">String</span>) : <span class="type">HomeUiState</span>()
+}</code></pre>
+        </section>
+
+        <!-- Section 11: Exercises -->
+        <section id="exercises" class="mb-16">
+            <h2 class="text-2xl font-bold text-zinc-900 dark:text-white mb-6">11. Упражнения</h2>
+
+            <!-- Exercise 1 -->
+            <div class="exercise bg-zinc-50 dark:bg-zinc-800 rounded-xl p-6 mb-6">
+                <div class="flex items-center gap-3 mb-4">
+                    <span class="difficulty-easy px-2 py-1 rounded text-xs font-medium">Easy</span>
+                    <h3 class="text-lg font-semibold text-zinc-900 dark:text-white">Упражнение 1: Простой объект</h3>
+                </div>
+
+                <p class="text-zinc-600 dark:text-zinc-400 mb-4">Создайте data class для парсинга:</p>
+
+                <pre class="mb-4"><code>{
+  <span class="json-key">"id"</span>: <span class="json-number">42</span>,
+  <span class="json-key">"username"</span>: <span class="json-string">"kotlin_dev"</span>,
+  <span class="json-key">"email"</span>: <span class="json-string">"dev@example.com"</span>,
+  <span class="json-key">"isActive"</span>: <span class="json-bool">true</span>
+}</code></pre>
+
+                <button onclick="toggleAnswer(this)" class="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 transition">
+                    Показать ответ
+                </button>
+
+                <div class="answer mt-4">
+                    <pre><code><span class="annotation">@JsonClass</span>(generateAdapter = <span class="keyword">true</span>)
+<span class="keyword">data class</span> <span class="type">User</span>(
+    <span class="annotation">@Json</span>(name = <span class="string">"id"</span>)
+    <span class="keyword">val</span> <span class="property">id</span>: <span class="type">Int</span>,
+
+    <span class="annotation">@Json</span>(name = <span class="string">"username"</span>)
+    <span class="keyword">val</span> <span class="property">username</span>: <span class="type">String</span>,
+
+    <span class="annotation">@Json</span>(name = <span class="string">"email"</span>)
+    <span class="keyword">val</span> <span class="property">email</span>: <span class="type">String</span>,
+
+    <span class="annotation">@Json</span>(name = <span class="string">"isActive"</span>)
+    <span class="keyword">val</span> <span class="property">isActive</span>: <span class="type">Boolean</span>
+)
+
+<span class="comment">// Парсинг</span>
+<span class="keyword">val</span> adapter = moshi.<span class="function">adapter</span>(User::<span class="keyword">class</span>.java)
+<span class="keyword">val</span> user = adapter.<span class="function">fromJson</span>(jsonString)</code></pre>
+                </div>
+            </div>
+
+            <!-- Exercise 2 -->
+            <div class="exercise bg-zinc-50 dark:bg-zinc-800 rounded-xl p-6 mb-6">
+                <div class="flex items-center gap-3 mb-4">
+                    <span class="difficulty-easy px-2 py-1 rounded text-xs font-medium">Easy</span>
+                    <h3 class="text-lg font-semibold text-zinc-900 dark:text-white">Упражнение 2: Список объектов</h3>
+                </div>
+
+                <p class="text-zinc-600 dark:text-zinc-400 mb-4">Создайте модели для парсинга списка городов:</p>
+
+                <pre class="mb-4"><code>[
+  { <span class="json-key">"name"</span>: <span class="json-string">"Almaty"</span>, <span class="json-key">"population"</span>: <span class="json-number">2000000</span> },
+  { <span class="json-key">"name"</span>: <span class="json-string">"Astana"</span>, <span class="json-key">"population"</span>: <span class="json-number">1200000</span> },
+  { <span class="json-key">"name"</span>: <span class="json-string">"Shymkent"</span>, <span class="json-key">"population"</span>: <span class="json-number">1000000</span> }
+]</code></pre>
+
+                <button onclick="toggleAnswer(this)" class="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 transition">
+                    Показать ответ
+                </button>
+
+                <div class="answer mt-4">
+                    <pre><code><span class="annotation">@JsonClass</span>(generateAdapter = <span class="keyword">true</span>)
+<span class="keyword">data class</span> <span class="type">City</span>(
+    <span class="annotation">@Json</span>(name = <span class="string">"name"</span>)
+    <span class="keyword">val</span> <span class="property">name</span>: <span class="type">String</span>,
+
+    <span class="annotation">@Json</span>(name = <span class="string">"population"</span>)
+    <span class="keyword">val</span> <span class="property">population</span>: <span class="type">Int</span>
+)
+
+<span class="comment">// Парсинг списка</span>
+<span class="keyword">val</span> listType = Types.<span class="function">newParameterizedType</span>(
+    List::<span class="keyword">class</span>.java,
+    City::<span class="keyword">class</span>.java
+)
+<span class="keyword">val</span> adapter = moshi.<span class="function">adapter</span>&lt;List&lt;City&gt;&gt;(listType)
+<span class="keyword">val</span> cities = adapter.<span class="function">fromJson</span>(jsonString)
+
+<span class="comment">// Использование</span>
+cities?.<span class="function">forEach</span> { city ->
+    <span class="function">println</span>(<span class="string">"${city.name}: ${city.population}"</span>)
+}</code></pre>
+                </div>
+            </div>
+
+            <!-- Exercise 3 -->
+            <div class="exercise bg-zinc-50 dark:bg-zinc-800 rounded-xl p-6 mb-6">
+                <div class="flex items-center gap-3 mb-4">
+                    <span class="difficulty-medium px-2 py-1 rounded text-xs font-medium">Medium</span>
+                    <h3 class="text-lg font-semibold text-zinc-900 dark:text-white">Упражнение 3: snake_case ключи</h3>
+                </div>
+
+                <p class="text-zinc-600 dark:text-zinc-400 mb-4">Создайте модель с @Json аннотациями:</p>
+
+                <pre class="mb-4"><code>{
+  <span class="json-key">"user_id"</span>: <span class="json-number">100</span>,
+  <span class="json-key">"full_name"</span>: <span class="json-string">"Иван Петров"</span>,
+  <span class="json-key">"phone_number"</span>: <span class="json-string">"+7 777 123 4567"</span>,
+  <span class="json-key">"registered_at"</span>: <span class="json-string">"2024-01-15"</span>
+}</code></pre>
+
+                <button onclick="toggleAnswer(this)" class="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 transition">
+                    Показать ответ
+                </button>
+
+                <div class="answer mt-4">
+                    <pre><code><span class="annotation">@JsonClass</span>(generateAdapter = <span class="keyword">true</span>)
+<span class="keyword">data class</span> <span class="type">User</span>(
+    <span class="annotation">@Json</span>(name = <span class="string">"user_id"</span>)
+    <span class="keyword">val</span> <span class="property">userId</span>: <span class="type">Int</span>,
+
+    <span class="annotation">@Json</span>(name = <span class="string">"full_name"</span>)
+    <span class="keyword">val</span> <span class="property">fullName</span>: <span class="type">String</span>,
+
+    <span class="annotation">@Json</span>(name = <span class="string">"phone_number"</span>)
+    <span class="keyword">val</span> <span class="property">phoneNumber</span>: <span class="type">String</span>,
+
+    <span class="annotation">@Json</span>(name = <span class="string">"registered_at"</span>)
+    <span class="keyword">val</span> <span class="property">registeredAt</span>: <span class="type">String</span>
+)</code></pre>
+                </div>
+            </div>
+
+            <!-- Exercise 4 -->
+            <div class="exercise bg-zinc-50 dark:bg-zinc-800 rounded-xl p-6 mb-6">
+                <div class="flex items-center gap-3 mb-4">
+                    <span class="difficulty-medium px-2 py-1 rounded text-xs font-medium">Medium</span>
+                    <h3 class="text-lg font-semibold text-zinc-900 dark:text-white">Упражнение 4: Вложенные объекты</h3>
+                </div>
+
+                <p class="text-zinc-600 dark:text-zinc-400 mb-4">Создайте модели для заказа:</p>
+
+                <pre class="mb-4"><code>{
+  <span class="json-key">"orderId"</span>: <span class="json-string">"ORD-12345"</span>,
+  <span class="json-key">"total"</span>: <span class="json-number">15000</span>,
+  <span class="json-key">"customer"</span>: {
+    <span class="json-key">"name"</span>: <span class="json-string">"Алия"</span>,
+    <span class="json-key">"email"</span>: <span class="json-string">"aliya@mail.kz"</span>
+  },
+  <span class="json-key">"items"</span>: [
+    { <span class="json-key">"name"</span>: <span class="json-string">"iPhone"</span>, <span class="json-key">"qty"</span>: <span class="json-number">1</span>, <span class="json-key">"price"</span>: <span class="json-number">10000</span> },
+    { <span class="json-key">"name"</span>: <span class="json-string">"Case"</span>, <span class="json-key">"qty"</span>: <span class="json-number">2</span>, <span class="json-key">"price"</span>: <span class="json-number">2500</span> }
+  ]
+}</code></pre>
+
+                <button onclick="toggleAnswer(this)" class="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 transition">
+                    Показать ответ
+                </button>
+
+                <div class="answer mt-4">
+                    <pre><code><span class="annotation">@JsonClass</span>(generateAdapter = <span class="keyword">true</span>)
+<span class="keyword">data class</span> <span class="type">Customer</span>(
+    <span class="annotation">@Json</span>(name = <span class="string">"name"</span>) <span class="keyword">val</span> <span class="property">name</span>: <span class="type">String</span>,
+    <span class="annotation">@Json</span>(name = <span class="string">"email"</span>) <span class="keyword">val</span> <span class="property">email</span>: <span class="type">String</span>
+)
+
+<span class="annotation">@JsonClass</span>(generateAdapter = <span class="keyword">true</span>)
+<span class="keyword">data class</span> <span class="type">OrderItem</span>(
+    <span class="annotation">@Json</span>(name = <span class="string">"name"</span>) <span class="keyword">val</span> <span class="property">name</span>: <span class="type">String</span>,
+    <span class="annotation">@Json</span>(name = <span class="string">"qty"</span>) <span class="keyword">val</span> <span class="property">qty</span>: <span class="type">Int</span>,
+    <span class="annotation">@Json</span>(name = <span class="string">"price"</span>) <span class="keyword">val</span> <span class="property">price</span>: <span class="type">Int</span>
+)
+
+<span class="annotation">@JsonClass</span>(generateAdapter = <span class="keyword">true</span>)
+<span class="keyword">data class</span> <span class="type">Order</span>(
+    <span class="annotation">@Json</span>(name = <span class="string">"orderId"</span>) <span class="keyword">val</span> <span class="property">orderId</span>: <span class="type">String</span>,
+    <span class="annotation">@Json</span>(name = <span class="string">"total"</span>) <span class="keyword">val</span> <span class="property">total</span>: <span class="type">Int</span>,
+    <span class="annotation">@Json</span>(name = <span class="string">"customer"</span>) <span class="keyword">val</span> <span class="property">customer</span>: <span class="type">Customer</span>,
+    <span class="annotation">@Json</span>(name = <span class="string">"items"</span>) <span class="keyword">val</span> <span class="property">items</span>: <span class="type">List</span>&lt;<span class="type">OrderItem</span>&gt;
+)
+
+<span class="comment">// Использование</span>
+<span class="keyword">val</span> order = adapter.<span class="function">fromJson</span>(json)
+<span class="function">println</span>(<span class="string">"Заказ: ${order?.orderId}"</span>)
+<span class="function">println</span>(<span class="string">"Клиент: ${order?.customer?.name}"</span>)
+<span class="function">println</span>(<span class="string">"Товаров: ${order?.items?.size}"</span>)</code></pre>
+                </div>
+            </div>
+
+            <!-- Exercise 5 -->
+            <div class="exercise bg-zinc-50 dark:bg-zinc-800 rounded-xl p-6 mb-6">
+                <div class="flex items-center gap-3 mb-4">
+                    <span class="difficulty-medium px-2 py-1 rounded text-xs font-medium">Medium</span>
+                    <h3 class="text-lg font-semibold text-zinc-900 dark:text-white">Упражнение 5: Nullable поля</h3>
+                </div>
+
+                <p class="text-zinc-600 dark:text-zinc-400 mb-4">Создайте модель которая парсит ОБА этих JSON:</p>
+
+                <pre class="mb-4"><code><span class="comment">// JSON 1 - все поля</span>
+{
+  <span class="json-key">"id"</span>: <span class="json-number">1</span>,
+  <span class="json-key">"title"</span>: <span class="json-string">"Product A"</span>,
+  <span class="json-key">"description"</span>: <span class="json-string">"Great product"</span>,
+  <span class="json-key">"discount"</span>: <span class="json-number">15</span>,
+  <span class="json-key">"tags"</span>: [<span class="json-string">"new"</span>, <span class="json-string">"sale"</span>]
+}
+
+<span class="comment">// JSON 2 - минимум полей</span>
+{
+  <span class="json-key">"id"</span>: <span class="json-number">2</span>,
+  <span class="json-key">"title"</span>: <span class="json-string">"Product B"</span>
+}</code></pre>
+
+                <button onclick="toggleAnswer(this)" class="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 transition">
+                    Показать ответ
+                </button>
+
+                <div class="answer mt-4">
+                    <pre><code><span class="annotation">@JsonClass</span>(generateAdapter = <span class="keyword">true</span>)
+<span class="keyword">data class</span> <span class="type">Product</span>(
+    <span class="annotation">@Json</span>(name = <span class="string">"id"</span>)
+    <span class="keyword">val</span> <span class="property">id</span>: <span class="type">Int</span>,
+
+    <span class="annotation">@Json</span>(name = <span class="string">"title"</span>)
+    <span class="keyword">val</span> <span class="property">title</span>: <span class="type">String</span>,
+
+    <span class="annotation">@Json</span>(name = <span class="string">"description"</span>)
+    <span class="keyword">val</span> <span class="property">description</span>: <span class="type">String?</span> = <span class="keyword">null</span>,  <span class="comment">// Nullable</span>
+
+    <span class="annotation">@Json</span>(name = <span class="string">"discount"</span>)
+    <span class="keyword">val</span> <span class="property">discount</span>: <span class="type">Int?</span> = <span class="keyword">null</span>,        <span class="comment">// Nullable</span>
+
+    <span class="annotation">@Json</span>(name = <span class="string">"tags"</span>)
+    <span class="keyword">val</span> <span class="property">tags</span>: <span class="type">List</span>&lt;<span class="type">String</span>&gt;? = <span class="keyword">null</span>   <span class="comment">// Nullable список</span>
+)
+
+<span class="comment">// Безопасное использование</span>
+<span class="keyword">val</span> discount = product.<span class="property">discount</span> ?: <span class="number">0</span>
+<span class="keyword">val</span> tagsCount = product.<span class="property">tags</span>?.<span class="property">size</span> ?: <span class="number">0</span>
+
+<span class="function">println</span>(<span class="string">"Скидка: $discount%"</span>)
+<span class="function">println</span>(<span class="string">"Тегов: $tagsCount"</span>)</code></pre>
+                </div>
+            </div>
+
+            <!-- Exercise 6 -->
+            <div class="exercise bg-zinc-50 dark:bg-zinc-800 rounded-xl p-6 mb-6">
+                <div class="flex items-center gap-3 mb-4">
+                    <span class="difficulty-hard px-2 py-1 rounded text-xs font-medium">Hard</span>
+                    <h3 class="text-lg font-semibold text-zinc-900 dark:text-white">Упражнение 6: Полный API Response</h3>
+                </div>
+
+                <p class="text-zinc-600 dark:text-zinc-400 mb-4">Создайте все модели и Retrofit ApiService:</p>
+
+                <pre class="mb-4"><code>{
+  <span class="json-key">"success"</span>: <span class="json-bool">true</span>,
+  <span class="json-key">"data"</span>: {
+    <span class="json-key">"users"</span>: [
+      {
+        <span class="json-key">"id"</span>: <span class="json-number">1</span>,
+        <span class="json-key">"name"</span>: <span class="json-string">"Серик"</span>,
+        <span class="json-key">"role"</span>: <span class="json-string">"admin"</span>,
+        <span class="json-key">"profile"</span>: {
+          <span class="json-key">"avatar_url"</span>: <span class="json-string">"https://example.com/avatar.jpg"</span>,
+          <span class="json-key">"bio"</span>: <span class="json-string">"Kotlin developer"</span>
+        }
+      }
+    ],
+    <span class="json-key">"total"</span>: <span class="json-number">1</span>
+  }
+}</code></pre>
+
+                <button onclick="toggleAnswer(this)" class="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 transition">
+                    Показать ответ
+                </button>
+
+                <div class="answer mt-4">
+                    <pre><code><span class="comment">// Модели от внутренних к внешним</span>
+
+<span class="annotation">@JsonClass</span>(generateAdapter = <span class="keyword">true</span>)
+<span class="keyword">data class</span> <span class="type">UserProfile</span>(
+    <span class="annotation">@Json</span>(name = <span class="string">"avatar_url"</span>)
+    <span class="keyword">val</span> <span class="property">avatarUrl</span>: <span class="type">String</span>,
+
+    <span class="annotation">@Json</span>(name = <span class="string">"bio"</span>)
+    <span class="keyword">val</span> <span class="property">bio</span>: <span class="type">String?</span> = <span class="keyword">null</span>
+)
+
+<span class="annotation">@JsonClass</span>(generateAdapter = <span class="keyword">true</span>)
+<span class="keyword">data class</span> <span class="type">User</span>(
+    <span class="annotation">@Json</span>(name = <span class="string">"id"</span>) <span class="keyword">val</span> <span class="property">id</span>: <span class="type">Int</span>,
+    <span class="annotation">@Json</span>(name = <span class="string">"name"</span>) <span class="keyword">val</span> <span class="property">name</span>: <span class="type">String</span>,
+    <span class="annotation">@Json</span>(name = <span class="string">"role"</span>) <span class="keyword">val</span> <span class="property">role</span>: <span class="type">String</span>,
+    <span class="annotation">@Json</span>(name = <span class="string">"profile"</span>) <span class="keyword">val</span> <span class="property">profile</span>: <span class="type">UserProfile</span>
+)
+
+<span class="annotation">@JsonClass</span>(generateAdapter = <span class="keyword">true</span>)
+<span class="keyword">data class</span> <span class="type">UsersData</span>(
+    <span class="annotation">@Json</span>(name = <span class="string">"users"</span>) <span class="keyword">val</span> <span class="property">users</span>: <span class="type">List</span>&lt;<span class="type">User</span>&gt;,
+    <span class="annotation">@Json</span>(name = <span class="string">"total"</span>) <span class="keyword">val</span> <span class="property">total</span>: <span class="type">Int</span>
+)
+
+<span class="annotation">@JsonClass</span>(generateAdapter = <span class="keyword">true</span>)
+<span class="keyword">data class</span> <span class="type">ApiResponse</span>(
+    <span class="annotation">@Json</span>(name = <span class="string">"success"</span>) <span class="keyword">val</span> <span class="property">success</span>: <span class="type">Boolean</span>,
+    <span class="annotation">@Json</span>(name = <span class="string">"data"</span>) <span class="keyword">val</span> <span class="property">data</span>: <span class="type">UsersData</span>
+)
+
+<span class="comment">// Retrofit ApiService</span>
+<span class="keyword">interface</span> <span class="type">ApiService</span> {
+    <span class="annotation">@GET</span>(<span class="string">"users"</span>)
+    <span class="keyword">suspend fun</span> <span class="function">getUsers</span>(): <span class="type">ApiResponse</span>
+}
+
+<span class="comment">// Использование</span>
+<span class="keyword">val</span> response = api.<span class="function">getUsers</span>()
+<span class="keyword">if</span> (response.<span class="property">success</span>) {
+    response.<span class="property">data</span>.<span class="property">users</span>.<span class="function">forEach</span> { user ->
+        <span class="function">println</span>(<span class="string">"${user.name} - ${user.role}"</span>)
+        <span class="function">println</span>(<span class="string">"Avatar: ${user.profile.avatarUrl}"</span>)
+    }
+}</code></pre>
+                </div>
+            </div>
+        </section>
+
+        <!-- Summary -->
+        <section class="bg-gradient-to-br from-green-50 to-teal-50 dark:from-green-900/20 dark:to-teal-900/20 rounded-xl p-8">
+            <h2 class="text-2xl font-bold text-zinc-900 dark:text-white mb-6">Шпаргалка</h2>
+
+            <div class="grid md:grid-cols-2 gap-6">
+                <div>
+                    <h3 class="font-semibold text-zinc-800 dark:text-zinc-200 mb-3">Moshi</h3>
+                    <ul class="text-sm text-zinc-600 dark:text-zinc-400 space-y-1">
+                        <li><code>@JsonClass(generateAdapter = true)</code></li>
+                        <li><code>@Json(name = "key")</code> — переименование</li>
+                        <li><code>moshi.adapter(Type::class.java)</code></li>
+                        <li><code>adapter.fromJson(json)</code></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="font-semibold text-zinc-800 dark:text-zinc-200 mb-3">Gson</h3>
+                    <ul class="text-sm text-zinc-600 dark:text-zinc-400 space-y-1">
+                        <li><code>@SerializedName("key")</code> — переименование</li>
+                        <li><code>Gson().fromJson(json, Type::class.java)</code></li>
+                        <li><code>gson.toJson(object)</code></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="font-semibold text-zinc-800 dark:text-zinc-200 mb-3">Nullable</h3>
+                    <ul class="text-sm text-zinc-600 dark:text-zinc-400 space-y-1">
+                        <li><code>val field: String? = null</code></li>
+                        <li><code>field ?: "default"</code> — Elvis operator</li>
+                        <li><code>field?.property</code> — safe call</li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="font-semibold text-zinc-800 dark:text-zinc-200 mb-3">Retrofit</h3>
+                    <ul class="text-sm text-zinc-600 dark:text-zinc-400 space-y-1">
+                        <li><code>MoshiConverterFactory.create(moshi)</code></li>
+                        <li><code>suspend fun getX(): Response</code></li>
+                        <li><code>@GET, @POST, @Path, @Query</code></li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Navigation -->
+        <div class="flex justify-between items-center mt-12 pt-8 border-t border-zinc-200 dark:border-zinc-800">
+            <a href="04-api-layer.html" class="text-green-500 hover:underline">&larr; Глава 4: Retrofit + API</a>
+            <a href="../index.html" class="text-green-500 hover:underline">Оглавление</a>
+            <a href="05-product-list.html" class="text-green-500 hover:underline">Глава 5: Список товаров &rarr;</a>
+        </div>
+    </div>
+
+    <script>
+        function toggleAnswer(button) {
+            const answer = button.nextElementSibling;
+            answer.classList.toggle('show');
+            button.textContent = answer.classList.contains('show') ? 'Скрыть ответ' : 'Показать ответ';
+        }
+    </script>
+</body>
+</html>
