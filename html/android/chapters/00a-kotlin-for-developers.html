@@ -279,82 +279,219 @@ button.<span class="function">setOnClickListener</span> {
 
         <!-- Cheatsheet -->
         <section class="bg-zinc-100 dark:bg-zinc-800 rounded-xl p-6">
-            <h2 class="text-xl font-bold mb-4 text-zinc-900 dark:text-white">Шпаргалка: JS → Kotlin</h2>
-            <div class="grid md:grid-cols-2 gap-6 text-sm">
-                <div class="space-y-2">
-                    <div class="flex justify-between items-center py-2 border-b-2 border-zinc-300 dark:border-zinc-600 mb-2">
-                        <span class="font-bold text-orange-600 dark:text-orange-400">JavaScript</span>
-                        <span></span>
-                        <span class="font-bold text-green-600 dark:text-green-400">Kotlin</span>
-                    </div>
-                    <div class="flex justify-between items-center py-2 border-b border-zinc-200 dark:border-zinc-700">
-                        <code class="text-orange-600 dark:text-orange-400">let</code>
+            <h2 class="text-xl font-bold mb-6 text-zinc-900 dark:text-white">Шпаргалка: JS → Kotlin с примерами</h2>
+
+            <div class="space-y-6">
+                <!-- let/var -->
+                <div class="p-4 bg-white dark:bg-zinc-900 rounded-lg">
+                    <div class="flex items-center gap-3 mb-3">
+                        <code class="text-orange-600 dark:text-orange-400 font-bold">let</code>
                         <span class="text-zinc-400">→</span>
-                        <code class="text-green-600 dark:text-green-400">var</code>
+                        <code class="text-green-600 dark:text-green-400 font-bold">var</code>
+                        <span class="text-zinc-500 dark:text-zinc-400 text-sm">— изменяемая переменная</span>
                     </div>
-                    <div class="flex justify-between items-center py-2 border-b border-zinc-200 dark:border-zinc-700">
-                        <code class="text-orange-600 dark:text-orange-400">const</code>
-                        <span class="text-zinc-400">→</span>
-                        <code class="text-green-600 dark:text-green-400">val</code>
-                    </div>
-                    <div class="flex justify-between items-center py-2 border-b border-zinc-200 dark:border-zinc-700">
-                        <code class="text-orange-600 dark:text-orange-400">null | undefined</code>
-                        <span class="text-zinc-400">→</span>
-                        <code class="text-green-600 dark:text-green-400">null</code>
-                    </div>
-                    <div class="flex justify-between items-center py-2 border-b border-zinc-200 dark:border-zinc-700">
-                        <code class="text-orange-600 dark:text-orange-400">string | null</code>
-                        <span class="text-zinc-400">→</span>
-                        <code class="text-green-600 dark:text-green-400">String?</code>
-                    </div>
-                    <div class="flex justify-between items-center py-2 border-b border-zinc-200 dark:border-zinc-700">
-                        <code class="text-orange-600 dark:text-orange-400">??</code>
-                        <span class="text-zinc-400">→</span>
-                        <code class="text-green-600 dark:text-green-400">?:</code> <span class="text-zinc-500 dark:text-zinc-400 text-xs">(Elvis)</span>
-                    </div>
-                    <div class="flex justify-between items-center py-2">
-                        <code class="text-orange-600 dark:text-orange-400">?.</code>
-                        <span class="text-zinc-400">→</span>
-                        <code class="text-green-600 dark:text-green-400">?.</code> <span class="text-zinc-500 dark:text-zinc-400 text-xs">(same)</span>
+                    <div class="grid md:grid-cols-2 gap-4 text-sm">
+                        <pre class="!bg-zinc-800 !p-3"><code><span class="comment">// JavaScript</span>
+<span class="keyword">let</span> count = <span class="number">0</span>
+count = <span class="number">1</span>  <span class="comment">// OK</span></code></pre>
+                        <pre class="!bg-zinc-800 !p-3"><code><span class="comment">// Kotlin</span>
+<span class="keyword">var</span> count = <span class="number">0</span>
+count = <span class="number">1</span>  <span class="comment">// OK</span></code></pre>
                     </div>
                 </div>
-                <div class="space-y-2">
-                    <div class="flex justify-between items-center py-2 border-b-2 border-zinc-300 dark:border-zinc-600 mb-2">
-                        <span class="font-bold text-orange-600 dark:text-orange-400">JavaScript</span>
-                        <span></span>
-                        <span class="font-bold text-green-600 dark:text-green-400">Kotlin</span>
-                    </div>
-                    <div class="flex justify-between items-center py-2 border-b border-zinc-200 dark:border-zinc-700">
-                        <code class="text-orange-600 dark:text-orange-400">interface</code>
+
+                <!-- const/val -->
+                <div class="p-4 bg-white dark:bg-zinc-900 rounded-lg">
+                    <div class="flex items-center gap-3 mb-3">
+                        <code class="text-orange-600 dark:text-orange-400 font-bold">const</code>
                         <span class="text-zinc-400">→</span>
-                        <code class="text-green-600 dark:text-green-400">data class</code>
+                        <code class="text-green-600 dark:text-green-400 font-bold">val</code>
+                        <span class="text-zinc-500 dark:text-zinc-400 text-sm">— неизменяемая (рекомендуется по умолчанию)</span>
                     </div>
-                    <div class="flex justify-between items-center py-2 border-b border-zinc-200 dark:border-zinc-700">
-                        <code class="text-orange-600 dark:text-orange-400">async/await</code>
-                        <span class="text-zinc-400">→</span>
-                        <code class="text-green-600 dark:text-green-400">suspend</code>
-                    </div>
-                    <div class="flex justify-between items-center py-2 border-b border-zinc-200 dark:border-zinc-700">
-                        <code class="text-orange-600 dark:text-orange-400">Promise</code>
-                        <span class="text-zinc-400">→</span>
-                        <code class="text-green-600 dark:text-green-400">Flow/suspend</code>
-                    </div>
-                    <div class="flex justify-between items-center py-2 border-b border-zinc-200 dark:border-zinc-700">
-                        <code class="text-orange-600 dark:text-orange-400">=&gt;</code>
-                        <span class="text-zinc-400">→</span>
-                        <code class="text-green-600 dark:text-green-400">{ }</code> <span class="text-zinc-500 dark:text-zinc-400 text-xs">или -&gt;</span>
-                    </div>
-                    <div class="flex justify-between items-center py-2 border-b border-zinc-200 dark:border-zinc-700">
-                        <code class="text-orange-600 dark:text-orange-400">switch</code>
-                        <span class="text-zinc-400">→</span>
-                        <code class="text-green-600 dark:text-green-400">when</code>
-                    </div>
-                    <div class="flex justify-between items-center py-2">
-                        <code class="text-orange-600 dark:text-orange-400">console.log</code>
-                        <span class="text-zinc-400">→</span>
-                        <code class="text-green-600 dark:text-green-400">println</code>
+                    <div class="grid md:grid-cols-2 gap-4 text-sm">
+                        <pre class="!bg-zinc-800 !p-3"><code><span class="comment">// JavaScript</span>
+<span class="keyword">const</span> name = <span class="string">"John"</span>
+name = <span class="string">"Bob"</span>  <span class="comment">// Ошибка!</span></code></pre>
+                        <pre class="!bg-zinc-800 !p-3"><code><span class="comment">// Kotlin</span>
+<span class="keyword">val</span> name = <span class="string">"John"</span>
+name = <span class="string">"Bob"</span>  <span class="comment">// Ошибка!</span></code></pre>
                     </div>
                 </div>
+
+                <!-- Nullable -->
+                <div class="p-4 bg-white dark:bg-zinc-900 rounded-lg">
+                    <div class="flex items-center gap-3 mb-3">
+                        <code class="text-orange-600 dark:text-orange-400 font-bold">string | null</code>
+                        <span class="text-zinc-400">→</span>
+                        <code class="text-green-600 dark:text-green-400 font-bold">String?</code>
+                        <span class="text-zinc-500 dark:text-zinc-400 text-sm">— может быть null</span>
+                    </div>
+                    <div class="grid md:grid-cols-2 gap-4 text-sm">
+                        <pre class="!bg-zinc-800 !p-3"><code><span class="comment">// TypeScript</span>
+<span class="keyword">let</span> name: <span class="type">string</span> | <span class="type">null</span> = <span class="keyword">null</span>
+<span class="keyword">let</span> user: <span class="type">User</span> | <span class="type">undefined</span></code></pre>
+                        <pre class="!bg-zinc-800 !p-3"><code><span class="comment">// Kotlin — ? означает nullable</span>
+<span class="keyword">var</span> name: <span class="type">String?</span> = <span class="keyword">null</span>
+<span class="keyword">var</span> user: <span class="type">User?</span> = <span class="keyword">null</span></code></pre>
+                    </div>
+                </div>
+
+                <!-- Elvis -->
+                <div class="p-4 bg-white dark:bg-zinc-900 rounded-lg">
+                    <div class="flex items-center gap-3 mb-3">
+                        <code class="text-orange-600 dark:text-orange-400 font-bold">??</code>
+                        <span class="text-zinc-400">→</span>
+                        <code class="text-green-600 dark:text-green-400 font-bold">?:</code>
+                        <span class="text-zinc-500 dark:text-zinc-400 text-sm">— значение по умолчанию если null</span>
+                    </div>
+                    <div class="grid md:grid-cols-2 gap-4 text-sm">
+                        <pre class="!bg-zinc-800 !p-3"><code><span class="comment">// JavaScript — nullish coalescing</span>
+<span class="keyword">const</span> result = value ?? <span class="string">"default"</span>
+<span class="comment">// Если value = null/undefined → "default"</span></code></pre>
+                        <pre class="!bg-zinc-800 !p-3"><code><span class="comment">// Kotlin — Elvis operator</span>
+<span class="keyword">val</span> result = value ?: <span class="string">"default"</span>
+<span class="comment">// Если value = null → "default"</span></code></pre>
+                    </div>
+                </div>
+
+                <!-- Promise/Flow -->
+                <div class="p-4 bg-white dark:bg-zinc-900 rounded-lg border-2 border-green-200 dark:border-green-800">
+                    <div class="flex items-center gap-3 mb-3">
+                        <code class="text-orange-600 dark:text-orange-400 font-bold">Promise</code>
+                        <span class="text-zinc-400">→</span>
+                        <code class="text-green-600 dark:text-green-400 font-bold">suspend / Flow</code>
+                        <span class="text-zinc-500 dark:text-zinc-400 text-sm">— асинхронные операции</span>
+                    </div>
+                    <p class="text-zinc-600 dark:text-zinc-400 text-sm mb-3">
+                        <strong>Promise</strong> — одно значение в будущем (запрос к API).<br>
+                        <strong>suspend</strong> — функция которая может "приостановиться" (как await).<br>
+                        <strong>Flow</strong> — поток значений (как Observable в RxJS).
+                    </p>
+                    <div class="grid md:grid-cols-2 gap-4 text-sm">
+                        <pre class="!bg-zinc-800 !p-3"><code><span class="comment">// JavaScript — одно значение</span>
+<span class="keyword">async function</span> <span class="function">getUser</span>(): <span class="type">Promise</span>&lt;<span class="type">User</span>&gt; {
+  <span class="keyword">const</span> res = <span class="keyword">await</span> fetch(url)
+  <span class="keyword">return</span> res.json()
+}
+
+<span class="comment">// Вызов</span>
+<span class="keyword">const</span> user = <span class="keyword">await</span> getUser()</code></pre>
+                        <pre class="!bg-zinc-800 !p-3"><code><span class="comment">// Kotlin — одно значение</span>
+<span class="keyword">suspend fun</span> <span class="function">getUser</span>(): <span class="type">User</span> {
+  <span class="keyword">return</span> api.getUser()
+}
+
+<span class="comment">// Вызов из coroutine</span>
+<span class="keyword">val</span> user = getUser()</code></pre>
+                    </div>
+                    <div class="grid md:grid-cols-2 gap-4 text-sm mt-4">
+                        <pre class="!bg-zinc-800 !p-3"><code><span class="comment">// JavaScript — поток значений</span>
+<span class="keyword">const</span> observable = <span class="keyword">new</span> Observable(...)
+observable.subscribe(value => {
+  console.log(value)
+})</code></pre>
+                        <pre class="!bg-zinc-800 !p-3"><code><span class="comment">// Kotlin — Flow (поток значений)</span>
+<span class="keyword">fun</span> <span class="function">getProducts</span>(): <span class="type">Flow</span>&lt;<span class="type">List</span>&lt;<span class="type">Product</span>&gt;&gt;
+
+<span class="comment">// Подписка</span>
+getProducts().collect { products ->
+  println(products)
+}</code></pre>
+                    </div>
+                </div>
+
+                <!-- async/await → suspend -->
+                <div class="p-4 bg-white dark:bg-zinc-900 rounded-lg">
+                    <div class="flex items-center gap-3 mb-3">
+                        <code class="text-orange-600 dark:text-orange-400 font-bold">async/await</code>
+                        <span class="text-zinc-400">→</span>
+                        <code class="text-green-600 dark:text-green-400 font-bold">suspend</code>
+                        <span class="text-zinc-500 dark:text-zinc-400 text-sm">— ожидание без блокировки</span>
+                    </div>
+                    <div class="grid md:grid-cols-2 gap-4 text-sm">
+                        <pre class="!bg-zinc-800 !p-3"><code><span class="comment">// JavaScript</span>
+<span class="keyword">async function</span> <span class="function">loadData</span>() {
+  <span class="keyword">const</span> a = <span class="keyword">await</span> fetchA()
+  <span class="keyword">const</span> b = <span class="keyword">await</span> fetchB()
+  <span class="keyword">return</span> { a, b }
+}</code></pre>
+                        <pre class="!bg-zinc-800 !p-3"><code><span class="comment">// Kotlin</span>
+<span class="keyword">suspend fun</span> <span class="function">loadData</span>(): <span class="type">Data</span> {
+  <span class="keyword">val</span> a = fetchA()  <span class="comment">// await неявный</span>
+  <span class="keyword">val</span> b = fetchB()
+  <span class="keyword">return</span> Data(a, b)
+}</code></pre>
+                    </div>
+                </div>
+
+                <!-- interface → data class -->
+                <div class="p-4 bg-white dark:bg-zinc-900 rounded-lg">
+                    <div class="flex items-center gap-3 mb-3">
+                        <code class="text-orange-600 dark:text-orange-400 font-bold">interface/type</code>
+                        <span class="text-zinc-400">→</span>
+                        <code class="text-green-600 dark:text-green-400 font-bold">data class</code>
+                        <span class="text-zinc-500 dark:text-zinc-400 text-sm">— модель данных</span>
+                    </div>
+                    <div class="grid md:grid-cols-2 gap-4 text-sm">
+                        <pre class="!bg-zinc-800 !p-3"><code><span class="comment">// TypeScript</span>
+<span class="keyword">interface</span> <span class="type">User</span> {
+  id: <span class="type">number</span>
+  name: <span class="type">string</span>
+}
+<span class="keyword">const</span> user: <span class="type">User</span> = { id: <span class="number">1</span>, name: <span class="string">"John"</span> }</code></pre>
+                        <pre class="!bg-zinc-800 !p-3"><code><span class="comment">// Kotlin</span>
+<span class="keyword">data class</span> <span class="type">User</span>(
+  <span class="keyword">val</span> id: <span class="type">Int</span>,
+  <span class="keyword">val</span> name: <span class="type">String</span>
+)
+<span class="keyword">val</span> user = User(id = <span class="number">1</span>, name = <span class="string">"John"</span>)</code></pre>
+                    </div>
+                </div>
+
+                <!-- Arrow function → Lambda -->
+                <div class="p-4 bg-white dark:bg-zinc-900 rounded-lg">
+                    <div class="flex items-center gap-3 mb-3">
+                        <code class="text-orange-600 dark:text-orange-400 font-bold">(x) =&gt; x * 2</code>
+                        <span class="text-zinc-400">→</span>
+                        <code class="text-green-600 dark:text-green-400 font-bold">{ x -&gt; x * 2 }</code>
+                        <span class="text-zinc-500 dark:text-zinc-400 text-sm">— лямбда-функция</span>
+                    </div>
+                    <div class="grid md:grid-cols-2 gap-4 text-sm">
+                        <pre class="!bg-zinc-800 !p-3"><code><span class="comment">// JavaScript</span>
+<span class="keyword">const</span> doubled = nums.map(n => n * <span class="number">2</span>)
+<span class="keyword">const</span> evens = nums.filter(n => n % <span class="number">2</span> === <span class="number">0</span>)
+button.onClick(() => alert(<span class="string">"Hi"</span>))</code></pre>
+                        <pre class="!bg-zinc-800 !p-3"><code><span class="comment">// Kotlin — it = единственный параметр</span>
+<span class="keyword">val</span> doubled = nums.map { it * <span class="number">2</span> }
+<span class="keyword">val</span> evens = nums.filter { it % <span class="number">2</span> == <span class="number">0</span> }
+button.onClick { showAlert(<span class="string">"Hi"</span>) }</code></pre>
+                    </div>
+                </div>
+
+                <!-- switch → when -->
+                <div class="p-4 bg-white dark:bg-zinc-900 rounded-lg">
+                    <div class="flex items-center gap-3 mb-3">
+                        <code class="text-orange-600 dark:text-orange-400 font-bold">switch</code>
+                        <span class="text-zinc-400">→</span>
+                        <code class="text-green-600 dark:text-green-400 font-bold">when</code>
+                        <span class="text-zinc-500 dark:text-zinc-400 text-sm">— множественный выбор</span>
+                    </div>
+                    <div class="grid md:grid-cols-2 gap-4 text-sm">
+                        <pre class="!bg-zinc-800 !p-3"><code><span class="comment">// JavaScript</span>
+<span class="keyword">switch</span> (status) {
+  <span class="keyword">case</span> <span class="string">"loading"</span>: <span class="keyword">return</span> <span class="string">"..."</span>
+  <span class="keyword">case</span> <span class="string">"success"</span>: <span class="keyword">return</span> <span class="string">"OK"</span>
+  <span class="keyword">default</span>: <span class="keyword">return</span> <span class="string">"?"</span>
+}</code></pre>
+                        <pre class="!bg-zinc-800 !p-3"><code><span class="comment">// Kotlin — без break, возвращает значение</span>
+<span class="keyword">when</span> (status) {
+  <span class="string">"loading"</span> -> <span class="string">"..."</span>
+  <span class="string">"success"</span> -> <span class="string">"OK"</span>
+  <span class="keyword">else</span> -> <span class="string">"?"</span>
+}</code></pre>
+                    </div>
+                </div>
+
             </div>
         </section>
 
