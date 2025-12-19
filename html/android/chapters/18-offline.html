@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Глава 18: Офлайн режим | Android E-Commerce</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        pre { background: #1e1e1e; color: #d4d4d4; padding: 1rem; border-radius: 0.5rem; overflow-x: auto; }
+        .keyword { color: #569cd6; }
+        .function { color: #dcdcaa; }
+        .string { color: #ce9178; }
+        .comment { color: #6a9955; }
+        .annotation { color: #4ec9b0; }
+        .number { color: #b5cea8; }
+    </style>
+</head>
+<body class="bg-white dark:bg-zinc-900">
+    <div class="max-w-4xl mx-auto px-6 py-12">
+        <a href="../index.html" class="text-green-500 hover:underline mb-4 inline-block">&larr; Назад</a>
+        <h1 class="text-4xl font-bold text-zinc-900 dark:text-white mb-6">Глава 18: Офлайн режим</h1>
+
+        <div class="prose dark:prose-invert max-w-none">
+            <div class="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-xl p-6 mb-8">
+                <p class="text-green-800 dark:text-green-200 mb-0">
+                    Offline-first подход: приложение работает без интернета, синхронизируя данные
+                    когда соединение появляется.
+                </p>
+            </div>
+
+            <h2 class="text-2xl font-bold mt-8 mb-4 text-zinc-900 dark:text-white">Архитектура Offline-First</h2>
+
+            <div class="bg-zinc-100 dark:bg-zinc-800 rounded-xl p-6 mb-6 font-mono text-sm">
+                <pre class="bg-transparent p-0 m-0"><code>┌──────────────┐     ┌──────────────┐     ┌──────────────┐
+│     UI       │────▶│  Repository  │────▶│    Room      │
+│              │     │              │     │   (Cache)    │
+└──────────────┘     └──────┬───────┘     └──────────────┘
+                            │                     ▲
+                            ▼                     │
+                     ┌──────────────┐     ┌──────────────┐
+                     │   Network    │────▶│   Sync       │
+                     │   (Retrofit) │     │   (Update)   │
+                     └──────────────┘     └──────────────┘</code></pre>
+            </div>
+
+            <h2 class="text-2xl font-bold mt-8 mb-4 text-zinc-900 dark:text-white">Network Monitor</h2>
+
+            <pre><code><span class="comment">// data/network/NetworkMonitor.kt</span>
+<span class="keyword">interface</span> NetworkMonitor {
+    <span class="keyword">val</span> isOnline: Flow&lt;Boolean&gt;
+}
+
+<span class="annotation">@Singleton</span>
+<span class="keyword">class</span> NetworkMonitorImpl <span class="annotation">@Inject</span> <span class="keyword">constructor</span>(
+    <span class="annotation">@ApplicationContext</span> <span class="keyword">private val</span> context: Context
+) : NetworkMonitor {
+
+    <span class="keyword">private val</span> connectivityManager = context.getSystemService&lt;ConnectivityManager&gt;()!!
+
+    <span class="keyword">override val</span> isOnline: Flow&lt;Boolean&gt; = callbackFlow {
+        <span class="keyword">val</span> callback = <span class="keyword">object</span> : ConnectivityManager.NetworkCallback() {
+            <span class="keyword">override fun</span> <span class="function">onAvailable</span>(network: Network) {
+                trySend(<span class="keyword">true</span>)
+            }
+
+            <span class="keyword">override fun</span> <span class="function">onLost</span>(network: Network) {
+                trySend(<span class="keyword">false</span>)
+            }
+        }
+
+        <span class="keyword">val</span> request = NetworkRequest.Builder()
+            .addCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
+            .build()
+
+        connectivityManager.registerNetworkCallback(request, callback)
+
+        <span class="comment">// Начальное состояние</span>
+        trySend(connectivityManager.activeNetwork != <span class="keyword">null</span>)
+
+        awaitClose {
+            connectivityManager.unregisterNetworkCallback(callback)
+        }
+    }.distinctUntilChanged()
+}</code></pre>
+
+            <h2 class="text-2xl font-bold mt-8 mb-4 text-zinc-900 dark:text-white">Offline-First Repository</h2>
+
+            <pre><code><span class="annotation">@Singleton</span>
+<span class="keyword">class</span> ProductRepositoryImpl <span class="annotation">@Inject</span> <span class="keyword">constructor</span>(
+    <span class="keyword">private val</span> productApi: ProductApi,
+    <span class="keyword">private val</span> productDao: ProductDao,
+    <span class="keyword">private val</span> networkMonitor: NetworkMonitor
+) : ProductRepository {
+
+    <span class="keyword">override fun</span> <span class="function">getProducts</span>(): Flow&lt;Resource&lt;List&lt;Product&gt;&gt;&gt; = flow {
+        emit(Resource.Loading())
+
+        <span class="comment">// 1. Сразу показываем кэш</span>
+        <span class="keyword">val</span> cached = productDao.getAllProducts().first()
+        <span class="keyword">if</span> (cached.isNotEmpty()) {
+            emit(Resource.Success(cached.map { it.toDomain() }))
+        }
+
+        <span class="comment">// 2. Если онлайн — обновляем</span>
+        <span class="keyword">if</span> (networkMonitor.isOnline.first()) {
+            <span class="keyword">try</span> {
+                <span class="keyword">val</span> remote = productApi.getProducts()
+                productDao.deleteAll()
+                productDao.insertAll(remote.products.map { it.toEntity() })
+
+                emit(Resource.Success(remote.products.map { it.toDomain() }))
+            } <span class="keyword">catch</span> (e: Exception) {
+                <span class="comment">// Ошибка сети, но кэш уже показан</span>
+                <span class="keyword">if</span> (cached.isEmpty()) {
+                    emit(Resource.Error(<span class="string">"Нет данных. Проверьте интернет."</span>))
+                }
+            }
+        } <span class="keyword">else if</span> (cached.isEmpty()) {
+            emit(Resource.Error(<span class="string">"Нет интернета и кэша"</span>))
+        }
+    }
+
+    <span class="comment">// Поиск работает офлайн</span>
+    <span class="keyword">override fun</span> <span class="function">searchProducts</span>(query: String): Flow&lt;List&lt;Product&gt;&gt; {
+        <span class="keyword">return</span> productDao.searchProducts(<span class="string">"%$query%"</span>)
+            .map { list -> list.map { it.toDomain() } }
+    }
+}</code></pre>
+
+            <h2 class="text-2xl font-bold mt-8 mb-4 text-zinc-900 dark:text-white">Синхронизация с WorkManager</h2>
+
+            <pre><code><span class="comment">// data/sync/SyncWorker.kt</span>
+<span class="annotation">@HiltWorker</span>
+<span class="keyword">class</span> SyncWorker <span class="annotation">@AssistedInject</span> <span class="keyword">constructor</span>(
+    <span class="annotation">@Assisted</span> context: Context,
+    <span class="annotation">@Assisted</span> params: WorkerParameters,
+    <span class="keyword">private val</span> productApi: ProductApi,
+    <span class="keyword">private val</span> productDao: ProductDao
+) : CoroutineWorker(context, params) {
+
+    <span class="keyword">override suspend fun</span> <span class="function">doWork</span>(): Result {
+        <span class="keyword">return try</span> {
+            <span class="keyword">val</span> products = productApi.getProducts()
+            productDao.deleteAll()
+            productDao.insertAll(products.products.map { it.toEntity() })
+            Result.success()
+        } <span class="keyword">catch</span> (e: Exception) {
+            <span class="keyword">if</span> (runAttemptCount < <span class="number">3</span>) {
+                Result.retry()
+            } <span class="keyword">else</span> {
+                Result.failure()
+            }
+        }
+    }
+}
+
+<span class="comment">// Запуск синхронизации</span>
+<span class="annotation">@Singleton</span>
+<span class="keyword">class</span> SyncManager <span class="annotation">@Inject</span> <span class="keyword">constructor</span>(
+    <span class="annotation">@ApplicationContext</span> <span class="keyword">private val</span> context: Context
+) {
+    <span class="keyword">private val</span> workManager = WorkManager.getInstance(context)
+
+    <span class="keyword">fun</span> <span class="function">scheduleSync</span>() {
+        <span class="keyword">val</span> constraints = Constraints.Builder()
+            .setRequiredNetworkType(NetworkType.CONNECTED)
+            .build()
+
+        <span class="keyword">val</span> request = PeriodicWorkRequestBuilder&lt;SyncWorker&gt;(
+            <span class="number">15</span>, TimeUnit.MINUTES
+        )
+            .setConstraints(constraints)
+            .build()
+
+        workManager.enqueueUniquePeriodicWork(
+            <span class="string">"sync"</span>,
+            ExistingPeriodicWorkPolicy.KEEP,
+            request
+        )
+    }
+
+    <span class="keyword">fun</span> <span class="function">syncNow</span>() {
+        <span class="keyword">val</span> request = OneTimeWorkRequestBuilder&lt;SyncWorker&gt;()
+            .setConstraints(
+                Constraints.Builder()
+                    .setRequiredNetworkType(NetworkType.CONNECTED)
+                    .build()
+            )
+            .build()
+
+        workManager.enqueue(request)
+    }
+}</code></pre>
+
+            <h2 class="text-2xl font-bold mt-8 mb-4 text-zinc-900 dark:text-white">Offline Actions Queue</h2>
+
+            <pre><code><span class="comment">// Сохраняем действия для отложенной отправки</span>
+<span class="annotation">@Entity</span>(tableName = <span class="string">"pending_actions"</span>)
+<span class="keyword">data class</span> PendingAction(
+    <span class="annotation">@PrimaryKey</span>(autoGenerate = <span class="keyword">true</span>)
+    <span class="keyword">val</span> id: Long = <span class="number">0</span>,
+    <span class="keyword">val</span> type: ActionType,
+    <span class="keyword">val</span> payload: String,  <span class="comment">// JSON</span>
+    <span class="keyword">val</span> createdAt: Long = System.currentTimeMillis()
+)
+
+<span class="keyword">enum class</span> ActionType {
+    ADD_TO_CART,
+    REMOVE_FROM_CART,
+    ADD_TO_FAVORITES,
+    REMOVE_FROM_FAVORITES
+}
+
+<span class="comment">// Добавление в очередь</span>
+<span class="keyword">suspend fun</span> <span class="function">addToCart</span>(productId: Int) {
+    <span class="keyword">if</span> (networkMonitor.isOnline.first()) {
+        cartApi.addToCart(productId)
+    } <span class="keyword">else</span> {
+        <span class="comment">// Сохраняем для отправки позже</span>
+        pendingActionDao.insert(
+            PendingAction(
+                type = ActionType.ADD_TO_CART,
+                payload = <span class="string">"{\"productId\": $productId}"</span>
+            )
+        )
+    }
+    <span class="comment">// Всегда обновляем локально</span>
+    cartDao.addProduct(productId)
+}
+
+<span class="comment">// Worker для обработки очереди</span>
+<span class="annotation">@HiltWorker</span>
+<span class="keyword">class</span> PendingActionsWorker <span class="annotation">@AssistedInject</span> <span class="keyword">constructor</span>(
+    <span class="annotation">@Assisted</span> context: Context,
+    <span class="annotation">@Assisted</span> params: WorkerParameters,
+    <span class="keyword">private val</span> pendingActionDao: PendingActionDao,
+    <span class="keyword">private val</span> cartApi: CartApi
+) : CoroutineWorker(context, params) {
+
+    <span class="keyword">override suspend fun</span> <span class="function">doWork</span>(): Result {
+        <span class="keyword">val</span> actions = pendingActionDao.getAll()
+
+        actions.forEach { action ->
+            <span class="keyword">try</span> {
+                <span class="keyword">when</span> (action.type) {
+                    ActionType.ADD_TO_CART -> {
+                        <span class="keyword">val</span> productId = Json.decodeFromString&lt;AddToCartPayload&gt;(action.payload)
+                        cartApi.addToCart(productId.productId)
+                    }
+                    <span class="comment">// ... другие типы</span>
+                }
+                pendingActionDao.delete(action)
+            } <span class="keyword">catch</span> (e: Exception) {
+                <span class="comment">// Оставляем в очереди</span>
+            }
+        }
+
+        <span class="keyword">return</span> Result.success()
+    }
+}</code></pre>
+
+            <h2 class="text-2xl font-bold mt-8 mb-4 text-zinc-900 dark:text-white">UI индикатор офлайн</h2>
+
+            <pre><code><span class="annotation">@Composable</span>
+<span class="keyword">fun</span> <span class="function">OfflineBanner</span>(
+    networkMonitor: NetworkMonitor = hiltViewModel&lt;MainViewModel&gt;().networkMonitor
+) {
+    <span class="keyword">val</span> isOnline <span class="keyword">by</span> networkMonitor.isOnline.collectAsStateWithLifecycle(initialValue = <span class="keyword">true</span>)
+
+    AnimatedVisibility(
+        visible = !isOnline,
+        enter = slideInVertically() + fadeIn(),
+        exit = slideOutVertically() + fadeOut()
+    ) {
+        Surface(
+            color = MaterialTheme.colorScheme.errorContainer,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Row(
+                modifier = Modifier.padding(<span class="number">12</span>.dp),
+                horizontalArrangement = Arrangement.Center,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Icon(
+                    Icons.Default.WifiOff,
+                    contentDescription = <span class="keyword">null</span>,
+                    tint = MaterialTheme.colorScheme.onErrorContainer
+                )
+                Spacer(Modifier.width(<span class="number">8</span>.dp))
+                Text(
+                    <span class="string">"Нет подключения к интернету"</span>,
+                    color = MaterialTheme.colorScheme.onErrorContainer
+                )
+            }
+        }
+    }
+}
+
+<span class="comment">// Использование в Scaffold</span>
+Scaffold(
+    topBar = {
+        Column {
+            TopAppBar(...)
+            OfflineBanner()
+        }
+    }
+) { ... }</code></pre>
+
+            <div class="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-xl p-6 mt-8">
+                <h3 class="font-semibold text-green-900 dark:text-green-100 mb-3">Что мы изучили</h3>
+                <ul class="text-green-800 dark:text-green-200 space-y-2">
+                    <li>• <strong>NetworkMonitor</strong> — отслеживание состояния сети</li>
+                    <li>• <strong>Offline-First</strong> — сначала кэш, потом сеть</li>
+                    <li>• <strong>WorkManager</strong> — фоновая синхронизация</li>
+                    <li>• <strong>Pending Actions</strong> — очередь офлайн-действий</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="flex justify-between items-center mt-12 pt-8 border-t border-zinc-200 dark:border-zinc-800">
+            <a href="17-animations.html" class="text-green-500 hover:underline">&larr; Анимации</a>
+            <a href="../index.html" class="text-green-500 hover:underline">Оглавление</a>
+            <a href="19-pagination.html" class="text-green-500 hover:underline">Пагинация &rarr;</a>
+        </div>
+    </div>
+</body>
+</html>

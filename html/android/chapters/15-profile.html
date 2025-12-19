@@ -1,0 +1,788 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Глава 15: Профиль пользователя | Android E-Commerce</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        pre { background: #1e1e1e; color: #d4d4d4; padding: 1rem; border-radius: 0.5rem; overflow-x: auto; }
+        .keyword { color: #569cd6; }
+        .function { color: #dcdcaa; }
+        .string { color: #ce9178; }
+        .comment { color: #6a9955; }
+        .annotation { color: #4ec9b0; }
+        .number { color: #b5cea8; }
+    </style>
+</head>
+<body class="bg-white dark:bg-zinc-900">
+    <div class="max-w-4xl mx-auto px-6 py-12">
+        <a href="../index.html" class="text-green-500 hover:underline mb-4 inline-block">&larr; Назад</a>
+        <h1 class="text-4xl font-bold text-zinc-900 dark:text-white mb-6">Глава 15: Профиль пользователя</h1>
+
+        <div class="prose dark:prose-invert max-w-none">
+            <!-- Введение -->
+            <div class="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-xl p-6 mb-8">
+                <p class="text-green-800 dark:text-green-200 mb-0">
+                    В этой главе создадим экран профиля с аватаром, редактированием данных,
+                    историей заказов и настройками приложения.
+                </p>
+            </div>
+
+            <!-- Domain Model -->
+            <h2 class="text-2xl font-bold mt-8 mb-4 text-zinc-900 dark:text-white">Domain Model</h2>
+
+            <pre><code><span class="comment">// domain/model/User.kt</span>
+<span class="keyword">data class</span> User(
+    <span class="keyword">val</span> id: Int,
+    <span class="keyword">val</span> username: String,
+    <span class="keyword">val</span> email: String,
+    <span class="keyword">val</span> firstName: String,
+    <span class="keyword">val</span> lastName: String,
+    <span class="keyword">val</span> phone: String? = <span class="keyword">null</span>,
+    <span class="keyword">val</span> image: String? = <span class="keyword">null</span>,
+    <span class="keyword">val</span> address: Address? = <span class="keyword">null</span>
+) {
+    <span class="keyword">val</span> fullName: String
+        <span class="keyword">get</span>() = <span class="string">"$firstName $lastName"</span>.trim()
+
+    <span class="keyword">val</span> initials: String
+        <span class="keyword">get</span>() = <span class="string">"${firstName.firstOrNull() ?: ""}${lastName.firstOrNull() ?: ""}"</span>
+            .uppercase()
+}
+
+<span class="keyword">data class</span> Address(
+    <span class="keyword">val</span> street: String,
+    <span class="keyword">val</span> city: String,
+    <span class="keyword">val</span> state: String,
+    <span class="keyword">val</span> postalCode: String,
+    <span class="keyword">val</span> country: String
+) {
+    <span class="keyword">val</span> formatted: String
+        <span class="keyword">get</span>() = <span class="string">"$street, $city, $state $postalCode, $country"</span>
+}
+
+<span class="comment">// domain/model/Order.kt</span>
+<span class="keyword">data class</span> Order(
+    <span class="keyword">val</span> id: String,
+    <span class="keyword">val</span> products: List&lt;OrderItem&gt;,
+    <span class="keyword">val</span> total: Double,
+    <span class="keyword">val</span> status: OrderStatus,
+    <span class="keyword">val</span> createdAt: LocalDateTime,
+    <span class="keyword">val</span> shippingAddress: Address
+)
+
+<span class="keyword">data class</span> OrderItem(
+    <span class="keyword">val</span> productId: Int,
+    <span class="keyword">val</span> title: String,
+    <span class="keyword">val</span> price: Double,
+    <span class="keyword">val</span> quantity: Int,
+    <span class="keyword">val</span> thumbnail: String
+)
+
+<span class="keyword">enum class</span> OrderStatus {
+    PENDING,
+    PROCESSING,
+    SHIPPED,
+    DELIVERED,
+    CANCELLED
+}</code></pre>
+
+            <!-- Profile Repository -->
+            <h2 class="text-2xl font-bold mt-8 mb-4 text-zinc-900 dark:text-white">Profile Repository</h2>
+
+            <pre><code><span class="comment">// domain/repository/ProfileRepository.kt</span>
+<span class="keyword">interface</span> ProfileRepository {
+    <span class="keyword">fun</span> <span class="function">getCurrentUser</span>(): Flow&lt;User?&gt;
+    <span class="keyword">suspend fun</span> <span class="function">updateProfile</span>(user: User): Result&lt;User&gt;
+    <span class="keyword">suspend fun</span> <span class="function">uploadAvatar</span>(imageUri: Uri): Result&lt;String&gt;
+    <span class="keyword">fun</span> <span class="function">getOrders</span>(): Flow&lt;List&lt;Order&gt;&gt;
+    <span class="keyword">suspend fun</span> <span class="function">getOrderById</span>(id: String): Result&lt;Order&gt;
+}
+
+<span class="comment">// data/repository/ProfileRepositoryImpl.kt</span>
+<span class="annotation">@Singleton</span>
+<span class="keyword">class</span> ProfileRepositoryImpl <span class="annotation">@Inject</span> <span class="keyword">constructor</span>(
+    <span class="keyword">private val</span> profileApi: ProfileApi,
+    <span class="keyword">private val</span> userDao: UserDao,
+    <span class="keyword">private val</span> orderDao: OrderDao
+) : ProfileRepository {
+
+    <span class="keyword">override fun</span> <span class="function">getCurrentUser</span>(): Flow&lt;User?&gt; {
+        <span class="keyword">return</span> userDao.getCurrentUser()
+            .map { it?.toDomain() }
+    }
+
+    <span class="keyword">override suspend fun</span> <span class="function">updateProfile</span>(user: User): Result&lt;User&gt; {
+        <span class="keyword">return try</span> {
+            <span class="keyword">val</span> response = profileApi.updateProfile(user.toDto())
+            <span class="keyword">val</span> updated = response.toDomain()
+            userDao.updateUser(updated.toEntity())
+            Result.success(updated)
+        } <span class="keyword">catch</span> (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    <span class="keyword">override suspend fun</span> <span class="function">uploadAvatar</span>(imageUri: Uri): Result&lt;String&gt; {
+        <span class="keyword">return try</span> {
+            <span class="keyword">val</span> file = imageUri.toFile()
+            <span class="keyword">val</span> requestBody = file.asRequestBody(<span class="string">"image/*"</span>.toMediaType())
+            <span class="keyword">val</span> part = MultipartBody.Part.createFormData(<span class="string">"avatar"</span>, file.name, requestBody)
+
+            <span class="keyword">val</span> response = profileApi.uploadAvatar(part)
+            Result.success(response.imageUrl)
+        } <span class="keyword">catch</span> (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    <span class="keyword">override fun</span> <span class="function">getOrders</span>(): Flow&lt;List&lt;Order&gt;&gt; {
+        <span class="keyword">return</span> flow {
+            <span class="comment">// Сначала кэш</span>
+            emitAll(orderDao.getAllOrders().map { list -> list.map { it.toDomain() } })
+
+            <span class="comment">// Затем обновляем с сервера</span>
+            <span class="keyword">try</span> {
+                <span class="keyword">val</span> orders = profileApi.getOrders()
+                orderDao.insertAll(orders.map { it.toEntity() })
+            } <span class="keyword">catch</span> (e: Exception) {
+                <span class="comment">// Игнорируем, показываем кэш</span>
+            }
+        }
+    }
+
+    <span class="keyword">override suspend fun</span> <span class="function">getOrderById</span>(id: String): Result&lt;Order&gt; {
+        <span class="keyword">return try</span> {
+            <span class="keyword">val</span> order = profileApi.getOrder(id)
+            Result.success(order.toDomain())
+        } <span class="keyword">catch</span> (e: Exception) {
+            <span class="comment">// Пробуем кэш</span>
+            orderDao.getOrderById(id)?.let {
+                Result.success(it.toDomain())
+            } ?: Result.failure(e)
+        }
+    }
+}</code></pre>
+
+            <!-- Profile ViewModel -->
+            <h2 class="text-2xl font-bold mt-8 mb-4 text-zinc-900 dark:text-white">Profile ViewModel</h2>
+
+            <pre><code><span class="annotation">@HiltViewModel</span>
+<span class="keyword">class</span> ProfileViewModel <span class="annotation">@Inject</span> <span class="keyword">constructor</span>(
+    <span class="keyword">private val</span> profileRepository: ProfileRepository,
+    <span class="keyword">private val</span> authRepository: AuthRepository
+) : ViewModel() {
+
+    <span class="keyword">val</span> user = profileRepository.getCurrentUser()
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(<span class="number">5000</span>), <span class="keyword">null</span>)
+
+    <span class="keyword">val</span> orders = profileRepository.getOrders()
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(<span class="number">5000</span>), emptyList())
+
+    <span class="keyword">private val</span> _uiState = MutableStateFlow(ProfileUiState())
+    <span class="keyword">val</span> uiState: StateFlow&lt;ProfileUiState&gt; = _uiState.asStateFlow()
+
+    <span class="keyword">fun</span> <span class="function">updateProfile</span>(
+        firstName: String,
+        lastName: String,
+        phone: String?
+    ) {
+        <span class="keyword">val</span> currentUser = user.value ?: <span class="keyword">return</span>
+
+        viewModelScope.launch {
+            _uiState.update { it.copy(isLoading = <span class="keyword">true</span>) }
+
+            <span class="keyword">val</span> updated = currentUser.copy(
+                firstName = firstName,
+                lastName = lastName,
+                phone = phone
+            )
+
+            profileRepository.updateProfile(updated)
+                .onSuccess {
+                    _uiState.update { it.copy(
+                        isLoading = <span class="keyword">false</span>,
+                        message = <span class="string">"Профиль обновлён"</span>
+                    )}
+                }
+                .onFailure { error ->
+                    _uiState.update { it.copy(
+                        isLoading = <span class="keyword">false</span>,
+                        error = error.message
+                    )}
+                }
+        }
+    }
+
+    <span class="keyword">fun</span> <span class="function">uploadAvatar</span>(imageUri: Uri) {
+        viewModelScope.launch {
+            _uiState.update { it.copy(isUploadingAvatar = <span class="keyword">true</span>) }
+
+            profileRepository.uploadAvatar(imageUri)
+                .onSuccess { imageUrl ->
+                    <span class="comment">// Обновляем пользователя с новым аватаром</span>
+                    user.value?.let { currentUser ->
+                        profileRepository.updateProfile(currentUser.copy(image = imageUrl))
+                    }
+                    _uiState.update { it.copy(isUploadingAvatar = <span class="keyword">false</span>) }
+                }
+                .onFailure { error ->
+                    _uiState.update { it.copy(
+                        isUploadingAvatar = <span class="keyword">false</span>,
+                        error = <span class="string">"Не удалось загрузить фото"</span>
+                    )}
+                }
+        }
+    }
+
+    <span class="keyword">fun</span> <span class="function">logout</span>() {
+        viewModelScope.launch {
+            authRepository.logout()
+        }
+    }
+
+    <span class="keyword">fun</span> <span class="function">clearMessage</span>() {
+        _uiState.update { it.copy(message = <span class="keyword">null</span>, error = <span class="keyword">null</span>) }
+    }
+}
+
+<span class="keyword">data class</span> ProfileUiState(
+    <span class="keyword">val</span> isLoading: Boolean = <span class="keyword">false</span>,
+    <span class="keyword">val</span> isUploadingAvatar: Boolean = <span class="keyword">false</span>,
+    <span class="keyword">val</span> message: String? = <span class="keyword">null</span>,
+    <span class="keyword">val</span> error: String? = <span class="keyword">null</span>
+)</code></pre>
+
+            <!-- Profile Screen -->
+            <h2 class="text-2xl font-bold mt-8 mb-4 text-zinc-900 dark:text-white">Profile Screen</h2>
+
+            <pre><code><span class="annotation">@Composable</span>
+<span class="keyword">fun</span> <span class="function">ProfileScreen</span>(
+    viewModel: ProfileViewModel = hiltViewModel(),
+    onNavigateToOrders: () -> Unit,
+    onNavigateToSettings: () -> Unit,
+    onLogout: () -> Unit
+) {
+    <span class="keyword">val</span> user <span class="keyword">by</span> viewModel.user.collectAsStateWithLifecycle()
+    <span class="keyword">val</span> uiState <span class="keyword">by</span> viewModel.uiState.collectAsStateWithLifecycle()
+    <span class="keyword">val</span> orders <span class="keyword">by</span> viewModel.orders.collectAsStateWithLifecycle()
+
+    <span class="comment">// Image picker</span>
+    <span class="keyword">val</span> launcher = rememberLauncherForActivityResult(
+        ActivityResultContracts.GetContent()
+    ) { uri: Uri? ->
+        uri?.let { viewModel.uploadAvatar(it) }
+    }
+
+    <span class="keyword">val</span> snackbarHostState = remember { SnackbarHostState() }
+
+    <span class="comment">// Show messages</span>
+    LaunchedEffect(uiState.message, uiState.error) {
+        (uiState.message ?: uiState.error)?.let {
+            snackbarHostState.showSnackbar(it)
+            viewModel.clearMessage()
+        }
+    }
+
+    Scaffold(
+        snackbarHost = { SnackbarHost(snackbarHostState) }
+    ) { padding ->
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(padding),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            <span class="comment">// Avatar section</span>
+            item {
+                ProfileHeader(
+                    user = user,
+                    isUploadingAvatar = uiState.isUploadingAvatar,
+                    onAvatarClick = { launcher.launch(<span class="string">"image/*"</span>) }
+                )
+            }
+
+            <span class="comment">// Menu items</span>
+            item {
+                ProfileMenuItem(
+                    icon = Icons.Default.ShoppingBag,
+                    title = <span class="string">"Мои заказы"</span>,
+                    subtitle = <span class="string">"${orders.size} заказов"</span>,
+                    onClick = onNavigateToOrders
+                )
+            }
+
+            item {
+                ProfileMenuItem(
+                    icon = Icons.Default.Favorite,
+                    title = <span class="string">"Избранное"</span>,
+                    onClick = { <span class="comment">/* navigate */</span> }
+                )
+            }
+
+            item {
+                ProfileMenuItem(
+                    icon = Icons.Default.LocationOn,
+                    title = <span class="string">"Адреса доставки"</span>,
+                    onClick = { <span class="comment">/* navigate */</span> }
+                )
+            }
+
+            item {
+                ProfileMenuItem(
+                    icon = Icons.Default.CreditCard,
+                    title = <span class="string">"Способы оплаты"</span>,
+                    onClick = { <span class="comment">/* navigate */</span> }
+                )
+            }
+
+            item {
+                ProfileMenuItem(
+                    icon = Icons.Default.Settings,
+                    title = <span class="string">"Настройки"</span>,
+                    onClick = onNavigateToSettings
+                )
+            }
+
+            item {
+                Spacer(modifier = Modifier.height(<span class="number">16</span>.dp))
+
+                TextButton(
+                    onClick = {
+                        viewModel.logout()
+                        onLogout()
+                    },
+                    modifier = Modifier.padding(<span class="number">16</span>.dp)
+                ) {
+                    Icon(
+                        Icons.Default.ExitToApp,
+                        <span class="keyword">null</span>,
+                        tint = MaterialTheme.colorScheme.error
+                    )
+                    Spacer(Modifier.width(<span class="number">8</span>.dp))
+                    Text(
+                        <span class="string">"Выйти"</span>,
+                        color = MaterialTheme.colorScheme.error
+                    )
+                }
+            }
+        }
+    }
+}</code></pre>
+
+            <h3 class="text-xl font-semibold mt-6 mb-3 text-zinc-900 dark:text-white">Profile Header Component</h3>
+
+            <pre><code><span class="annotation">@Composable</span>
+<span class="keyword">fun</span> <span class="function">ProfileHeader</span>(
+    user: User?,
+    isUploadingAvatar: Boolean,
+    onAvatarClick: () -> Unit
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(<span class="number">24</span>.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Box {
+            <span class="comment">// Avatar</span>
+            <span class="keyword">if</span> (user?.image != <span class="keyword">null</span>) {
+                AsyncImage(
+                    model = user.image,
+                    contentDescription = <span class="string">"Аватар"</span>,
+                    modifier = Modifier
+                        .size(<span class="number">100</span>.dp)
+                        .clip(CircleShape)
+                        .clickable(onClick = onAvatarClick),
+                    contentScale = ContentScale.Crop
+                )
+            } <span class="keyword">else</span> {
+                Box(
+                    modifier = Modifier
+                        .size(<span class="number">100</span>.dp)
+                        .clip(CircleShape)
+                        .background(MaterialTheme.colorScheme.primaryContainer)
+                        .clickable(onClick = onAvatarClick),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        text = user?.initials ?: <span class="string">"?"</span>,
+                        style = MaterialTheme.typography.headlineLarge,
+                        color = MaterialTheme.colorScheme.onPrimaryContainer
+                    )
+                }
+            }
+
+            <span class="comment">// Edit button</span>
+            Box(
+                modifier = Modifier
+                    .align(Alignment.BottomEnd)
+                    .size(<span class="number">32</span>.dp)
+                    .clip(CircleShape)
+                    .background(MaterialTheme.colorScheme.primary)
+                    .clickable(onClick = onAvatarClick),
+                contentAlignment = Alignment.Center
+            ) {
+                <span class="keyword">if</span> (isUploadingAvatar) {
+                    CircularProgressIndicator(
+                        modifier = Modifier.size(<span class="number">16</span>.dp),
+                        color = MaterialTheme.colorScheme.onPrimary,
+                        strokeWidth = <span class="number">2</span>.dp
+                    )
+                } <span class="keyword">else</span> {
+                    Icon(
+                        Icons.Default.CameraAlt,
+                        <span class="keyword">null</span>,
+                        tint = MaterialTheme.colorScheme.onPrimary,
+                        modifier = Modifier.size(<span class="number">16</span>.dp)
+                    )
+                }
+            }
+        }
+
+        Spacer(modifier = Modifier.height(<span class="number">16</span>.dp))
+
+        Text(
+            text = user?.fullName ?: <span class="string">"Загрузка..."</span>,
+            style = MaterialTheme.typography.titleLarge,
+            fontWeight = FontWeight.Bold
+        )
+
+        Text(
+            text = user?.email ?: <span class="string">""</span>,
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant
+        )
+    }
+}
+
+<span class="annotation">@Composable</span>
+<span class="keyword">fun</span> <span class="function">ProfileMenuItem</span>(
+    icon: ImageVector,
+    title: String,
+    subtitle: String? = <span class="keyword">null</span>,
+    onClick: () -> Unit
+) {
+    Surface(
+        onClick = onClick,
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        Row(
+            modifier = Modifier
+                .padding(horizontal = <span class="number">16</span>.dp, vertical = <span class="number">12</span>.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Icon(
+                icon,
+                <span class="keyword">null</span>,
+                tint = MaterialTheme.colorScheme.primary,
+                modifier = Modifier.size(<span class="number">24</span>.dp)
+            )
+
+            Column(
+                modifier = Modifier
+                    .weight(<span class="number">1</span>f)
+                    .padding(horizontal = <span class="number">16</span>.dp)
+            ) {
+                Text(
+                    text = title,
+                    style = MaterialTheme.typography.bodyLarge
+                )
+                subtitle?.let {
+                    Text(
+                        text = it,
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
+            }
+
+            Icon(
+                Icons.Default.ChevronRight,
+                <span class="keyword">null</span>,
+                tint = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+        }
+    }
+
+    HorizontalDivider(modifier = Modifier.padding(start = <span class="number">56</span>.dp))
+}</code></pre>
+
+            <!-- Edit Profile -->
+            <h2 class="text-2xl font-bold mt-8 mb-4 text-zinc-900 dark:text-white">Edit Profile Screen</h2>
+
+            <pre><code><span class="annotation">@Composable</span>
+<span class="keyword">fun</span> <span class="function">EditProfileScreen</span>(
+    viewModel: ProfileViewModel = hiltViewModel(),
+    onNavigateBack: () -> Unit
+) {
+    <span class="keyword">val</span> user <span class="keyword">by</span> viewModel.user.collectAsStateWithLifecycle()
+    <span class="keyword">val</span> uiState <span class="keyword">by</span> viewModel.uiState.collectAsStateWithLifecycle()
+
+    <span class="keyword">var</span> firstName <span class="keyword">by</span> remember(user) { mutableStateOf(user?.firstName ?: <span class="string">""</span>) }
+    <span class="keyword">var</span> lastName <span class="keyword">by</span> remember(user) { mutableStateOf(user?.lastName ?: <span class="string">""</span>) }
+    <span class="keyword">var</span> phone <span class="keyword">by</span> remember(user) { mutableStateOf(user?.phone ?: <span class="string">""</span>) }
+
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = { Text(<span class="string">"Редактировать профиль"</span>) },
+                navigationIcon = {
+                    IconButton(onClick = onNavigateBack) {
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, <span class="keyword">null</span>)
+                    }
+                },
+                actions = {
+                    TextButton(
+                        onClick = {
+                            viewModel.updateProfile(firstName, lastName, phone.ifBlank { <span class="keyword">null</span> })
+                        },
+                        enabled = !uiState.isLoading
+                    ) {
+                        <span class="keyword">if</span> (uiState.isLoading) {
+                            CircularProgressIndicator(modifier = Modifier.size(<span class="number">16</span>.dp))
+                        } <span class="keyword">else</span> {
+                            Text(<span class="string">"Сохранить"</span>)
+                        }
+                    }
+                }
+            )
+        }
+    ) { padding ->
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(padding)
+                .padding(<span class="number">16</span>.dp)
+        ) {
+            OutlinedTextField(
+                value = firstName,
+                onValueChange = { firstName = it },
+                label = { Text(<span class="string">"Имя"</span>) },
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            Spacer(modifier = Modifier.height(<span class="number">16</span>.dp))
+
+            OutlinedTextField(
+                value = lastName,
+                onValueChange = { lastName = it },
+                label = { Text(<span class="string">"Фамилия"</span>) },
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            Spacer(modifier = Modifier.height(<span class="number">16</span>.dp))
+
+            OutlinedTextField(
+                value = phone,
+                onValueChange = { phone = it },
+                label = { Text(<span class="string">"Телефон"</span>) },
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            Spacer(modifier = Modifier.height(<span class="number">16</span>.dp))
+
+            <span class="comment">// Email (read-only)</span>
+            OutlinedTextField(
+                value = user?.email ?: <span class="string">""</span>,
+                onValueChange = {},
+                label = { Text(<span class="string">"Email"</span>) },
+                enabled = <span class="keyword">false</span>,
+                modifier = Modifier.fillMaxWidth()
+            )
+        }
+    }
+}</code></pre>
+
+            <!-- Orders -->
+            <h2 class="text-2xl font-bold mt-8 mb-4 text-zinc-900 dark:text-white">Orders Screen</h2>
+
+            <pre><code><span class="annotation">@Composable</span>
+<span class="keyword">fun</span> <span class="function">OrdersScreen</span>(
+    viewModel: ProfileViewModel = hiltViewModel(),
+    onNavigateToOrder: (String) -> Unit,
+    onNavigateBack: () -> Unit
+) {
+    <span class="keyword">val</span> orders <span class="keyword">by</span> viewModel.orders.collectAsStateWithLifecycle()
+
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = { Text(<span class="string">"Мои заказы"</span>) },
+                navigationIcon = {
+                    IconButton(onClick = onNavigateBack) {
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, <span class="keyword">null</span>)
+                    }
+                }
+            )
+        }
+    ) { padding ->
+        <span class="keyword">if</span> (orders.isEmpty()) {
+            EmptyOrdersPlaceholder(modifier = Modifier.padding(padding))
+        } <span class="keyword">else</span> {
+            LazyColumn(
+                modifier = Modifier.padding(padding),
+                contentPadding = PaddingValues(<span class="number">16</span>.dp),
+                verticalArrangement = Arrangement.spacedBy(<span class="number">12</span>.dp)
+            ) {
+                items(orders, key = { it.id }) { order ->
+                    OrderCard(
+                        order = order,
+                        onClick = { onNavigateToOrder(order.id) }
+                    )
+                }
+            }
+        }
+    }
+}
+
+<span class="annotation">@Composable</span>
+<span class="keyword">fun</span> <span class="function">OrderCard</span>(
+    order: Order,
+    onClick: () -> Unit
+) {
+    Card(
+        onClick = onClick,
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        Column(modifier = Modifier.padding(<span class="number">16</span>.dp)) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Text(
+                    text = <span class="string">"Заказ #${order.id.takeLast(6)}"</span>,
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold
+                )
+
+                OrderStatusChip(status = order.status)
+            }
+
+            Spacer(modifier = Modifier.height(<span class="number">8</span>.dp))
+
+            Text(
+                text = order.createdAt.format(DateTimeFormatter.ofPattern(<span class="string">"dd MMM yyyy"</span>)),
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+
+            Spacer(modifier = Modifier.height(<span class="number">12</span>.dp))
+
+            <span class="comment">// Product thumbnails</span>
+            Row(horizontalArrangement = Arrangement.spacedBy(<span class="number">8</span>.dp)) {
+                order.products.take(<span class="number">3</span>).forEach { item ->
+                    AsyncImage(
+                        model = item.thumbnail,
+                        contentDescription = <span class="keyword">null</span>,
+                        modifier = Modifier
+                            .size(<span class="number">48</span>.dp)
+                            .clip(RoundedCornerShape(<span class="number">8</span>.dp)),
+                        contentScale = ContentScale.Crop
+                    )
+                }
+                <span class="keyword">if</span> (order.products.size > <span class="number">3</span>) {
+                    Box(
+                        modifier = Modifier
+                            .size(<span class="number">48</span>.dp)
+                            .clip(RoundedCornerShape(<span class="number">8</span>.dp))
+                            .background(MaterialTheme.colorScheme.surfaceVariant),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(<span class="string">"+${order.products.size - 3}"</span>)
+                    }
+                }
+            }
+
+            Spacer(modifier = Modifier.height(<span class="number">12</span>.dp))
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Text(
+                    text = <span class="string">"${order.products.sumOf { it.quantity }} товаров"</span>,
+                    style = MaterialTheme.typography.bodyMedium
+                )
+                Text(
+                    text = <span class="string">"$${order.total}"</span>,
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold
+                )
+            }
+        }
+    }
+}
+
+<span class="annotation">@Composable</span>
+<span class="keyword">fun</span> <span class="function">OrderStatusChip</span>(status: OrderStatus) {
+    <span class="keyword">val</span> (color, text) = <span class="keyword">when</span> (status) {
+        OrderStatus.PENDING -> Pair(Color(<span class="number">0xFFFFA000</span>), <span class="string">"Ожидает"</span>)
+        OrderStatus.PROCESSING -> Pair(Color(<span class="number">0xFF2196F3</span>), <span class="string">"В обработке"</span>)
+        OrderStatus.SHIPPED -> Pair(Color(<span class="number">0xFF9C27B0</span>), <span class="string">"Отправлен"</span>)
+        OrderStatus.DELIVERED -> Pair(Color(<span class="number">0xFF4CAF50</span>), <span class="string">"Доставлен"</span>)
+        OrderStatus.CANCELLED -> Pair(Color(<span class="number">0xFFF44336</span>), <span class="string">"Отменён"</span>)
+    }
+
+    Surface(
+        color = color.copy(alpha = <span class="number">0.1</span>f),
+        shape = RoundedCornerShape(<span class="number">4</span>.dp)
+    ) {
+        Text(
+            text = text,
+            color = color,
+            style = MaterialTheme.typography.labelSmall,
+            modifier = Modifier.padding(horizontal = <span class="number">8</span>.dp, vertical = <span class="number">4</span>.dp)
+        )
+    }
+}
+
+<span class="annotation">@Composable</span>
+<span class="keyword">fun</span> <span class="function">EmptyOrdersPlaceholder</span>(modifier: Modifier = Modifier) {
+    Column(
+        modifier = modifier.fillMaxSize(),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
+        Icon(
+            Icons.Default.ShoppingBag,
+            <span class="keyword">null</span>,
+            modifier = Modifier.size(<span class="number">64</span>.dp),
+            tint = MaterialTheme.colorScheme.onSurfaceVariant
+        )
+        Spacer(modifier = Modifier.height(<span class="number">16</span>.dp))
+        Text(
+            text = <span class="string">"Заказов пока нет"</span>,
+            style = MaterialTheme.typography.titleMedium
+        )
+        Text(
+            text = <span class="string">"Ваши заказы появятся здесь"</span>,
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant
+        )
+    }
+}</code></pre>
+
+            <!-- Итог -->
+            <div class="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-xl p-6 mt-8">
+                <h3 class="font-semibold text-green-900 dark:text-green-100 mb-3">Что мы изучили</h3>
+                <ul class="text-green-800 dark:text-green-200 space-y-2">
+                    <li>• <strong>Profile Screen</strong> — аватар, меню настроек</li>
+                    <li>• <strong>Image Picker</strong> — загрузка фото с ActivityResult API</li>
+                    <li>• <strong>Edit Profile</strong> — форма редактирования</li>
+                    <li>• <strong>Orders List</strong> — история заказов с статусами</li>
+                    <li>• <strong>Multipart Upload</strong> — загрузка файлов на сервер</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="flex justify-between items-center mt-12 pt-8 border-t border-zinc-200 dark:border-zinc-800">
+            <a href="14-authentication.html" class="text-green-500 hover:underline">&larr; Аутентификация</a>
+            <a href="../index.html" class="text-green-500 hover:underline">Оглавление</a>
+            <a href="16-dark-theme.html" class="text-green-500 hover:underline">Тёмная тема &rarr;</a>
+        </div>
+    </div>
+</body>
+</html>

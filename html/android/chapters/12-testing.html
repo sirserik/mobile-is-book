@@ -12,74 +12,812 @@
         .string { color: #ce9178; }
         .comment { color: #6a9955; }
         .annotation { color: #4ec9b0; }
+        .number { color: #b5cea8; }
     </style>
 </head>
 <body class="bg-white dark:bg-zinc-900">
     <div class="max-w-4xl mx-auto px-6 py-12">
         <a href="../index.html" class="text-green-500 hover:underline mb-4 inline-block">&larr; Назад</a>
         <h1 class="text-4xl font-bold text-zinc-900 dark:text-white mb-6">Глава 12: Тестирование</h1>
-        <div class="prose dark:prose-invert max-w-none">
 
-            <h2 class="text-2xl font-bold mt-8 mb-4">Unit тесты ViewModel</h2>
-            <pre><code><span class="keyword">class</span> HomeViewModelTest {
-    <span class="keyword">private lateinit var</span> viewModel: HomeViewModel
-    <span class="keyword">private lateinit var</span> fakeRepository: FakeProductRepository
+        <div class="prose dark:prose-invert max-w-none">
+            <!-- Введение -->
+            <div class="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-xl p-6 mb-8">
+                <p class="text-green-800 dark:text-green-200 mb-0">
+                    <strong>Зачем тесты?</strong> Тесты — это страховка. Они позволяют смело рефакторить код,
+                    быстро находить баги и документировать поведение системы.
+                </p>
+            </div>
+
+            <!-- Пирамида тестирования -->
+            <h2 class="text-2xl font-bold mt-8 mb-4 text-zinc-900 dark:text-white">Пирамида тестирования</h2>
+
+            <div class="bg-zinc-100 dark:bg-zinc-800 rounded-xl p-6 mb-6">
+                <div class="text-center font-mono text-sm">
+                    <div class="bg-red-500 text-white px-4 py-2 mx-auto w-32 rounded-t">E2E</div>
+                    <div class="bg-yellow-500 text-black px-4 py-2 mx-auto w-48">Integration</div>
+                    <div class="bg-green-500 text-white px-4 py-2 mx-auto w-64 rounded-b">Unit Tests</div>
+                </div>
+                <div class="mt-4 text-sm text-zinc-600 dark:text-zinc-400">
+                    <p><strong class="text-green-600">Unit (70%)</strong> — быстрые, изолированные, много</p>
+                    <p><strong class="text-yellow-600">Integration (20%)</strong> — проверка связей между модулями</p>
+                    <p><strong class="text-red-600">E2E/UI (10%)</strong> — медленные, хрупкие, мало</p>
+                </div>
+            </div>
+
+            <!-- Зависимости -->
+            <h2 class="text-2xl font-bold mt-8 mb-4 text-zinc-900 dark:text-white">Настройка зависимостей</h2>
+
+            <p class="text-zinc-600 dark:text-zinc-400 mb-4">
+                Добавьте в <code>build.gradle.kts</code>:
+            </p>
+
+            <pre><code><span class="comment">// build.gradle.kts (app)</span>
+dependencies {
+    <span class="comment">// Unit тесты</span>
+    testImplementation(<span class="string">"junit:junit:4.13.2"</span>)
+    testImplementation(<span class="string">"org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.3"</span>)
+    testImplementation(<span class="string">"io.mockk:mockk:1.13.8"</span>)
+    testImplementation(<span class="string">"app.cash.turbine:turbine:1.0.0"</span>)  <span class="comment">// Flow testing</span>
+    testImplementation(<span class="string">"com.google.truth:truth:1.1.5"</span>)  <span class="comment">// Assertions</span>
+
+    <span class="comment">// Hilt testing</span>
+    testImplementation(<span class="string">"com.google.dagger:hilt-android-testing:2.48"</span>)
+    kspTest(<span class="string">"com.google.dagger:hilt-android-compiler:2.48"</span>)
+
+    <span class="comment">// Android/UI тесты</span>
+    androidTestImplementation(<span class="string">"androidx.test.ext:junit:1.1.5"</span>)
+    androidTestImplementation(<span class="string">"androidx.test.espresso:espresso-core:3.5.1"</span>)
+    androidTestImplementation(<span class="string">"androidx.compose.ui:ui-test-junit4"</span>)
+    debugImplementation(<span class="string">"androidx.compose.ui:ui-test-manifest"</span>)
+
+    <span class="comment">// MockWebServer для API тестов</span>
+    testImplementation(<span class="string">"com.squareup.okhttp3:mockwebserver:4.12.0"</span>)
+
+    <span class="comment">// Room testing</span>
+    testImplementation(<span class="string">"androidx.room:room-testing:2.6.1"</span>)
+}</code></pre>
+
+            <!-- Unit Tests -->
+            <h2 class="text-2xl font-bold mt-8 mb-4 text-zinc-900 dark:text-white">Unit тесты</h2>
+
+            <h3 class="text-xl font-semibold mt-6 mb-3 text-zinc-900 dark:text-white">Тестирование UseCase</h3>
+
+            <p class="text-zinc-600 dark:text-zinc-400 mb-4">
+                Начнем с самого простого — UseCase с моком репозитория:
+            </p>
+
+            <pre><code><span class="keyword">class</span> GetProductsUseCaseTest {
+
+    <span class="keyword">private lateinit var</span> useCase: GetProductsUseCase
+    <span class="keyword">private lateinit var</span> repository: ProductRepository
 
     <span class="annotation">@Before</span>
     <span class="keyword">fun</span> <span class="function">setup</span>() {
-        fakeRepository = FakeProductRepository()
-        viewModel = HomeViewModel(GetProductsUseCase(fakeRepository))
+        repository = mockk()  <span class="comment">// MockK создает мок</span>
+        useCase = GetProductsUseCase(repository)
     }
 
     <span class="annotation">@Test</span>
-    <span class="keyword">fun</span> <span class="function">`loading products updates state`</span>() = runTest {
-        viewModel.loadProducts()
+    <span class="keyword">fun</span> <span class="function">`invoke returns products from repository`</span>() = runTest {
+        <span class="comment">// Given - подготовка данных</span>
+        <span class="keyword">val</span> products = listOf(
+            Product(id = <span class="number">1</span>, title = <span class="string">"iPhone"</span>, price = <span class="number">999.0</span>),
+            Product(id = <span class="number">2</span>, title = <span class="string">"MacBook"</span>, price = <span class="number">1999.0</span>)
+        )
+        coEvery { repository.getProducts() } returns flowOf(Resource.Success(products))
 
-        <span class="keyword">val</span> state = viewModel.uiState.value
-        assertFalse(state.isLoading)
-        assertEquals(<span class="number">2</span>, state.products.size)
+        <span class="comment">// When - выполнение</span>
+        <span class="keyword">val</span> result = useCase().first()
+
+        <span class="comment">// Then - проверка</span>
+        assertThat(result).isInstanceOf(Resource.Success::<span class="keyword">class</span>.java)
+        assertThat((result <span class="keyword">as</span> Resource.Success).data).hasSize(<span class="number">2</span>)
+    }
+
+    <span class="annotation">@Test</span>
+    <span class="keyword">fun</span> <span class="function">`invoke returns error when repository fails`</span>() = runTest {
+        <span class="comment">// Given</span>
+        coEvery { repository.getProducts() } returns flowOf(
+            Resource.Error(<span class="string">"Network error"</span>)
+        )
+
+        <span class="comment">// When</span>
+        <span class="keyword">val</span> result = useCase().first()
+
+        <span class="comment">// Then</span>
+        assertThat(result).isInstanceOf(Resource.Error::<span class="keyword">class</span>.java)
+        assertThat((result <span class="keyword">as</span> Resource.Error).message).isEqualTo(<span class="string">"Network error"</span>)
     }
 }</code></pre>
 
-            <h2 class="text-2xl font-bold mt-8 mb-4">Fake Repository</h2>
-            <pre><code><span class="keyword">class</span> FakeProductRepository : ProductRepository {
-    <span class="keyword">private val</span> products = listOf(
-        Product(id = <span class="number">1</span>, title = <span class="string">"iPhone"</span>, price = <span class="number">999.0</span>, ...),
-        Product(id = <span class="number">2</span>, title = <span class="string">"MacBook"</span>, price = <span class="number">1999.0</span>, ...)
-    )
+            <div class="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-xl p-4 my-6">
+                <p class="text-blue-800 dark:text-blue-200 text-sm mb-0">
+                    <strong>Given-When-Then</strong> — паттерн структурирования тестов:
+                    <br>• <strong>Given</strong> — начальное состояние (моки, данные)
+                    <br>• <strong>When</strong> — действие которое тестируем
+                    <br>• <strong>Then</strong> — проверка результата
+                </p>
+            </div>
 
-    <span class="keyword">override fun</span> <span class="function">getProducts</span>() = flow {
-        emit(Resource.Success(products))
-    }
-}</code></pre>
+            <h3 class="text-xl font-semibold mt-6 mb-3 text-zinc-900 dark:text-white">Тестирование ViewModel с Turbine</h3>
 
-            <h2 class="text-2xl font-bold mt-8 mb-4">UI тесты Compose</h2>
-            <pre><code><span class="keyword">class</span> ProductCardTest {
+            <p class="text-zinc-600 dark:text-zinc-400 mb-4">
+                Turbine — библиотека для тестирования Flow. Позволяет проверять последовательность эмитов:
+            </p>
+
+            <pre><code><span class="annotation">@OptIn</span>(ExperimentalCoroutinesApi::<span class="keyword">class</span>)
+<span class="keyword">class</span> HomeViewModelTest {
+
+    <span class="keyword">private lateinit var</span> viewModel: HomeViewModel
+    <span class="keyword">private lateinit var</span> getProductsUseCase: GetProductsUseCase
+
     <span class="annotation">@get:Rule</span>
-    <span class="keyword">val</span> composeRule = createComposeRule()
+    <span class="keyword">val</span> mainDispatcherRule = MainDispatcherRule()
+
+    <span class="annotation">@Before</span>
+    <span class="keyword">fun</span> <span class="function">setup</span>() {
+        getProductsUseCase = mockk()
+    }
 
     <span class="annotation">@Test</span>
-    <span class="keyword">fun</span> <span class="function">`product card displays title and price`</span>() {
-        <span class="keyword">val</span> product = Product(title = <span class="string">"iPhone"</span>, price = <span class="number">999.0</span>, ...)
-
-        composeRule.setContent {
-            ProductCard(product = product, onClick = {})
+    <span class="keyword">fun</span> <span class="function">`loadProducts emits loading then success`</span>() = runTest {
+        <span class="comment">// Given</span>
+        <span class="keyword">val</span> products = listOf(Product(id = <span class="number">1</span>, title = <span class="string">"iPhone"</span>))
+        coEvery { getProductsUseCase() } returns flow {
+            emit(Resource.Loading())
+            delay(<span class="number">100</span>)
+            emit(Resource.Success(products))
         }
 
-        composeRule.onNodeWithText(<span class="string">"iPhone"</span>).assertIsDisplayed()
-        composeRule.onNodeWithText(<span class="string">"$999"</span>).assertIsDisplayed()
+        viewModel = HomeViewModel(getProductsUseCase)
+
+        <span class="comment">// When & Then - используем Turbine</span>
+        viewModel.uiState.test {
+            <span class="comment">// Начальное состояние</span>
+            <span class="keyword">val</span> initial = awaitItem()
+            assertThat(initial.isLoading).isFalse()
+            assertThat(initial.products).isEmpty()
+
+            <span class="comment">// Загрузка</span>
+            viewModel.loadProducts()
+
+            <span class="keyword">val</span> loading = awaitItem()
+            assertThat(loading.isLoading).isTrue()
+
+            <span class="comment">// Успех</span>
+            <span class="keyword">val</span> success = awaitItem()
+            assertThat(success.isLoading).isFalse()
+            assertThat(success.products).hasSize(<span class="number">1</span>)
+            assertThat(success.products[<span class="number">0</span>].title).isEqualTo(<span class="string">"iPhone"</span>)
+
+            cancelAndIgnoreRemainingEvents()
+        }
+    }
+
+    <span class="annotation">@Test</span>
+    <span class="keyword">fun</span> <span class="function">`loadProducts shows error message on failure`</span>() = runTest {
+        <span class="comment">// Given</span>
+        coEvery { getProductsUseCase() } returns flowOf(
+            Resource.Error(<span class="string">"Нет интернета"</span>)
+        )
+
+        viewModel = HomeViewModel(getProductsUseCase)
+
+        <span class="comment">// When & Then</span>
+        viewModel.uiState.test {
+            awaitItem() <span class="comment">// initial</span>
+
+            viewModel.loadProducts()
+
+            <span class="keyword">val</span> error = awaitItem()
+            assertThat(error.error).isEqualTo(<span class="string">"Нет интернета"</span>)
+            assertThat(error.isLoading).isFalse()
+
+            cancelAndIgnoreRemainingEvents()
+        }
     }
 }</code></pre>
 
+            <h3 class="text-xl font-semibold mt-6 mb-3 text-zinc-900 dark:text-white">MainDispatcherRule</h3>
+
+            <p class="text-zinc-600 dark:text-zinc-400 mb-4">
+                ViewModel использует <code>viewModelScope</code> который привязан к Main диспетчеру.
+                В тестах нужно его заменить:
+            </p>
+
+            <pre><code><span class="annotation">@OptIn</span>(ExperimentalCoroutinesApi::<span class="keyword">class</span>)
+<span class="keyword">class</span> MainDispatcherRule(
+    <span class="keyword">private val</span> dispatcher: TestDispatcher = UnconfinedTestDispatcher()
+) : TestWatcher() {
+
+    <span class="keyword">override fun</span> <span class="function">starting</span>(description: Description) {
+        Dispatchers.setMain(dispatcher)
+    }
+
+    <span class="keyword">override fun</span> <span class="function">finished</span>(description: Description) {
+        Dispatchers.resetMain()
+    }
+}
+
+<span class="comment">// Использование в тесте:</span>
+<span class="keyword">class</span> MyViewModelTest {
+    <span class="annotation">@get:Rule</span>
+    <span class="keyword">val</span> mainDispatcherRule = MainDispatcherRule()
+
+    <span class="comment">// теперь viewModelScope работает в тестах</span>
+}</code></pre>
+
+            <!-- Fake vs Mock -->
+            <h2 class="text-2xl font-bold mt-8 mb-4 text-zinc-900 dark:text-white">Fake vs Mock</h2>
+
+            <div class="grid md:grid-cols-2 gap-4 mb-6">
+                <div class="bg-zinc-100 dark:bg-zinc-800 rounded-xl p-4">
+                    <h4 class="font-bold text-zinc-900 dark:text-white mb-2">Mock (MockK)</h4>
+                    <pre class="text-sm"><code><span class="keyword">val</span> repo = mockk&lt;ProductRepository&gt;()
+coEvery { repo.getProducts() } returns flowOf(...)
+
+<span class="comment">// Проверка вызова</span>
+coVerify { repo.getProducts() }</code></pre>
+                    <p class="text-zinc-600 dark:text-zinc-400 text-sm mt-2">
+                        Быстро создать, задать поведение. Хорошо для простых случаев.
+                    </p>
+                </div>
+
+                <div class="bg-zinc-100 dark:bg-zinc-800 rounded-xl p-4">
+                    <h4 class="font-bold text-zinc-900 dark:text-white mb-2">Fake (своя реализация)</h4>
+                    <pre class="text-sm"><code><span class="keyword">class</span> FakeProductRepository : ProductRepository {
+    <span class="keyword">var</span> products = mutableListOf&lt;Product&gt;()
+    <span class="keyword">var</span> shouldFail = <span class="keyword">false</span>
+
+    <span class="keyword">override fun</span> getProducts() = flow {
+        <span class="keyword">if</span> (shouldFail) emit(Resource.Error(<span class="string">"Error"</span>))
+        <span class="keyword">else</span> emit(Resource.Success(products))
+    }
+}</code></pre>
+                    <p class="text-zinc-600 dark:text-zinc-400 text-sm mt-2">
+                        Больше контроля, переиспользуется в разных тестах.
+                    </p>
+                </div>
+            </div>
+
+            <p class="text-zinc-600 dark:text-zinc-400 mb-4">
+                Полный пример Fake Repository:
+            </p>
+
+            <pre><code><span class="keyword">class</span> FakeProductRepository : ProductRepository {
+
+    <span class="keyword">private val</span> products = mutableListOf&lt;Product&gt;()
+    <span class="keyword">private val</span> favorites = mutableSetOf&lt;Int&gt;()
+
+    <span class="keyword">var</span> networkError: String? = <span class="keyword">null</span>
+    <span class="keyword">var</span> delay: Long = <span class="number">0L</span>
+
+    <span class="keyword">fun</span> <span class="function">addProduct</span>(product: Product) {
+        products.add(product)
+    }
+
+    <span class="keyword">override fun</span> <span class="function">getProducts</span>(): Flow&lt;Resource&lt;List&lt;Product&gt;&gt;&gt; = flow {
+        emit(Resource.Loading())
+
+        <span class="keyword">if</span> (delay > <span class="number">0</span>) delay(delay)
+
+        networkError?.let {
+            emit(Resource.Error(it))
+            <span class="keyword">return</span>@flow
+        }
+
+        emit(Resource.Success(products.toList()))
+    }
+
+    <span class="keyword">override fun</span> <span class="function">getProductById</span>(id: Int): Flow&lt;Resource&lt;Product&gt;&gt; = flow {
+        emit(Resource.Loading())
+
+        <span class="keyword">val</span> product = products.find { it.id == id }
+        <span class="keyword">if</span> (product != <span class="keyword">null</span>) {
+            emit(Resource.Success(product))
+        } <span class="keyword">else</span> {
+            emit(Resource.Error(<span class="string">"Product not found"</span>))
+        }
+    }
+
+    <span class="keyword">override suspend fun</span> <span class="function">toggleFavorite</span>(productId: Int) {
+        <span class="keyword">if</span> (favorites.contains(productId)) {
+            favorites.remove(productId)
+        } <span class="keyword">else</span> {
+            favorites.add(productId)
+        }
+    }
+
+    <span class="keyword">override fun</span> <span class="function">getFavorites</span>(): Flow&lt;List&lt;Product&gt;&gt; = flow {
+        emit(products.filter { favorites.contains(it.id) })
+    }
+}</code></pre>
+
+            <!-- Integration Tests -->
+            <h2 class="text-2xl font-bold mt-8 mb-4 text-zinc-900 dark:text-white">Integration тесты</h2>
+
+            <h3 class="text-xl font-semibold mt-6 mb-3 text-zinc-900 dark:text-white">Тестирование Room DAO</h3>
+
+            <p class="text-zinc-600 dark:text-zinc-400 mb-4">
+                Room предоставляет in-memory базу для тестов:
+            </p>
+
+            <pre><code><span class="annotation">@RunWith</span>(AndroidJUnit4::<span class="keyword">class</span>)
+<span class="keyword">class</span> ProductDaoTest {
+
+    <span class="keyword">private lateinit var</span> database: AppDatabase
+    <span class="keyword">private lateinit var</span> productDao: ProductDao
+
+    <span class="annotation">@Before</span>
+    <span class="keyword">fun</span> <span class="function">setup</span>() {
+        <span class="keyword">val</span> context = ApplicationProvider.getApplicationContext&lt;Context&gt;()
+        database = Room.inMemoryDatabaseBuilder(context, AppDatabase::<span class="keyword">class</span>.java)
+            .allowMainThreadQueries()  <span class="comment">// только для тестов!</span>
+            .build()
+        productDao = database.productDao()
+    }
+
+    <span class="annotation">@After</span>
+    <span class="keyword">fun</span> <span class="function">tearDown</span>() {
+        database.close()
+    }
+
+    <span class="annotation">@Test</span>
+    <span class="keyword">fun</span> <span class="function">insertAndGetProducts</span>() = runTest {
+        <span class="comment">// Given</span>
+        <span class="keyword">val</span> products = listOf(
+            ProductEntity(id = <span class="number">1</span>, title = <span class="string">"iPhone"</span>, price = <span class="number">999.0</span>),
+            ProductEntity(id = <span class="number">2</span>, title = <span class="string">"MacBook"</span>, price = <span class="number">1999.0</span>)
+        )
+
+        <span class="comment">// When</span>
+        productDao.insertAll(products)
+        <span class="keyword">val</span> result = productDao.getAllProducts().first()
+
+        <span class="comment">// Then</span>
+        assertThat(result).hasSize(<span class="number">2</span>)
+        assertThat(result[<span class="number">0</span>].title).isEqualTo(<span class="string">"iPhone"</span>)
+    }
+
+    <span class="annotation">@Test</span>
+    <span class="keyword">fun</span> <span class="function">searchProducts</span>() = runTest {
+        <span class="comment">// Given</span>
+        productDao.insertAll(listOf(
+            ProductEntity(id = <span class="number">1</span>, title = <span class="string">"iPhone 15"</span>),
+            ProductEntity(id = <span class="number">2</span>, title = <span class="string">"MacBook Pro"</span>),
+            ProductEntity(id = <span class="number">3</span>, title = <span class="string">"iPhone 14"</span>)
+        ))
+
+        <span class="comment">// When</span>
+        <span class="keyword">val</span> result = productDao.searchProducts(<span class="string">"%iPhone%"</span>).first()
+
+        <span class="comment">// Then</span>
+        assertThat(result).hasSize(<span class="number">2</span>)
+        assertThat(result.map { it.title }).containsExactly(<span class="string">"iPhone 15"</span>, <span class="string">"iPhone 14"</span>)
+    }
+
+    <span class="annotation">@Test</span>
+    <span class="keyword">fun</span> <span class="function">deleteProduct</span>() = runTest {
+        <span class="comment">// Given</span>
+        <span class="keyword">val</span> product = ProductEntity(id = <span class="number">1</span>, title = <span class="string">"iPhone"</span>)
+        productDao.insert(product)
+
+        <span class="comment">// When</span>
+        productDao.delete(product)
+        <span class="keyword">val</span> result = productDao.getAllProducts().first()
+
+        <span class="comment">// Then</span>
+        assertThat(result).isEmpty()
+    }
+}</code></pre>
+
+            <h3 class="text-xl font-semibold mt-6 mb-3 text-zinc-900 dark:text-white">Тестирование API с MockWebServer</h3>
+
+            <p class="text-zinc-600 dark:text-zinc-400 mb-4">
+                MockWebServer позволяет эмулировать HTTP сервер:
+            </p>
+
+            <pre><code><span class="keyword">class</span> ProductApiTest {
+
+    <span class="keyword">private lateinit var</span> mockWebServer: MockWebServer
+    <span class="keyword">private lateinit var</span> api: ProductApi
+
+    <span class="annotation">@Before</span>
+    <span class="keyword">fun</span> <span class="function">setup</span>() {
+        mockWebServer = MockWebServer()
+        mockWebServer.start()
+
+        api = Retrofit.Builder()
+            .baseUrl(mockWebServer.url(<span class="string">"/"</span>))
+            .addConverterFactory(MoshiConverterFactory.create())
+            .build()
+            .create(ProductApi::<span class="keyword">class</span>.java)
+    }
+
+    <span class="annotation">@After</span>
+    <span class="keyword">fun</span> <span class="function">tearDown</span>() {
+        mockWebServer.shutdown()
+    }
+
+    <span class="annotation">@Test</span>
+    <span class="keyword">fun</span> <span class="function">`getProducts returns list on success`</span>() = runTest {
+        <span class="comment">// Given - подготовим ответ сервера</span>
+        <span class="keyword">val</span> json = <span class="string">"""
+            {
+                "products": [
+                    {"id": 1, "title": "iPhone", "price": 999},
+                    {"id": 2, "title": "MacBook", "price": 1999}
+                ]
+            }
+        """</span>.trimIndent()
+
+        mockWebServer.enqueue(
+            MockResponse()
+                .setResponseCode(<span class="number">200</span>)
+                .setBody(json)
+                .addHeader(<span class="string">"Content-Type"</span>, <span class="string">"application/json"</span>)
+        )
+
+        <span class="comment">// When</span>
+        <span class="keyword">val</span> response = api.getProducts()
+
+        <span class="comment">// Then</span>
+        assertThat(response.products).hasSize(<span class="number">2</span>)
+        assertThat(response.products[<span class="number">0</span>].title).isEqualTo(<span class="string">"iPhone"</span>)
+
+        <span class="comment">// Проверим что запрос был правильный</span>
+        <span class="keyword">val</span> request = mockWebServer.takeRequest()
+        assertThat(request.path).isEqualTo(<span class="string">"/products"</span>)
+        assertThat(request.method).isEqualTo(<span class="string">"GET"</span>)
+    }
+
+    <span class="annotation">@Test</span>
+    <span class="keyword">fun</span> <span class="function">`getProducts throws on 500 error`</span>() = runTest {
+        <span class="comment">// Given</span>
+        mockWebServer.enqueue(
+            MockResponse().setResponseCode(<span class="number">500</span>)
+        )
+
+        <span class="comment">// When & Then</span>
+        assertThrows(HttpException::<span class="keyword">class</span>.java) {
+            runBlocking { api.getProducts() }
+        }
+    }
+
+    <span class="annotation">@Test</span>
+    <span class="keyword">fun</span> <span class="function">`getProducts handles network timeout`</span>() = runTest {
+        <span class="comment">// Given - ответ с задержкой</span>
+        mockWebServer.enqueue(
+            MockResponse()
+                .setBodyDelay(<span class="number">5</span>, TimeUnit.SECONDS)
+                .setBody(<span class="string">"{}"</span>)
+        )
+
+        <span class="comment">// API с коротким таймаутом</span>
+        <span class="keyword">val</span> client = OkHttpClient.Builder()
+            .readTimeout(<span class="number">1</span>, TimeUnit.SECONDS)
+            .build()
+
+        <span class="keyword">val</span> apiWithTimeout = Retrofit.Builder()
+            .baseUrl(mockWebServer.url(<span class="string">"/"</span>))
+            .client(client)
+            .addConverterFactory(MoshiConverterFactory.create())
+            .build()
+            .create(ProductApi::<span class="keyword">class</span>.java)
+
+        <span class="comment">// When & Then</span>
+        assertThrows(SocketTimeoutException::<span class="keyword">class</span>.java) {
+            runBlocking { apiWithTimeout.getProducts() }
+        }
+    }
+}</code></pre>
+
+            <!-- UI Tests -->
+            <h2 class="text-2xl font-bold mt-8 mb-4 text-zinc-900 dark:text-white">UI тесты Compose</h2>
+
+            <h3 class="text-xl font-semibold mt-6 mb-3 text-zinc-900 dark:text-white">Базовый UI тест</h3>
+
+            <pre><code><span class="keyword">class</span> ProductCardTest {
+
+    <span class="annotation">@get:Rule</span>
+    <span class="keyword">val</span> composeTestRule = createComposeRule()
+
+    <span class="annotation">@Test</span>
+    <span class="keyword">fun</span> <span class="function">`product card displays all information`</span>() {
+        <span class="comment">// Given</span>
+        <span class="keyword">val</span> product = Product(
+            id = <span class="number">1</span>,
+            title = <span class="string">"iPhone 15 Pro"</span>,
+            price = <span class="number">999.0</span>,
+            thumbnail = <span class="string">"https://example.com/image.jpg"</span>
+        )
+
+        <span class="comment">// When</span>
+        composeTestRule.setContent {
+            MaterialTheme {
+                ProductCard(
+                    product = product,
+                    onClick = {},
+                    onFavoriteClick = {}
+                )
+            }
+        }
+
+        <span class="comment">// Then</span>
+        composeTestRule.onNodeWithText(<span class="string">"iPhone 15 Pro"</span>).assertIsDisplayed()
+        composeTestRule.onNodeWithText(<span class="string">"$999"</span>).assertIsDisplayed()
+    }
+
+    <span class="annotation">@Test</span>
+    <span class="keyword">fun</span> <span class="function">`clicking card triggers onClick`</span>() {
+        <span class="comment">// Given</span>
+        <span class="keyword">var</span> clicked = <span class="keyword">false</span>
+        <span class="keyword">val</span> product = Product(id = <span class="number">1</span>, title = <span class="string">"iPhone"</span>)
+
+        composeTestRule.setContent {
+            ProductCard(
+                product = product,
+                onClick = { clicked = <span class="keyword">true</span> },
+                onFavoriteClick = {}
+            )
+        }
+
+        <span class="comment">// When</span>
+        composeTestRule.onNodeWithText(<span class="string">"iPhone"</span>).performClick()
+
+        <span class="comment">// Then</span>
+        assertThat(clicked).isTrue()
+    }
+}</code></pre>
+
+            <h3 class="text-xl font-semibold mt-6 mb-3 text-zinc-900 dark:text-white">Поиск элементов</h3>
+
+            <div class="bg-zinc-100 dark:bg-zinc-800 rounded-xl p-4 mb-6">
+                <table class="w-full text-sm">
+                    <thead>
+                        <tr class="border-b border-zinc-300 dark:border-zinc-600">
+                            <th class="text-left py-2 text-zinc-900 dark:text-white">Метод</th>
+                            <th class="text-left py-2 text-zinc-900 dark:text-white">Описание</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-zinc-600 dark:text-zinc-400">
+                        <tr><td class="py-1"><code>onNodeWithText("text")</code></td><td>По тексту</td></tr>
+                        <tr><td class="py-1"><code>onNodeWithTag("tag")</code></td><td>По testTag</td></tr>
+                        <tr><td class="py-1"><code>onNodeWithContentDescription("desc")</code></td><td>По accessibility</td></tr>
+                        <tr><td class="py-1"><code>onAllNodesWithText("text")</code></td><td>Все с текстом</td></tr>
+                        <tr><td class="py-1"><code>onNode(hasClickAction())</code></td><td>По свойству</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <pre><code><span class="comment">// Добавляем testTag в Composable</span>
+<span class="annotation">@Composable</span>
+<span class="keyword">fun</span> <span class="function">ProductCard</span>(...) {
+    Card(
+        modifier = Modifier.testTag(<span class="string">"product_card_\${product.id}"</span>)
+    ) {
+        <span class="comment">// ...</span>
+        IconButton(
+            modifier = Modifier.testTag(<span class="string">"favorite_button"</span>),
+            onClick = onFavoriteClick
+        ) {
+            Icon(Icons.Default.Favorite, <span class="keyword">null</span>)
+        }
+    }
+}
+
+<span class="comment">// В тесте</span>
+composeTestRule.onNodeWithTag(<span class="string">"product_card_1"</span>).assertExists()
+composeTestRule.onNodeWithTag(<span class="string">"favorite_button"</span>).performClick()</code></pre>
+
+            <h3 class="text-xl font-semibold mt-6 mb-3 text-zinc-900 dark:text-white">Действия и проверки</h3>
+
+            <pre><code><span class="annotation">@Test</span>
+<span class="keyword">fun</span> <span class="function">`search filters products`</span>() {
+    composeTestRule.setContent {
+        SearchScreen(viewModel = viewModel)
+    }
+
+    <span class="comment">// Ввод текста</span>
+    composeTestRule
+        .onNodeWithTag(<span class="string">"search_field"</span>)
+        .performTextInput(<span class="string">"iPhone"</span>)
+
+    <span class="comment">// Ожидание результата</span>
+    composeTestRule.waitUntil(timeoutMillis = <span class="number">5000</span>) {
+        composeTestRule
+            .onAllNodesWithTag(<span class="string">"product_card"</span>)
+            .fetchSemanticsNodes()
+            .isNotEmpty()
+    }
+
+    <span class="comment">// Проверка</span>
+    composeTestRule.onNodeWithText(<span class="string">"iPhone 15"</span>).assertIsDisplayed()
+    composeTestRule.onNodeWithText(<span class="string">"MacBook"</span>).assertDoesNotExist()
+}
+
+<span class="annotation">@Test</span>
+<span class="keyword">fun</span> <span class="function">`scroll to item in list`</span>() {
+    composeTestRule.setContent {
+        ProductListScreen(products = (1..100).map { Product(id = it, title = <span class="string">"Product $it"</span>) })
+    }
+
+    <span class="comment">// Скроллим к элементу</span>
+    composeTestRule
+        .onNodeWithTag(<span class="string">"product_list"</span>)
+        .performScrollToNode(hasText(<span class="string">"Product 50"</span>))
+
+    composeTestRule.onNodeWithText(<span class="string">"Product 50"</span>).assertIsDisplayed()
+}</code></pre>
+
+            <h3 class="text-xl font-semibold mt-6 mb-3 text-zinc-900 dark:text-white">Тестирование с Hilt</h3>
+
+            <pre><code><span class="annotation">@HiltAndroidTest</span>
+<span class="annotation">@RunWith</span>(AndroidJUnit4::<span class="keyword">class</span>)
+<span class="keyword">class</span> HomeScreenTest {
+
+    <span class="annotation">@get:Rule(order = 0)</span>
+    <span class="keyword">val</span> hiltRule = HiltAndroidRule(<span class="keyword">this</span>)
+
+    <span class="annotation">@get:Rule(order = 1)</span>
+    <span class="keyword">val</span> composeTestRule = createAndroidComposeRule&lt;MainActivity&gt;()
+
+    <span class="annotation">@Inject</span>
+    <span class="keyword">lateinit var</span> fakeRepository: FakeProductRepository
+
+    <span class="annotation">@Before</span>
+    <span class="keyword">fun</span> <span class="function">setup</span>() {
+        hiltRule.inject()
+
+        <span class="comment">// Подготовка данных</span>
+        fakeRepository.addProduct(Product(id = <span class="number">1</span>, title = <span class="string">"iPhone"</span>))
+        fakeRepository.addProduct(Product(id = <span class="number">2</span>, title = <span class="string">"MacBook"</span>))
+    }
+
+    <span class="annotation">@Test</span>
+    <span class="keyword">fun</span> <span class="function">`home screen shows products from repository`</span>() {
+        composeTestRule.onNodeWithText(<span class="string">"iPhone"</span>).assertIsDisplayed()
+        composeTestRule.onNodeWithText(<span class="string">"MacBook"</span>).assertIsDisplayed()
+    }
+}
+
+<span class="comment">// Модуль для тестов - заменяет реальный репозиторий</span>
+<span class="annotation">@Module</span>
+<span class="annotation">@TestInstallIn</span>(
+    components = [SingletonComponent::<span class="keyword">class</span>],
+    replaces = [RepositoryModule::<span class="keyword">class</span>]
+)
+<span class="keyword">object</span> FakeRepositoryModule {
+
+    <span class="annotation">@Provides</span>
+    <span class="annotation">@Singleton</span>
+    <span class="keyword">fun</span> <span class="function">provideProductRepository</span>(): ProductRepository {
+        <span class="keyword">return</span> FakeProductRepository()
+    }
+}</code></pre>
+
+            <!-- Best Practices -->
+            <h2 class="text-2xl font-bold mt-8 mb-4 text-zinc-900 dark:text-white">Best Practices</h2>
+
+            <div class="space-y-4">
+                <div class="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-xl p-4">
+                    <h4 class="font-bold text-green-900 dark:text-green-100 mb-2">1. Один тест = одна проверка</h4>
+                    <pre class="text-sm"><code><span class="comment">// Плохо - много проверок в одном тесте</span>
+<span class="annotation">@Test</span>
+<span class="keyword">fun</span> <span class="function">testEverything</span>() {
+    viewModel.loadProducts()
+    assertThat(state.products).hasSize(<span class="number">2</span>)
+    viewModel.search(<span class="string">"iPhone"</span>)
+    assertThat(state.products).hasSize(<span class="number">1</span>)
+    viewModel.addToFavorites(<span class="number">1</span>)
+    assertThat(state.favorites).hasSize(<span class="number">1</span>)
+}
+
+<span class="comment">// Хорошо - отдельные тесты</span>
+<span class="annotation">@Test</span> <span class="keyword">fun</span> <span class="function">`loadProducts returns all products`</span>() { ... }
+<span class="annotation">@Test</span> <span class="keyword">fun</span> <span class="function">`search filters by query`</span>() { ... }
+<span class="annotation">@Test</span> <span class="keyword">fun</span> <span class="function">`addToFavorites adds to list`</span>() { ... }</code></pre>
+                </div>
+
+                <div class="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-xl p-4">
+                    <h4 class="font-bold text-green-900 dark:text-green-100 mb-2">2. Понятные названия тестов</h4>
+                    <pre class="text-sm"><code><span class="comment">// Плохо</span>
+<span class="annotation">@Test</span> <span class="keyword">fun</span> <span class="function">test1</span>() { ... }
+<span class="annotation">@Test</span> <span class="keyword">fun</span> <span class="function">testProducts</span>() { ... }
+
+<span class="comment">// Хорошо - описывает что и когда</span>
+<span class="annotation">@Test</span> <span class="keyword">fun</span> <span class="function">`loadProducts shows error when network fails`</span>() { ... }
+<span class="annotation">@Test</span> <span class="keyword">fun</span> <span class="function">`search returns empty list for unknown query`</span>() { ... }</code></pre>
+                </div>
+
+                <div class="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-xl p-4">
+                    <h4 class="font-bold text-green-900 dark:text-green-100 mb-2">3. Изолированные тесты</h4>
+                    <pre class="text-sm"><code><span class="comment">// Плохо - тесты зависят друг от друга</span>
+<span class="keyword">class</span> CartTest {
+    <span class="keyword">companion object</span> {
+        <span class="keyword">val</span> cart = Cart() <span class="comment">// shared state!</span>
+    }
+}
+
+<span class="comment">// Хорошо - каждый тест создает свои данные</span>
+<span class="keyword">class</span> CartTest {
+    <span class="keyword">private lateinit var</span> cart: Cart
+
+    <span class="annotation">@Before</span>
+    <span class="keyword">fun</span> <span class="function">setup</span>() {
+        cart = Cart() <span class="comment">// fresh instance</span>
+    }
+}</code></pre>
+                </div>
+
+                <div class="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-xl p-4">
+                    <h4 class="font-bold text-green-900 dark:text-green-100 mb-2">4. Не тестируйте приватные методы</h4>
+                    <p class="text-green-800 dark:text-green-200 text-sm">
+                        Тестируйте публичный API. Если приватный метод содержит важную логику —
+                        вынесите его в отдельный класс.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Test Coverage -->
+            <h2 class="text-2xl font-bold mt-8 mb-4 text-zinc-900 dark:text-white">Test Coverage</h2>
+
+            <p class="text-zinc-600 dark:text-zinc-400 mb-4">
+                Добавьте в <code>build.gradle.kts</code> для измерения покрытия:
+            </p>
+
+            <pre><code><span class="keyword">android</span> {
+    buildTypes {
+        debug {
+            enableUnitTestCoverage = <span class="keyword">true</span>
+            enableAndroidTestCoverage = <span class="keyword">true</span>
+        }
+    }
+}
+
+<span class="comment">// Запуск с покрытием</span>
+<span class="comment">// ./gradlew createDebugCoverageReport</span></code></pre>
+
+            <div class="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-xl p-4 my-6">
+                <p class="text-yellow-800 dark:text-yellow-200 text-sm mb-0">
+                    <strong>Рекомендуемое покрытие:</strong>
+                    <br>• UseCase/ViewModel — 80%+
+                    <br>• Repository — 70%+
+                    <br>• UI — ключевые сценарии
+                    <br>• Не гонитесь за 100% — это не цель
+                </p>
+            </div>
+
+            <!-- Запуск тестов -->
+            <h2 class="text-2xl font-bold mt-8 mb-4 text-zinc-900 dark:text-white">Запуск тестов</h2>
+
+            <pre><code><span class="comment"># Unit тесты</span>
+./gradlew test
+
+<span class="comment"># Конкретный класс</span>
+./gradlew test --tests "HomeViewModelTest"
+
+<span class="comment"># Android/UI тесты (нужен эмулятор)</span>
+./gradlew connectedAndroidTest
+
+<span class="comment"># С покрытием</span>
+./gradlew createDebugCoverageReport</code></pre>
+
+            <!-- Итог -->
             <div class="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-xl p-6 mt-8">
-                <h3 class="font-semibold text-green-900 dark:text-green-100 mb-3">Типы тестов</h3>
+                <h3 class="font-semibold text-green-900 dark:text-green-100 mb-3">Что мы изучили</h3>
                 <ul class="text-green-800 dark:text-green-200 space-y-2">
-                    <li>• <strong>Unit</strong> — ViewModel, UseCase, Repository</li>
-                    <li>• <strong>Integration</strong> — Room DAO, API</li>
-                    <li>• <strong>UI</strong> — Compose компоненты</li>
+                    <li>• <strong>Пирамида тестов</strong> — много unit, меньше integration, мало UI</li>
+                    <li>• <strong>Unit тесты</strong> — UseCase, ViewModel с MockK и Turbine</li>
+                    <li>• <strong>Fake vs Mock</strong> — когда что использовать</li>
+                    <li>• <strong>Integration</strong> — Room DAO, API с MockWebServer</li>
+                    <li>• <strong>UI тесты</strong> — Compose testing, поиск элементов, действия</li>
+                    <li>• <strong>Hilt в тестах</strong> — замена зависимостей на фейки</li>
                 </ul>
             </div>
         </div>
+
         <div class="flex justify-between items-center mt-12 pt-8 border-t border-zinc-200 dark:border-zinc-800">
             <a href="11-di-hilt.html" class="text-green-500 hover:underline">&larr; Hilt DI</a>
             <a href="../index.html" class="text-green-500 hover:underline">Оглавление</a>

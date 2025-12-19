@@ -1,0 +1,805 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Глава 14: Аутентификация | Android E-Commerce</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        pre { background: #1e1e1e; color: #d4d4d4; padding: 1rem; border-radius: 0.5rem; overflow-x: auto; }
+        .keyword { color: #569cd6; }
+        .function { color: #dcdcaa; }
+        .string { color: #ce9178; }
+        .comment { color: #6a9955; }
+        .annotation { color: #4ec9b0; }
+        .number { color: #b5cea8; }
+    </style>
+</head>
+<body class="bg-white dark:bg-zinc-900">
+    <div class="max-w-4xl mx-auto px-6 py-12">
+        <a href="../index.html" class="text-green-500 hover:underline mb-4 inline-block">&larr; Назад</a>
+        <h1 class="text-4xl font-bold text-zinc-900 dark:text-white mb-6">Глава 14: Аутентификация</h1>
+
+        <div class="prose dark:prose-invert max-w-none">
+            <!-- Введение -->
+            <div class="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-xl p-6 mb-8">
+                <p class="text-green-800 dark:text-green-200 mb-0">
+                    В этой главе мы добавим полноценную аутентификацию: регистрацию, вход,
+                    хранение токенов и защиту API запросов.
+                </p>
+            </div>
+
+            <!-- Архитектура Auth -->
+            <h2 class="text-2xl font-bold mt-8 mb-4 text-zinc-900 dark:text-white">Архитектура аутентификации</h2>
+
+            <div class="bg-zinc-100 dark:bg-zinc-800 rounded-xl p-6 mb-6 font-mono text-sm">
+                <pre class="bg-transparent p-0 m-0"><code>┌──────────────┐     ┌──────────────┐     ┌──────────────┐
+│  LoginScreen │────▶│AuthViewModel │────▶│ LoginUseCase │
+│              │     │              │     │              │
+│ RegisterScr. │     │ AuthState    │     │RegisterUseCase│
+└──────────────┘     └──────────────┘     └──────────────┘
+                            │                     │
+                            ▼                     ▼
+                     ┌──────────────┐     ┌──────────────┐
+                     │ TokenManager │     │ AuthRepository│
+                     │(DataStore)   │     │   (API)      │
+                     └──────────────┘     └──────────────┘</code></pre>
+            </div>
+
+            <!-- Data Layer -->
+            <h2 class="text-2xl font-bold mt-8 mb-4 text-zinc-900 dark:text-white">Data Layer</h2>
+
+            <h3 class="text-xl font-semibold mt-6 mb-3 text-zinc-900 dark:text-white">Auth API</h3>
+
+            <pre><code><span class="comment">// data/remote/AuthApi.kt</span>
+<span class="keyword">interface</span> AuthApi {
+
+    <span class="annotation">@POST</span>(<span class="string">"auth/login"</span>)
+    <span class="keyword">suspend fun</span> <span class="function">login</span>(
+        <span class="annotation">@Body</span> request: LoginRequest
+    ): AuthResponse
+
+    <span class="annotation">@POST</span>(<span class="string">"auth/register"</span>)
+    <span class="keyword">suspend fun</span> <span class="function">register</span>(
+        <span class="annotation">@Body</span> request: RegisterRequest
+    ): AuthResponse
+
+    <span class="annotation">@POST</span>(<span class="string">"auth/refresh"</span>)
+    <span class="keyword">suspend fun</span> <span class="function">refreshToken</span>(
+        <span class="annotation">@Body</span> request: RefreshRequest
+    ): AuthResponse
+
+    <span class="annotation">@GET</span>(<span class="string">"auth/me"</span>)
+    <span class="keyword">suspend fun</span> <span class="function">getCurrentUser</span>(): UserDto
+}
+
+<span class="comment">// DTO классы</span>
+<span class="keyword">data class</span> LoginRequest(
+    <span class="keyword">val</span> username: String,
+    <span class="keyword">val</span> password: String
+)
+
+<span class="keyword">data class</span> RegisterRequest(
+    <span class="keyword">val</span> username: String,
+    <span class="keyword">val</span> email: String,
+    <span class="keyword">val</span> password: String
+)
+
+<span class="keyword">data class</span> RefreshRequest(
+    <span class="keyword">val</span> refreshToken: String
+)
+
+<span class="keyword">data class</span> AuthResponse(
+    <span class="keyword">val</span> accessToken: String,
+    <span class="keyword">val</span> refreshToken: String,
+    <span class="keyword">val</span> expiresIn: Long,
+    <span class="keyword">val</span> user: UserDto
+)
+
+<span class="keyword">data class</span> UserDto(
+    <span class="keyword">val</span> id: Int,
+    <span class="keyword">val</span> username: String,
+    <span class="keyword">val</span> email: String,
+    <span class="keyword">val</span> firstName: String,
+    <span class="keyword">val</span> lastName: String,
+    <span class="keyword">val</span> image: String?
+)</code></pre>
+
+            <h3 class="text-xl font-semibold mt-6 mb-3 text-zinc-900 dark:text-white">Token Manager (DataStore)</h3>
+
+            <p class="text-zinc-600 dark:text-zinc-400 mb-4">
+                Используем DataStore для безопасного хранения токенов:
+            </p>
+
+            <pre><code><span class="comment">// data/local/TokenManager.kt</span>
+<span class="keyword">interface</span> TokenManager {
+    <span class="keyword">val</span> accessToken: Flow&lt;String?&gt;
+    <span class="keyword">val</span> refreshToken: Flow&lt;String?&gt;
+    <span class="keyword">val</span> isLoggedIn: Flow&lt;Boolean&gt;
+
+    <span class="keyword">suspend fun</span> <span class="function">saveTokens</span>(accessToken: String, refreshToken: String)
+    <span class="keyword">suspend fun</span> <span class="function">clearTokens</span>()
+    <span class="keyword">suspend fun</span> <span class="function">getAccessTokenSync</span>(): String?
+}
+
+<span class="annotation">@Singleton</span>
+<span class="keyword">class</span> TokenManagerImpl <span class="annotation">@Inject</span> <span class="keyword">constructor</span>(
+    <span class="annotation">@ApplicationContext</span> <span class="keyword">private val</span> context: Context
+) : TokenManager {
+
+    <span class="keyword">private val</span> Context.dataStore <span class="keyword">by</span> preferencesDataStore(name = <span class="string">"auth_prefs"</span>)
+
+    <span class="keyword">private object</span> Keys {
+        <span class="keyword">val</span> ACCESS_TOKEN = stringPreferencesKey(<span class="string">"access_token"</span>)
+        <span class="keyword">val</span> REFRESH_TOKEN = stringPreferencesKey(<span class="string">"refresh_token"</span>)
+    }
+
+    <span class="keyword">override val</span> accessToken: Flow&lt;String?&gt; = context.dataStore.data
+        .map { prefs -> prefs[Keys.ACCESS_TOKEN] }
+
+    <span class="keyword">override val</span> refreshToken: Flow&lt;String?&gt; = context.dataStore.data
+        .map { prefs -> prefs[Keys.REFRESH_TOKEN] }
+
+    <span class="keyword">override val</span> isLoggedIn: Flow&lt;Boolean&gt; = accessToken
+        .map { it != <span class="keyword">null</span> }
+
+    <span class="keyword">override suspend fun</span> <span class="function">saveTokens</span>(accessToken: String, refreshToken: String) {
+        context.dataStore.edit { prefs ->
+            prefs[Keys.ACCESS_TOKEN] = accessToken
+            prefs[Keys.REFRESH_TOKEN] = refreshToken
+        }
+    }
+
+    <span class="keyword">override suspend fun</span> <span class="function">clearTokens</span>() {
+        context.dataStore.edit { prefs ->
+            prefs.remove(Keys.ACCESS_TOKEN)
+            prefs.remove(Keys.REFRESH_TOKEN)
+        }
+    }
+
+    <span class="keyword">override suspend fun</span> <span class="function">getAccessTokenSync</span>(): String? {
+        <span class="keyword">return</span> context.dataStore.data.first()[Keys.ACCESS_TOKEN]
+    }
+}</code></pre>
+
+            <h3 class="text-xl font-semibold mt-6 mb-3 text-zinc-900 dark:text-white">Auth Interceptor</h3>
+
+            <p class="text-zinc-600 dark:text-zinc-400 mb-4">
+                Автоматически добавляем токен ко всем запросам:
+            </p>
+
+            <pre><code><span class="comment">// data/remote/AuthInterceptor.kt</span>
+<span class="annotation">@Singleton</span>
+<span class="keyword">class</span> AuthInterceptor <span class="annotation">@Inject</span> <span class="keyword">constructor</span>(
+    <span class="keyword">private val</span> tokenManager: TokenManager
+) : Interceptor {
+
+    <span class="keyword">override fun</span> <span class="function">intercept</span>(chain: Interceptor.Chain): Response {
+        <span class="keyword">val</span> originalRequest = chain.request()
+
+        <span class="comment">// Пропускаем auth endpoints</span>
+        <span class="keyword">if</span> (originalRequest.url.encodedPath.contains(<span class="string">"auth/"</span>)) {
+            <span class="keyword">return</span> chain.proceed(originalRequest)
+        }
+
+        <span class="keyword">val</span> token = runBlocking {
+            tokenManager.getAccessTokenSync()
+        }
+
+        <span class="keyword">val</span> request = <span class="keyword">if</span> (token != <span class="keyword">null</span>) {
+            originalRequest.newBuilder()
+                .addHeader(<span class="string">"Authorization"</span>, <span class="string">"Bearer $token"</span>)
+                .build()
+        } <span class="keyword">else</span> {
+            originalRequest
+        }
+
+        <span class="keyword">return</span> chain.proceed(request)
+    }
+}</code></pre>
+
+            <h3 class="text-xl font-semibold mt-6 mb-3 text-zinc-900 dark:text-white">Token Authenticator (Auto-Refresh)</h3>
+
+            <pre><code><span class="comment">// data/remote/TokenAuthenticator.kt</span>
+<span class="annotation">@Singleton</span>
+<span class="keyword">class</span> TokenAuthenticator <span class="annotation">@Inject</span> <span class="keyword">constructor</span>(
+    <span class="keyword">private val</span> tokenManager: TokenManager,
+    <span class="keyword">private val</span> authApiProvider: Provider&lt;AuthApi&gt;  <span class="comment">// Lazy для избежания circular dependency</span>
+) : Authenticator {
+
+    <span class="keyword">private val</span> mutex = Mutex()
+
+    <span class="keyword">override fun</span> <span class="function">authenticate</span>(route: Route?, response: Response): Request? {
+        <span class="comment">// Только при 401 ошибке</span>
+        <span class="keyword">if</span> (response.code != <span class="number">401</span>) <span class="keyword">return null</span>
+
+        <span class="keyword">return</span> runBlocking {
+            mutex.withLock {
+                <span class="comment">// Проверяем, не обновили ли токен уже</span>
+                <span class="keyword">val</span> currentToken = tokenManager.getAccessTokenSync()
+                <span class="keyword">val</span> requestToken = response.request.header(<span class="string">"Authorization"</span>)
+                    ?.removePrefix(<span class="string">"Bearer "</span>)
+
+                <span class="keyword">if</span> (currentToken != requestToken && currentToken != <span class="keyword">null</span>) {
+                    <span class="comment">// Токен уже обновлен другим запросом</span>
+                    <span class="keyword">return</span>@runBlocking response.request.newBuilder()
+                        .header(<span class="string">"Authorization"</span>, <span class="string">"Bearer $currentToken"</span>)
+                        .build()
+                }
+
+                <span class="comment">// Пробуем обновить токен</span>
+                <span class="keyword">val</span> refreshToken = tokenManager.refreshToken.first()
+                    ?: <span class="keyword">return</span>@runBlocking <span class="keyword">null</span>
+
+                <span class="keyword">try</span> {
+                    <span class="keyword">val</span> newTokens = authApiProvider.get().refreshToken(
+                        RefreshRequest(refreshToken)
+                    )
+                    tokenManager.saveTokens(
+                        newTokens.accessToken,
+                        newTokens.refreshToken
+                    )
+
+                    response.request.newBuilder()
+                        .header(<span class="string">"Authorization"</span>, <span class="string">"Bearer \${newTokens.accessToken}"</span>)
+                        .build()
+
+                } <span class="keyword">catch</span> (e: Exception) {
+                    <span class="comment">// Refresh failed - logout</span>
+                    tokenManager.clearTokens()
+                    <span class="keyword">null</span>
+                }
+            }
+        }
+    }
+}</code></pre>
+
+            <h3 class="text-xl font-semibold mt-6 mb-3 text-zinc-900 dark:text-white">Auth Repository</h3>
+
+            <pre><code><span class="comment">// domain/repository/AuthRepository.kt</span>
+<span class="keyword">interface</span> AuthRepository {
+    <span class="keyword">val</span> isLoggedIn: Flow&lt;Boolean&gt;
+    <span class="keyword">val</span> currentUser: Flow&lt;User?&gt;
+
+    <span class="keyword">suspend fun</span> <span class="function">login</span>(username: String, password: String): Result&lt;User&gt;
+    <span class="keyword">suspend fun</span> <span class="function">register</span>(username: String, email: String, password: String): Result&lt;User&gt;
+    <span class="keyword">suspend fun</span> <span class="function">logout</span>()
+    <span class="keyword">suspend fun</span> <span class="function">getCurrentUser</span>(): Result&lt;User&gt;
+}
+
+<span class="comment">// data/repository/AuthRepositoryImpl.kt</span>
+<span class="annotation">@Singleton</span>
+<span class="keyword">class</span> AuthRepositoryImpl <span class="annotation">@Inject</span> <span class="keyword">constructor</span>(
+    <span class="keyword">private val</span> authApi: AuthApi,
+    <span class="keyword">private val</span> tokenManager: TokenManager,
+    <span class="keyword">private val</span> userDao: UserDao
+) : AuthRepository {
+
+    <span class="keyword">override val</span> isLoggedIn: Flow&lt;Boolean&gt; = tokenManager.isLoggedIn
+
+    <span class="keyword">override val</span> currentUser: Flow&lt;User?&gt; = userDao.getCurrentUser()
+        .map { it?.toDomain() }
+
+    <span class="keyword">override suspend fun</span> <span class="function">login</span>(username: String, password: String): Result&lt;User&gt; {
+        <span class="keyword">return try</span> {
+            <span class="keyword">val</span> response = authApi.login(LoginRequest(username, password))
+            tokenManager.saveTokens(response.accessToken, response.refreshToken)
+
+            <span class="keyword">val</span> user = response.user.toDomain()
+            userDao.insertUser(user.toEntity())
+
+            Result.success(user)
+        } <span class="keyword">catch</span> (e: HttpException) {
+            <span class="keyword">when</span> (e.code()) {
+                <span class="number">401</span> -> Result.failure(AuthException.InvalidCredentials)
+                <span class="keyword">else</span> -> Result.failure(e)
+            }
+        } <span class="keyword">catch</span> (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    <span class="keyword">override suspend fun</span> <span class="function">register</span>(
+        username: String,
+        email: String,
+        password: String
+    ): Result&lt;User&gt; {
+        <span class="keyword">return try</span> {
+            <span class="keyword">val</span> response = authApi.register(RegisterRequest(username, email, password))
+            tokenManager.saveTokens(response.accessToken, response.refreshToken)
+
+            <span class="keyword">val</span> user = response.user.toDomain()
+            userDao.insertUser(user.toEntity())
+
+            Result.success(user)
+        } <span class="keyword">catch</span> (e: HttpException) {
+            <span class="keyword">when</span> (e.code()) {
+                <span class="number">409</span> -> Result.failure(AuthException.UserAlreadyExists)
+                <span class="keyword">else</span> -> Result.failure(e)
+            }
+        } <span class="keyword">catch</span> (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    <span class="keyword">override suspend fun</span> <span class="function">logout</span>() {
+        tokenManager.clearTokens()
+        userDao.deleteAllUsers()
+    }
+
+    <span class="keyword">override suspend fun</span> <span class="function">getCurrentUser</span>(): Result&lt;User&gt; {
+        <span class="keyword">return try</span> {
+            <span class="keyword">val</span> userDto = authApi.getCurrentUser()
+            <span class="keyword">val</span> user = userDto.toDomain()
+            userDao.insertUser(user.toEntity())
+            Result.success(user)
+        } <span class="keyword">catch</span> (e: Exception) {
+            Result.failure(e)
+        }
+    }
+}
+
+<span class="comment">// Кастомные ошибки</span>
+<span class="keyword">sealed class</span> AuthException : Exception() {
+    <span class="keyword">object</span> InvalidCredentials : AuthException()
+    <span class="keyword">object</span> UserAlreadyExists : AuthException()
+    <span class="keyword">object</span> TokenExpired : AuthException()
+}</code></pre>
+
+            <!-- Presentation Layer -->
+            <h2 class="text-2xl font-bold mt-8 mb-4 text-zinc-900 dark:text-white">Presentation Layer</h2>
+
+            <h3 class="text-xl font-semibold mt-6 mb-3 text-zinc-900 dark:text-white">Auth ViewModel</h3>
+
+            <pre><code><span class="comment">// presentation/auth/AuthViewModel.kt</span>
+<span class="annotation">@HiltViewModel</span>
+<span class="keyword">class</span> AuthViewModel <span class="annotation">@Inject</span> <span class="keyword">constructor</span>(
+    <span class="keyword">private val</span> authRepository: AuthRepository
+) : ViewModel() {
+
+    <span class="keyword">private val</span> _uiState = MutableStateFlow(AuthUiState())
+    <span class="keyword">val</span> uiState: StateFlow&lt;AuthUiState&gt; = _uiState.asStateFlow()
+
+    <span class="keyword">val</span> isLoggedIn = authRepository.isLoggedIn
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(<span class="number">5000</span>), <span class="keyword">false</span>)
+
+    <span class="keyword">fun</span> <span class="function">login</span>(username: String, password: String) {
+        <span class="keyword">if</span> (!validateInput(username, password)) <span class="keyword">return</span>
+
+        viewModelScope.launch {
+            _uiState.update { it.copy(isLoading = <span class="keyword">true</span>, error = <span class="keyword">null</span>) }
+
+            authRepository.login(username, password)
+                .onSuccess { user ->
+                    _uiState.update { it.copy(
+                        isLoading = <span class="keyword">false</span>,
+                        isSuccess = <span class="keyword">true</span>,
+                        user = user
+                    )}
+                }
+                .onFailure { error ->
+                    <span class="keyword">val</span> message = <span class="keyword">when</span> (error) {
+                        <span class="keyword">is</span> AuthException.InvalidCredentials -> <span class="string">"Неверный логин или пароль"</span>
+                        <span class="keyword">is</span> IOException -> <span class="string">"Нет подключения к интернету"</span>
+                        <span class="keyword">else</span> -> <span class="string">"Произошла ошибка"</span>
+                    }
+                    _uiState.update { it.copy(isLoading = <span class="keyword">false</span>, error = message) }
+                }
+        }
+    }
+
+    <span class="keyword">fun</span> <span class="function">register</span>(username: String, email: String, password: String) {
+        <span class="keyword">if</span> (!validateRegistration(username, email, password)) <span class="keyword">return</span>
+
+        viewModelScope.launch {
+            _uiState.update { it.copy(isLoading = <span class="keyword">true</span>, error = <span class="keyword">null</span>) }
+
+            authRepository.register(username, email, password)
+                .onSuccess { user ->
+                    _uiState.update { it.copy(
+                        isLoading = <span class="keyword">false</span>,
+                        isSuccess = <span class="keyword">true</span>,
+                        user = user
+                    )}
+                }
+                .onFailure { error ->
+                    <span class="keyword">val</span> message = <span class="keyword">when</span> (error) {
+                        <span class="keyword">is</span> AuthException.UserAlreadyExists -> <span class="string">"Пользователь уже существует"</span>
+                        <span class="keyword">else</span> -> <span class="string">"Ошибка регистрации"</span>
+                    }
+                    _uiState.update { it.copy(isLoading = <span class="keyword">false</span>, error = message) }
+                }
+        }
+    }
+
+    <span class="keyword">fun</span> <span class="function">logout</span>() {
+        viewModelScope.launch {
+            authRepository.logout()
+            _uiState.value = AuthUiState()
+        }
+    }
+
+    <span class="keyword">private fun</span> <span class="function">validateInput</span>(username: String, password: String): Boolean {
+        <span class="keyword">if</span> (username.isBlank()) {
+            _uiState.update { it.copy(error = <span class="string">"Введите имя пользователя"</span>) }
+            <span class="keyword">return false</span>
+        }
+        <span class="keyword">if</span> (password.length < <span class="number">6</span>) {
+            _uiState.update { it.copy(error = <span class="string">"Пароль минимум 6 символов"</span>) }
+            <span class="keyword">return false</span>
+        }
+        <span class="keyword">return true</span>
+    }
+
+    <span class="keyword">private fun</span> <span class="function">validateRegistration</span>(
+        username: String,
+        email: String,
+        password: String
+    ): Boolean {
+        <span class="keyword">if</span> (!validateInput(username, password)) <span class="keyword">return false</span>
+
+        <span class="keyword">if</span> (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+            _uiState.update { it.copy(error = <span class="string">"Некорректный email"</span>) }
+            <span class="keyword">return false</span>
+        }
+        <span class="keyword">return true</span>
+    }
+
+    <span class="keyword">fun</span> <span class="function">clearError</span>() {
+        _uiState.update { it.copy(error = <span class="keyword">null</span>) }
+    }
+}
+
+<span class="keyword">data class</span> AuthUiState(
+    <span class="keyword">val</span> isLoading: Boolean = <span class="keyword">false</span>,
+    <span class="keyword">val</span> isSuccess: Boolean = <span class="keyword">false</span>,
+    <span class="keyword">val</span> error: String? = <span class="keyword">null</span>,
+    <span class="keyword">val</span> user: User? = <span class="keyword">null</span>
+)</code></pre>
+
+            <h3 class="text-xl font-semibold mt-6 mb-3 text-zinc-900 dark:text-white">Login Screen</h3>
+
+            <pre><code><span class="annotation">@Composable</span>
+<span class="keyword">fun</span> <span class="function">LoginScreen</span>(
+    viewModel: AuthViewModel = hiltViewModel(),
+    onNavigateToRegister: () -> Unit,
+    onLoginSuccess: () -> Unit
+) {
+    <span class="keyword">val</span> uiState <span class="keyword">by</span> viewModel.uiState.collectAsStateWithLifecycle()
+
+    <span class="keyword">var</span> username <span class="keyword">by</span> remember { mutableStateOf(<span class="string">""</span>) }
+    <span class="keyword">var</span> password <span class="keyword">by</span> remember { mutableStateOf(<span class="string">""</span>) }
+    <span class="keyword">var</span> passwordVisible <span class="keyword">by</span> remember { mutableStateOf(<span class="keyword">false</span>) }
+
+    <span class="comment">// Навигация при успехе</span>
+    LaunchedEffect(uiState.isSuccess) {
+        <span class="keyword">if</span> (uiState.isSuccess) {
+            onLoginSuccess()
+        }
+    }
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(<span class="number">24</span>.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
+        Text(
+            text = <span class="string">"Вход"</span>,
+            style = MaterialTheme.typography.headlineLarge,
+            fontWeight = FontWeight.Bold
+        )
+
+        Spacer(modifier = Modifier.height(<span class="number">32</span>.dp))
+
+        <span class="comment">// Username field</span>
+        OutlinedTextField(
+            value = username,
+            onValueChange = { username = it },
+            label = { Text(<span class="string">"Имя пользователя"</span>) },
+            leadingIcon = { Icon(Icons.Default.Person, <span class="keyword">null</span>) },
+            singleLine = <span class="keyword">true</span>,
+            modifier = Modifier.fillMaxWidth()
+        )
+
+        Spacer(modifier = Modifier.height(<span class="number">16</span>.dp))
+
+        <span class="comment">// Password field</span>
+        OutlinedTextField(
+            value = password,
+            onValueChange = { password = it },
+            label = { Text(<span class="string">"Пароль"</span>) },
+            leadingIcon = { Icon(Icons.Default.Lock, <span class="keyword">null</span>) },
+            trailingIcon = {
+                IconButton(onClick = { passwordVisible = !passwordVisible }) {
+                    Icon(
+                        <span class="keyword">if</span> (passwordVisible) Icons.Default.VisibilityOff
+                        <span class="keyword">else</span> Icons.Default.Visibility,
+                        <span class="keyword">null</span>
+                    )
+                }
+            },
+            visualTransformation = <span class="keyword">if</span> (passwordVisible)
+                VisualTransformation.None
+            <span class="keyword">else</span>
+                PasswordVisualTransformation(),
+            singleLine = <span class="keyword">true</span>,
+            modifier = Modifier.fillMaxWidth()
+        )
+
+        <span class="comment">// Error message</span>
+        uiState.error?.let { error ->
+            Spacer(modifier = Modifier.height(<span class="number">8</span>.dp))
+            Text(
+                text = error,
+                color = MaterialTheme.colorScheme.error,
+                style = MaterialTheme.typography.bodySmall
+            )
+        }
+
+        Spacer(modifier = Modifier.height(<span class="number">24</span>.dp))
+
+        <span class="comment">// Login button</span>
+        Button(
+            onClick = { viewModel.login(username, password) },
+            enabled = !uiState.isLoading,
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(<span class="number">50</span>.dp)
+        ) {
+            <span class="keyword">if</span> (uiState.isLoading) {
+                CircularProgressIndicator(
+                    modifier = Modifier.size(<span class="number">24</span>.dp),
+                    color = MaterialTheme.colorScheme.onPrimary
+                )
+            } <span class="keyword">else</span> {
+                Text(<span class="string">"Войти"</span>)
+            }
+        }
+
+        Spacer(modifier = Modifier.height(<span class="number">16</span>.dp))
+
+        <span class="comment">// Register link</span>
+        TextButton(onClick = onNavigateToRegister) {
+            Text(<span class="string">"Нет аккаунта? Зарегистрироваться"</span>)
+        }
+    }
+}</code></pre>
+
+            <h3 class="text-xl font-semibold mt-6 mb-3 text-zinc-900 dark:text-white">Register Screen</h3>
+
+            <pre><code><span class="annotation">@Composable</span>
+<span class="keyword">fun</span> <span class="function">RegisterScreen</span>(
+    viewModel: AuthViewModel = hiltViewModel(),
+    onNavigateToLogin: () -> Unit,
+    onRegisterSuccess: () -> Unit
+) {
+    <span class="keyword">val</span> uiState <span class="keyword">by</span> viewModel.uiState.collectAsStateWithLifecycle()
+
+    <span class="keyword">var</span> username <span class="keyword">by</span> remember { mutableStateOf(<span class="string">""</span>) }
+    <span class="keyword">var</span> email <span class="keyword">by</span> remember { mutableStateOf(<span class="string">""</span>) }
+    <span class="keyword">var</span> password <span class="keyword">by</span> remember { mutableStateOf(<span class="string">""</span>) }
+    <span class="keyword">var</span> confirmPassword <span class="keyword">by</span> remember { mutableStateOf(<span class="string">""</span>) }
+
+    LaunchedEffect(uiState.isSuccess) {
+        <span class="keyword">if</span> (uiState.isSuccess) {
+            onRegisterSuccess()
+        }
+    }
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .verticalScroll(rememberScrollState())
+            .padding(<span class="number">24</span>.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text(
+            text = <span class="string">"Регистрация"</span>,
+            style = MaterialTheme.typography.headlineLarge,
+            fontWeight = FontWeight.Bold
+        )
+
+        Spacer(modifier = Modifier.height(<span class="number">32</span>.dp))
+
+        OutlinedTextField(
+            value = username,
+            onValueChange = { username = it },
+            label = { Text(<span class="string">"Имя пользователя"</span>) },
+            leadingIcon = { Icon(Icons.Default.Person, <span class="keyword">null</span>) },
+            modifier = Modifier.fillMaxWidth()
+        )
+
+        Spacer(modifier = Modifier.height(<span class="number">16</span>.dp))
+
+        OutlinedTextField(
+            value = email,
+            onValueChange = { email = it },
+            label = { Text(<span class="string">"Email"</span>) },
+            leadingIcon = { Icon(Icons.Default.Email, <span class="keyword">null</span>) },
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
+            modifier = Modifier.fillMaxWidth()
+        )
+
+        Spacer(modifier = Modifier.height(<span class="number">16</span>.dp))
+
+        OutlinedTextField(
+            value = password,
+            onValueChange = { password = it },
+            label = { Text(<span class="string">"Пароль"</span>) },
+            leadingIcon = { Icon(Icons.Default.Lock, <span class="keyword">null</span>) },
+            visualTransformation = PasswordVisualTransformation(),
+            modifier = Modifier.fillMaxWidth()
+        )
+
+        Spacer(modifier = Modifier.height(<span class="number">16</span>.dp))
+
+        OutlinedTextField(
+            value = confirmPassword,
+            onValueChange = { confirmPassword = it },
+            label = { Text(<span class="string">"Подтвердите пароль"</span>) },
+            leadingIcon = { Icon(Icons.Default.Lock, <span class="keyword">null</span>) },
+            visualTransformation = PasswordVisualTransformation(),
+            isError = confirmPassword.isNotEmpty() && password != confirmPassword,
+            modifier = Modifier.fillMaxWidth()
+        )
+
+        uiState.error?.let { error ->
+            Spacer(modifier = Modifier.height(<span class="number">8</span>.dp))
+            Text(
+                text = error,
+                color = MaterialTheme.colorScheme.error
+            )
+        }
+
+        Spacer(modifier = Modifier.height(<span class="number">24</span>.dp))
+
+        Button(
+            onClick = { viewModel.register(username, email, password) },
+            enabled = !uiState.isLoading && password == confirmPassword,
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(<span class="number">50</span>.dp)
+        ) {
+            <span class="keyword">if</span> (uiState.isLoading) {
+                CircularProgressIndicator(
+                    modifier = Modifier.size(<span class="number">24</span>.dp),
+                    color = MaterialTheme.colorScheme.onPrimary
+                )
+            } <span class="keyword">else</span> {
+                Text(<span class="string">"Зарегистрироваться"</span>)
+            }
+        }
+
+        Spacer(modifier = Modifier.height(<span class="number">16</span>.dp))
+
+        TextButton(onClick = onNavigateToLogin) {
+            Text(<span class="string">"Уже есть аккаунт? Войти"</span>)
+        }
+    }
+}</code></pre>
+
+            <!-- Navigation -->
+            <h2 class="text-2xl font-bold mt-8 mb-4 text-zinc-900 dark:text-white">Навигация с аутентификацией</h2>
+
+            <pre><code><span class="annotation">@Composable</span>
+<span class="keyword">fun</span> <span class="function">AppNavigation</span>(
+    authViewModel: AuthViewModel = hiltViewModel()
+) {
+    <span class="keyword">val</span> navController = rememberNavController()
+    <span class="keyword">val</span> isLoggedIn <span class="keyword">by</span> authViewModel.isLoggedIn.collectAsStateWithLifecycle()
+
+    <span class="comment">// Стартовый экран зависит от состояния авторизации</span>
+    <span class="keyword">val</span> startDestination = <span class="keyword">if</span> (isLoggedIn) <span class="string">"home"</span> <span class="keyword">else</span> <span class="string">"login"</span>
+
+    NavHost(
+        navController = navController,
+        startDestination = startDestination
+    ) {
+        <span class="comment">// Auth flow</span>
+        composable(<span class="string">"login"</span>) {
+            LoginScreen(
+                onNavigateToRegister = { navController.navigate(<span class="string">"register"</span>) },
+                onLoginSuccess = {
+                    navController.navigate(<span class="string">"home"</span>) {
+                        popUpTo(<span class="string">"login"</span>) { inclusive = <span class="keyword">true</span> }
+                    }
+                }
+            )
+        }
+
+        composable(<span class="string">"register"</span>) {
+            RegisterScreen(
+                onNavigateToLogin = { navController.popBackStack() },
+                onRegisterSuccess = {
+                    navController.navigate(<span class="string">"home"</span>) {
+                        popUpTo(<span class="string">"login"</span>) { inclusive = <span class="keyword">true</span> }
+                    }
+                }
+            )
+        }
+
+        <span class="comment">// Main app flow</span>
+        composable(<span class="string">"home"</span>) {
+            HomeScreen(
+                onLogout = {
+                    authViewModel.logout()
+                    navController.navigate(<span class="string">"login"</span>) {
+                        popUpTo(<span class="number">0</span>) { inclusive = <span class="keyword">true</span> }
+                    }
+                }
+            )
+        }
+    }
+}</code></pre>
+
+            <!-- DI Module -->
+            <h2 class="text-2xl font-bold mt-8 mb-4 text-zinc-900 dark:text-white">Hilt Module</h2>
+
+            <pre><code><span class="annotation">@Module</span>
+<span class="annotation">@InstallIn</span>(SingletonComponent::<span class="keyword">class</span>)
+<span class="keyword">object</span> AuthModule {
+
+    <span class="annotation">@Provides</span>
+    <span class="annotation">@Singleton</span>
+    <span class="keyword">fun</span> <span class="function">provideTokenManager</span>(
+        <span class="annotation">@ApplicationContext</span> context: Context
+    ): TokenManager {
+        <span class="keyword">return</span> TokenManagerImpl(context)
+    }
+
+    <span class="annotation">@Provides</span>
+    <span class="annotation">@Singleton</span>
+    <span class="keyword">fun</span> <span class="function">provideAuthInterceptor</span>(
+        tokenManager: TokenManager
+    ): AuthInterceptor {
+        <span class="keyword">return</span> AuthInterceptor(tokenManager)
+    }
+
+    <span class="annotation">@Provides</span>
+    <span class="annotation">@Singleton</span>
+    <span class="keyword">fun</span> <span class="function">provideOkHttpClient</span>(
+        authInterceptor: AuthInterceptor,
+        tokenAuthenticator: TokenAuthenticator
+    ): OkHttpClient {
+        <span class="keyword">return</span> OkHttpClient.Builder()
+            .addInterceptor(authInterceptor)
+            .authenticator(tokenAuthenticator)
+            .addInterceptor(HttpLoggingInterceptor().apply {
+                level = HttpLoggingInterceptor.Level.BODY
+            })
+            .build()
+    }
+
+    <span class="annotation">@Provides</span>
+    <span class="annotation">@Singleton</span>
+    <span class="keyword">fun</span> <span class="function">provideAuthApi</span>(
+        retrofit: Retrofit
+    ): AuthApi {
+        <span class="keyword">return</span> retrofit.create(AuthApi::<span class="keyword">class</span>.java)
+    }
+}</code></pre>
+
+            <!-- Итог -->
+            <div class="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-xl p-6 mt-8">
+                <h3 class="font-semibold text-green-900 dark:text-green-100 mb-3">Что мы изучили</h3>
+                <ul class="text-green-800 dark:text-green-200 space-y-2">
+                    <li>• <strong>TokenManager</strong> — хранение токенов в DataStore</li>
+                    <li>• <strong>AuthInterceptor</strong> — автоматическое добавление токена</li>
+                    <li>• <strong>TokenAuthenticator</strong> — автоматический refresh токена</li>
+                    <li>• <strong>Auth Repository</strong> — логин, регистрация, logout</li>
+                    <li>• <strong>Auth ViewModel</strong> — управление UI состоянием</li>
+                    <li>• <strong>Login/Register Screens</strong> — формы с валидацией</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="flex justify-between items-center mt-12 pt-8 border-t border-zinc-200 dark:border-zinc-800">
+            <a href="13-final.html" class="text-green-500 hover:underline">&larr; Финал</a>
+            <a href="../index.html" class="text-green-500 hover:underline">Оглавление</a>
+            <a href="15-profile.html" class="text-green-500 hover:underline">Профиль &rarr;</a>
+        </div>
+    </div>
+</body>
+</html>

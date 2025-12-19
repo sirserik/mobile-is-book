@@ -12,55 +12,447 @@
         .string { color: #ce9178; }
         .comment { color: #6a9955; }
         .annotation { color: #4ec9b0; }
+        .type { color: #4ec9b0; }
+        .number { color: #b5cea8; }
     </style>
 </head>
 <body class="bg-white dark:bg-zinc-900">
     <div class="max-w-4xl mx-auto px-6 py-12">
-        <a href="../index.html" class="text-green-500 hover:underline mb-4 inline-block">&larr; Назад</a>
-        <h1 class="text-4xl font-bold text-zinc-900 dark:text-white mb-6">Глава 11: Hilt DI</h1>
+        <a href="../index.html" class="text-green-500 hover:underline mb-4 inline-block">&larr; Назад к оглавлению</a>
+
+        <h1 class="text-4xl font-bold text-zinc-900 dark:text-white mb-6">Глава 11: Hilt Dependency Injection</h1>
+
         <div class="prose dark:prose-invert max-w-none">
-            <h2 class="text-2xl font-bold mt-8 mb-4">Настройка Hilt</h2>
-            <pre><code><span class="annotation">@HiltAndroidApp</span>
-<span class="keyword">class</span> EcommerceApp : Application()
 
-<span class="annotation">@AndroidEntryPoint</span>
-<span class="keyword">class</span> MainActivity : ComponentActivity()
+            <!-- Что такое DI -->
+            <h2 class="text-2xl font-bold mt-8 mb-4 text-zinc-900 dark:text-white">Что такое Dependency Injection?</h2>
+            <p class="text-zinc-600 dark:text-zinc-400 mb-4">
+                Dependency Injection (DI) — это паттерн, при котором зависимости передаются объекту извне,
+                а не создаются внутри него. Это упрощает тестирование и делает код гибким.
+            </p>
 
-<span class="annotation">@HiltViewModel</span>
-<span class="keyword">class</span> HomeViewModel <span class="annotation">@Inject</span> <span class="keyword">constructor</span>(
-    <span class="keyword">private val</span> useCase: GetProductsUseCase
-) : ViewModel()</code></pre>
-
-            <h2 class="text-2xl font-bold mt-8 mb-4">Modules</h2>
-            <pre><code><span class="annotation">@Module</span>
-<span class="annotation">@InstallIn</span>(SingletonComponent::<span class="keyword">class</span>)
-<span class="keyword">object</span> NetworkModule {
-    <span class="annotation">@Provides</span>
-    <span class="annotation">@Singleton</span>
-    <span class="keyword">fun</span> <span class="function">provideRetrofit</span>(): Retrofit = Retrofit.Builder()
-        .baseUrl(<span class="string">"https://dummyjson.com/"</span>)
-        .addConverterFactory(MoshiConverterFactory.create())
-        .build()
-}
-
-<span class="annotation">@Module</span>
-<span class="annotation">@InstallIn</span>(SingletonComponent::<span class="keyword">class</span>)
-<span class="keyword">abstract class</span> RepositoryModule {
-    <span class="annotation">@Binds</span>
-    <span class="keyword">abstract fun</span> <span class="function">bindProductRepository</span>(
-        impl: ProductRepositoryImpl
-    ): ProductRepository
+            <div class="grid md:grid-cols-2 gap-4 mb-8">
+                <div class="p-4 bg-red-50 dark:bg-red-900/20 rounded-lg border border-red-200 dark:border-red-800">
+                    <h4 class="font-semibold text-red-900 dark:text-red-100 mb-2">Без DI (плохо)</h4>
+                    <pre class="text-sm !bg-red-900/30"><code><span class="keyword">class</span> <span class="type">HomeViewModel</span> : ViewModel() {
+    <span class="comment">// Жёсткая связь — сложно тестировать</span>
+    <span class="keyword">private val</span> repo = ProductRepositoryImpl(
+        api = Retrofit.create(ProductApi::<span class="keyword">class</span>)
+    )
 }</code></pre>
+                </div>
+                <div class="p-4 bg-green-50 dark:bg-green-900/20 rounded-lg border border-green-200 dark:border-green-800">
+                    <h4 class="font-semibold text-green-900 dark:text-green-100 mb-2">С DI (хорошо)</h4>
+                    <pre class="text-sm !bg-green-900/30"><code><span class="annotation">@HiltViewModel</span>
+<span class="keyword">class</span> <span class="type">HomeViewModel</span> <span class="annotation">@Inject</span> <span class="keyword">constructor</span>(
+    <span class="comment">// Зависимость передаётся извне</span>
+    <span class="keyword">private val</span> repo: ProductRepository
+) : ViewModel()</code></pre>
+                </div>
+            </div>
 
-            <div class="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-xl p-6 mt-8">
-                <h3 class="font-semibold text-green-900 dark:text-green-100 mb-3">Ключевые аннотации</h3>
-                <ul class="text-green-800 dark:text-green-200 space-y-2">
-                    <li>• <strong>@Provides</strong> — для внешних классов (Retrofit, Room)</li>
-                    <li>• <strong>@Binds</strong> — для связывания интерфейсов с реализациями</li>
-                    <li>• <strong>@Singleton</strong> — один экземпляр на всё приложение</li>
+            <!-- Преимущества -->
+            <div class="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-xl p-6 mb-8">
+                <h3 class="font-semibold text-blue-900 dark:text-blue-100 mb-3">Преимущества DI</h3>
+                <ul class="text-blue-800 dark:text-blue-200 space-y-2">
+                    <li>• <strong>Тестируемость</strong> — легко подменить зависимости на mock/fake</li>
+                    <li>• <strong>Гибкость</strong> — можно менять реализации без изменения кода</li>
+                    <li>• <strong>Модульность</strong> — чёткое разделение ответственности</li>
+                    <li>• <strong>Переиспользуемость</strong> — один экземпляр на всё приложение</li>
                 </ul>
             </div>
+
+            <!-- Настройка Hilt -->
+            <h2 class="text-2xl font-bold mt-8 mb-4 text-zinc-900 dark:text-white">Настройка Hilt</h2>
+
+            <h3 class="text-xl font-semibold mt-6 mb-3 text-zinc-900 dark:text-white">1. Зависимости в build.gradle</h3>
+            <pre class="mb-6"><code><span class="comment">// build.gradle.kts (Project)</span>
+plugins {
+    id(<span class="string">"com.google.dagger.hilt.android"</span>) version <span class="string">"2.48"</span> apply <span class="keyword">false</span>
+}
+
+<span class="comment">// build.gradle.kts (App)</span>
+plugins {
+    id(<span class="string">"com.google.dagger.hilt.android"</span>)
+    id(<span class="string">"com.google.devtools.ksp"</span>)
+}
+
+dependencies {
+    implementation(<span class="string">"com.google.dagger:hilt-android:2.48"</span>)
+    ksp(<span class="string">"com.google.dagger:hilt-compiler:2.48"</span>)
+    implementation(<span class="string">"androidx.hilt:hilt-navigation-compose:1.1.0"</span>)
+}</code></pre>
+
+            <h3 class="text-xl font-semibold mt-6 mb-3 text-zinc-900 dark:text-white">2. Application class</h3>
+            <pre class="mb-6"><code><span class="annotation">@HiltAndroidApp</span>
+<span class="keyword">class</span> <span class="type">EcommerceApp</span> : Application() {
+    <span class="comment">// Hilt генерирует компоненты автоматически</span>
+}</code></pre>
+
+            <h3 class="text-xl font-semibold mt-6 mb-3 text-zinc-900 dark:text-white">3. Activity с @AndroidEntryPoint</h3>
+            <pre class="mb-6"><code><span class="annotation">@AndroidEntryPoint</span>
+<span class="keyword">class</span> <span class="type">MainActivity</span> : ComponentActivity() {
+    <span class="keyword">override fun</span> <span class="function">onCreate</span>(savedInstanceState: Bundle?) {
+        <span class="keyword">super</span>.onCreate(savedInstanceState)
+        setContent {
+            <span class="function">EcommerceApp</span>()
+        }
+    }
+}</code></pre>
+
+            <h3 class="text-xl font-semibold mt-6 mb-3 text-zinc-900 dark:text-white">4. ViewModel с @HiltViewModel</h3>
+            <pre class="mb-6"><code><span class="annotation">@HiltViewModel</span>
+<span class="keyword">class</span> <span class="type">HomeViewModel</span> <span class="annotation">@Inject</span> <span class="keyword">constructor</span>(
+    <span class="keyword">private val</span> getProductsUseCase: <span class="type">GetProductsUseCase</span>,
+    <span class="keyword">private val</span> savedStateHandle: <span class="type">SavedStateHandle</span>
+) : ViewModel() {
+    <span class="comment">// Hilt автоматически создаст и внедрит зависимости</span>
+}
+
+<span class="comment">// В Composable</span>
+<span class="annotation">@Composable</span>
+<span class="keyword">fun</span> <span class="function">HomeScreen</span>(
+    viewModel: <span class="type">HomeViewModel</span> = hiltViewModel()
+) {
+    <span class="comment">// ...</span>
+}</code></pre>
+
+            <!-- Modules -->
+            <h2 class="text-2xl font-bold mt-8 mb-4 text-zinc-900 dark:text-white">Hilt Modules</h2>
+            <p class="text-zinc-600 dark:text-zinc-400 mb-4">
+                Модули говорят Hilt как создавать зависимости. Есть два способа: <code>@Provides</code> и <code>@Binds</code>.
+            </p>
+
+            <h3 class="text-xl font-semibold mt-6 mb-3 text-zinc-900 dark:text-white">@Provides — для внешних классов</h3>
+            <p class="text-zinc-600 dark:text-zinc-400 mb-4">
+                Используйте для классов, которые вы не можете изменить (Retrofit, Room, OkHttp).
+            </p>
+            <pre class="mb-6"><code><span class="annotation">@Module</span>
+<span class="annotation">@InstallIn</span>(SingletonComponent::<span class="keyword">class</span>)
+<span class="keyword">object</span> <span class="type">NetworkModule</span> {
+
+    <span class="annotation">@Provides</span>
+    <span class="annotation">@Singleton</span>
+    <span class="keyword">fun</span> <span class="function">provideMoshi</span>(): <span class="type">Moshi</span> {
+        <span class="keyword">return</span> Moshi.Builder()
+            .add(KotlinJsonAdapterFactory())
+            .build()
+    }
+
+    <span class="annotation">@Provides</span>
+    <span class="annotation">@Singleton</span>
+    <span class="keyword">fun</span> <span class="function">provideOkHttpClient</span>(): <span class="type">OkHttpClient</span> {
+        <span class="keyword">return</span> OkHttpClient.Builder()
+            .addInterceptor(HttpLoggingInterceptor().apply {
+                level = HttpLoggingInterceptor.Level.BODY
+            })
+            .connectTimeout(<span class="number">30</span>, TimeUnit.SECONDS)
+            .readTimeout(<span class="number">30</span>, TimeUnit.SECONDS)
+            .build()
+    }
+
+    <span class="annotation">@Provides</span>
+    <span class="annotation">@Singleton</span>
+    <span class="keyword">fun</span> <span class="function">provideRetrofit</span>(
+        okHttpClient: <span class="type">OkHttpClient</span>,
+        moshi: <span class="type">Moshi</span>
+    ): <span class="type">Retrofit</span> {
+        <span class="keyword">return</span> Retrofit.Builder()
+            .baseUrl(<span class="string">"https://dummyjson.com/"</span>)
+            .client(okHttpClient)
+            .addConverterFactory(MoshiConverterFactory.create(moshi))
+            .build()
+    }
+
+    <span class="annotation">@Provides</span>
+    <span class="annotation">@Singleton</span>
+    <span class="keyword">fun</span> <span class="function">provideProductApi</span>(retrofit: <span class="type">Retrofit</span>): <span class="type">ProductApi</span> {
+        <span class="keyword">return</span> retrofit.create(<span class="type">ProductApi</span>::<span class="keyword">class</span>.java)
+    }
+}</code></pre>
+
+            <h3 class="text-xl font-semibold mt-6 mb-3 text-zinc-900 dark:text-white">@Binds — для интерфейсов</h3>
+            <p class="text-zinc-600 dark:text-zinc-400 mb-4">
+                Используйте для связывания интерфейса с его реализацией.
+            </p>
+            <pre class="mb-6"><code><span class="annotation">@Module</span>
+<span class="annotation">@InstallIn</span>(SingletonComponent::<span class="keyword">class</span>)
+<span class="keyword">abstract class</span> <span class="type">RepositoryModule</span> {
+
+    <span class="annotation">@Binds</span>
+    <span class="annotation">@Singleton</span>
+    <span class="keyword">abstract fun</span> <span class="function">bindProductRepository</span>(
+        impl: <span class="type">ProductRepositoryImpl</span>
+    ): <span class="type">ProductRepository</span>
+
+    <span class="annotation">@Binds</span>
+    <span class="annotation">@Singleton</span>
+    <span class="keyword">abstract fun</span> <span class="function">bindCartRepository</span>(
+        impl: <span class="type">CartRepositoryImpl</span>
+    ): <span class="type">CartRepository</span>
+
+    <span class="annotation">@Binds</span>
+    <span class="annotation">@Singleton</span>
+    <span class="keyword">abstract fun</span> <span class="function">bindFavoriteRepository</span>(
+        impl: <span class="type">FavoriteRepositoryImpl</span>
+    ): <span class="type">FavoriteRepository</span>
+}</code></pre>
+
+            <!-- Database Module -->
+            <h3 class="text-xl font-semibold mt-6 mb-3 text-zinc-900 dark:text-white">Database Module</h3>
+            <pre class="mb-6"><code><span class="annotation">@Module</span>
+<span class="annotation">@InstallIn</span>(SingletonComponent::<span class="keyword">class</span>)
+<span class="keyword">object</span> <span class="type">DatabaseModule</span> {
+
+    <span class="annotation">@Provides</span>
+    <span class="annotation">@Singleton</span>
+    <span class="keyword">fun</span> <span class="function">provideDatabase</span>(
+        <span class="annotation">@ApplicationContext</span> context: <span class="type">Context</span>
+    ): <span class="type">EcommerceDatabase</span> {
+        <span class="keyword">return</span> Room.databaseBuilder(
+            context,
+            <span class="type">EcommerceDatabase</span>::<span class="keyword">class</span>.java,
+            <span class="string">"ecommerce.db"</span>
+        )
+        .fallbackToDestructiveMigration()
+        .build()
+    }
+
+    <span class="annotation">@Provides</span>
+    <span class="keyword">fun</span> <span class="function">provideProductDao</span>(db: <span class="type">EcommerceDatabase</span>): <span class="type">ProductDao</span> = db.productDao()
+
+    <span class="annotation">@Provides</span>
+    <span class="keyword">fun</span> <span class="function">provideCartDao</span>(db: <span class="type">EcommerceDatabase</span>): <span class="type">CartDao</span> = db.cartDao()
+
+    <span class="annotation">@Provides</span>
+    <span class="keyword">fun</span> <span class="function">provideFavoriteDao</span>(db: <span class="type">EcommerceDatabase</span>): <span class="type">FavoriteDao</span> = db.favoriteDao()
+}</code></pre>
+
+            <!-- Scopes -->
+            <h2 class="text-2xl font-bold mt-8 mb-4 text-zinc-900 dark:text-white">Scopes (области видимости)</h2>
+            <div class="overflow-x-auto mb-8">
+                <table class="w-full text-sm">
+                    <thead class="bg-zinc-100 dark:bg-zinc-800">
+                        <tr>
+                            <th class="px-4 py-2 text-left text-zinc-900 dark:text-white">Component</th>
+                            <th class="px-4 py-2 text-left text-zinc-900 dark:text-white">Scope</th>
+                            <th class="px-4 py-2 text-left text-zinc-900 dark:text-white">Время жизни</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-zinc-200 dark:divide-zinc-700 text-zinc-600 dark:text-zinc-400">
+                        <tr>
+                            <td class="px-4 py-2">SingletonComponent</td>
+                            <td class="px-4 py-2"><code>@Singleton</code></td>
+                            <td class="px-4 py-2">Всё приложение</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-2">ActivityComponent</td>
+                            <td class="px-4 py-2"><code>@ActivityScoped</code></td>
+                            <td class="px-4 py-2">Activity</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-2">ViewModelComponent</td>
+                            <td class="px-4 py-2"><code>@ViewModelScoped</code></td>
+                            <td class="px-4 py-2">ViewModel</td>
+                        </tr>
+                        <tr>
+                            <td class="px-4 py-2">FragmentComponent</td>
+                            <td class="px-4 py-2"><code>@FragmentScoped</code></td>
+                            <td class="px-4 py-2">Fragment</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- UseCase injection -->
+            <h2 class="text-2xl font-bold mt-8 mb-4 text-zinc-900 dark:text-white">UseCase с @Inject</h2>
+            <p class="text-zinc-600 dark:text-zinc-400 mb-4">
+                UseCase не требуют модуля — достаточно <code>@Inject constructor</code>.
+            </p>
+            <pre class="mb-6"><code><span class="keyword">class</span> <span class="type">GetProductsUseCase</span> <span class="annotation">@Inject</span> <span class="keyword">constructor</span>(
+    <span class="keyword">private val</span> repository: <span class="type">ProductRepository</span>
+) {
+    <span class="keyword">operator fun</span> <span class="function">invoke</span>(): Flow&lt;Resource&lt;List&lt;<span class="type">Product</span>&gt;&gt;&gt; {
+        <span class="keyword">return</span> repository.getProducts()
+    }
+}
+
+<span class="keyword">class</span> <span class="type">GetProductByIdUseCase</span> <span class="annotation">@Inject</span> <span class="keyword">constructor</span>(
+    <span class="keyword">private val</span> repository: <span class="type">ProductRepository</span>
+) {
+    <span class="keyword">operator fun</span> <span class="function">invoke</span>(id: <span class="type">Int</span>): Flow&lt;Resource&lt;<span class="type">Product</span>&gt;&gt; {
+        <span class="keyword">return</span> repository.getProductById(id)
+    }
+}
+
+<span class="keyword">class</span> <span class="type">AddToCartUseCase</span> <span class="annotation">@Inject</span> <span class="keyword">constructor</span>(
+    <span class="keyword">private val</span> cartRepository: <span class="type">CartRepository</span>
+) {
+    <span class="keyword">suspend operator fun</span> <span class="function">invoke</span>(product: <span class="type">Product</span>) {
+        cartRepository.addToCart(product)
+    }
+}</code></pre>
+
+            <!-- Qualifiers -->
+            <h2 class="text-2xl font-bold mt-8 mb-4 text-zinc-900 dark:text-white">Qualifiers — различение зависимостей</h2>
+            <p class="text-zinc-600 dark:text-zinc-400 mb-4">
+                Когда есть несколько зависимостей одного типа, используйте Qualifier.
+            </p>
+            <pre class="mb-6"><code><span class="comment">// Создаём Qualifier аннотации</span>
+<span class="annotation">@Qualifier</span>
+<span class="annotation">@Retention</span>(AnnotationRetention.BINARY)
+<span class="keyword">annotation class</span> <span class="type">IoDispatcher</span>
+
+<span class="annotation">@Qualifier</span>
+<span class="annotation">@Retention</span>(AnnotationRetention.BINARY)
+<span class="keyword">annotation class</span> <span class="type">MainDispatcher</span>
+
+<span class="annotation">@Qualifier</span>
+<span class="annotation">@Retention</span>(AnnotationRetention.BINARY)
+<span class="keyword">annotation class</span> <span class="type">DefaultDispatcher</span>
+
+<span class="comment">// В модуле</span>
+<span class="annotation">@Module</span>
+<span class="annotation">@InstallIn</span>(SingletonComponent::<span class="keyword">class</span>)
+<span class="keyword">object</span> <span class="type">DispatcherModule</span> {
+
+    <span class="annotation">@Provides</span>
+    <span class="annotation">@IoDispatcher</span>
+    <span class="keyword">fun</span> <span class="function">provideIoDispatcher</span>(): CoroutineDispatcher = Dispatchers.IO
+
+    <span class="annotation">@Provides</span>
+    <span class="annotation">@MainDispatcher</span>
+    <span class="keyword">fun</span> <span class="function">provideMainDispatcher</span>(): CoroutineDispatcher = Dispatchers.Main
+
+    <span class="annotation">@Provides</span>
+    <span class="annotation">@DefaultDispatcher</span>
+    <span class="keyword">fun</span> <span class="function">provideDefaultDispatcher</span>(): CoroutineDispatcher = Dispatchers.Default
+}
+
+<span class="comment">// Использование</span>
+<span class="keyword">class</span> <span class="type">ProductRepositoryImpl</span> <span class="annotation">@Inject</span> <span class="keyword">constructor</span>(
+    <span class="keyword">private val</span> api: <span class="type">ProductApi</span>,
+    <span class="annotation">@IoDispatcher</span> <span class="keyword">private val</span> ioDispatcher: CoroutineDispatcher
+) : <span class="type">ProductRepository</span> {
+
+    <span class="keyword">override fun</span> <span class="function">getProducts</span>() = flow {
+        <span class="keyword">val</span> products = api.getProducts()
+        emit(products)
+    }.flowOn(ioDispatcher)
+}</code></pre>
+
+            <!-- Граф зависимостей -->
+            <h2 class="text-2xl font-bold mt-8 mb-4 text-zinc-900 dark:text-white">Граф зависимостей E-Commerce</h2>
+            <div class="bg-zinc-100 dark:bg-zinc-800 rounded-xl p-6 mb-8 font-mono text-sm text-zinc-700 dark:text-zinc-300">
+                <pre>
+SingletonComponent
+│
+├── NetworkModule
+│   ├── Moshi
+│   ├── OkHttpClient
+│   ├── Retrofit
+│   └── ProductApi
+│
+├── DatabaseModule
+│   ├── EcommerceDatabase
+│   ├── ProductDao
+│   ├── CartDao
+│   └── FavoriteDao
+│
+├── RepositoryModule
+│   ├── ProductRepository ← ProductRepositoryImpl
+│   ├── CartRepository ← CartRepositoryImpl
+│   └── FavoriteRepository ← FavoriteRepositoryImpl
+│
+├── DispatcherModule
+│   ├── @IoDispatcher
+│   ├── @MainDispatcher
+│   └── @DefaultDispatcher
+│
+└── UseCases (via @Inject constructor)
+    ├── GetProductsUseCase
+    ├── GetProductByIdUseCase
+    ├── SearchProductsUseCase
+    ├── AddToCartUseCase
+    ├── RemoveFromCartUseCase
+    ├── AddToFavoritesUseCase
+    └── RemoveFromFavoritesUseCase
+                </pre>
+            </div>
+
+            <!-- Testing with Hilt -->
+            <h2 class="text-2xl font-bold mt-8 mb-4 text-zinc-900 dark:text-white">Тестирование с Hilt</h2>
+            <pre class="mb-6"><code><span class="comment">// Замена реальной зависимости на fake для тестов</span>
+<span class="annotation">@Module</span>
+<span class="annotation">@TestInstallIn</span>(
+    components = [SingletonComponent::<span class="keyword">class</span>],
+    replaces = [RepositoryModule::<span class="keyword">class</span>]
+)
+<span class="keyword">abstract class</span> <span class="type">FakeRepositoryModule</span> {
+
+    <span class="annotation">@Binds</span>
+    <span class="annotation">@Singleton</span>
+    <span class="keyword">abstract fun</span> <span class="function">bindProductRepository</span>(
+        impl: <span class="type">FakeProductRepository</span>
+    ): <span class="type">ProductRepository</span>
+}
+
+<span class="comment">// Fake реализация для тестов</span>
+<span class="keyword">class</span> <span class="type">FakeProductRepository</span> <span class="annotation">@Inject</span> <span class="keyword">constructor</span>() : <span class="type">ProductRepository</span> {
+
+    <span class="keyword">private val</span> fakeProducts = listOf(
+        Product(id = <span class="number">1</span>, title = <span class="string">"Test iPhone"</span>, price = <span class="number">999.0</span>, ...),
+        Product(id = <span class="number">2</span>, title = <span class="string">"Test MacBook"</span>, price = <span class="number">1999.0</span>, ...)
+    )
+
+    <span class="keyword">override fun</span> <span class="function">getProducts</span>() = flow {
+        emit(Resource.Success(fakeProducts))
+    }
+
+    <span class="keyword">override fun</span> <span class="function">getProductById</span>(id: <span class="type">Int</span>) = flow {
+        <span class="keyword">val</span> product = fakeProducts.find { it.id == id }
+        <span class="keyword">if</span> (product != <span class="keyword">null</span>) {
+            emit(Resource.Success(product))
+        } <span class="keyword">else</span> {
+            emit(Resource.Error(<span class="string">"Product not found"</span>))
+        }
+    }
+}</code></pre>
+
+            <!-- Частые ошибки -->
+            <h2 class="text-2xl font-bold mt-8 mb-4 text-zinc-900 dark:text-white">Частые ошибки</h2>
+            <div class="space-y-4 mb-8">
+                <div class="p-4 bg-red-50 dark:bg-red-900/20 rounded-lg border border-red-200 dark:border-red-800">
+                    <h4 class="font-semibold text-red-900 dark:text-red-100">Забыли @AndroidEntryPoint</h4>
+                    <p class="text-red-800 dark:text-red-200 text-sm">Activity/Fragment без этой аннотации не получит зависимости.</p>
+                </div>
+                <div class="p-4 bg-red-50 dark:bg-red-900/20 rounded-lg border border-red-200 dark:border-red-800">
+                    <h4 class="font-semibold text-red-900 dark:text-red-100">@HiltViewModel без @Inject constructor</h4>
+                    <p class="text-red-800 dark:text-red-200 text-sm">ViewModel требует обе аннотации для работы.</p>
+                </div>
+                <div class="p-4 bg-red-50 dark:bg-red-900/20 rounded-lg border border-red-200 dark:border-red-800">
+                    <h4 class="font-semibold text-red-900 dark:text-red-100">@Singleton без @InstallIn(SingletonComponent)</h4>
+                    <p class="text-red-800 dark:text-red-200 text-sm">Scope должен соответствовать компоненту.</p>
+                </div>
+            </div>
+
+            <!-- Итоги -->
+            <div class="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-xl p-6 mb-8">
+                <h3 class="font-semibold text-green-900 dark:text-green-100 mb-3">Ключевые концепции</h3>
+                <ul class="text-green-800 dark:text-green-200 space-y-2">
+                    <li>• <strong>@HiltAndroidApp</strong> — точка входа для Hilt в Application</li>
+                    <li>• <strong>@AndroidEntryPoint</strong> — включает DI для Activity/Fragment</li>
+                    <li>• <strong>@HiltViewModel</strong> — DI для ViewModel</li>
+                    <li>• <strong>@Module + @InstallIn</strong> — модули с зависимостями</li>
+                    <li>• <strong>@Provides</strong> — для внешних классов (Retrofit, Room)</li>
+                    <li>• <strong>@Binds</strong> — для связывания интерфейсов</li>
+                    <li>• <strong>@Singleton</strong> — один экземпляр на приложение</li>
+                    <li>• <strong>@Qualifier</strong> — различение зависимостей одного типа</li>
+                </ul>
+            </div>
+
         </div>
+
         <div class="flex justify-between items-center mt-12 pt-8 border-t border-zinc-200 dark:border-zinc-800">
             <a href="10-navigation.html" class="text-green-500 hover:underline">&larr; Навигация</a>
             <a href="../index.html" class="text-green-500 hover:underline">Оглавление</a>

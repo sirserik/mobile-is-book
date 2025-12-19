@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Глава 17: Анимации | Android E-Commerce</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        pre { background: #1e1e1e; color: #d4d4d4; padding: 1rem; border-radius: 0.5rem; overflow-x: auto; }
+        .keyword { color: #569cd6; }
+        .function { color: #dcdcaa; }
+        .string { color: #ce9178; }
+        .comment { color: #6a9955; }
+        .annotation { color: #4ec9b0; }
+        .number { color: #b5cea8; }
+    </style>
+</head>
+<body class="bg-white dark:bg-zinc-900">
+    <div class="max-w-4xl mx-auto px-6 py-12">
+        <a href="../index.html" class="text-green-500 hover:underline mb-4 inline-block">&larr; Назад</a>
+        <h1 class="text-4xl font-bold text-zinc-900 dark:text-white mb-6">Глава 17: Анимации в Compose</h1>
+
+        <div class="prose dark:prose-invert max-w-none">
+            <div class="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-xl p-6 mb-8">
+                <p class="text-green-800 dark:text-green-200 mb-0">
+                    Анимации делают приложение живым. Compose предлагает мощные API для создания
+                    плавных переходов и эффектов.
+                </p>
+            </div>
+
+            <h2 class="text-2xl font-bold mt-8 mb-4 text-zinc-900 dark:text-white">animate*AsState</h2>
+
+            <p class="text-zinc-600 dark:text-zinc-400 mb-4">
+                Простейший способ анимации — изменение значения:
+            </p>
+
+            <pre><code><span class="annotation">@Composable</span>
+<span class="keyword">fun</span> <span class="function">FavoriteButton</span>(
+    isFavorite: Boolean,
+    onClick: () -> Unit
+) {
+    <span class="comment">// Анимация размера</span>
+    <span class="keyword">val</span> size <span class="keyword">by</span> animateDpAsState(
+        targetValue = <span class="keyword">if</span> (isFavorite) <span class="number">32</span>.dp <span class="keyword">else</span> <span class="number">24</span>.dp,
+        animationSpec = spring(
+            dampingRatio = Spring.DampingRatioMediumBouncy,
+            stiffness = Spring.StiffnessLow
+        ),
+        label = <span class="string">"size"</span>
+    )
+
+    <span class="comment">// Анимация цвета</span>
+    <span class="keyword">val</span> color <span class="keyword">by</span> animateColorAsState(
+        targetValue = <span class="keyword">if</span> (isFavorite) Color.Red <span class="keyword">else</span> Color.Gray,
+        animationSpec = tween(durationMillis = <span class="number">300</span>),
+        label = <span class="string">"color"</span>
+    )
+
+    IconButton(onClick = onClick) {
+        Icon(
+            <span class="keyword">if</span> (isFavorite) Icons.Filled.Favorite <span class="keyword">else</span> Icons.Outlined.FavoriteBorder,
+            contentDescription = <span class="keyword">null</span>,
+            tint = color,
+            modifier = Modifier.size(size)
+        )
+    }
+}</code></pre>
+
+            <h2 class="text-2xl font-bold mt-8 mb-4 text-zinc-900 dark:text-white">AnimatedVisibility</h2>
+
+            <pre><code><span class="annotation">@Composable</span>
+<span class="keyword">fun</span> <span class="function">AddToCartButton</span>(
+    isInCart: Boolean,
+    onAddToCart: () -> Unit
+) {
+    AnimatedVisibility(
+        visible = !isInCart,
+        enter = fadeIn() + slideInVertically { it },
+        exit = fadeOut() + slideOutVertically { -it }
+    ) {
+        Button(onClick = onAddToCart) {
+            Icon(Icons.Default.ShoppingCart, <span class="keyword">null</span>)
+            Spacer(Modifier.width(<span class="number">8</span>.dp))
+            Text(<span class="string">"В корзину"</span>)
+        }
+    }
+
+    AnimatedVisibility(
+        visible = isInCart,
+        enter = scaleIn() + fadeIn(),
+        exit = scaleOut() + fadeOut()
+    ) {
+        OutlinedButton(onClick = {}) {
+            Icon(Icons.Default.Check, <span class="keyword">null</span>, tint = Color.Green)
+            Spacer(Modifier.width(<span class="number">8</span>.dp))
+            Text(<span class="string">"В корзине"</span>)
+        }
+    }
+}</code></pre>
+
+            <h2 class="text-2xl font-bold mt-8 mb-4 text-zinc-900 dark:text-white">AnimatedContent</h2>
+
+            <pre><code><span class="annotation">@Composable</span>
+<span class="keyword">fun</span> <span class="function">CartItemCount</span>(count: Int) {
+    AnimatedContent(
+        targetState = count,
+        transitionSpec = {
+            <span class="keyword">if</span> (targetState > initialState) {
+                <span class="comment">// Увеличение — сверху вниз</span>
+                slideInVertically { -it } + fadeIn() togetherWith
+                    slideOutVertically { it } + fadeOut()
+            } <span class="keyword">else</span> {
+                <span class="comment">// Уменьшение — снизу вверх</span>
+                slideInVertically { it } + fadeIn() togetherWith
+                    slideOutVertically { -it } + fadeOut()
+            }.using(SizeTransform(clip = <span class="keyword">false</span>))
+        },
+        label = <span class="string">"count"</span>
+    ) { targetCount ->
+        Text(
+            text = targetCount.toString(),
+            style = MaterialTheme.typography.titleLarge,
+            fontWeight = FontWeight.Bold
+        )
+    }
+}</code></pre>
+
+            <h2 class="text-2xl font-bold mt-8 mb-4 text-zinc-900 dark:text-white">Shimmer эффект (Loading)</h2>
+
+            <pre><code><span class="annotation">@Composable</span>
+<span class="keyword">fun</span> <span class="function">ShimmerEffect</span>(
+    modifier: Modifier = Modifier
+) {
+    <span class="keyword">val</span> shimmerColors = listOf(
+        Color.LightGray.copy(alpha = <span class="number">0.6</span>f),
+        Color.LightGray.copy(alpha = <span class="number">0.2</span>f),
+        Color.LightGray.copy(alpha = <span class="number">0.6</span>f)
+    )
+
+    <span class="keyword">val</span> transition = rememberInfiniteTransition(label = <span class="string">"shimmer"</span>)
+    <span class="keyword">val</span> translateAnim <span class="keyword">by</span> transition.animateFloat(
+        initialValue = <span class="number">0</span>f,
+        targetValue = <span class="number">1000</span>f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(durationMillis = <span class="number">1200</span>, easing = LinearEasing),
+            repeatMode = RepeatMode.Restart
+        ),
+        label = <span class="string">"translate"</span>
+    )
+
+    <span class="keyword">val</span> brush = Brush.linearGradient(
+        colors = shimmerColors,
+        start = Offset(translateAnim - <span class="number">200</span>f, <span class="number">0</span>f),
+        end = Offset(translateAnim, <span class="number">0</span>f)
+    )
+
+    Box(
+        modifier = modifier.background(brush)
+    )
+}
+
+<span class="annotation">@Composable</span>
+<span class="keyword">fun</span> <span class="function">ProductCardSkeleton</span>() {
+    Card(modifier = Modifier.fillMaxWidth()) {
+        Column(modifier = Modifier.padding(<span class="number">16</span>.dp)) {
+            ShimmerEffect(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(<span class="number">200</span>.dp)
+                    .clip(RoundedCornerShape(<span class="number">8</span>.dp))
+            )
+            Spacer(modifier = Modifier.height(<span class="number">8</span>.dp))
+            ShimmerEffect(
+                modifier = Modifier
+                    .fillMaxWidth(<span class="number">0.7</span>f)
+                    .height(<span class="number">20</span>.dp)
+            )
+            Spacer(modifier = Modifier.height(<span class="number">4</span>.dp))
+            ShimmerEffect(
+                modifier = Modifier
+                    .fillMaxWidth(<span class="number">0.4</span>f)
+                    .height(<span class="number">16</span>.dp)
+            )
+        }
+    }
+}</code></pre>
+
+            <h2 class="text-2xl font-bold mt-8 mb-4 text-zinc-900 dark:text-white">Анимация списка</h2>
+
+            <pre><code><span class="annotation">@Composable</span>
+<span class="keyword">fun</span> <span class="function">AnimatedProductList</span>(products: List&lt;Product&gt;) {
+    LazyColumn {
+        itemsIndexed(
+            items = products,
+            key = { _, product -> product.id }
+        ) { index, product ->
+            <span class="keyword">var</span> visible <span class="keyword">by</span> remember { mutableStateOf(<span class="keyword">false</span>) }
+
+            LaunchedEffect(Unit) {
+                delay(index * <span class="number">50L</span>)  <span class="comment">// Каскадная задержка</span>
+                visible = <span class="keyword">true</span>
+            }
+
+            AnimatedVisibility(
+                visible = visible,
+                enter = fadeIn(
+                    animationSpec = tween(durationMillis = <span class="number">300</span>)
+                ) + slideInHorizontally(
+                    initialOffsetX = { <span class="number">100</span> },
+                    animationSpec = tween(durationMillis = <span class="number">300</span>)
+                )
+            ) {
+                ProductCard(
+                    product = product,
+                    modifier = Modifier.animateItem()  <span class="comment">// Compose 1.7+</span>
+                )
+            }
+        }
+    }
+}</code></pre>
+
+            <h2 class="text-2xl font-bold mt-8 mb-4 text-zinc-900 dark:text-white">Навигационные переходы</h2>
+
+            <pre><code><span class="comment">// Navigation Compose с анимациями</span>
+NavHost(
+    navController = navController,
+    startDestination = <span class="string">"home"</span>,
+    enterTransition = { fadeIn(tween(<span class="number">300</span>)) + slideIntoContainer(AnimatedContentTransitionScope.SlideDirection.Start) },
+    exitTransition = { fadeOut(tween(<span class="number">300</span>)) + slideOutOfContainer(AnimatedContentTransitionScope.SlideDirection.Start) },
+    popEnterTransition = { fadeIn(tween(<span class="number">300</span>)) + slideIntoContainer(AnimatedContentTransitionScope.SlideDirection.End) },
+    popExitTransition = { fadeOut(tween(<span class="number">300</span>)) + slideOutOfContainer(AnimatedContentTransitionScope.SlideDirection.End) }
+) {
+    composable(<span class="string">"home"</span>) { HomeScreen() }
+
+    composable(
+        <span class="string">"product/{id}"</span>,
+        enterTransition = { scaleIn(initialScale = <span class="number">0.9</span>f) + fadeIn() },
+        exitTransition = { scaleOut(targetScale = <span class="number">0.9</span>f) + fadeOut() }
+    ) { ProductDetailScreen() }
+}</code></pre>
+
+            <h2 class="text-2xl font-bold mt-8 mb-4 text-zinc-900 dark:text-white">Shared Element Transition</h2>
+
+            <pre><code><span class="comment">// Compose 1.7+ SharedTransitionLayout</span>
+SharedTransitionLayout {
+    NavHost(navController, startDestination = <span class="string">"list"</span>) {
+        composable(<span class="string">"list"</span>) {
+            ProductList(
+                onProductClick = { product ->
+                    navController.navigate(<span class="string">"detail/\${product.id}"</span>)
+                },
+                sharedTransitionScope = <span class="keyword">this</span>@SharedTransitionLayout,
+                animatedVisibilityScope = <span class="keyword">this</span>@composable
+            )
+        }
+
+        composable(<span class="string">"detail/{id}"</span>) {
+            ProductDetail(
+                sharedTransitionScope = <span class="keyword">this</span>@SharedTransitionLayout,
+                animatedVisibilityScope = <span class="keyword">this</span>@composable
+            )
+        }
+    }
+}
+
+<span class="comment">// В ProductCard</span>
+AsyncImage(
+    model = product.thumbnail,
+    modifier = Modifier
+        .sharedElement(
+            rememberSharedContentState(key = <span class="string">"image-\${product.id}"</span>),
+            animatedVisibilityScope = animatedVisibilityScope
+        )
+)</code></pre>
+
+            <div class="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-xl p-6 mt-8">
+                <h3 class="font-semibold text-green-900 dark:text-green-100 mb-3">Типы анимаций</h3>
+                <ul class="text-green-800 dark:text-green-200 space-y-2">
+                    <li>• <strong>animate*AsState</strong> — простые переходы значений</li>
+                    <li>• <strong>AnimatedVisibility</strong> — появление/исчезновение</li>
+                    <li>• <strong>AnimatedContent</strong> — замена контента</li>
+                    <li>• <strong>InfiniteTransition</strong> — циклические анимации</li>
+                    <li>• <strong>SharedElement</strong> — переходы между экранами</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="flex justify-between items-center mt-12 pt-8 border-t border-zinc-200 dark:border-zinc-800">
+            <a href="16-dark-theme.html" class="text-green-500 hover:underline">&larr; Тёмная тема</a>
+            <a href="../index.html" class="text-green-500 hover:underline">Оглавление</a>
+            <a href="18-offline.html" class="text-green-500 hover:underline">Офлайн режим &rarr;</a>
+        </div>
+    </div>
+</body>
+</html>

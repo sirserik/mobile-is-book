@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Глава 19: Пагинация | Android E-Commerce</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        pre { background: #1e1e1e; color: #d4d4d4; padding: 1rem; border-radius: 0.5rem; overflow-x: auto; }
+        .keyword { color: #569cd6; }
+        .function { color: #dcdcaa; }
+        .string { color: #ce9178; }
+        .comment { color: #6a9955; }
+        .annotation { color: #4ec9b0; }
+        .number { color: #b5cea8; }
+    </style>
+</head>
+<body class="bg-white dark:bg-zinc-900">
+    <div class="max-w-4xl mx-auto px-6 py-12">
+        <a href="../index.html" class="text-green-500 hover:underline mb-4 inline-block">&larr; Назад</a>
+        <h1 class="text-4xl font-bold text-zinc-900 dark:text-white mb-6">Глава 19: Пагинация</h1>
+
+        <div class="prose dark:prose-invert max-w-none">
+            <div class="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-xl p-6 mb-8">
+                <p class="text-green-800 dark:text-green-200 mb-0">
+                    Paging 3 — библиотека для загрузки данных страницами. Автоматически загружает
+                    следующую страницу при скролле и кэширует данные.
+                </p>
+            </div>
+
+            <h2 class="text-2xl font-bold mt-8 mb-4 text-zinc-900 dark:text-white">Зависимости</h2>
+
+            <pre><code><span class="comment">// build.gradle.kts</span>
+dependencies {
+    implementation(<span class="string">"androidx.paging:paging-runtime-ktx:3.2.1"</span>)
+    implementation(<span class="string">"androidx.paging:paging-compose:3.2.1"</span>)
+    <span class="comment">// Для Room</span>
+    implementation(<span class="string">"androidx.room:room-paging:2.6.1"</span>)
+}</code></pre>
+
+            <h2 class="text-2xl font-bold mt-8 mb-4 text-zinc-900 dark:text-white">PagingSource</h2>
+
+            <pre><code><span class="comment">// data/paging/ProductPagingSource.kt</span>
+<span class="keyword">class</span> ProductPagingSource(
+    <span class="keyword">private val</span> api: ProductApi,
+    <span class="keyword">private val</span> category: String?
+) : PagingSource&lt;Int, Product&gt;() {
+
+    <span class="keyword">override fun</span> <span class="function">getRefreshKey</span>(state: PagingState&lt;Int, Product&gt;): Int? {
+        <span class="keyword">return</span> state.anchorPosition?.let { position ->
+            state.closestPageToPosition(position)?.prevKey?.plus(<span class="number">1</span>)
+                ?: state.closestPageToPosition(position)?.nextKey?.minus(<span class="number">1</span>)
+        }
+    }
+
+    <span class="keyword">override suspend fun</span> <span class="function">load</span>(params: LoadParams&lt;Int&gt;): LoadResult&lt;Int, Product&gt; {
+        <span class="keyword">val</span> page = params.key ?: <span class="number">1</span>
+        <span class="keyword">val</span> limit = params.loadSize
+
+        <span class="keyword">return try</span> {
+            <span class="keyword">val</span> response = api.getProducts(
+                limit = limit,
+                skip = (page - <span class="number">1</span>) * limit,
+                category = category
+            )
+
+            <span class="keyword">val</span> products = response.products.map { it.toDomain() }
+
+            LoadResult.Page(
+                data = products,
+                prevKey = <span class="keyword">if</span> (page == <span class="number">1</span>) <span class="keyword">null</span> <span class="keyword">else</span> page - <span class="number">1</span>,
+                nextKey = <span class="keyword">if</span> (products.isEmpty()) <span class="keyword">null</span> <span class="keyword">else</span> page + <span class="number">1</span>
+            )
+        } <span class="keyword">catch</span> (e: IOException) {
+            LoadResult.Error(e)
+        } <span class="keyword">catch</span> (e: HttpException) {
+            LoadResult.Error(e)
+        }
+    }
+}</code></pre>
+
+            <h2 class="text-2xl font-bold mt-8 mb-4 text-zinc-900 dark:text-white">Repository с Pager</h2>
+
+            <pre><code><span class="annotation">@Singleton</span>
+<span class="keyword">class</span> ProductRepositoryImpl <span class="annotation">@Inject</span> <span class="keyword">constructor</span>(
+    <span class="keyword">private val</span> api: ProductApi
+) : ProductRepository {
+
+    <span class="keyword">override fun</span> <span class="function">getProducts</span>(category: String?): Flow&lt;PagingData&lt;Product&gt;&gt; {
+        <span class="keyword">return</span> Pager(
+            config = PagingConfig(
+                pageSize = <span class="number">20</span>,
+                prefetchDistance = <span class="number">5</span>,        <span class="comment">// Предзагрузка за 5 элементов</span>
+                enablePlaceholders = <span class="keyword">false</span>,
+                initialLoadSize = <span class="number">40</span>         <span class="comment">// Первая загрузка больше</span>
+            ),
+            pagingSourceFactory = {
+                ProductPagingSource(api, category)
+            }
+        ).flow
+    }
+}</code></pre>
+
+            <h2 class="text-2xl font-bold mt-8 mb-4 text-zinc-900 dark:text-white">ViewModel</h2>
+
+            <pre><code><span class="annotation">@HiltViewModel</span>
+<span class="keyword">class</span> ProductListViewModel <span class="annotation">@Inject</span> <span class="keyword">constructor</span>(
+    <span class="keyword">private val</span> repository: ProductRepository
+) : ViewModel() {
+
+    <span class="keyword">private val</span> _category = MutableStateFlow&lt;String?&gt;(<span class="keyword">null</span>)
+
+    <span class="keyword">val</span> products: Flow&lt;PagingData&lt;Product&gt;&gt; = _category
+        .flatMapLatest { category ->
+            repository.getProducts(category)
+        }
+        .cachedIn(viewModelScope)  <span class="comment">// Кэширование при поворотах</span>
+
+    <span class="keyword">fun</span> <span class="function">setCategory</span>(category: String?) {
+        _category.value = category
+    }
+}</code></pre>
+
+            <h2 class="text-2xl font-bold mt-8 mb-4 text-zinc-900 dark:text-white">UI с LazyColumn</h2>
+
+            <pre><code><span class="annotation">@Composable</span>
+<span class="keyword">fun</span> <span class="function">ProductListScreen</span>(
+    viewModel: ProductListViewModel = hiltViewModel()
+) {
+    <span class="keyword">val</span> products = viewModel.products.collectAsLazyPagingItems()
+
+    LazyColumn {
+        <span class="comment">// Состояние загрузки первой страницы</span>
+        <span class="keyword">when</span> (<span class="keyword">val</span> state = products.loadState.refresh) {
+            <span class="keyword">is</span> LoadState.Loading -> {
+                item { FullScreenLoading() }
+            }
+            <span class="keyword">is</span> LoadState.Error -> {
+                item {
+                    ErrorMessage(
+                        message = state.error.localizedMessage ?: <span class="string">"Ошибка"</span>,
+                        onRetry = { products.retry() }
+                    )
+                }
+            }
+            <span class="keyword">is</span> LoadState.NotLoading -> Unit
+        }
+
+        <span class="comment">// Элементы списка</span>
+        items(
+            count = products.itemCount,
+            key = products.itemKey { it.id }
+        ) { index ->
+            <span class="keyword">val</span> product = products[index]
+            <span class="keyword">if</span> (product != <span class="keyword">null</span>) {
+                ProductCard(product = product)
+            } <span class="keyword">else</span> {
+                ProductCardSkeleton()
+            }
+        }
+
+        <span class="comment">// Индикатор загрузки следующей страницы</span>
+        <span class="keyword">when</span> (products.loadState.append) {
+            <span class="keyword">is</span> LoadState.Loading -> {
+                item {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(<span class="number">16</span>.dp),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        CircularProgressIndicator()
+                    }
+                }
+            }
+            <span class="keyword">is</span> LoadState.Error -> {
+                item {
+                    RetryButton(onRetry = { products.retry() })
+                }
+            }
+            <span class="keyword">is</span> LoadState.NotLoading -> Unit
+        }
+    }
+}
+
+<span class="annotation">@Composable</span>
+<span class="keyword">fun</span> <span class="function">ErrorMessage</span>(
+    message: String,
+    onRetry: () -> Unit
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(<span class="number">32</span>.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Icon(
+            Icons.Default.Error,
+            <span class="keyword">null</span>,
+            modifier = Modifier.size(<span class="number">48</span>.dp),
+            tint = MaterialTheme.colorScheme.error
+        )
+        Spacer(Modifier.height(<span class="number">16</span>.dp))
+        Text(message, textAlign = TextAlign.Center)
+        Spacer(Modifier.height(<span class="number">16</span>.dp))
+        Button(onClick = onRetry) {
+            Text(<span class="string">"Повторить"</span>)
+        }
+    }
+}</code></pre>
+
+            <h2 class="text-2xl font-bold mt-8 mb-4 text-zinc-900 dark:text-white">RemoteMediator (Offline + Paging)</h2>
+
+            <p class="text-zinc-600 dark:text-zinc-400 mb-4">
+                RemoteMediator загружает данные в Room и читает оттуда — работает офлайн:
+            </p>
+
+            <pre><code><span class="annotation">@OptIn</span>(ExperimentalPagingApi::<span class="keyword">class</span>)
+<span class="keyword">class</span> ProductRemoteMediator(
+    <span class="keyword">private val</span> api: ProductApi,
+    <span class="keyword">private val</span> database: AppDatabase
+) : RemoteMediator&lt;Int, ProductEntity&gt;() {
+
+    <span class="keyword">private val</span> productDao = database.productDao()
+
+    <span class="keyword">override suspend fun</span> <span class="function">load</span>(
+        loadType: LoadType,
+        state: PagingState&lt;Int, ProductEntity&gt;
+    ): MediatorResult {
+        <span class="keyword">val</span> page = <span class="keyword">when</span> (loadType) {
+            LoadType.REFRESH -> <span class="number">1</span>
+            LoadType.PREPEND -> <span class="keyword">return</span> MediatorResult.Success(endOfPaginationReached = <span class="keyword">true</span>)
+            LoadType.APPEND -> {
+                <span class="keyword">val</span> lastItem = state.lastItemOrNull()
+                    ?: <span class="keyword">return</span> MediatorResult.Success(endOfPaginationReached = <span class="keyword">true</span>)
+                (lastItem.id / state.config.pageSize) + <span class="number">1</span>
+            }
+        }
+
+        <span class="keyword">return try</span> {
+            <span class="keyword">val</span> response = api.getProducts(
+                limit = state.config.pageSize,
+                skip = (page - <span class="number">1</span>) * state.config.pageSize
+            )
+
+            database.withTransaction {
+                <span class="keyword">if</span> (loadType == LoadType.REFRESH) {
+                    productDao.deleteAll()
+                }
+                productDao.insertAll(response.products.map { it.toEntity() })
+            }
+
+            MediatorResult.Success(
+                endOfPaginationReached = response.products.isEmpty()
+            )
+        } <span class="keyword">catch</span> (e: Exception) {
+            MediatorResult.Error(e)
+        }
+    }
+}
+
+<span class="comment">// Repository с RemoteMediator</span>
+<span class="annotation">@OptIn</span>(ExperimentalPagingApi::<span class="keyword">class</span>)
+<span class="keyword">fun</span> <span class="function">getProducts</span>(): Flow&lt;PagingData&lt;Product&gt;&gt; {
+    <span class="keyword">return</span> Pager(
+        config = PagingConfig(pageSize = <span class="number">20</span>),
+        remoteMediator = ProductRemoteMediator(api, database),
+        pagingSourceFactory = { productDao.pagingSource() }  <span class="comment">// Room PagingSource</span>
+    ).flow.map { pagingData ->
+        pagingData.map { it.toDomain() }
+    }
+}</code></pre>
+
+            <h2 class="text-2xl font-bold mt-8 mb-4 text-zinc-900 dark:text-white">Room PagingSource</h2>
+
+            <pre><code><span class="annotation">@Dao</span>
+<span class="keyword">interface</span> ProductDao {
+    <span class="annotation">@Query</span>(<span class="string">"SELECT * FROM products ORDER BY id ASC"</span>)
+    <span class="keyword">fun</span> <span class="function">pagingSource</span>(): PagingSource&lt;Int, ProductEntity&gt;
+
+    <span class="annotation">@Query</span>(<span class="string">"SELECT * FROM products WHERE category = :category ORDER BY id ASC"</span>)
+    <span class="keyword">fun</span> <span class="function">pagingSourceByCategory</span>(category: String): PagingSource&lt;Int, ProductEntity&gt;
+
+    <span class="annotation">@Insert</span>(onConflict = OnConflictStrategy.REPLACE)
+    <span class="keyword">suspend fun</span> <span class="function">insertAll</span>(products: List&lt;ProductEntity&gt;)
+
+    <span class="annotation">@Query</span>(<span class="string">"DELETE FROM products"</span>)
+    <span class="keyword">suspend fun</span> <span class="function">deleteAll</span>()
+}</code></pre>
+
+            <h2 class="text-2xl font-bold mt-8 mb-4 text-zinc-900 dark:text-white">Pull-to-Refresh</h2>
+
+            <pre><code><span class="annotation">@Composable</span>
+<span class="keyword">fun</span> <span class="function">ProductListWithRefresh</span>(
+    viewModel: ProductListViewModel = hiltViewModel()
+) {
+    <span class="keyword">val</span> products = viewModel.products.collectAsLazyPagingItems()
+    <span class="keyword">val</span> isRefreshing = products.loadState.refresh <span class="keyword">is</span> LoadState.Loading
+
+    PullToRefreshBox(
+        isRefreshing = isRefreshing,
+        onRefresh = { products.refresh() }
+    ) {
+        LazyColumn {
+            items(
+                count = products.itemCount,
+                key = products.itemKey { it.id }
+            ) { index ->
+                products[index]?.let { ProductCard(it) }
+            }
+        }
+    }
+}</code></pre>
+
+            <div class="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-xl p-6 mt-8">
+                <h3 class="font-semibold text-green-900 dark:text-green-100 mb-3">Что мы изучили</h3>
+                <ul class="text-green-800 dark:text-green-200 space-y-2">
+                    <li>• <strong>PagingSource</strong> — источник данных с пагинацией</li>
+                    <li>• <strong>Pager</strong> — создание потока PagingData</li>
+                    <li>• <strong>LazyPagingItems</strong> — интеграция с Compose</li>
+                    <li>• <strong>RemoteMediator</strong> — офлайн + пагинация</li>
+                    <li>• <strong>LoadState</strong> — обработка состояний загрузки</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="flex justify-between items-center mt-12 pt-8 border-t border-zinc-200 dark:border-zinc-800">
+            <a href="18-offline.html" class="text-green-500 hover:underline">&larr; Офлайн режим</a>
+            <a href="../index.html" class="text-green-500 hover:underline">Оглавление</a>
+            <a href="cheatsheet.html" class="text-green-500 hover:underline">Шпаргалка &rarr;</a>
+        </div>
+    </div>
+</body>
+</html>
