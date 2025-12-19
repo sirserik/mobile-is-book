@@ -1,0 +1,1292 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Парсинг JSON | SwiftUI E-Commerce</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        pre { background: #1e1e1e; color: #d4d4d4; padding: 1rem; border-radius: 0.5rem; overflow-x: auto; }
+        .keyword { color: #569cd6; }
+        .type { color: #4ec9b0; }
+        .string { color: #ce9178; }
+        .comment { color: #6a9955; }
+        .property { color: #9cdcfe; }
+        .number { color: #b5cea8; }
+        .json-key { color: #9cdcfe; }
+        .json-string { color: #ce9178; }
+        .json-number { color: #b5cea8; }
+        .json-bool { color: #569cd6; }
+        .exercise { border-left: 4px solid #3b82f6; }
+        .answer { display: none; }
+        .answer.show { display: block; }
+        .difficulty-easy { background: #dcfce7; color: #166534; }
+        .difficulty-medium { background: #fef3c7; color: #92400e; }
+        .difficulty-hard { background: #fee2e2; color: #991b1b; }
+    </style>
+</head>
+<body class="bg-white dark:bg-zinc-900">
+    <div class="max-w-4xl mx-auto px-6 py-12">
+
+        <!-- Header -->
+        <div class="mb-12">
+            <a href="../index.html" class="text-blue-500 hover:underline mb-4 inline-block">&larr; Назад к оглавлению</a>
+            <h1 class="text-4xl font-bold text-zinc-900 dark:text-white mb-4">Парсинг JSON в Swift</h1>
+            <p class="text-xl text-zinc-600 dark:text-zinc-400">
+                Полное руководство по преобразованию JSON в модели Swift с практическими упражнениями
+            </p>
+        </div>
+
+        <!-- Table of Contents -->
+        <div class="bg-zinc-50 dark:bg-zinc-800 rounded-xl p-6 mb-12">
+            <h2 class="text-lg font-semibold text-zinc-900 dark:text-white mb-4">Содержание</h2>
+            <div class="grid md:grid-cols-2 gap-2">
+                <a href="#basics" class="text-blue-500 hover:underline">1. Основы Codable</a>
+                <a href="#simple-object" class="text-blue-500 hover:underline">2. Простой объект</a>
+                <a href="#arrays" class="text-blue-500 hover:underline">3. Массивы</a>
+                <a href="#nested" class="text-blue-500 hover:underline">4. Вложенные объекты</a>
+                <a href="#coding-keys" class="text-blue-500 hover:underline">5. CodingKeys</a>
+                <a href="#optionals" class="text-blue-500 hover:underline">6. Опциональные поля</a>
+                <a href="#dates" class="text-blue-500 hover:underline">7. Парсинг дат</a>
+                <a href="#complex" class="text-blue-500 hover:underline">8. Сложные структуры</a>
+                <a href="#errors" class="text-blue-500 hover:underline">9. Обработка ошибок</a>
+                <a href="#real-api" class="text-blue-500 hover:underline">10. Реальные API примеры</a>
+                <a href="#exercises" class="text-blue-500 hover:underline">11. Упражнения</a>
+            </div>
+        </div>
+
+        <!-- Section 1: Basics -->
+        <section id="basics" class="mb-16">
+            <h2 class="text-2xl font-bold text-zinc-900 dark:text-white mb-6">1. Основы Codable</h2>
+
+            <div class="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-xl p-6 mb-6">
+                <h3 class="font-semibold text-blue-900 dark:text-blue-100 mb-2">Что такое Codable?</h3>
+                <p class="text-blue-800 dark:text-blue-200">
+                    <code>Codable</code> — это протокол Swift, который объединяет <code>Encodable</code> (для кодирования в JSON)
+                    и <code>Decodable</code> (для декодирования из JSON). Это магия Swift для работы с JSON!
+                </p>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-6 mb-6">
+                <div>
+                    <h4 class="font-semibold text-zinc-700 dark:text-zinc-300 mb-2">JSON</h4>
+                    <pre><code>{
+  <span class="json-key">"id"</span>: <span class="json-number">1</span>,
+  <span class="json-key">"name"</span>: <span class="json-string">"iPhone"</span>,
+  <span class="json-key">"price"</span>: <span class="json-number">999.99</span>
+}</code></pre>
+                </div>
+                <div>
+                    <h4 class="font-semibold text-zinc-700 dark:text-zinc-300 mb-2">Swift Model</h4>
+                    <pre><code><span class="keyword">struct</span> <span class="type">Product</span>: <span class="type">Codable</span> {
+    <span class="keyword">let</span> <span class="property">id</span>: <span class="type">Int</span>
+    <span class="keyword">let</span> <span class="property">name</span>: <span class="type">String</span>
+    <span class="keyword">let</span> <span class="property">price</span>: <span class="type">Double</span>
+}</code></pre>
+                </div>
+            </div>
+
+            <div class="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-xl p-6">
+                <h4 class="font-semibold text-green-900 dark:text-green-100 mb-2">Аналог в JavaScript/TypeScript</h4>
+                <pre class="!bg-green-900/30"><code><span class="comment">// TypeScript interface</span>
+<span class="keyword">interface</span> <span class="type">Product</span> {
+    <span class="property">id</span>: <span class="type">number</span>;
+    <span class="property">name</span>: <span class="type">string</span>;
+    <span class="property">price</span>: <span class="type">number</span>;
+}
+
+<span class="comment">// Парсинг</span>
+<span class="keyword">const</span> product: <span class="type">Product</span> = JSON.parse(jsonString);</code></pre>
+            </div>
+        </section>
+
+        <!-- Section 2: Simple Object -->
+        <section id="simple-object" class="mb-16">
+            <h2 class="text-2xl font-bold text-zinc-900 dark:text-white mb-6">2. Парсинг простого объекта</h2>
+
+            <pre class="mb-6"><code><span class="comment">// JSON строка</span>
+<span class="keyword">let</span> <span class="property">jsonString</span> = <span class="string">"""
+{
+    "id": 1,
+    "name": "MacBook Pro",
+    "price": 1999.99
+}
+"""</span>
+
+<span class="comment">// 1. Создаём модель</span>
+<span class="keyword">struct</span> <span class="type">Product</span>: <span class="type">Codable</span> {
+    <span class="keyword">let</span> <span class="property">id</span>: <span class="type">Int</span>
+    <span class="keyword">let</span> <span class="property">name</span>: <span class="type">String</span>
+    <span class="keyword">let</span> <span class="property">price</span>: <span class="type">Double</span>
+}
+
+<span class="comment">// 2. Преобразуем строку в Data</span>
+<span class="keyword">let</span> <span class="property">jsonData</span> = <span class="property">jsonString</span>.data(using: .utf8)!
+
+<span class="comment">// 3. Декодируем</span>
+<span class="keyword">let</span> <span class="property">decoder</span> = <span class="type">JSONDecoder</span>()
+<span class="keyword">let</span> <span class="property">product</span> = <span class="keyword">try</span> <span class="property">decoder</span>.decode(<span class="type">Product</span>.<span class="keyword">self</span>, from: <span class="property">jsonData</span>)
+
+<span class="comment">// 4. Используем</span>
+print(<span class="property">product</span>.<span class="property">name</span>)  <span class="comment">// "MacBook Pro"</span>
+print(<span class="property">product</span>.<span class="property">price</span>) <span class="comment">// 1999.99</span></code></pre>
+
+            <div class="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-xl p-6">
+                <h4 class="font-semibold text-yellow-900 dark:text-yellow-100 mb-2">Важно!</h4>
+                <ul class="text-yellow-800 dark:text-yellow-200 space-y-1">
+                    <li>Имена свойств в модели должны <strong>точно совпадать</strong> с ключами в JSON</li>
+                    <li>Типы данных должны соответствовать (Int, String, Double и т.д.)</li>
+                    <li><code>decode()</code> может выбросить ошибку — используйте <code>try</code></li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Section 3: Arrays -->
+        <section id="arrays" class="mb-16">
+            <h2 class="text-2xl font-bold text-zinc-900 dark:text-white mb-6">3. Парсинг массивов</h2>
+
+            <h3 class="text-lg font-semibold text-zinc-800 dark:text-zinc-200 mb-4">Массив объектов</h3>
+
+            <div class="grid md:grid-cols-2 gap-6 mb-6">
+                <div>
+                    <h4 class="font-semibold text-zinc-700 dark:text-zinc-300 mb-2">JSON</h4>
+                    <pre><code>[
+  { <span class="json-key">"id"</span>: <span class="json-number">1</span>, <span class="json-key">"name"</span>: <span class="json-string">"iPhone"</span> },
+  { <span class="json-key">"id"</span>: <span class="json-number">2</span>, <span class="json-key">"name"</span>: <span class="json-string">"iPad"</span> },
+  { <span class="json-key">"id"</span>: <span class="json-number">3</span>, <span class="json-key">"name"</span>: <span class="json-string">"MacBook"</span> }
+]</code></pre>
+                </div>
+                <div>
+                    <h4 class="font-semibold text-zinc-700 dark:text-zinc-300 mb-2">Swift</h4>
+                    <pre><code><span class="keyword">struct</span> <span class="type">Product</span>: <span class="type">Codable</span> {
+    <span class="keyword">let</span> <span class="property">id</span>: <span class="type">Int</span>
+    <span class="keyword">let</span> <span class="property">name</span>: <span class="type">String</span>
+}
+
+<span class="comment">// Декодируем массив</span>
+<span class="keyword">let</span> <span class="property">products</span> = <span class="keyword">try</span> decoder.decode(
+    [<span class="type">Product</span>].<span class="keyword">self</span>,
+    from: jsonData
+)</code></pre>
+                </div>
+            </div>
+
+            <h3 class="text-lg font-semibold text-zinc-800 dark:text-zinc-200 mb-4">Массив внутри объекта</h3>
+
+            <div class="grid md:grid-cols-2 gap-6 mb-6">
+                <div>
+                    <h4 class="font-semibold text-zinc-700 dark:text-zinc-300 mb-2">JSON</h4>
+                    <pre><code>{
+  <span class="json-key">"products"</span>: [
+    { <span class="json-key">"id"</span>: <span class="json-number">1</span>, <span class="json-key">"name"</span>: <span class="json-string">"iPhone"</span> },
+    { <span class="json-key">"id"</span>: <span class="json-number">2</span>, <span class="json-key">"name"</span>: <span class="json-string">"iPad"</span> }
+  ],
+  <span class="json-key">"total"</span>: <span class="json-number">2</span>
+}</code></pre>
+                </div>
+                <div>
+                    <h4 class="font-semibold text-zinc-700 dark:text-zinc-300 mb-2">Swift</h4>
+                    <pre><code><span class="keyword">struct</span> <span class="type">Product</span>: <span class="type">Codable</span> {
+    <span class="keyword">let</span> <span class="property">id</span>: <span class="type">Int</span>
+    <span class="keyword">let</span> <span class="property">name</span>: <span class="type">String</span>
+}
+
+<span class="keyword">struct</span> <span class="type">ProductResponse</span>: <span class="type">Codable</span> {
+    <span class="keyword">let</span> <span class="property">products</span>: [<span class="type">Product</span>]
+    <span class="keyword">let</span> <span class="property">total</span>: <span class="type">Int</span>
+}
+
+<span class="keyword">let</span> response = <span class="keyword">try</span> decoder.decode(
+    <span class="type">ProductResponse</span>.<span class="keyword">self</span>,
+    from: jsonData
+)
+print(response.<span class="property">products</span>.count)</code></pre>
+                </div>
+            </div>
+
+            <h3 class="text-lg font-semibold text-zinc-800 dark:text-zinc-200 mb-4">Массив примитивов</h3>
+            <pre><code><span class="comment">// JSON: ["apple", "banana", "cherry"]</span>
+<span class="keyword">let</span> <span class="property">fruits</span> = <span class="keyword">try</span> decoder.decode([<span class="type">String</span>].<span class="keyword">self</span>, from: jsonData)
+
+<span class="comment">// JSON: [1, 2, 3, 4, 5]</span>
+<span class="keyword">let</span> <span class="property">numbers</span> = <span class="keyword">try</span> decoder.decode([<span class="type">Int</span>].<span class="keyword">self</span>, from: jsonData)
+
+<span class="comment">// JSON: [true, false, true]</span>
+<span class="keyword">let</span> <span class="property">flags</span> = <span class="keyword">try</span> decoder.decode([<span class="type">Bool</span>].<span class="keyword">self</span>, from: jsonData)</code></pre>
+        </section>
+
+        <!-- Section 4: Nested Objects -->
+        <section id="nested" class="mb-16">
+            <h2 class="text-2xl font-bold text-zinc-900 dark:text-white mb-6">4. Вложенные объекты</h2>
+
+            <div class="grid md:grid-cols-2 gap-6 mb-6">
+                <div>
+                    <h4 class="font-semibold text-zinc-700 dark:text-zinc-300 mb-2">JSON</h4>
+                    <pre><code>{
+  <span class="json-key">"id"</span>: <span class="json-number">1</span>,
+  <span class="json-key">"title"</span>: <span class="json-string">"iPhone 15"</span>,
+  <span class="json-key">"price"</span>: <span class="json-number">999</span>,
+  <span class="json-key">"category"</span>: {
+    <span class="json-key">"id"</span>: <span class="json-number">5</span>,
+    <span class="json-key">"name"</span>: <span class="json-string">"Electronics"</span>,
+    <span class="json-key">"slug"</span>: <span class="json-string">"electronics"</span>
+  },
+  <span class="json-key">"images"</span>: [
+    <span class="json-string">"img1.jpg"</span>,
+    <span class="json-string">"img2.jpg"</span>
+  ]
+}</code></pre>
+                </div>
+                <div>
+                    <h4 class="font-semibold text-zinc-700 dark:text-zinc-300 mb-2">Swift Models</h4>
+                    <pre><code><span class="comment">// Вложенная модель</span>
+<span class="keyword">struct</span> <span class="type">Category</span>: <span class="type">Codable</span> {
+    <span class="keyword">let</span> <span class="property">id</span>: <span class="type">Int</span>
+    <span class="keyword">let</span> <span class="property">name</span>: <span class="type">String</span>
+    <span class="keyword">let</span> <span class="property">slug</span>: <span class="type">String</span>
+}
+
+<span class="comment">// Главная модель</span>
+<span class="keyword">struct</span> <span class="type">Product</span>: <span class="type">Codable</span> {
+    <span class="keyword">let</span> <span class="property">id</span>: <span class="type">Int</span>
+    <span class="keyword">let</span> <span class="property">title</span>: <span class="type">String</span>
+    <span class="keyword">let</span> <span class="property">price</span>: <span class="type">Int</span>
+    <span class="keyword">let</span> <span class="property">category</span>: <span class="type">Category</span>
+    <span class="keyword">let</span> <span class="property">images</span>: [<span class="type">String</span>]
+}
+
+<span class="comment">// Использование</span>
+<span class="keyword">let</span> product = <span class="keyword">try</span> decoder.decode(
+    <span class="type">Product</span>.<span class="keyword">self</span>, from: data
+)
+print(product.<span class="property">category</span>.<span class="property">name</span>)</code></pre>
+                </div>
+            </div>
+
+            <h3 class="text-lg font-semibold text-zinc-800 dark:text-zinc-200 mb-4">Глубокая вложенность</h3>
+            <pre><code><span class="comment">// JSON с глубокой вложенностью</span>
+{
+  <span class="json-key">"user"</span>: {
+    <span class="json-key">"profile"</span>: {
+      <span class="json-key">"address"</span>: {
+        <span class="json-key">"city"</span>: <span class="json-string">"Almaty"</span>,
+        <span class="json-key">"country"</span>: <span class="json-string">"Kazakhstan"</span>
+      }
+    }
+  }
+}
+
+<span class="comment">// Swift модели - каждый уровень = отдельный struct</span>
+<span class="keyword">struct</span> <span class="type">Address</span>: <span class="type">Codable</span> {
+    <span class="keyword">let</span> <span class="property">city</span>: <span class="type">String</span>
+    <span class="keyword">let</span> <span class="property">country</span>: <span class="type">String</span>
+}
+
+<span class="keyword">struct</span> <span class="type">Profile</span>: <span class="type">Codable</span> {
+    <span class="keyword">let</span> <span class="property">address</span>: <span class="type">Address</span>
+}
+
+<span class="keyword">struct</span> <span class="type">User</span>: <span class="type">Codable</span> {
+    <span class="keyword">let</span> <span class="property">profile</span>: <span class="type">Profile</span>
+}
+
+<span class="keyword">struct</span> <span class="type">Response</span>: <span class="type">Codable</span> {
+    <span class="keyword">let</span> <span class="property">user</span>: <span class="type">User</span>
+}
+
+<span class="comment">// Доступ к данным</span>
+<span class="keyword">let</span> response = <span class="keyword">try</span> decoder.decode(<span class="type">Response</span>.<span class="keyword">self</span>, from: data)
+print(response.<span class="property">user</span>.<span class="property">profile</span>.<span class="property">address</span>.<span class="property">city</span>) <span class="comment">// "Almaty"</span></code></pre>
+        </section>
+
+        <!-- Section 5: CodingKeys -->
+        <section id="coding-keys" class="mb-16">
+            <h2 class="text-2xl font-bold text-zinc-900 dark:text-white mb-6">5. CodingKeys — переименование полей</h2>
+
+            <div class="bg-purple-50 dark:bg-purple-900/20 border border-purple-200 dark:border-purple-800 rounded-xl p-6 mb-6">
+                <h4 class="font-semibold text-purple-900 dark:text-purple-100 mb-2">Когда нужны CodingKeys?</h4>
+                <ul class="text-purple-800 dark:text-purple-200 space-y-1">
+                    <li>JSON ключи в snake_case, а Swift использует camelCase</li>
+                    <li>JSON ключ — зарезервированное слово Swift (class, struct, type)</li>
+                    <li>Хотите использовать другое имя в коде</li>
+                </ul>
+            </div>
+
+            <h3 class="text-lg font-semibold text-zinc-800 dark:text-zinc-200 mb-4">Пример: snake_case → camelCase</h3>
+            <div class="grid md:grid-cols-2 gap-6 mb-6">
+                <div>
+                    <h4 class="font-semibold text-zinc-700 dark:text-zinc-300 mb-2">JSON (snake_case)</h4>
+                    <pre><code>{
+  <span class="json-key">"user_id"</span>: <span class="json-number">123</span>,
+  <span class="json-key">"first_name"</span>: <span class="json-string">"Серик"</span>,
+  <span class="json-key">"last_name"</span>: <span class="json-string">"Иванов"</span>,
+  <span class="json-key">"created_at"</span>: <span class="json-string">"2024-01-15"</span>
+}</code></pre>
+                </div>
+                <div>
+                    <h4 class="font-semibold text-zinc-700 dark:text-zinc-300 mb-2">Swift (camelCase)</h4>
+                    <pre><code><span class="keyword">struct</span> <span class="type">User</span>: <span class="type">Codable</span> {
+    <span class="keyword">let</span> <span class="property">userId</span>: <span class="type">Int</span>
+    <span class="keyword">let</span> <span class="property">firstName</span>: <span class="type">String</span>
+    <span class="keyword">let</span> <span class="property">lastName</span>: <span class="type">String</span>
+    <span class="keyword">let</span> <span class="property">createdAt</span>: <span class="type">String</span>
+
+    <span class="keyword">enum</span> <span class="type">CodingKeys</span>: <span class="type">String</span>, <span class="type">CodingKey</span> {
+        <span class="keyword">case</span> <span class="property">userId</span> = <span class="string">"user_id"</span>
+        <span class="keyword">case</span> <span class="property">firstName</span> = <span class="string">"first_name"</span>
+        <span class="keyword">case</span> <span class="property">lastName</span> = <span class="string">"last_name"</span>
+        <span class="keyword">case</span> <span class="property">createdAt</span> = <span class="string">"created_at"</span>
+    }
+}</code></pre>
+                </div>
+            </div>
+
+            <div class="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-xl p-6 mb-6">
+                <h4 class="font-semibold text-green-900 dark:text-green-100 mb-2">Автоматическое преобразование snake_case</h4>
+                <pre class="!bg-green-900/30"><code><span class="comment">// Вместо CodingKeys можно настроить decoder</span>
+<span class="keyword">let</span> <span class="property">decoder</span> = <span class="type">JSONDecoder</span>()
+<span class="property">decoder</span>.<span class="property">keyDecodingStrategy</span> = .<span class="property">convertFromSnakeCase</span>
+
+<span class="comment">// Теперь user_id автоматически станет userId!</span>
+<span class="keyword">struct</span> <span class="type">User</span>: <span class="type">Codable</span> {
+    <span class="keyword">let</span> <span class="property">userId</span>: <span class="type">Int</span>       <span class="comment">// из user_id</span>
+    <span class="keyword">let</span> <span class="property">firstName</span>: <span class="type">String</span> <span class="comment">// из first_name</span>
+}</code></pre>
+            </div>
+
+            <h3 class="text-lg font-semibold text-zinc-800 dark:text-zinc-200 mb-4">Зарезервированные слова</h3>
+            <pre><code><span class="comment">// JSON с ключом "description" или "class"</span>
+{
+  <span class="json-key">"id"</span>: <span class="json-number">1</span>,
+  <span class="json-key">"description"</span>: <span class="json-string">"Product info"</span>,
+  <span class="json-key">"class"</span>: <span class="json-string">"electronics"</span>
+}
+
+<span class="keyword">struct</span> <span class="type">Product</span>: <span class="type">Codable</span> {
+    <span class="keyword">let</span> <span class="property">id</span>: <span class="type">Int</span>
+    <span class="keyword">let</span> <span class="property">productDescription</span>: <span class="type">String</span>  <span class="comment">// переименовали</span>
+    <span class="keyword">let</span> <span class="property">productClass</span>: <span class="type">String</span>        <span class="comment">// переименовали</span>
+
+    <span class="keyword">enum</span> <span class="type">CodingKeys</span>: <span class="type">String</span>, <span class="type">CodingKey</span> {
+        <span class="keyword">case</span> <span class="property">id</span>
+        <span class="keyword">case</span> <span class="property">productDescription</span> = <span class="string">"description"</span>
+        <span class="keyword">case</span> <span class="property">productClass</span> = <span class="string">"class"</span>
+    }
+}</code></pre>
+        </section>
+
+        <!-- Section 6: Optionals -->
+        <section id="optionals" class="mb-16">
+            <h2 class="text-2xl font-bold text-zinc-900 dark:text-white mb-6">6. Опциональные поля</h2>
+
+            <div class="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-xl p-6 mb-6">
+                <h4 class="font-semibold text-red-900 dark:text-red-100 mb-2">Проблема</h4>
+                <p class="text-red-800 dark:text-red-200">
+                    Если в JSON отсутствует поле, которое объявлено как обязательное в модели —
+                    парсинг упадёт с ошибкой!
+                </p>
+            </div>
+
+            <h3 class="text-lg font-semibold text-zinc-800 dark:text-zinc-200 mb-4">Решение: Optional типы</h3>
+            <div class="grid md:grid-cols-2 gap-6 mb-6">
+                <div>
+                    <h4 class="font-semibold text-zinc-700 dark:text-zinc-300 mb-2">JSON (поле может отсутствовать)</h4>
+                    <pre><code><span class="comment">// Иногда есть discount</span>
+{
+  <span class="json-key">"id"</span>: <span class="json-number">1</span>,
+  <span class="json-key">"price"</span>: <span class="json-number">100</span>,
+  <span class="json-key">"discount"</span>: <span class="json-number">10</span>
+}
+
+<span class="comment">// Иногда нет</span>
+{
+  <span class="json-key">"id"</span>: <span class="json-number">2</span>,
+  <span class="json-key">"price"</span>: <span class="json-number">200</span>
+}</code></pre>
+                </div>
+                <div>
+                    <h4 class="font-semibold text-zinc-700 dark:text-zinc-300 mb-2">Swift Model</h4>
+                    <pre><code><span class="keyword">struct</span> <span class="type">Product</span>: <span class="type">Codable</span> {
+    <span class="keyword">let</span> <span class="property">id</span>: <span class="type">Int</span>
+    <span class="keyword">let</span> <span class="property">price</span>: <span class="type">Double</span>
+    <span class="keyword">let</span> <span class="property">discount</span>: <span class="type">Double?</span> <span class="comment">// Optional!</span>
+}
+
+<span class="comment">// Использование</span>
+<span class="keyword">if let</span> discount = product.<span class="property">discount</span> {
+    print(<span class="string">"Скидка: \(discount)%"</span>)
+} <span class="keyword">else</span> {
+    print(<span class="string">"Без скидки"</span>)
+}</code></pre>
+                </div>
+            </div>
+
+            <h3 class="text-lg font-semibold text-zinc-800 dark:text-zinc-200 mb-4">Значения по умолчанию</h3>
+            <pre><code><span class="keyword">struct</span> <span class="type">Product</span>: <span class="type">Codable</span> {
+    <span class="keyword">let</span> <span class="property">id</span>: <span class="type">Int</span>
+    <span class="keyword">let</span> <span class="property">price</span>: <span class="type">Double</span>
+    <span class="keyword">var</span> <span class="property">discount</span>: <span class="type">Double</span>  <span class="comment">// НЕ optional</span>
+
+    <span class="keyword">init</span>(from decoder: <span class="type">Decoder</span>) <span class="keyword">throws</span> {
+        <span class="keyword">let</span> container = <span class="keyword">try</span> decoder.container(keyedBy: <span class="type">CodingKeys</span>.<span class="keyword">self</span>)
+        <span class="property">id</span> = <span class="keyword">try</span> container.decode(<span class="type">Int</span>.<span class="keyword">self</span>, forKey: .<span class="property">id</span>)
+        <span class="property">price</span> = <span class="keyword">try</span> container.decode(<span class="type">Double</span>.<span class="keyword">self</span>, forKey: .<span class="property">price</span>)
+        <span class="comment">// Значение по умолчанию = 0</span>
+        <span class="property">discount</span> = <span class="keyword">try</span> container.decodeIfPresent(<span class="type">Double</span>.<span class="keyword">self</span>, forKey: .<span class="property">discount</span>) ?? <span class="number">0</span>
+    }
+}</code></pre>
+
+            <h3 class="text-lg font-semibold text-zinc-800 dark:text-zinc-200 mb-4 mt-8">null в JSON</h3>
+            <pre><code><span class="comment">// JSON с null</span>
+{
+  <span class="json-key">"name"</span>: <span class="json-string">"Product"</span>,
+  <span class="json-key">"description"</span>: <span class="json-bool">null</span>
+}
+
+<span class="comment">// Swift - null автоматически станет nil для Optional</span>
+<span class="keyword">struct</span> <span class="type">Product</span>: <span class="type">Codable</span> {
+    <span class="keyword">let</span> <span class="property">name</span>: <span class="type">String</span>
+    <span class="keyword">let</span> <span class="property">description</span>: <span class="type">String?</span>  <span class="comment">// будет nil</span>
+}</code></pre>
+        </section>
+
+        <!-- Section 7: Dates -->
+        <section id="dates" class="mb-16">
+            <h2 class="text-2xl font-bold text-zinc-900 dark:text-white mb-6">7. Парсинг дат</h2>
+
+            <div class="space-y-6">
+                <div>
+                    <h3 class="text-lg font-semibold text-zinc-800 dark:text-zinc-200 mb-4">ISO 8601 формат</h3>
+                    <pre><code><span class="comment">// JSON: "2024-01-15T10:30:00Z"</span>
+<span class="keyword">let</span> <span class="property">decoder</span> = <span class="type">JSONDecoder</span>()
+<span class="property">decoder</span>.<span class="property">dateDecodingStrategy</span> = .<span class="property">iso8601</span>
+
+<span class="keyword">struct</span> <span class="type">Event</span>: <span class="type">Codable</span> {
+    <span class="keyword">let</span> <span class="property">title</span>: <span class="type">String</span>
+    <span class="keyword">let</span> <span class="property">createdAt</span>: <span class="type">Date</span>  <span class="comment">// Автоматически распарсится</span>
+}</code></pre>
+                </div>
+
+                <div>
+                    <h3 class="text-lg font-semibold text-zinc-800 dark:text-zinc-200 mb-4">Unix timestamp (секунды)</h3>
+                    <pre><code><span class="comment">// JSON: 1705312200</span>
+<span class="property">decoder</span>.<span class="property">dateDecodingStrategy</span> = .<span class="property">secondsSince1970</span></code></pre>
+                </div>
+
+                <div>
+                    <h3 class="text-lg font-semibold text-zinc-800 dark:text-zinc-200 mb-4">Unix timestamp (миллисекунды)</h3>
+                    <pre><code><span class="comment">// JSON: 1705312200000</span>
+<span class="property">decoder</span>.<span class="property">dateDecodingStrategy</span> = .<span class="property">millisecondsSince1970</span></code></pre>
+                </div>
+
+                <div>
+                    <h3 class="text-lg font-semibold text-zinc-800 dark:text-zinc-200 mb-4">Кастомный формат</h3>
+                    <pre><code><span class="comment">// JSON: "15.01.2024" или "January 15, 2024"</span>
+<span class="keyword">let</span> <span class="property">formatter</span> = <span class="type">DateFormatter</span>()
+<span class="property">formatter</span>.<span class="property">dateFormat</span> = <span class="string">"dd.MM.yyyy"</span>  <span class="comment">// или другой формат</span>
+<span class="property">formatter</span>.<span class="property">locale</span> = <span class="type">Locale</span>(identifier: <span class="string">"ru_RU"</span>)
+
+<span class="property">decoder</span>.<span class="property">dateDecodingStrategy</span> = .<span class="property">formatted</span>(<span class="property">formatter</span>)</code></pre>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 8: Complex Structures -->
+        <section id="complex" class="mb-16">
+            <h2 class="text-2xl font-bold text-zinc-900 dark:text-white mb-6">8. Сложные структуры</h2>
+
+            <h3 class="text-lg font-semibold text-zinc-800 dark:text-zinc-200 mb-4">Реальный пример: DummyJSON API</h3>
+
+            <pre class="mb-6"><code><span class="comment">// Реальный ответ от https://dummyjson.com/products/1</span>
+{
+  <span class="json-key">"id"</span>: <span class="json-number">1</span>,
+  <span class="json-key">"title"</span>: <span class="json-string">"iPhone 9"</span>,
+  <span class="json-key">"description"</span>: <span class="json-string">"An apple mobile..."</span>,
+  <span class="json-key">"price"</span>: <span class="json-number">549</span>,
+  <span class="json-key">"discountPercentage"</span>: <span class="json-number">12.96</span>,
+  <span class="json-key">"rating"</span>: <span class="json-number">4.69</span>,
+  <span class="json-key">"stock"</span>: <span class="json-number">94</span>,
+  <span class="json-key">"brand"</span>: <span class="json-string">"Apple"</span>,
+  <span class="json-key">"category"</span>: <span class="json-string">"smartphones"</span>,
+  <span class="json-key">"thumbnail"</span>: <span class="json-string">"https://..."</span>,
+  <span class="json-key">"images"</span>: [<span class="json-string">"https://..."</span>, <span class="json-string">"https://..."</span>],
+  <span class="json-key">"reviews"</span>: [
+    {
+      <span class="json-key">"rating"</span>: <span class="json-number">5</span>,
+      <span class="json-key">"comment"</span>: <span class="json-string">"Great!"</span>,
+      <span class="json-key">"date"</span>: <span class="json-string">"2024-01-15"</span>,
+      <span class="json-key">"reviewerName"</span>: <span class="json-string">"John"</span>
+    }
+  ],
+  <span class="json-key">"meta"</span>: {
+    <span class="json-key">"createdAt"</span>: <span class="json-string">"2024-01-15T10:00:00Z"</span>,
+    <span class="json-key">"updatedAt"</span>: <span class="json-string">"2024-01-16T10:00:00Z"</span>,
+    <span class="json-key">"barcode"</span>: <span class="json-string">"1234567890"</span>
+  }
+}</code></pre>
+
+            <pre><code><span class="comment">// Swift модели</span>
+
+<span class="keyword">struct</span> <span class="type">Review</span>: <span class="type">Codable</span> {
+    <span class="keyword">let</span> <span class="property">rating</span>: <span class="type">Int</span>
+    <span class="keyword">let</span> <span class="property">comment</span>: <span class="type">String</span>
+    <span class="keyword">let</span> <span class="property">date</span>: <span class="type">String</span>
+    <span class="keyword">let</span> <span class="property">reviewerName</span>: <span class="type">String</span>
+}
+
+<span class="keyword">struct</span> <span class="type">ProductMeta</span>: <span class="type">Codable</span> {
+    <span class="keyword">let</span> <span class="property">createdAt</span>: <span class="type">String</span>
+    <span class="keyword">let</span> <span class="property">updatedAt</span>: <span class="type">String</span>
+    <span class="keyword">let</span> <span class="property">barcode</span>: <span class="type">String</span>
+}
+
+<span class="keyword">struct</span> <span class="type">Product</span>: <span class="type">Codable</span>, <span class="type">Identifiable</span> {
+    <span class="keyword">let</span> <span class="property">id</span>: <span class="type">Int</span>
+    <span class="keyword">let</span> <span class="property">title</span>: <span class="type">String</span>
+    <span class="keyword">let</span> <span class="property">description</span>: <span class="type">String</span>
+    <span class="keyword">let</span> <span class="property">price</span>: <span class="type">Double</span>
+    <span class="keyword">let</span> <span class="property">discountPercentage</span>: <span class="type">Double</span>
+    <span class="keyword">let</span> <span class="property">rating</span>: <span class="type">Double</span>
+    <span class="keyword">let</span> <span class="property">stock</span>: <span class="type">Int</span>
+    <span class="keyword">let</span> <span class="property">brand</span>: <span class="type">String?</span>           <span class="comment">// может отсутствовать</span>
+    <span class="keyword">let</span> <span class="property">category</span>: <span class="type">String</span>
+    <span class="keyword">let</span> <span class="property">thumbnail</span>: <span class="type">String</span>
+    <span class="keyword">let</span> <span class="property">images</span>: [<span class="type">String</span>]
+    <span class="keyword">let</span> <span class="property">reviews</span>: [<span class="type">Review</span>]?       <span class="comment">// может отсутствовать</span>
+    <span class="keyword">let</span> <span class="property">meta</span>: <span class="type">ProductMeta</span>?       <span class="comment">// может отсутствовать</span>
+}
+
+<span class="comment">// Ответ со списком продуктов</span>
+<span class="keyword">struct</span> <span class="type">ProductsResponse</span>: <span class="type">Codable</span> {
+    <span class="keyword">let</span> <span class="property">products</span>: [<span class="type">Product</span>]
+    <span class="keyword">let</span> <span class="property">total</span>: <span class="type">Int</span>
+    <span class="keyword">let</span> <span class="property">skip</span>: <span class="type">Int</span>
+    <span class="keyword">let</span> <span class="property">limit</span>: <span class="type">Int</span>
+}</code></pre>
+
+            <h3 class="text-lg font-semibold text-zinc-800 dark:text-zinc-200 mb-4 mt-8">Enum для фиксированных значений</h3>
+            <pre><code><span class="comment">// Если category имеет фиксированные значения</span>
+<span class="keyword">enum</span> <span class="type">Category</span>: <span class="type">String</span>, <span class="type">Codable</span> {
+    <span class="keyword">case</span> <span class="property">smartphones</span>
+    <span class="keyword">case</span> <span class="property">laptops</span>
+    <span class="keyword">case</span> <span class="property">fragrances</span>
+    <span class="keyword">case</span> <span class="property">skincare</span>
+    <span class="keyword">case</span> <span class="property">groceries</span>
+}
+
+<span class="keyword">struct</span> <span class="type">Product</span>: <span class="type">Codable</span> {
+    <span class="keyword">let</span> <span class="property">id</span>: <span class="type">Int</span>
+    <span class="keyword">let</span> <span class="property">title</span>: <span class="type">String</span>
+    <span class="keyword">let</span> <span class="property">category</span>: <span class="type">Category</span>  <span class="comment">// Enum вместо String</span>
+}</code></pre>
+        </section>
+
+        <!-- Section 9: Error Handling -->
+        <section id="errors" class="mb-16">
+            <h2 class="text-2xl font-bold text-zinc-900 dark:text-white mb-6">9. Обработка ошибок парсинга</h2>
+
+            <pre class="mb-6"><code><span class="keyword">do</span> {
+    <span class="keyword">let</span> <span class="property">product</span> = <span class="keyword">try</span> decoder.decode(<span class="type">Product</span>.<span class="keyword">self</span>, from: data)
+    print(<span class="string">"Успех: \(product.title)"</span>)
+} <span class="keyword">catch</span> <span class="type">DecodingError</span>.<span class="property">keyNotFound</span>(<span class="keyword">let</span> key, <span class="keyword">let</span> context) {
+    print(<span class="string">"Отсутствует ключ: \(key.stringValue)"</span>)
+    print(<span class="string">"Путь: \(context.codingPath)"</span>)
+
+} <span class="keyword">catch</span> <span class="type">DecodingError</span>.<span class="property">typeMismatch</span>(<span class="keyword">let</span> type, <span class="keyword">let</span> context) {
+    print(<span class="string">"Неверный тип. Ожидался: \(type)"</span>)
+    print(<span class="string">"Путь: \(context.codingPath)"</span>)
+
+} <span class="keyword">catch</span> <span class="type">DecodingError</span>.<span class="property">valueNotFound</span>(<span class="keyword">let</span> type, <span class="keyword">let</span> context) {
+    print(<span class="string">"Значение nil для non-optional типа: \(type)"</span>)
+
+} <span class="keyword">catch</span> <span class="type">DecodingError</span>.<span class="property">dataCorrupted</span>(<span class="keyword">let</span> context) {
+    print(<span class="string">"Повреждённые данные: \(context.debugDescription)"</span>)
+
+} <span class="keyword">catch</span> {
+    print(<span class="string">"Неизвестная ошибка: \(error)"</span>)
+}</code></pre>
+
+            <div class="bg-zinc-100 dark:bg-zinc-800 rounded-xl p-6">
+                <h4 class="font-semibold text-zinc-900 dark:text-white mb-4">Частые ошибки и их причины</h4>
+                <table class="w-full text-sm">
+                    <thead>
+                        <tr class="text-left border-b border-zinc-300 dark:border-zinc-600">
+                            <th class="pb-2">Ошибка</th>
+                            <th class="pb-2">Причина</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-zinc-700 dark:text-zinc-300">
+                        <tr class="border-b border-zinc-200 dark:border-zinc-700">
+                            <td class="py-2"><code>keyNotFound</code></td>
+                            <td>В JSON нет ключа, который есть в модели (и он не Optional)</td>
+                        </tr>
+                        <tr class="border-b border-zinc-200 dark:border-zinc-700">
+                            <td class="py-2"><code>typeMismatch</code></td>
+                            <td>Тип в JSON не соответствует типу в модели (String вместо Int)</td>
+                        </tr>
+                        <tr class="border-b border-zinc-200 dark:border-zinc-700">
+                            <td class="py-2"><code>valueNotFound</code></td>
+                            <td>В JSON null, но в модели тип не Optional</td>
+                        </tr>
+                        <tr>
+                            <td class="py-2"><code>dataCorrupted</code></td>
+                            <td>JSON невалидный или не соответствует ожидаемой структуре</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Section 10: Real API Examples -->
+        <section id="real-api" class="mb-16">
+            <h2 class="text-2xl font-bold text-zinc-900 dark:text-white mb-6">10. Реальные примеры API</h2>
+
+            <h3 class="text-lg font-semibold text-zinc-800 dark:text-zinc-200 mb-4">Полный пример с URLSession</h3>
+            <pre><code><span class="keyword">class</span> <span class="type">APIService</span> {
+    <span class="keyword">private let</span> <span class="property">decoder</span>: <span class="type">JSONDecoder</span> = {
+        <span class="keyword">let</span> decoder = <span class="type">JSONDecoder</span>()
+        decoder.<span class="property">keyDecodingStrategy</span> = .<span class="property">convertFromSnakeCase</span>
+        <span class="keyword">return</span> decoder
+    }()
+
+    <span class="keyword">func</span> fetchProducts() <span class="keyword">async throws</span> -> [<span class="type">Product</span>] {
+        <span class="keyword">let</span> url = <span class="type">URL</span>(string: <span class="string">"https://dummyjson.com/products"</span>)!
+
+        <span class="comment">// 1. Загружаем данные</span>
+        <span class="keyword">let</span> (data, response) = <span class="keyword">try await</span> <span class="type">URLSession</span>.<span class="property">shared</span>.data(from: url)
+
+        <span class="comment">// 2. Проверяем статус</span>
+        <span class="keyword">guard let</span> httpResponse = response <span class="keyword">as?</span> <span class="type">HTTPURLResponse</span>,
+              httpResponse.<span class="property">statusCode</span> == <span class="number">200</span> <span class="keyword">else</span> {
+            <span class="keyword">throw</span> <span class="type">URLError</span>(.<span class="property">badServerResponse</span>)
+        }
+
+        <span class="comment">// 3. Декодируем JSON</span>
+        <span class="keyword">let</span> response = <span class="keyword">try</span> <span class="property">decoder</span>.decode(<span class="type">ProductsResponse</span>.<span class="keyword">self</span>, from: data)
+
+        <span class="keyword">return</span> response.<span class="property">products</span>
+    }
+}
+
+<span class="comment">// Использование в SwiftUI</span>
+<span class="keyword">struct</span> <span class="type">ContentView</span>: <span class="type">View</span> {
+    @<span class="type">State</span> <span class="keyword">private var</span> <span class="property">products</span>: [<span class="type">Product</span>] = []
+    @<span class="type">State</span> <span class="keyword">private var</span> <span class="property">error</span>: <span class="type">String</span>?
+
+    <span class="keyword">var</span> <span class="property">body</span>: <span class="keyword">some</span> <span class="type">View</span> {
+        <span class="type">List</span>(<span class="property">products</span>) { product <span class="keyword">in</span>
+            <span class="type">Text</span>(product.<span class="property">title</span>)
+        }
+        .task {
+            <span class="keyword">do</span> {
+                <span class="property">products</span> = <span class="keyword">try await</span> <span class="type">APIService</span>().fetchProducts()
+            } <span class="keyword">catch</span> {
+                <span class="keyword">self</span>.<span class="property">error</span> = error.<span class="property">localizedDescription</span>
+            }
+        }
+    }
+}</code></pre>
+
+            <h3 class="text-lg font-semibold text-zinc-800 dark:text-zinc-200 mb-4 mt-8">Generic метод для любых моделей</h3>
+            <pre><code><span class="keyword">class</span> <span class="type">APIService</span> {
+    <span class="keyword">func</span> fetch&lt;<span class="type">T</span>: <span class="type">Decodable</span>&gt;(from urlString: <span class="type">String</span>) <span class="keyword">async throws</span> -> <span class="type">T</span> {
+        <span class="keyword">guard let</span> url = <span class="type">URL</span>(string: urlString) <span class="keyword">else</span> {
+            <span class="keyword">throw</span> <span class="type">URLError</span>(.<span class="property">badURL</span>)
+        }
+
+        <span class="keyword">let</span> (data, _) = <span class="keyword">try await</span> <span class="type">URLSession</span>.<span class="property">shared</span>.data(from: url)
+        <span class="keyword">return try</span> <span class="type">JSONDecoder</span>().decode(<span class="type">T</span>.<span class="keyword">self</span>, from: data)
+    }
+}
+
+<span class="comment">// Использование</span>
+<span class="keyword">let</span> api = <span class="type">APIService</span>()
+
+<span class="comment">// Получаем один продукт</span>
+<span class="keyword">let</span> product: <span class="type">Product</span> = <span class="keyword">try await</span> api.fetch(from: <span class="string">"https://dummyjson.com/products/1"</span>)
+
+<span class="comment">// Получаем список</span>
+<span class="keyword">let</span> response: <span class="type">ProductsResponse</span> = <span class="keyword">try await</span> api.fetch(from: <span class="string">"https://dummyjson.com/products"</span>)</code></pre>
+        </section>
+
+        <!-- Section 11: Exercises -->
+        <section id="exercises" class="mb-16">
+            <h2 class="text-2xl font-bold text-zinc-900 dark:text-white mb-6">11. Упражнения</h2>
+
+            <!-- Exercise 1 -->
+            <div class="exercise bg-zinc-50 dark:bg-zinc-800 rounded-xl p-6 mb-6">
+                <div class="flex items-center gap-3 mb-4">
+                    <span class="difficulty-easy px-2 py-1 rounded text-xs font-medium">Easy</span>
+                    <h3 class="text-lg font-semibold text-zinc-900 dark:text-white">Упражнение 1: Простой объект</h3>
+                </div>
+
+                <p class="text-zinc-600 dark:text-zinc-400 mb-4">Создайте модель для парсинга этого JSON:</p>
+
+                <pre class="mb-4"><code>{
+  <span class="json-key">"id"</span>: <span class="json-number">42</span>,
+  <span class="json-key">"username"</span>: <span class="json-string">"swift_dev"</span>,
+  <span class="json-key">"email"</span>: <span class="json-string">"dev@example.com"</span>,
+  <span class="json-key">"isActive"</span>: <span class="json-bool">true</span>
+}</code></pre>
+
+                <button onclick="toggleAnswer(this)" class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition">
+                    Показать ответ
+                </button>
+
+                <div class="answer mt-4">
+                    <pre><code><span class="keyword">struct</span> <span class="type">User</span>: <span class="type">Codable</span> {
+    <span class="keyword">let</span> <span class="property">id</span>: <span class="type">Int</span>
+    <span class="keyword">let</span> <span class="property">username</span>: <span class="type">String</span>
+    <span class="keyword">let</span> <span class="property">email</span>: <span class="type">String</span>
+    <span class="keyword">let</span> <span class="property">isActive</span>: <span class="type">Bool</span>
+}
+
+<span class="comment">// Парсинг</span>
+<span class="keyword">let</span> user = <span class="keyword">try</span> <span class="type">JSONDecoder</span>().decode(<span class="type">User</span>.<span class="keyword">self</span>, from: jsonData)</code></pre>
+                </div>
+            </div>
+
+            <!-- Exercise 2 -->
+            <div class="exercise bg-zinc-50 dark:bg-zinc-800 rounded-xl p-6 mb-6">
+                <div class="flex items-center gap-3 mb-4">
+                    <span class="difficulty-easy px-2 py-1 rounded text-xs font-medium">Easy</span>
+                    <h3 class="text-lg font-semibold text-zinc-900 dark:text-white">Упражнение 2: Массив объектов</h3>
+                </div>
+
+                <p class="text-zinc-600 dark:text-zinc-400 mb-4">Создайте модель и напишите код парсинга:</p>
+
+                <pre class="mb-4"><code>[
+  { <span class="json-key">"name"</span>: <span class="json-string">"Almaty"</span>, <span class="json-key">"population"</span>: <span class="json-number">2000000</span> },
+  { <span class="json-key">"name"</span>: <span class="json-string">"Astana"</span>, <span class="json-key">"population"</span>: <span class="json-number">1200000</span> },
+  { <span class="json-key">"name"</span>: <span class="json-string">"Shymkent"</span>, <span class="json-key">"population"</span>: <span class="json-number">1000000</span> }
+]</code></pre>
+
+                <button onclick="toggleAnswer(this)" class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition">
+                    Показать ответ
+                </button>
+
+                <div class="answer mt-4">
+                    <pre><code><span class="keyword">struct</span> <span class="type">City</span>: <span class="type">Codable</span> {
+    <span class="keyword">let</span> <span class="property">name</span>: <span class="type">String</span>
+    <span class="keyword">let</span> <span class="property">population</span>: <span class="type">Int</span>
+}
+
+<span class="comment">// Парсинг массива</span>
+<span class="keyword">let</span> cities = <span class="keyword">try</span> <span class="type">JSONDecoder</span>().decode([<span class="type">City</span>].<span class="keyword">self</span>, from: jsonData)
+
+<span class="comment">// Использование</span>
+<span class="keyword">for</span> city <span class="keyword">in</span> cities {
+    print(<span class="string">"\(city.name): \(city.population)"</span>)
+}</code></pre>
+                </div>
+            </div>
+
+            <!-- Exercise 3 -->
+            <div class="exercise bg-zinc-50 dark:bg-zinc-800 rounded-xl p-6 mb-6">
+                <div class="flex items-center gap-3 mb-4">
+                    <span class="difficulty-medium px-2 py-1 rounded text-xs font-medium">Medium</span>
+                    <h3 class="text-lg font-semibold text-zinc-900 dark:text-white">Упражнение 3: snake_case ключи</h3>
+                </div>
+
+                <p class="text-zinc-600 dark:text-zinc-400 mb-4">Создайте модель с CodingKeys:</p>
+
+                <pre class="mb-4"><code>{
+  <span class="json-key">"user_id"</span>: <span class="json-number">100</span>,
+  <span class="json-key">"full_name"</span>: <span class="json-string">"Иван Петров"</span>,
+  <span class="json-key">"phone_number"</span>: <span class="json-string">"+7 777 123 4567"</span>,
+  <span class="json-key">"registered_at"</span>: <span class="json-string">"2024-01-15"</span>
+}</code></pre>
+
+                <button onclick="toggleAnswer(this)" class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition">
+                    Показать ответ
+                </button>
+
+                <div class="answer mt-4">
+                    <h4 class="font-medium text-zinc-700 dark:text-zinc-300 mb-2">Способ 1: CodingKeys</h4>
+                    <pre class="mb-4"><code><span class="keyword">struct</span> <span class="type">User</span>: <span class="type">Codable</span> {
+    <span class="keyword">let</span> <span class="property">userId</span>: <span class="type">Int</span>
+    <span class="keyword">let</span> <span class="property">fullName</span>: <span class="type">String</span>
+    <span class="keyword">let</span> <span class="property">phoneNumber</span>: <span class="type">String</span>
+    <span class="keyword">let</span> <span class="property">registeredAt</span>: <span class="type">String</span>
+
+    <span class="keyword">enum</span> <span class="type">CodingKeys</span>: <span class="type">String</span>, <span class="type">CodingKey</span> {
+        <span class="keyword">case</span> <span class="property">userId</span> = <span class="string">"user_id"</span>
+        <span class="keyword">case</span> <span class="property">fullName</span> = <span class="string">"full_name"</span>
+        <span class="keyword">case</span> <span class="property">phoneNumber</span> = <span class="string">"phone_number"</span>
+        <span class="keyword">case</span> <span class="property">registeredAt</span> = <span class="string">"registered_at"</span>
+    }
+}</code></pre>
+
+                    <h4 class="font-medium text-zinc-700 dark:text-zinc-300 mb-2">Способ 2: Автоматическое преобразование (проще!)</h4>
+                    <pre><code><span class="keyword">struct</span> <span class="type">User</span>: <span class="type">Codable</span> {
+    <span class="keyword">let</span> <span class="property">userId</span>: <span class="type">Int</span>
+    <span class="keyword">let</span> <span class="property">fullName</span>: <span class="type">String</span>
+    <span class="keyword">let</span> <span class="property">phoneNumber</span>: <span class="type">String</span>
+    <span class="keyword">let</span> <span class="property">registeredAt</span>: <span class="type">String</span>
+}
+
+<span class="keyword">let</span> decoder = <span class="type">JSONDecoder</span>()
+decoder.<span class="property">keyDecodingStrategy</span> = .<span class="property">convertFromSnakeCase</span>
+<span class="keyword">let</span> user = <span class="keyword">try</span> decoder.decode(<span class="type">User</span>.<span class="keyword">self</span>, from: jsonData)</code></pre>
+                </div>
+            </div>
+
+            <!-- Exercise 4 -->
+            <div class="exercise bg-zinc-50 dark:bg-zinc-800 rounded-xl p-6 mb-6">
+                <div class="flex items-center gap-3 mb-4">
+                    <span class="difficulty-medium px-2 py-1 rounded text-xs font-medium">Medium</span>
+                    <h3 class="text-lg font-semibold text-zinc-900 dark:text-white">Упражнение 4: Вложенные объекты</h3>
+                </div>
+
+                <p class="text-zinc-600 dark:text-zinc-400 mb-4">Создайте модели для парсинга:</p>
+
+                <pre class="mb-4"><code>{
+  <span class="json-key">"orderId"</span>: <span class="json-string">"ORD-12345"</span>,
+  <span class="json-key">"total"</span>: <span class="json-number">15000</span>,
+  <span class="json-key">"customer"</span>: {
+    <span class="json-key">"name"</span>: <span class="json-string">"Алия"</span>,
+    <span class="json-key">"email"</span>: <span class="json-string">"aliya@mail.kz"</span>
+  },
+  <span class="json-key">"items"</span>: [
+    { <span class="json-key">"name"</span>: <span class="json-string">"iPhone"</span>, <span class="json-key">"qty"</span>: <span class="json-number">1</span>, <span class="json-key">"price"</span>: <span class="json-number">10000</span> },
+    { <span class="json-key">"name"</span>: <span class="json-string">"Case"</span>, <span class="json-key">"qty"</span>: <span class="json-number">2</span>, <span class="json-key">"price"</span>: <span class="json-number">2500</span> }
+  ]
+}</code></pre>
+
+                <button onclick="toggleAnswer(this)" class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition">
+                    Показать ответ
+                </button>
+
+                <div class="answer mt-4">
+                    <pre><code><span class="keyword">struct</span> <span class="type">Customer</span>: <span class="type">Codable</span> {
+    <span class="keyword">let</span> <span class="property">name</span>: <span class="type">String</span>
+    <span class="keyword">let</span> <span class="property">email</span>: <span class="type">String</span>
+}
+
+<span class="keyword">struct</span> <span class="type">OrderItem</span>: <span class="type">Codable</span> {
+    <span class="keyword">let</span> <span class="property">name</span>: <span class="type">String</span>
+    <span class="keyword">let</span> <span class="property">qty</span>: <span class="type">Int</span>
+    <span class="keyword">let</span> <span class="property">price</span>: <span class="type">Int</span>
+}
+
+<span class="keyword">struct</span> <span class="type">Order</span>: <span class="type">Codable</span> {
+    <span class="keyword">let</span> <span class="property">orderId</span>: <span class="type">String</span>
+    <span class="keyword">let</span> <span class="property">total</span>: <span class="type">Int</span>
+    <span class="keyword">let</span> <span class="property">customer</span>: <span class="type">Customer</span>
+    <span class="keyword">let</span> <span class="property">items</span>: [<span class="type">OrderItem</span>]
+}
+
+<span class="comment">// Парсинг</span>
+<span class="keyword">let</span> order = <span class="keyword">try</span> <span class="type">JSONDecoder</span>().decode(<span class="type">Order</span>.<span class="keyword">self</span>, from: jsonData)
+
+<span class="comment">// Использование</span>
+print(<span class="string">"Заказ: \(order.orderId)"</span>)
+print(<span class="string">"Клиент: \(order.customer.name)"</span>)
+print(<span class="string">"Товаров: \(order.items.count)"</span>)</code></pre>
+                </div>
+            </div>
+
+            <!-- Exercise 5 -->
+            <div class="exercise bg-zinc-50 dark:bg-zinc-800 rounded-xl p-6 mb-6">
+                <div class="flex items-center gap-3 mb-4">
+                    <span class="difficulty-medium px-2 py-1 rounded text-xs font-medium">Medium</span>
+                    <h3 class="text-lg font-semibold text-zinc-900 dark:text-white">Упражнение 5: Опциональные поля</h3>
+                </div>
+
+                <p class="text-zinc-600 dark:text-zinc-400 mb-4">Создайте модель, которая корректно парсит ОБА этих JSON:</p>
+
+                <pre class="mb-4"><code><span class="comment">// JSON 1 - все поля есть</span>
+{
+  <span class="json-key">"id"</span>: <span class="json-number">1</span>,
+  <span class="json-key">"title"</span>: <span class="json-string">"Product A"</span>,
+  <span class="json-key">"description"</span>: <span class="json-string">"Great product"</span>,
+  <span class="json-key">"discount"</span>: <span class="json-number">15</span>,
+  <span class="json-key">"tags"</span>: [<span class="json-string">"new"</span>, <span class="json-string">"sale"</span>]
+}
+
+<span class="comment">// JSON 2 - некоторые поля отсутствуют</span>
+{
+  <span class="json-key">"id"</span>: <span class="json-number">2</span>,
+  <span class="json-key">"title"</span>: <span class="json-string">"Product B"</span>
+}</code></pre>
+
+                <button onclick="toggleAnswer(this)" class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition">
+                    Показать ответ
+                </button>
+
+                <div class="answer mt-4">
+                    <pre><code><span class="keyword">struct</span> <span class="type">Product</span>: <span class="type">Codable</span> {
+    <span class="keyword">let</span> <span class="property">id</span>: <span class="type">Int</span>
+    <span class="keyword">let</span> <span class="property">title</span>: <span class="type">String</span>
+    <span class="keyword">let</span> <span class="property">description</span>: <span class="type">String?</span>   <span class="comment">// Optional</span>
+    <span class="keyword">let</span> <span class="property">discount</span>: <span class="type">Int?</span>         <span class="comment">// Optional</span>
+    <span class="keyword">let</span> <span class="property">tags</span>: [<span class="type">String</span>]?        <span class="comment">// Optional</span>
+}
+
+<span class="comment">// Парсинг - работает для обоих JSON</span>
+<span class="keyword">let</span> product1 = <span class="keyword">try</span> decoder.decode(<span class="type">Product</span>.<span class="keyword">self</span>, from: json1Data)
+<span class="keyword">let</span> product2 = <span class="keyword">try</span> decoder.decode(<span class="type">Product</span>.<span class="keyword">self</span>, from: json2Data)
+
+<span class="comment">// Безопасное использование</span>
+<span class="keyword">if let</span> discount = product.<span class="property">discount</span> {
+    print(<span class="string">"Скидка: \(discount)%"</span>)
+}
+
+<span class="keyword">let</span> tagsCount = product.<span class="property">tags</span>?.<span class="property">count</span> ?? <span class="number">0</span>
+print(<span class="string">"Тегов: \(tagsCount)"</span>)</code></pre>
+                </div>
+            </div>
+
+            <!-- Exercise 6 -->
+            <div class="exercise bg-zinc-50 dark:bg-zinc-800 rounded-xl p-6 mb-6">
+                <div class="flex items-center gap-3 mb-4">
+                    <span class="difficulty-hard px-2 py-1 rounded text-xs font-medium">Hard</span>
+                    <h3 class="text-lg font-semibold text-zinc-900 dark:text-white">Упражнение 6: Сложная структура API</h3>
+                </div>
+
+                <p class="text-zinc-600 dark:text-zinc-400 mb-4">Создайте полный набор моделей для этого реального ответа API:</p>
+
+                <pre class="mb-4"><code>{
+  <span class="json-key">"success"</span>: <span class="json-bool">true</span>,
+  <span class="json-key">"data"</span>: {
+    <span class="json-key">"users"</span>: [
+      {
+        <span class="json-key">"id"</span>: <span class="json-number">1</span>,
+        <span class="json-key">"name"</span>: <span class="json-string">"Серик"</span>,
+        <span class="json-key">"role"</span>: <span class="json-string">"admin"</span>,
+        <span class="json-key">"profile"</span>: {
+          <span class="json-key">"avatar_url"</span>: <span class="json-string">"https://example.com/avatar.jpg"</span>,
+          <span class="json-key">"bio"</span>: <span class="json-string">"Swift developer"</span>
+        },
+        <span class="json-key">"permissions"</span>: [<span class="json-string">"read"</span>, <span class="json-string">"write"</span>, <span class="json-string">"delete"</span>]
+      }
+    ],
+    <span class="json-key">"pagination"</span>: {
+      <span class="json-key">"current_page"</span>: <span class="json-number">1</span>,
+      <span class="json-key">"total_pages"</span>: <span class="json-number">5</span>,
+      <span class="json-key">"per_page"</span>: <span class="json-number">20</span>
+    }
+  },
+  <span class="json-key">"meta"</span>: {
+    <span class="json-key">"request_id"</span>: <span class="json-string">"abc-123"</span>,
+    <span class="json-key">"timestamp"</span>: <span class="json-number">1705312200</span>
+  }
+}</code></pre>
+
+                <button onclick="toggleAnswer(this)" class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition">
+                    Показать ответ
+                </button>
+
+                <div class="answer mt-4">
+                    <pre><code><span class="comment">// Модели от внутренних к внешним</span>
+
+<span class="keyword">struct</span> <span class="type">UserProfile</span>: <span class="type">Codable</span> {
+    <span class="keyword">let</span> <span class="property">avatarUrl</span>: <span class="type">String</span>
+    <span class="keyword">let</span> <span class="property">bio</span>: <span class="type">String</span>?
+}
+
+<span class="keyword">enum</span> <span class="type">UserRole</span>: <span class="type">String</span>, <span class="type">Codable</span> {
+    <span class="keyword">case</span> <span class="property">admin</span>
+    <span class="keyword">case</span> <span class="property">user</span>
+    <span class="keyword">case</span> <span class="property">guest</span>
+}
+
+<span class="keyword">struct</span> <span class="type">User</span>: <span class="type">Codable</span>, <span class="type">Identifiable</span> {
+    <span class="keyword">let</span> <span class="property">id</span>: <span class="type">Int</span>
+    <span class="keyword">let</span> <span class="property">name</span>: <span class="type">String</span>
+    <span class="keyword">let</span> <span class="property">role</span>: <span class="type">UserRole</span>
+    <span class="keyword">let</span> <span class="property">profile</span>: <span class="type">UserProfile</span>
+    <span class="keyword">let</span> <span class="property">permissions</span>: [<span class="type">String</span>]
+}
+
+<span class="keyword">struct</span> <span class="type">Pagination</span>: <span class="type">Codable</span> {
+    <span class="keyword">let</span> <span class="property">currentPage</span>: <span class="type">Int</span>
+    <span class="keyword">let</span> <span class="property">totalPages</span>: <span class="type">Int</span>
+    <span class="keyword">let</span> <span class="property">perPage</span>: <span class="type">Int</span>
+}
+
+<span class="keyword">struct</span> <span class="type">UsersData</span>: <span class="type">Codable</span> {
+    <span class="keyword">let</span> <span class="property">users</span>: [<span class="type">User</span>]
+    <span class="keyword">let</span> <span class="property">pagination</span>: <span class="type">Pagination</span>
+}
+
+<span class="keyword">struct</span> <span class="type">ResponseMeta</span>: <span class="type">Codable</span> {
+    <span class="keyword">let</span> <span class="property">requestId</span>: <span class="type">String</span>
+    <span class="keyword">let</span> <span class="property">timestamp</span>: <span class="type">Int</span>
+}
+
+<span class="keyword">struct</span> <span class="type">APIResponse</span>: <span class="type">Codable</span> {
+    <span class="keyword">let</span> <span class="property">success</span>: <span class="type">Bool</span>
+    <span class="keyword">let</span> <span class="property">data</span>: <span class="type">UsersData</span>
+    <span class="keyword">let</span> <span class="property">meta</span>: <span class="type">ResponseMeta</span>
+}
+
+<span class="comment">// Парсинг с автоконвертацией snake_case</span>
+<span class="keyword">let</span> decoder = <span class="type">JSONDecoder</span>()
+decoder.<span class="property">keyDecodingStrategy</span> = .<span class="property">convertFromSnakeCase</span>
+<span class="keyword">let</span> response = <span class="keyword">try</span> decoder.decode(<span class="type">APIResponse</span>.<span class="keyword">self</span>, from: jsonData)
+
+<span class="comment">// Использование</span>
+<span class="keyword">for</span> user <span class="keyword">in</span> response.<span class="property">data</span>.<span class="property">users</span> {
+    print(<span class="string">"\(user.name) - \(user.role)"</span>)
+    print(<span class="string">"Avatar: \(user.profile.avatarUrl)"</span>)
+    print(<span class="string">"Permissions: \(user.permissions.joined(separator: \", \"))"</span>)
+}</code></pre>
+                </div>
+            </div>
+
+            <!-- Exercise 7 -->
+            <div class="exercise bg-zinc-50 dark:bg-zinc-800 rounded-xl p-6 mb-6">
+                <div class="flex items-center gap-3 mb-4">
+                    <span class="difficulty-hard px-2 py-1 rounded text-xs font-medium">Hard</span>
+                    <h3 class="text-lg font-semibold text-zinc-900 dark:text-white">Упражнение 7: Обработка ошибок</h3>
+                </div>
+
+                <p class="text-zinc-600 dark:text-zinc-400 mb-4">
+                    Напишите функцию <code>safeDecodeProducts</code>, которая:
+                </p>
+                <ul class="list-disc list-inside text-zinc-600 dark:text-zinc-400 mb-4 space-y-1">
+                    <li>Принимает Data</li>
+                    <li>Пытается распарсить как массив Product</li>
+                    <li>Возвращает Result&lt;[Product], Error&gt;</li>
+                    <li>При ошибке выводит понятное сообщение</li>
+                </ul>
+
+                <pre class="mb-4"><code><span class="keyword">struct</span> <span class="type">Product</span>: <span class="type">Codable</span> {
+    <span class="keyword">let</span> <span class="property">id</span>: <span class="type">Int</span>
+    <span class="keyword">let</span> <span class="property">name</span>: <span class="type">String</span>
+    <span class="keyword">let</span> <span class="property">price</span>: <span class="type">Double</span>
+}</code></pre>
+
+                <button onclick="toggleAnswer(this)" class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition">
+                    Показать ответ
+                </button>
+
+                <div class="answer mt-4">
+                    <pre><code><span class="keyword">enum</span> <span class="type">ParseError</span>: <span class="type">Error</span>, <span class="type">LocalizedError</span> {
+    <span class="keyword">case</span> <span class="property">missingKey</span>(<span class="type">String</span>)
+    <span class="keyword">case</span> <span class="property">wrongType</span>(<span class="property">expected</span>: <span class="type">String</span>, <span class="property">got</span>: <span class="type">String</span>)
+    <span class="keyword">case</span> <span class="property">invalidJSON</span>
+    <span class="keyword">case</span> <span class="property">unknown</span>(<span class="type">Error</span>)
+
+    <span class="keyword">var</span> <span class="property">errorDescription</span>: <span class="type">String?</span> {
+        <span class="keyword">switch self</span> {
+        <span class="keyword">case</span> .<span class="property">missingKey</span>(<span class="keyword">let</span> key):
+            <span class="keyword">return</span> <span class="string">"Отсутствует обязательное поле: \(key)"</span>
+        <span class="keyword">case</span> .<span class="property">wrongType</span>(<span class="keyword">let</span> expected, <span class="keyword">let</span> got):
+            <span class="keyword">return</span> <span class="string">"Неверный тип данных. Ожидался \(expected), получен \(got)"</span>
+        <span class="keyword">case</span> .<span class="property">invalidJSON</span>:
+            <span class="keyword">return</span> <span class="string">"Невалидный JSON"</span>
+        <span class="keyword">case</span> .<span class="property">unknown</span>(<span class="keyword">let</span> error):
+            <span class="keyword">return</span> <span class="string">"Неизвестная ошибка: \(error.localizedDescription)"</span>
+        }
+    }
+}
+
+<span class="keyword">func</span> safeDecodeProducts(from data: <span class="type">Data</span>) -> <span class="type">Result</span>&lt;[<span class="type">Product</span>], <span class="type">ParseError</span>&gt; {
+    <span class="keyword">do</span> {
+        <span class="keyword">let</span> products = <span class="keyword">try</span> <span class="type">JSONDecoder</span>().decode([<span class="type">Product</span>].<span class="keyword">self</span>, from: data)
+        <span class="keyword">return</span> .<span class="property">success</span>(products)
+    } <span class="keyword">catch</span> <span class="type">DecodingError</span>.<span class="property">keyNotFound</span>(<span class="keyword">let</span> key, _) {
+        <span class="keyword">return</span> .<span class="property">failure</span>(.<span class="property">missingKey</span>(key.<span class="property">stringValue</span>))
+    } <span class="keyword">catch</span> <span class="type">DecodingError</span>.<span class="property">typeMismatch</span>(<span class="keyword">let</span> type, _) {
+        <span class="keyword">return</span> .<span class="property">failure</span>(.<span class="property">wrongType</span>(expected: <span class="type">String</span>(describing: type), got: <span class="string">"другой тип"</span>))
+    } <span class="keyword">catch</span> <span class="type">DecodingError</span>.<span class="property">dataCorrupted</span>(_) {
+        <span class="keyword">return</span> .<span class="property">failure</span>(.<span class="property">invalidJSON</span>)
+    } <span class="keyword">catch</span> {
+        <span class="keyword">return</span> .<span class="property">failure</span>(.<span class="property">unknown</span>(error))
+    }
+}
+
+<span class="comment">// Использование</span>
+<span class="keyword">switch</span> safeDecodeProducts(from: jsonData) {
+<span class="keyword">case</span> .<span class="property">success</span>(<span class="keyword">let</span> products):
+    print(<span class="string">"Загружено \(products.count) товаров"</span>)
+<span class="keyword">case</span> .<span class="property">failure</span>(<span class="keyword">let</span> error):
+    print(<span class="string">"Ошибка: \(error.localizedDescription)"</span>)
+}</code></pre>
+                </div>
+            </div>
+
+            <!-- Exercise 8 -->
+            <div class="exercise bg-zinc-50 dark:bg-zinc-800 rounded-xl p-6 mb-6">
+                <div class="flex items-center gap-3 mb-4">
+                    <span class="difficulty-hard px-2 py-1 rounded text-xs font-medium">Hard</span>
+                    <h3 class="text-lg font-semibold text-zinc-900 dark:text-white">Упражнение 8: Generic API Service</h3>
+                </div>
+
+                <p class="text-zinc-600 dark:text-zinc-400 mb-4">
+                    Создайте класс <code>APIService</code> с generic методом fetch, который:
+                </p>
+                <ul class="list-disc list-inside text-zinc-600 dark:text-zinc-400 mb-4 space-y-1">
+                    <li>Работает с любым Decodable типом</li>
+                    <li>Использует async/await</li>
+                    <li>Автоматически конвертирует snake_case</li>
+                    <li>Обрабатывает HTTP ошибки</li>
+                </ul>
+
+                <button onclick="toggleAnswer(this)" class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition">
+                    Показать ответ
+                </button>
+
+                <div class="answer mt-4">
+                    <pre><code><span class="keyword">enum</span> <span class="type">APIError</span>: <span class="type">Error</span> {
+    <span class="keyword">case</span> <span class="property">invalidURL</span>
+    <span class="keyword">case</span> <span class="property">httpError</span>(<span class="property">statusCode</span>: <span class="type">Int</span>)
+    <span class="keyword">case</span> <span class="property">decodingError</span>(<span class="type">Error</span>)
+    <span class="keyword">case</span> <span class="property">networkError</span>(<span class="type">Error</span>)
+}
+
+<span class="keyword">class</span> <span class="type">APIService</span> {
+    <span class="keyword">static let</span> <span class="property">shared</span> = <span class="type">APIService</span>()
+
+    <span class="keyword">private let</span> <span class="property">decoder</span>: <span class="type">JSONDecoder</span> = {
+        <span class="keyword">let</span> decoder = <span class="type">JSONDecoder</span>()
+        decoder.<span class="property">keyDecodingStrategy</span> = .<span class="property">convertFromSnakeCase</span>
+        decoder.<span class="property">dateDecodingStrategy</span> = .<span class="property">iso8601</span>
+        <span class="keyword">return</span> decoder
+    }()
+
+    <span class="keyword">func</span> fetch&lt;<span class="type">T</span>: <span class="type">Decodable</span>&gt;(
+        from urlString: <span class="type">String</span>
+    ) <span class="keyword">async throws</span> -> <span class="type">T</span> {
+        <span class="comment">// 1. Валидация URL</span>
+        <span class="keyword">guard let</span> url = <span class="type">URL</span>(string: urlString) <span class="keyword">else</span> {
+            <span class="keyword">throw</span> <span class="type">APIError</span>.<span class="property">invalidURL</span>
+        }
+
+        <span class="comment">// 2. Выполнение запроса</span>
+        <span class="keyword">let</span> data: <span class="type">Data</span>
+        <span class="keyword">let</span> response: <span class="type">URLResponse</span>
+
+        <span class="keyword">do</span> {
+            (data, response) = <span class="keyword">try await</span> <span class="type">URLSession</span>.<span class="property">shared</span>.data(from: url)
+        } <span class="keyword">catch</span> {
+            <span class="keyword">throw</span> <span class="type">APIError</span>.<span class="property">networkError</span>(error)
+        }
+
+        <span class="comment">// 3. Проверка HTTP статуса</span>
+        <span class="keyword">if let</span> httpResponse = response <span class="keyword">as?</span> <span class="type">HTTPURLResponse</span>,
+           !(200...299).contains(httpResponse.<span class="property">statusCode</span>) {
+            <span class="keyword">throw</span> <span class="type">APIError</span>.<span class="property">httpError</span>(statusCode: httpResponse.<span class="property">statusCode</span>)
+        }
+
+        <span class="comment">// 4. Декодирование</span>
+        <span class="keyword">do</span> {
+            <span class="keyword">return try</span> <span class="property">decoder</span>.decode(<span class="type">T</span>.<span class="keyword">self</span>, from: data)
+        } <span class="keyword">catch</span> {
+            <span class="keyword">throw</span> <span class="type">APIError</span>.<span class="property">decodingError</span>(error)
+        }
+    }
+}
+
+<span class="comment">// Использование</span>
+<span class="keyword">struct</span> <span class="type">Product</span>: <span class="type">Codable</span>, <span class="type">Identifiable</span> {
+    <span class="keyword">let</span> <span class="property">id</span>: <span class="type">Int</span>
+    <span class="keyword">let</span> <span class="property">title</span>: <span class="type">String</span>
+    <span class="keyword">let</span> <span class="property">price</span>: <span class="type">Double</span>
+}
+
+<span class="keyword">struct</span> <span class="type">ProductsResponse</span>: <span class="type">Codable</span> {
+    <span class="keyword">let</span> <span class="property">products</span>: [<span class="type">Product</span>]
+    <span class="keyword">let</span> <span class="property">total</span>: <span class="type">Int</span>
+}
+
+<span class="comment">// В SwiftUI View</span>
+<span class="keyword">struct</span> <span class="type">ProductListView</span>: <span class="type">View</span> {
+    @<span class="type">State</span> <span class="keyword">private var</span> <span class="property">products</span>: [<span class="type">Product</span>] = []
+    @<span class="type">State</span> <span class="keyword">private var</span> <span class="property">errorMessage</span>: <span class="type">String</span>?
+
+    <span class="keyword">var</span> <span class="property">body</span>: <span class="keyword">some</span> <span class="type">View</span> {
+        <span class="type">List</span>(<span class="property">products</span>) { product <span class="keyword">in</span>
+            <span class="type">Text</span>(product.<span class="property">title</span>)
+        }
+        .task {
+            <span class="keyword">do</span> {
+                <span class="keyword">let</span> response: <span class="type">ProductsResponse</span> = <span class="keyword">try await</span> <span class="type">APIService</span>.<span class="property">shared</span>.fetch(
+                    from: <span class="string">"https://dummyjson.com/products"</span>
+                )
+                <span class="property">products</span> = response.<span class="property">products</span>
+            } <span class="keyword">catch let</span> error <span class="keyword">as</span> <span class="type">APIError</span> {
+                <span class="keyword">switch</span> error {
+                <span class="keyword">case</span> .<span class="property">invalidURL</span>:
+                    <span class="property">errorMessage</span> = <span class="string">"Неверный URL"</span>
+                <span class="keyword">case</span> .<span class="property">httpError</span>(<span class="keyword">let</span> code):
+                    <span class="property">errorMessage</span> = <span class="string">"HTTP ошибка: \(code)"</span>
+                <span class="keyword">case</span> .<span class="property">decodingError</span>:
+                    <span class="property">errorMessage</span> = <span class="string">"Ошибка парсинга JSON"</span>
+                <span class="keyword">case</span> .<span class="property">networkError</span>:
+                    <span class="property">errorMessage</span> = <span class="string">"Нет соединения"</span>
+                }
+            } <span class="keyword">catch</span> {
+                <span class="property">errorMessage</span> = error.<span class="property">localizedDescription</span>
+            }
+        }
+    }
+}</code></pre>
+                </div>
+            </div>
+        </section>
+
+        <!-- Summary -->
+        <section class="bg-gradient-to-br from-blue-50 to-purple-50 dark:from-blue-900/20 dark:to-purple-900/20 rounded-xl p-8">
+            <h2 class="text-2xl font-bold text-zinc-900 dark:text-white mb-6">Шпаргалка</h2>
+
+            <div class="grid md:grid-cols-2 gap-6">
+                <div>
+                    <h3 class="font-semibold text-zinc-800 dark:text-zinc-200 mb-3">Основное</h3>
+                    <ul class="text-sm text-zinc-600 dark:text-zinc-400 space-y-1">
+                        <li><code>Codable</code> = Encodable + Decodable</li>
+                        <li><code>JSONDecoder().decode(Type.self, from: data)</code></li>
+                        <li>Имена свойств должны совпадать с JSON ключами</li>
+                        <li>Используйте <code>?</code> для опциональных полей</li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="font-semibold text-zinc-800 dark:text-zinc-200 mb-3">CodingKeys</h3>
+                    <ul class="text-sm text-zinc-600 dark:text-zinc-400 space-y-1">
+                        <li><code>enum CodingKeys: String, CodingKey</code></li>
+                        <li><code>case myProperty = "json_key"</code></li>
+                        <li>Или: <code>decoder.keyDecodingStrategy = .convertFromSnakeCase</code></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="font-semibold text-zinc-800 dark:text-zinc-200 mb-3">Массивы</h3>
+                    <ul class="text-sm text-zinc-600 dark:text-zinc-400 space-y-1">
+                        <li><code>[Product].self</code> — массив объектов</li>
+                        <li><code>[String].self</code> — массив строк</li>
+                        <li>Вложенный массив: <code>let items: [Item]</code></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="font-semibold text-zinc-800 dark:text-zinc-200 mb-3">Ошибки</h3>
+                    <ul class="text-sm text-zinc-600 dark:text-zinc-400 space-y-1">
+                        <li><code>keyNotFound</code> — нет ключа в JSON</li>
+                        <li><code>typeMismatch</code> — неверный тип</li>
+                        <li><code>valueNotFound</code> — null для non-optional</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Navigation -->
+        <div class="flex justify-between items-center mt-12 pt-8 border-t border-zinc-200 dark:border-zinc-800">
+            <a href="04-api-layer.html" class="text-blue-500 hover:underline">&larr; Глава 4: API Layer</a>
+            <a href="../index.html" class="text-blue-500 hover:underline">Оглавление</a>
+            <a href="05-product-list.html" class="text-blue-500 hover:underline">Глава 5: Список товаров &rarr;</a>
+        </div>
+    </div>
+
+    <script>
+        function toggleAnswer(button) {
+            const answer = button.nextElementSibling;
+            answer.classList.toggle('show');
+            button.textContent = answer.classList.contains('show') ? 'Скрыть ответ' : 'Показать ответ';
+        }
+    </script>
+</body>
+</html>

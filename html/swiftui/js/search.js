@@ -8,6 +8,7 @@ const searchIndex = [
     { title: "Глава 2: MVVM архитектура", url: "chapters/02-mvvm.html", keywords: "mvvm model view viewmodel observable observedobject архитектура" },
     { title: "Глава 3: Настройка проекта", url: "chapters/03-project-setup.html", keywords: "xcode проект spm swift package manager структура" },
     { title: "Глава 4: API Layer", url: "chapters/04-api-layer.html", keywords: "api network urlsession async await json codable dummyjson" },
+    { title: "Парсинг JSON", url: "chapters/json-parsing.html", keywords: "json parsing codable decodable encodable модели массив объект nested вложенный codingkeys snake_case optional дата date decoder упражнения" },
     { title: "Глава 5: Список товаров", url: "chapters/05-product-list.html", keywords: "lazyvgrid asyncimage список товары product grid" },
     { title: "Глава 6: Детали товара", url: "chapters/06-product-detail.html", keywords: "detail tabview slider изображения галерея" },
     { title: "Глава 7: Поиск", url: "chapters/07-search.html", keywords: "search searchable поиск фильтрация debounce" },
